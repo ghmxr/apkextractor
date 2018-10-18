@@ -21,7 +21,7 @@
     <string name="dialog_sort_descending_appsize">按大小降序（从大到小）</string>
     <string name="dialog_sort_ascending_date">按安装日期升序（从旧到新）</string>
     <string name="dialog_sort_descending_date">按安装日期降序（从新到旧）</string>
-    <string name="text_hint_searchview">输入搜索内容</string>        
+    <string name="text_hint_searchview">搜索内容(支持模糊搜索)</string>        
     <string name="text_appinst">点击相应条目来导出应用</string>
     <string name="text_showsysapp">显示系统应用</string>
     <string name="text_nofolder">此目录没有子文件夹</string>
@@ -40,11 +40,23 @@
     <string name="dialog_appdetail_text_lastupdatetime">安装（更新）时间：</string>
     <string name="dialog_appdetail_text_appsize">应用大小：</string>
     <string name="dialog_appdetail_text_minsdkversion">最低要求API：</string>
-    <string name="dialog_about_title">APK Kit(2.1r3)</string>
-    <string name="dialog_about_message">导出的应用默认将会保存至“本机存储/Backup”路径内，并以“包名+版本号”的方式命名，或者可以在菜单“更改导出路径”中更改。\n\n点击“分享”，可以使用支持分享的应用例如蓝牙、QQ面对面快传等来分享已选择的应用。\n\nmxremail@qq.com\n\n
-        2.1r3更新日志：\n修复已知问题。 \n\n*考虑本应用的兼容性，本应用暂未适配Android7.0及以上的版本的FileProvider。</string>   
+    <string name="dialog_about_title">APK Kit(Build 1)</string>
+    <string name="dialog_about_message">\n导出的应用默认将会保存至“存储/Backup”路径内，并以“包名+版本号(BuildInt)”的方式命名，或者可以在菜单“更改导出路径”中更改。\n\n
+        
+        点击“分享”，可以使用支持分享的应用例如蓝牙、QQ面对面快传等来分享已选择的应用。\n\n
+        
+        
+        应用开源地址:\n
+         https://github.com/ghmxr/apkextractor \n\n
+         应用获取更新地址:\n
+         https://github.com/ghmxr/apkextractor/releases \n\n
+        
+        作者邮箱: \n
+        mxremail@qq.com \n\n
+        如果您喜欢本应用，欢迎您捐赠来支持作者。
+        </string>   
     <string name="dialog_firstuse_title">提示</string>
-    <string name="dialog_firstuse_message">所有导出的应用将会以“包名+版本号”的方式命名并默认保存在“本机存储/Backup”路径下。\n\n导出路径可在本应用中进行更改。</string>
+    <string name="dialog_firstuse_message">所有导出的应用将会以“包名+版本号”的方式命名并默认保存在“存储/Backup”路径下。\n\n导出路径可自行更改。</string>
     
     
     <color name="color_searchview_hinttext">#aaaaaa</color>
@@ -56,5 +68,6 @@
     <color name="color_swiperefresh_color2">#2ecc71</color>
     <color name="color_swiperefresh_color3">#e67e22</color>
     <color name="color_swiperefresh_color4">#3498db</color>
+    <color name="color_text_black">#000000</color>
 
 </resources>

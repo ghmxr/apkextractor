@@ -59,6 +59,7 @@ import android.widget.RelativeLayout;
 import android.widget.SearchView;
 import android.widget.TextView;
 import android.widget.Toast;
+import android.view.LayoutInflater;
 
 
 public class Main extends BaseActivity {
@@ -1325,11 +1326,26 @@ public class Main extends BaseActivity {
 		// as you specify a parent activity in AndroidManifest.xml.
 		int id = item.getItemId();
 		if (id == R.id.action_about) {
+			View dialogview=LayoutInflater.from(this).inflate(R.layout.layout_dialog_about, null);
+			dialogview.findViewById(R.id.layout_about_donate).setOnClickListener(new View.OnClickListener() {
+				
+				@Override
+				public void onClick(View v) {
+					// TODO Auto-generated method stub
+					try{
+						startActivity(new Intent(Intent.ACTION_VIEW,Uri.parse("https://qr.alipay.com/FKX08041Y09ZGT6ZT91FA5")));
+					}catch (Exception e){
+						e.printStackTrace();
+					}
+					
+				}
+			});
 			AlertDialog dialog_about=new AlertDialog.Builder(Main.this)
 					.setTitle(this.getResources().getString(R.string.dialog_about_title))
 					.setIcon(R.drawable.ic_apkext)
-					.setCancelable(true)			
-					.setMessage(this.getResources().getString(R.string.dialog_about_message))
+					.setCancelable(true)	
+					.setView(dialogview)
+					//.setMessage(this.getResources().getString(R.string.dialog_about_message))
 					.setPositiveButton("È·¶¨", new DialogInterface.OnClickListener() {
 						
 						@Override

@@ -89,9 +89,9 @@ public abstract class BaseActivity extends Activity {
 							
 						}
 					}).create();
-			firstuseatt.show();
-			editor.putBoolean(PREFERENCE_FIRSTUSE_VERSION_THIS, false);
-			editor.commit();
+			//firstuseatt.show();
+			//editor.putBoolean(PREFERENCE_FIRSTUSE_VERSION_THIS, false);
+			//editor.commit();
 		}
 		
 		if(!settings.getBoolean(PREFERENCE_IF_EDITED_SAVEPATH,false)){
