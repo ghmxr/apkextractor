@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/relativelayout_dialog_filetransfer"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent" >
+    
+    <TextView 
+        android:id="@+id/currentfile"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentLeft="true"
+        android:layout_marginLeft="10dp"
+        android:textSize="14sp"
+        
+        />
+         
+    <ProgressBar 
+        android:id="@+id/progressBar"
+        style="@style/style_progressbar_horizontal"        
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/currentfile" 
+        android:layout_marginTop="10dp"     
+        android:layout_marginLeft="30dp"
+        android:layout_marginRight="30dp"
+        />
+   
+    <TextView 
+        android:id="@+id/copyspeed"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/progressBar"
+        android:layout_marginTop="10dp"
+        android:layout_alignParentLeft="true"
+        android:layout_marginLeft="15dp"
+        android:textSize="12sp"
+        
+        />
+    
+    <TextView 
+        android:id="@+id/copyprogress"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/progressBar"
+        android:layout_marginTop="10dp"
+        android:layout_marginRight="15dp"
+        android:layout_alignParentRight="true"
+        android:textSize="12sp"
+        
+       />
+    
+    
+    
+
+</RelativeLayout>

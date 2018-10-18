@@ -1,0 +1,149 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:paddingBottom="0dp"
+    android:paddingLeft="0dp"
+    android:paddingRight="0dp"
+    android:paddingTop="1dp" >
+    
+    <RelativeLayout 
+        android:id="@+id/topArea"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentLeft="true">
+        
+        <TextView
+        android:id="@+id/appinst"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentTop="true"
+        android:paddingLeft="1dp"
+        android:textSize="13sp"
+        android:text="@string/text_appinst" />
+        
+        
+    	<CheckBox 
+    	android:id="@+id/showSystemAPP"
+    	android:layout_height="wrap_content"
+    	android:layout_width="wrap_content"
+    	android:layout_alignParentTop="true"
+    	android:layout_alignParentRight="true"
+    	android:textSize="14sp"
+    	android:text="@string/text_showsysapp"/>
+        
+    </RelativeLayout>
+    
+    <ProgressBar 
+        android:id="@+id/progressbar_search"
+        android:layout_width="40dp"
+        android:layout_height="40dp"
+        android:layout_alignParentTop="true"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="30dp"
+        android:visibility="gone"/>
+
+    <android.support.v4.widget.SwipeRefreshLayout 
+        android:id="@+id/main_swiperefreshlayout"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:paddingLeft="1dp"
+        android:paddingRight="1dp" 
+        android:layout_marginTop="3dp"     
+        android:layout_below="@+id/topArea"
+        android:layout_above="@+id/area_multiselect">
+        
+        <ListView 
+        	android:id="@+id/applist"
+        	android:layout_width="match_parent"
+        	android:layout_height="match_parent"
+        	>
+        
+    	</ListView>
+        
+    </android.support.v4.widget.SwipeRefreshLayout>
+    
+    <ListView
+        android:id="@+id/applist_searchmode"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:paddingLeft="1dp"
+        android:paddingRight="1dp" 
+        android:layout_marginTop="3dp"     
+        android:layout_below="@+id/topArea"
+        android:layout_above="@+id/area_multiselect"
+        android:visibility="gone"
+        >
+        
+    </ListView>
+    
+    
+    <RelativeLayout 
+        android:id="@+id/area_multiselect"        
+        android:background="@color/color_multiselectarea"
+        android:layout_height="48dp"
+        android:layout_width="match_parent"
+        android:layout_alignParentBottom="true"
+        android:visibility="gone">
+        <LinearLayout 
+            android:layout_centerHorizontal="true"
+            android:orientation="horizontal"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent">
+            
+            <TextView 
+                android:id="@+id/text_selectall"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:gravity="center_vertical"
+                android:clickable="true"
+                android:textColor="#FF3E96"
+                android:textSize="15sp"               
+                android:text="@string/button_selectall"
+                android:layout_marginRight="20dp"/>
+            
+            <TextView 
+                android:id="@+id/text_deselectall"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:gravity="center_vertical"
+                android:clickable="true"
+                android:textColor="#FF3E96"
+                android:textSize="15sp"              
+                android:text="@string/button_deselectall"
+                android:layout_marginLeft="20dp"
+                android:layout_marginRight="20dp"/>
+            
+            <TextView 
+                android:id="@+id/text_extract"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:gravity="center_vertical"
+                android:clickable="true"
+                android:textColor="#FF3E96"
+                android:textSize="15sp"               
+                android:text="@string/button_extract"
+                android:layout_marginRight="20dp"
+                android:layout_marginLeft="20dp"
+                />
+            <TextView 
+                android:id="@+id/text_share"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:gravity="center_vertical"
+                android:clickable="true"
+                android:textColor="#FF3E96"
+                android:textSize="15sp"                
+                android:text="@string/button_share"
+                android:layout_marginLeft="20dp"
+                />
+            
+                
+        </LinearLayout>
+        
+    </RelativeLayout>
+
+</RelativeLayout>
+

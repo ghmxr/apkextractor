@@ -1,0 +1,89 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent" >
+    
+    <TextView 
+        android:id="@+id/folderselector_pathname"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textSize="12sp"
+        android:layout_marginLeft="3dp"
+        android:layout_marginTop="5dp"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentTop="true"
+        android:visibility="visible"/>
+    
+    <android.support.v4.widget.SwipeRefreshLayout
+        android:id="@+id/folderselector_swiperefreshlayout"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_marginTop="8dp" 
+        android:layout_below="@+id/folderselector_pathname"
+        android:visibility="visible">
+        
+        <ListView 
+        	android:id="@+id/folderselector_filelist"
+        	android:layout_width="match_parent"
+        	android:layout_height="match_parent"       
+        	android:visibility="visible">
+        
+    	</ListView>
+        
+    </android.support.v4.widget.SwipeRefreshLayout>
+    
+    
+    
+    <RelativeLayout 
+        android:id="@+id/folderselector_refresharea"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:layout_centerVertical="true"
+        android:visibility="gone">
+        
+        <ProgressBar 
+            android:id="@+id/folderselector_refresharea_progressbar"
+            android:layout_width="80dp"
+            android:layout_height="80dp"
+            android:layout_centerHorizontal="true"
+            />
+        <TextView 
+            android:id="@+id/folderselector_refresharea_textview"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/folderselector_refresharea_progressbar"
+            android:layout_centerHorizontal="true"
+            android:text="@string/text_loading"/>
+        
+    </RelativeLayout>
+    
+    <RelativeLayout 
+        android:id="@+id/folderselector_facearea"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:layout_centerVertical="true"
+        android:visibility="gone" >
+        
+        <ImageView 
+            android:id="@+id/folderselector_facearea_imageview"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:layout_centerVertical="true"
+            android:src="@drawable/icon_face_ops"/>
+        
+        <TextView 
+            android:id="@+id/folderselector_facearea_textview"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:textSize="14sp"
+            android:layout_toRightOf="@+id/folderselector_facearea_imageview"
+            android:layout_marginLeft="10dp"
+            android:text="@string/text_nofolder"/>
+        
+    </RelativeLayout>
+    
+
+</RelativeLayout>

@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string name="app_iconname">APK Kit</string>
+    <string name="app_name">APK Kit</string>
+    <string name="text_avaliableroom">存储剩余空间：</string>
+    <string name="action_search">搜索</string>
+    <string name="action_sort">排序</string>
+    <string name="action_about">关于</string>
+    <string name="action_editpath">更改导出路径</string>
+    <string name="action_confirm">确定</string>
+    <string name="action_cancel">取消</string>
+    <string name="action_folderselector_newfolder">新建文件夹</string>
+    <string name="action_folderselector_sort_ascending">名称升序（A→Z）</string>
+    <string name="action_folderselector_sort_descending">名称降序（Z→A）</string>
+    <string name="action_folderselector_sort_default">默认排序</string>
+    <string name="dialog_sort_default">默认</string>
+    <string name="dialog_sort_ascending_appname">按名称升序（从A到Z）</string>
+    <string name="dialog_sort_descending_appname">按名称降序（从Z到A）</string>
+    <string name="dialog_sort_ascending_appsize">按大小升序（从小到大）</string>
+    <string name="dialog_sort_descending_appsize">按大小降序（从大到小）</string>
+    <string name="dialog_sort_ascending_date">按安装日期升序（从旧到新）</string>
+    <string name="dialog_sort_descending_date">按安装日期降序（从新到旧）</string>
+    <string name="text_hint_searchview">输入搜索内容</string>        
+    <string name="text_appinst">点击相应条目来导出应用</string>
+    <string name="text_showsysapp">显示系统应用</string>
+    <string name="text_nofolder">此目录没有子文件夹</string>
+    <string name="text_loading">正在加载</string>
+    <string name="hint_newfolder">输入文件夹名称</string>
+    <string name="button_selectall"><u>全选</u></string>
+    <string name="button_deselectall"><u>全不选</u></string>
+    <string name="button_extract"><u>导出</u></string>
+    <string name="button_share"><u>分享</u></string>
+    <string name="dialog_appdetail_selectable_extract">导出</string>
+    <string name="dialog_appdetail_selectable_share">分享</string>
+    <string name="dialog_appdetail_selectable_detail">应用详情</string>
+    <string name="dialog_storage_notenough_title">存储空间不足</string>
+    <string name="dialog_storage_notenough_message">存储空间不足，请清理部分存储空间后重试。</string>
+    <string name="dialog_appdetail_text_versioncode">Version Code：</string>
+    <string name="dialog_appdetail_text_lastupdatetime">安装（更新）时间：</string>
+    <string name="dialog_appdetail_text_appsize">应用大小：</string>
+    <string name="dialog_appdetail_text_minsdkversion">最低要求API：</string>
+    <string name="dialog_about_title">APK Kit(2.1r3)</string>
+    <string name="dialog_about_message">导出的应用默认将会保存至“本机存储/Backup”路径内，并以“包名+版本号”的方式命名，或者可以在菜单“更改导出路径”中更改。\n\n点击“分享”，可以使用支持分享的应用例如蓝牙、QQ面对面快传等来分享已选择的应用。\n\nmxremail@qq.com\n\n
+        2.1r3更新日志：\n修复已知问题。 \n\n*考虑本应用的兼容性，本应用暂未适配Android7.0及以上的版本的FileProvider。</string>   
+    <string name="dialog_firstuse_title">提示</string>
+    <string name="dialog_firstuse_message">所有导出的应用将会以“包名+版本号”的方式命名并默认保存在“本机存储/Backup”路径下。\n\n导出路径可在本应用中进行更改。</string>
+    
+    
+    <color name="color_searchview_hinttext">#aaaaaa</color>
+    <color name="color_text_clickable_true">#FF3E96</color>
+    <color name="color_text_clickable_false">#C4C4C4</color>
+    <color name="color_multiselectarea">#cf000000</color>
+    <color name="color_actionbar">#3498db</color>
+    <color name="color_swiperefresh_color1">#e74c3c</color>
+    <color name="color_swiperefresh_color2">#2ecc71</color>
+    <color name="color_swiperefresh_color3">#e67e22</color>
+    <color name="color_swiperefresh_color4">#3498db</color>
+
+</resources>

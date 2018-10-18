@@ -1,0 +1,33 @@
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:context="app.mxr.apkextractor.Main" >
+    
+    <item
+        android:id="@+id/action_search"
+        android:orderInCategory="100"
+        android:icon="@android:drawable/ic_menu_search"
+        android:showAsAction="ifRoom"
+        android:title="@string/action_search"/>
+    
+    <item
+        android:id="@+id/action_sort"
+        android:orderInCategory="200"
+        android:icon="@android:drawable/ic_menu_sort_by_size"
+        android:showAsAction="ifRoom"
+        android:title="@string/action_sort"/>
+    
+    <item
+        android:id="@+id/action_editpath"
+        android:orderInCategory="300"
+        android:icon="@android:drawable/ic_menu_preferences"
+        android:showAsAction="ifRoom"
+        android:title="@string/action_editpath"/>
+    
+    <item
+        android:id="@+id/action_about"
+        android:orderInCategory="400"
+        android:icon="@android:drawable/ic_menu_info_details"
+        android:showAsAction="never"
+        android:title="@string/action_about"/>
+
+</menu>

@@ -1,0 +1,5 @@
+# Java class files
+*.class
+
+#Build
+bin/
