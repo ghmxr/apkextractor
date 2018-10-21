@@ -14,9 +14,26 @@ public class AppItemInfo implements Comparable<AppItemInfo>{
 	public int versioncode=0;             // 应用版本int值  
 	public long lastupdatetime=0;    	  // 应用更新安装时间
 	public int minsdkversion=0;		      // 应用要求的最低api版本
+	//仅当构造CopyFilesTask时用
+	public boolean exportData=false;
+	public boolean exportObb=false;
 	
 	public AppItemInfo(){
 		
+	}
+	
+	public AppItemInfo(AppItemInfo item){
+		this.appName=new String(item.appName);
+		this.packageName=new String(item.packageName);
+		this.icon=item.icon;
+		this.appsize=item.appsize;
+		this.path=new String(item.path);
+		this.version=new String(item.version);
+		this.versioncode=item.versioncode;
+		this.lastupdatetime=item.lastupdatetime;
+		this.minsdkversion=item.minsdkversion;
+		this.exportData=false;
+		this.exportObb=false;
 	}
 	
 	// Set resources

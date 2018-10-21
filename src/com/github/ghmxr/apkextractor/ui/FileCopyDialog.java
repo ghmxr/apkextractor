@@ -17,7 +17,7 @@ public class FileCopyDialog extends AlertDialog{
 	
 	ProgressBar pgbar;
 	TextView text_speed,text_progress,text_curreninfo;
-	private long progress,total,speed;
+	private long progress=0,total=1024*100,speed=0;
 	private int  percent;
 	private Context context;
 
@@ -31,7 +31,7 @@ public class FileCopyDialog extends AlertDialog{
 		this.text_curreninfo=(TextView)dialogview.findViewById(R.id.currentfile);
 		this.text_progress=(TextView)dialogview.findViewById(R.id.copyprogress);
 		this.text_speed=(TextView)dialogview.findViewById(R.id.copyspeed);
-		
+		setMax((int)total/1024);
 	}
 	
 	public void setTextAtt(String title){
@@ -39,8 +39,8 @@ public class FileCopyDialog extends AlertDialog{
 		//this.setTitle(title);
 	}
 	
-	public void setProgress(long Bytes){
-		this.progress=Bytes;	
+	public void setProgress(long bytes){
+		this.progress=bytes;	
 		refreshProgress(this.progress);
 	}
 	

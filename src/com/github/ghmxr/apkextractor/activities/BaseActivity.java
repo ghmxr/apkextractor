@@ -48,13 +48,14 @@ public abstract class BaseActivity extends Activity {
 	public static final int MESSAGE_COPYFILE_IOEXCEPTION              					= 0x0007;
 	
 	public static final int MESSAGE_COPYFILE_CURRENTFILE 								= 0x0008;
+	public static final int MESSAGE_COPYFILE_CURRENTAPP									= 0x0009;
 				
 	public static final int MESSAGE_LOADLIST_REFRESH_PROGRESS							= 0x0010;
 	public static final int MESSAGE_LOADLIST_COMPLETE									= 0x0011;
 	
 	public static final String UNCHANGEDPATH=StorageUtil.getSDPath()+"/Backup";
 	
-	public static  String SAVEPATH=UNCHANGEDPATH;
+	public static  String savepath=UNCHANGEDPATH;
 	
 	public static Handler handler = new Handler(){
 		public void handleMessage(Message msg){
@@ -95,13 +96,13 @@ public abstract class BaseActivity extends Activity {
 		}
 		
 		if(!settings.getBoolean(PREFERENCE_IF_EDITED_SAVEPATH,false)){
-			SAVEPATH=UNCHANGEDPATH;
+			savepath=UNCHANGEDPATH;
 			editor.putBoolean(PREFERENCE_IF_EDITED_SAVEPATH,true);
 			editor.putString(PREFERENCE_APKPATH, UNCHANGEDPATH);
 			editor.commit();
 		}
 		else{
-			SAVEPATH=settings.getString(PREFERENCE_APKPATH, UNCHANGEDPATH);
+			savepath=settings.getString(PREFERENCE_APKPATH, UNCHANGEDPATH);
 		}
 	}
 	

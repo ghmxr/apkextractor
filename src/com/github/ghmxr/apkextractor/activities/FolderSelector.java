@@ -33,7 +33,7 @@ import android.widget.Toast;
 
 public class FolderSelector extends BaseActivity implements Runnable{
 	
-	File path = new File(SAVEPATH);
+	File path = new File(savepath);
 	File path_ra;
 	
 	List <FileItemInfo> filelist=new ArrayList<FileItemInfo>();
@@ -70,7 +70,7 @@ public class FolderSelector extends BaseActivity implements Runnable{
 		this.swl.setProgressViewEndTarget(false, 200);
 		
 		this.listadapter=new FileListAdapter(this.filelist,this);
-		this.path=new File (SAVEPATH);
+		this.path=new File (savepath);
 		if(path.exists()&&!path.isDirectory()){
 			path.delete();			
 		}
@@ -244,19 +244,19 @@ public class FolderSelector extends BaseActivity implements Runnable{
 			case R.id.folderselector_action_confirm:{								
 				if(this.listadapter!=null){
 					if(this.listadapter.getSelectedPosition()>=0&&this.path_ra!=null){
-						SAVEPATH=this.path_ra.getAbsolutePath();
+						savepath=this.path_ra.getAbsolutePath();
 					}
 					else{
-						SAVEPATH=this.path.getAbsolutePath();
+						savepath=this.path.getAbsolutePath();
 					}
 				}
 				else if(this.path!=null){
-					SAVEPATH=this.path.getAbsolutePath();
+					savepath=this.path.getAbsolutePath();
 				}					
 				editor.putBoolean(PREFERENCE_IF_EDITED_SAVEPATH, true);
-				editor.putString(PREFERENCE_APKPATH, SAVEPATH);
+				editor.putString(PREFERENCE_APKPATH, savepath);
 				editor.commit();
-				Toast.makeText(this, "已更改APK导出路径至 "+SAVEPATH, Toast.LENGTH_SHORT).show();
+				Toast.makeText(this, "已更改APK导出路径至 "+savepath, Toast.LENGTH_SHORT).show();
 				this.finish();								
 			}
 			break;
