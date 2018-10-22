@@ -40,11 +40,17 @@
     <string name="dialog_appdetail_text_lastupdatetime">安装（更新）时间：</string>
     <string name="dialog_appdetail_text_appsize">应用大小：</string>
     <string name="dialog_appdetail_text_minsdkversion">最低要求API：</string>
-    <string name="dialog_about_title">APK Kit(Build 1)</string>
+    <string name="dialog_extract_multi_has_data_obb">检测到部分应用含有Data和Obb数据。\n勾选下面的选项，将会把含有Data或Obb数据的应用打包成zip导出。</string>
+    <string name="dialog_about_title">APK Kit(Build 2)</string>
     <string name="dialog_about_message">\n导出的应用默认将会保存至“存储/Backup”路径内，并以“包名+版本号(BuildInt)”的方式命名，或者可以在菜单“更改导出路径”中更改。\n\n
         
         点击“分享”，可以使用支持分享的应用例如蓝牙、QQ面对面快传等来分享已选择的应用。\n\n
         
+    勾选导出Data或者Obb选项后，会将应用APK和Data或Obb数据打包成zip导出。\n\n
+    
+   <b>Build 2 更新日志：</b> \n
+    <b>新增导出Data和Obb数据包并打包成zip的功能；</b>\n
+    <b>优化导出速度。</b>\n\n
         
         应用开源地址:\n
          https://github.com/ghmxr/apkextractor \n\n

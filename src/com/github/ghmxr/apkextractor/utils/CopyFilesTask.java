@@ -62,7 +62,7 @@ public class CopyFilesTask implements Runnable{
 				msg_currentapp.what=Main.MESSAGE_COPYFILE_CURRENTAPP;
 				msg_currentapp.obj=Integer.valueOf(i);
 				Main.sendMessage(msg_currentapp);
-				if((!applist.get(i).exportData)&&(!applist.get(i).exportObb)){
+				if((!item.exportData)&&(!item.exportObb)){
 					int byteread=0;															
 					try{
 						String writepath=this.savepath+"/"+item.getPackageName()+"-"+item.getVersionCode()+".apk";					
@@ -109,11 +109,11 @@ public class CopyFilesTask implements Runnable{
 					}
 					catch(FileNotFoundException fe){
 						fe.printStackTrace();
-						progress+=this.applist.get(i).getPackageSize();
+						progress+=item.getPackageSize();
 						Message msg_filenotfound_exception = new Message();
-						String filename = this.applist.get(i).getAppName()+this.applist.get(i).getVersion();
+						String filename = item.getAppName()+item.getVersion();
 						msg_filenotfound_exception.what=BaseActivity.MESSAGE_COPYFILE_FILE_NOTFOUND_EXCEPTION;
-						msg_filenotfound_exception.obj=filename;
+						msg_filenotfound_exception.obj=filename+"\nError Message:"+fe.toString();
 						BaseActivity.sendMessage(msg_filenotfound_exception);
 					}
 					
@@ -143,6 +143,11 @@ public class CopyFilesTask implements Runnable{
 						zos.close();
 					}catch(Exception e){
 						e.printStackTrace();
+						Message msg_filenotfound_exception = new Message();
+						String filename = item.getAppName()+item.getVersion();
+						msg_filenotfound_exception.what=BaseActivity.MESSAGE_COPYFILE_FILE_NOTFOUND_EXCEPTION;
+						msg_filenotfound_exception.obj=filename+"\n"+"Error Message:"+e.toString();
+						BaseActivity.sendMessage(msg_filenotfound_exception);
 					}
 					if(isInterrupted) new File(this.currentWritePath).delete();
 				}
