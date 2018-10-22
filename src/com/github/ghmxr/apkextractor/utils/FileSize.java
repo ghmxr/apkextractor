@@ -1,18 +1,11 @@
 package com.github.ghmxr.apkextractor.utils;
 
 import java.io.File;
-import java.io.FileInputStream;
-
-import android.util.Log;
 
 public class FileSize {
-	//public static final int SIZETYPE_B = 1;//获取文件大小单位为B的double值
-	//public static final int SIZETYPE_KB = 2;//获取文件大小单位为KB的double值
-	//public static final int SIZETYPE_MB = 3;//获取文件大小单位为MB的double值
-	//public static final int SIZETYPE_GB = 4;//获取文件大小单位为GB的double值
-	
+		
 	/**
-	 * 获取指定文件大小
+	 * 获取指定文件或文件夹大小
 	 * @param f
 	 * @return
 	 * @throws Exception

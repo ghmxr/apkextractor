@@ -28,6 +28,7 @@ public class CopyFilesTask implements Runnable{
 	private String savepath=BaseActivity.savepath,currentWritePath="";
 	private boolean isInterrupted=false;
 	private long progress=0,total=0;
+	private long progress_check=0;
 	private long zipTime=0;
 	private long zipWriteLength_second=0;
 	/**
@@ -190,7 +191,7 @@ public class CopyFilesTask implements Runnable{
 					zos.putNextEntry(zipextry);
 					byte[] buffer=new byte[1024];
 					int length;
-					long progressCheck=this.progress;
+					//long progressCheck=this.progress;
 					
 					Message msg_currentfile = new Message();			       		       
 			        msg_currentfile.what=BaseActivity.MESSAGE_COPYFILE_CURRENTFILE;
@@ -212,8 +213,8 @@ public class CopyFilesTask implements Runnable{
 			            	 BaseActivity.sendMessage(msg_speed);
 			            	 this.zipWriteLength_second=0;
 						}
-						if(this.progress-progressCheck>100*1024){
-							progressCheck=this.progress;
+						if(this.progress-progress_check>100*1024){  
+							progress_check=this.progress;
 							Message msg=new Message();
 							msg.what=Main.MESSAGE_COPYFILE_REFRESH_PROGRESS;
 							msg.obj=new Long[]{this.progress,this.total};

@@ -5,7 +5,7 @@
     <RelativeLayout 
         android:id="@+id/extract_multi_wait"
         android:layout_width="wrap_content"
-        android:layout_height="70dp"
+        android:layout_height="90dp"
         android:layout_centerVertical="true"
         android:layout_centerHorizontal="true">
         <ProgressBar 

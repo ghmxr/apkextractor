@@ -40,7 +40,6 @@ import android.provider.Settings;
 //import android.support.v4.content.FileProvider;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.text.format.Formatter;
-import android.util.Log;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -60,8 +59,6 @@ import android.widget.RelativeLayout;
 import android.widget.SearchView;
 import android.widget.TextView;
 import android.widget.Toast;
-import android.view.LayoutInflater;
-
 
 public class Main extends BaseActivity {
 	
@@ -276,39 +273,10 @@ public class Main extends BaseActivity {
 					if(listadapter.getIsSelected()[i]) list.add(new AppItemInfo(listadapter.getAppList().get(i)));
 				}
 				list_extract_multi=list;
-				FileChecker apkchecker=new FileChecker(list,"apk").startCheck();				
+				//FileChecker apkchecker=new FileChecker(list,"apk").startCheck();				
 				if(StorageUtil.getSDAvaliableSize()<(Main.this.listadapter.getSelectedAppsSize()+1024*1024)){
 					showStorageNotEnoughDialog();
-				}
-				
-				/*else if(apkchecker.getIsApkAlreadyExist()){
-					
-					new AlertDialog.Builder(Main.this)
-					.setIcon(R.drawable.ic_warn)
-					.setTitle("存在重名文件")
-					.setCancelable(true)									
-					.setMessage("存在下列重名文件：\n"+apkchecker.getDuplicatedAPKInfo()+"是否覆盖？")
-					.setPositiveButton("确定", new DialogInterface.OnClickListener() {
-						
-						@Override
-						public void onClick(DialogInterface dialog, int which) {
-							// TODO Auto-generated method stub
-							Message msg=new Message();
-							msg.what=MESSAGE_EXTRACT_MULTI_APP;
-							Main.this.processExtractMsg(msg);
-						}
-					})
-					.setNegativeButton("取消", new DialogInterface.OnClickListener() {
-						
-						@Override
-						public void onClick(DialogInterface dialog, int which) {
-							// TODO Auto-generated method stub
-							
-						}
-					})
-					.show();  
-					
-				}	  */							
+				}														
 				else{
 					
 					dialog_wait=new AlertDialog.Builder(Main.this)
@@ -1197,7 +1165,7 @@ public class Main extends BaseActivity {
 				dialog_wait=new AlertDialog.Builder(this)
 						.setTitle("附加选项")
 						.setView(LayoutInflater.from(this).inflate(R.layout.layout_extract_multi_extra, null))
-						.setPositiveButton("确定", null)
+						.setPositiveButton("继续", null)
 						.setNegativeButton("取消", null)
 						.show();
 				final CheckBox cb_data=(CheckBox)dialog_wait.findViewById(R.id.extract_multi_data_cb);
