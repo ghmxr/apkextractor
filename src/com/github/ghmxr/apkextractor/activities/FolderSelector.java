@@ -5,12 +5,10 @@ import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import java.util.Locale;
 
 import com.github.ghmxr.apkextractor.R;
 import com.github.ghmxr.apkextractor.adapters.FileListAdapter;
 import com.github.ghmxr.apkextractor.data.FileItemInfo;
-import com.github.ghmxr.apkextractor.utils.StorageUtil;
 
 import android.app.AlertDialog;
 import android.graphics.Color;
@@ -341,6 +339,15 @@ public class FolderSelector extends BaseActivity implements Runnable{
 						
 			}
 			
+			break;
+			case R.id.folderselector_action_reset:{
+				savepath=BaseActivity.UNCHANGEDPATH;
+				editor.putBoolean(PREFERENCE_IF_EDITED_SAVEPATH, true);
+				editor.putString(PREFERENCE_APKPATH, BaseActivity.UNCHANGEDPATH);
+				editor.commit();
+				Toast.makeText(this, "已恢复APK导出路径至 "+BaseActivity.UNCHANGEDPATH, Toast.LENGTH_SHORT).show();
+				this.finish();
+			}
 			break;
 			case android.R.id.home:{
 				backtoParent();

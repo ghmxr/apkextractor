@@ -9,8 +9,6 @@ import com.github.ghmxr.apkextractor.utils.StorageUtil;
 
 import android.annotation.SuppressLint;
 import android.app.Activity;
-import android.app.AlertDialog;
-import android.content.DialogInterface;
 import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.os.Build;
@@ -29,7 +27,7 @@ public abstract class BaseActivity extends Activity {
 	public SharedPreferences settings;
 	public SharedPreferences.Editor editor;
 	
-	public static final String PREFERENCE_FIRSTUSE_VERSION_THIS="firstuse20";
+	//public static final String PREFERENCE_FIRSTUSE_VERSION_THIS="firstuse20";
 	public static final String PREFERENCE_IF_REQUESTED_RWPERMISSIONS="ifrequestedrw";
 	public static final String PREFERENCE_IF_EDITED_SAVEPATH="ifeditedsavepath";
 	public static final String PREFERENCE_APKPATH="savepath";
@@ -80,7 +78,7 @@ public abstract class BaseActivity extends Activity {
 		
 		this.settings=this.getSharedPreferences("settings", Activity.MODE_PRIVATE);
 		this.editor=this.settings.edit();
-		if(settings.getBoolean(PREFERENCE_FIRSTUSE_VERSION_THIS, true)){
+		/*if(settings.getBoolean(PREFERENCE_FIRSTUSE_VERSION_THIS, true)){
 			AlertDialog firstuseatt=new AlertDialog.Builder(this).setTitle(this.getResources().getString(R.string.dialog_firstuse_title))
 					.setMessage(this.getResources().getString(R.string.dialog_firstuse_message)).setPositiveButton("È·¶¨", new DialogInterface.OnClickListener() {
 						
@@ -93,7 +91,7 @@ public abstract class BaseActivity extends Activity {
 			//firstuseatt.show();
 			//editor.putBoolean(PREFERENCE_FIRSTUSE_VERSION_THIS, false);
 			//editor.commit();
-		}
+		}  */
 		
 		if(!settings.getBoolean(PREFERENCE_IF_EDITED_SAVEPATH,false)){
 			savepath=UNCHANGEDPATH;

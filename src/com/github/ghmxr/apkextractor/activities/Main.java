@@ -167,10 +167,11 @@ public class Main extends BaseActivity {
 						
 						FileChecker apkchecker=new FileChecker(selectedList,(data||obb)?"zip":"apk");
 						apkchecker.startCheck();								
-						if(StorageUtil.getSDAvaliableSize()<(item.getPackageSize()+1024*1024)){
-							showStorageNotEnoughDialog();
-						}
-						else if(apkchecker.getIsApkAlreadyExist()){
+						//if(StorageUtil.getSDAvaliableSize()<(item.getPackageSize()+1024*1024)){
+						//	showStorageNotEnoughDialog();
+						//}
+						//else 
+							if(apkchecker.getIsApkAlreadyExist()){
 							
 							new AlertDialog.Builder(Main.this)
 							.setIcon(R.drawable.ic_warn)
@@ -272,12 +273,11 @@ public class Main extends BaseActivity {
 				for(int i=0;i<listadapter.getAppList().size();i++){
 					if(listadapter.getIsSelected()[i]) list.add(new AppItemInfo(listadapter.getAppList().get(i)));
 				}
-				list_extract_multi=list;
-				//FileChecker apkchecker=new FileChecker(list,"apk").startCheck();				
-				if(StorageUtil.getSDAvaliableSize()<(Main.this.listadapter.getSelectedAppsSize()+1024*1024)){
-					showStorageNotEnoughDialog();
-				}														
-				else{
+				list_extract_multi=list;								
+				//if(StorageUtil.getSDAvaliableSize()<(Main.this.listadapter.getSelectedAppsSize()+1024*1024)){
+				//	showStorageNotEnoughDialog();
+				//}														
+				//else{
 					
 					dialog_wait=new AlertDialog.Builder(Main.this)
 							.setTitle("ÇëµÈ´ý")
@@ -310,7 +310,7 @@ public class Main extends BaseActivity {
 					/*Message msg=new Message();
 					msg.what=MESSAGE_EXTRACT_MULTI_APP;
 					Main.this.processExtractMsg(msg);*/
-				}
+				//}
 				
 			}
 												

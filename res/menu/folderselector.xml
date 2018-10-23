@@ -35,6 +35,12 @@
         android:icon="@drawable/ic_descend_name"
         android:showAsAction="never"
         android:title="@string/action_folderselector_sort_descending"/>
-    
+     
+    <item
+        android:id="@+id/folderselector_action_reset"
+        android:orderInCategory="500"
+        android:icon="@android:drawable/ic_menu_rotate"
+        android:showAsAction="never"
+        android:title="@string/action_folderselector_reset_default"/>
 
 </menu>

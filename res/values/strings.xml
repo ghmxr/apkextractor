@@ -14,6 +14,7 @@
     <string name="action_folderselector_sort_ascending">名称升序（A→Z）</string>
     <string name="action_folderselector_sort_descending">名称降序（Z→A）</string>
     <string name="action_folderselector_sort_default">默认排序</string>
+    <string name="action_folderselector_reset_default">恢复默认路径</string>
     <string name="activity_folder_selector_att">请务必选择正确可读写的媒体存储路径，否则会导致应用无法导出！</string>
     <string name="dialog_sort_default">默认</string>
     <string name="dialog_sort_ascending_appname">按名称升序（从A到Z）</string>
@@ -50,8 +51,8 @@
     勾选导出Data或者Obb选项后，会将应用APK和Data或Obb数据打包成zip导出。\n\n
     
    <b>Build 3 更新日志：</b> \n
-    <b>支持选择导出路径到外置存储或者其他媒体存储设备（允许从根目录选择路径）;</b>\n
-    <b>（注意：请务必选择正确的媒体存储路径，否则会因为没有足够的写入权限导致导出报异常,外置存储路径一般会挂载在“/storage/sdcard1”)</b>\n\n
+    <b>支持从系统根目录开始选择导出路径(通过此方式可以尝试选择外置存储设备)</b>\n\n
+    <b>注意：请务必选择正确的媒体存储路径，否则会因为没有足够的写入权限导致导出报异常，内置、外置存储路径一般会挂载在“/storage”或者“/mnt”下。</b>\n\n
         
         应用开源地址:\n
          https://github.com/ghmxr/apkextractor \n\n

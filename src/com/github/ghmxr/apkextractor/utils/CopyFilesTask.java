@@ -3,7 +3,6 @@ package com.github.ghmxr.apkextractor.utils;
 import java.io.BufferedOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -25,7 +24,7 @@ import android.os.Message;
 public class CopyFilesTask implements Runnable{
 			
 	public List<AppItemInfo> applist;
-	private String savepath=BaseActivity.savepath,currentWritePath="";
+	private String savepath=BaseActivity.savepath,currentWritePath=null;
 	private boolean isInterrupted=false;
 	private long progress=0,total=0;
 	private long progress_check=0;
@@ -66,10 +65,10 @@ public class CopyFilesTask implements Runnable{
 				if((!item.exportData)&&(!item.exportObb)){
 					int byteread=0;															
 					try{
-						String writepath=this.savepath+"/"+item.getPackageName()+"-"+item.getVersionCode()+".apk";					
-						InputStream in = new FileInputStream(item.getResourcePath()); //读入原文件   
-						BufferedOutputStream out= new BufferedOutputStream(new FileOutputStream(writepath));					
+						String writepath=this.savepath+"/"+item.getPackageName()+"-"+item.getVersionCode()+".apk";
 						this.currentWritePath=writepath;
+						InputStream in = new FileInputStream(item.getResourcePath()); //读入原文件   						
+						BufferedOutputStream out= new BufferedOutputStream(new FileOutputStream(writepath));											
 						
 						Message msg_currentfile = new Message();				        	       
 				        msg_currentfile.what=BaseActivity.MESSAGE_COPYFILE_CURRENTFILE;
@@ -119,6 +118,14 @@ public class CopyFilesTask implements Runnable{
 					}*/
 					catch(Exception e){
 						e.printStackTrace();
+						try{
+							File file = new File(this.currentWritePath);
+							if(file.exists()&&!file.isDirectory()){
+								file.delete();
+							}
+						}catch(Exception ee){
+							ee.printStackTrace();
+						}
 						progress+=item.getPackageSize();
 						Message msg_exception = new Message();
 						String filename = item.getAppName()+item.getVersion();
@@ -132,7 +139,7 @@ public class CopyFilesTask implements Runnable{
 					try{
 						String writePath=this.savepath+"/"+item.getPackageName()+"-"+item.getVersionCode()+".zip";
 						this.currentWritePath=writePath;
-						ZipOutputStream zos=new ZipOutputStream(new BufferedOutputStream(new FileOutputStream(new File(writePath))));
+						ZipOutputStream zos=new ZipOutputStream(new BufferedOutputStream(new FileOutputStream(new File(writePath))));						
 						zos.setComment("Packaged by com.github.ghmxr.apkextractor \nhttps://github.com/ghmxr/apkextractor");
 						writeZip(new File(item.getResourcePath()),"",zos);
 						if(item.exportData){
@@ -145,6 +152,14 @@ public class CopyFilesTask implements Runnable{
 						zos.close();
 					}catch(Exception e){
 						e.printStackTrace();
+						try{
+							File file = new File(this.currentWritePath);
+							if(file.exists()&&!file.isDirectory()){
+								file.delete();
+							}
+						}catch(Exception ee){
+							ee.printStackTrace();
+						}
 						Message msg_filenotfound_exception = new Message();
 						String filename = item.getAppName()+item.getVersion();
 						msg_filenotfound_exception.what=BaseActivity.MESSAGE_COPYFILE_FILE_NOTFOUND_EXCEPTION;
@@ -247,10 +262,15 @@ public class CopyFilesTask implements Runnable{
 	}
 	
 	public void setInterrupted(){
-		this.isInterrupted=true;
-		File file = new File(this.currentWritePath);
-		if(file.exists()&&!file.isDirectory()){
-			file.delete();
+		this.isInterrupted=true;		
+		try{
+			File file = new File(this.currentWritePath);
+			if(file.exists()&&!file.isDirectory()){
+				file.delete();
+			}
+		}catch(Exception e){
+			e.printStackTrace();
 		}
+		
 	}
 }
