@@ -73,7 +73,9 @@ public class CopyFilesTask implements Runnable{
 						
 						Message msg_currentfile = new Message();				        	       
 				        msg_currentfile.what=BaseActivity.MESSAGE_COPYFILE_CURRENTFILE;
-				        msg_currentfile.obj="正在复制到 "+writepath;
+				        String sendpath=new String(writepath);
+				        if(sendpath.length()>50) sendpath="..."+sendpath.substring(sendpath.length()-50,sendpath.length());
+				        msg_currentfile.obj="正在复制到 "+sendpath;
 				        BaseActivity.sendMessage(msg_currentfile);
 						
 				        byte[] buffer = new byte[1024*10];   				       				        			        
@@ -108,22 +110,21 @@ public class CopyFilesTask implements Runnable{
 				        in.close();
 				        out.close();				      		        		        
 					}
-					catch(FileNotFoundException fe){
-						fe.printStackTrace();
-						progress+=item.getPackageSize();
-						Message msg_filenotfound_exception = new Message();
-						String filename = item.getAppName()+item.getVersion();
-						msg_filenotfound_exception.what=BaseActivity.MESSAGE_COPYFILE_FILE_NOTFOUND_EXCEPTION;
-						msg_filenotfound_exception.obj=filename+"\nError Message:"+fe.toString();
-						BaseActivity.sendMessage(msg_filenotfound_exception);
-					}
-					
+					/*catch(FileNotFoundException fe){
+						fe.printStackTrace();						
+					}					
 					catch(IOException e){
 						e.printStackTrace();				
 						BaseActivity.sendEmptyMessage(BaseActivity.MESSAGE_COPYFILE_IOEXCEPTION);
-					}
+					}*/
 					catch(Exception e){
 						e.printStackTrace();
+						progress+=item.getPackageSize();
+						Message msg_exception = new Message();
+						String filename = item.getAppName()+item.getVersion();
+						msg_exception.what=BaseActivity.MESSAGE_COPYFILE_FILE_NOTFOUND_EXCEPTION;
+						msg_exception.obj=filename+"\nError Message:"+e.toString();
+						BaseActivity.sendMessage(msg_exception);
 					}
 								
 					

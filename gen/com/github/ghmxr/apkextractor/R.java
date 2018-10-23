@@ -2342,34 +2342,35 @@ containing a value of this type.
         public static final int action_folderselector_sort_descending=0x7f0a001d;
         public static final int action_search=0x7f0a0015;
         public static final int action_sort=0x7f0a0016;
+        public static final int activity_folder_selector_att=0x7f0a001f;
         public static final int app_iconname=0x7f0a0012;
         public static final int app_name=0x7f0a0013;
-        public static final int button_deselectall=0x7f0a002d;
-        public static final int button_extract=0x7f0a002e;
-        public static final int button_selectall=0x7f0a002c;
-        public static final int button_share=0x7f0a002f;
-        public static final int dialog_about_message=0x7f0a003b;
-        public static final int dialog_about_title=0x7f0a003a;
-        public static final int dialog_appdetail_selectable_detail=0x7f0a0032;
-        public static final int dialog_appdetail_selectable_extract=0x7f0a0030;
-        public static final int dialog_appdetail_selectable_share=0x7f0a0031;
-        public static final int dialog_appdetail_text_appsize=0x7f0a0037;
-        public static final int dialog_appdetail_text_lastupdatetime=0x7f0a0036;
-        public static final int dialog_appdetail_text_minsdkversion=0x7f0a0038;
-        public static final int dialog_appdetail_text_versioncode=0x7f0a0035;
-        public static final int dialog_extract_multi_has_data_obb=0x7f0a0039;
-        public static final int dialog_firstuse_message=0x7f0a003d;
-        public static final int dialog_firstuse_title=0x7f0a003c;
-        public static final int dialog_sort_ascending_appname=0x7f0a0020;
-        public static final int dialog_sort_ascending_appsize=0x7f0a0022;
-        public static final int dialog_sort_ascending_date=0x7f0a0024;
-        public static final int dialog_sort_default=0x7f0a001f;
-        public static final int dialog_sort_descending_appname=0x7f0a0021;
-        public static final int dialog_sort_descending_appsize=0x7f0a0023;
-        public static final int dialog_sort_descending_date=0x7f0a0025;
-        public static final int dialog_storage_notenough_message=0x7f0a0034;
-        public static final int dialog_storage_notenough_title=0x7f0a0033;
-        public static final int hint_newfolder=0x7f0a002b;
+        public static final int button_deselectall=0x7f0a002e;
+        public static final int button_extract=0x7f0a002f;
+        public static final int button_selectall=0x7f0a002d;
+        public static final int button_share=0x7f0a0030;
+        public static final int dialog_about_message=0x7f0a003c;
+        public static final int dialog_about_title=0x7f0a003b;
+        public static final int dialog_appdetail_selectable_detail=0x7f0a0033;
+        public static final int dialog_appdetail_selectable_extract=0x7f0a0031;
+        public static final int dialog_appdetail_selectable_share=0x7f0a0032;
+        public static final int dialog_appdetail_text_appsize=0x7f0a0038;
+        public static final int dialog_appdetail_text_lastupdatetime=0x7f0a0037;
+        public static final int dialog_appdetail_text_minsdkversion=0x7f0a0039;
+        public static final int dialog_appdetail_text_versioncode=0x7f0a0036;
+        public static final int dialog_extract_multi_has_data_obb=0x7f0a003a;
+        public static final int dialog_firstuse_message=0x7f0a003e;
+        public static final int dialog_firstuse_title=0x7f0a003d;
+        public static final int dialog_sort_ascending_appname=0x7f0a0021;
+        public static final int dialog_sort_ascending_appsize=0x7f0a0023;
+        public static final int dialog_sort_ascending_date=0x7f0a0025;
+        public static final int dialog_sort_default=0x7f0a0020;
+        public static final int dialog_sort_descending_appname=0x7f0a0022;
+        public static final int dialog_sort_descending_appsize=0x7f0a0024;
+        public static final int dialog_sort_descending_date=0x7f0a0026;
+        public static final int dialog_storage_notenough_message=0x7f0a0035;
+        public static final int dialog_storage_notenough_title=0x7f0a0034;
+        public static final int hint_newfolder=0x7f0a002c;
         /**  Text to use when the number in a notification info is too large
          (greater than status_bar_notification_info_maxnum, defined in
          values/config.xml) and must be truncated. May need to be localized
@@ -2377,12 +2378,12 @@ containing a value of this type.
          [CHAR LIMIT=4] 
          */
         public static final int status_bar_notification_info_overflow=0x7f0a0011;
-        public static final int text_appinst=0x7f0a0027;
+        public static final int text_appinst=0x7f0a0028;
         public static final int text_avaliableroom=0x7f0a0014;
-        public static final int text_hint_searchview=0x7f0a0026;
-        public static final int text_loading=0x7f0a002a;
-        public static final int text_nofolder=0x7f0a0029;
-        public static final int text_showsysapp=0x7f0a0028;
+        public static final int text_hint_searchview=0x7f0a0027;
+        public static final int text_loading=0x7f0a002b;
+        public static final int text_nofolder=0x7f0a002a;
+        public static final int text_showsysapp=0x7f0a0029;
     }
     public static final class style {
         public static final int ActionBarStyle=0x7f0b0131;

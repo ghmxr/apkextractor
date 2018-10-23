@@ -89,6 +89,8 @@ public class FolderSelector extends BaseActivity implements Runnable{
 				FolderSelector.this.refreshList(false);
 			}
 		});
+		
+		Toast.makeText(this, getResources().getString(R.string.activity_folder_selector_att), Toast.LENGTH_SHORT).show();
 	}
 	
 	
@@ -163,6 +165,7 @@ public class FolderSelector extends BaseActivity implements Runnable{
 				if(this.swl!=null){
 					this.swl.setRefreshing(false);
 				}
+				
 			}
 			break;
 		}
@@ -349,8 +352,7 @@ public class FolderSelector extends BaseActivity implements Runnable{
 	
 	public void backtoParent(){
 		if(this.path!=null){			
-			if(this.path.getAbsolutePath().trim().toLowerCase(Locale.ENGLISH).equals(StorageUtil.getSDPath().trim().toLowerCase(Locale.ENGLISH))
-					||this.path.getAbsolutePath().length()<new File(StorageUtil.getSDPath()).getAbsolutePath().length()){
+			if(this.path.getParentFile()==null){
 				this.finish();
 			}
 			else{

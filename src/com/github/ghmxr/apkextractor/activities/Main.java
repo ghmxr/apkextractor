@@ -1008,7 +1008,7 @@ public class Main extends BaseActivity {
 				if(!this.isExtractSuccess){
 					new AlertDialog.Builder(this).setTitle("提示")
 					.setIcon(R.drawable.ic_warn)
-					.setMessage("以下应用未成功导出：\n"+this.errorMessage+"可能由于应用已经卸载，或者其他未知错误。")
+					.setMessage("以下应用未成功导出，错误信息如下：\n\n"+this.errorMessage+"\n可能的异常包括存储空间不足，源文件被删除，或者没有写入权限等。")
 					.setPositiveButton("确定", new DialogInterface.OnClickListener() {
 						
 						@Override
@@ -1093,7 +1093,7 @@ public class Main extends BaseActivity {
 			case MESSAGE_COPYFILE_FILE_NOTFOUND_EXCEPTION:{
 				this.isExtractSuccess=false;
 				this.errorMessage+=(String)msg.obj;
-				this.errorMessage+="\n";
+				this.errorMessage+="\n\n";
 			break;					
 			}
 			
