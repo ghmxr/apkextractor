@@ -1,14 +1,18 @@
 package com.github.ghmxr.apkextractor.activities;
 
+import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Locale;
 
 import com.github.ghmxr.apkextractor.R;
 import com.github.ghmxr.apkextractor.data.AppItemInfo;
+import com.github.ghmxr.apkextractor.data.Constants;
 import com.github.ghmxr.apkextractor.utils.StorageUtil;
 
 import android.annotation.SuppressLint;
 import android.app.Activity;
+import android.content.Context;
 import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.os.Build;
@@ -20,18 +24,22 @@ import android.view.WindowManager;
 
 public abstract class BaseActivity extends Activity {
 	
-	public static List <AppItemInfo>  listsum,listsearch;
+	public static List <AppItemInfo>  listsum=new ArrayList<AppItemInfo>();
+	public static List <AppItemInfo> listsearch=new ArrayList<AppItemInfo>();
 	
 	public static LinkedList<BaseActivity> queue = new LinkedList<BaseActivity>();
 	
 	public SharedPreferences settings;
 	public SharedPreferences.Editor editor;
-	
-	//public static final String PREFERENCE_FIRSTUSE_VERSION_THIS="firstuse20";
+		
+	/**
+	 * @deprecated
+	 */
 	public static final String PREFERENCE_IF_REQUESTED_RWPERMISSIONS="ifrequestedrw";
+	/**
+	 * @deprecated
+	 */
 	public static final String PREFERENCE_IF_EDITED_SAVEPATH="ifeditedsavepath";
-	public static final String PREFERENCE_APKPATH="savepath";
-	
 	public boolean isatFront=false;
 	
 	public static final int MESSAGE_COPYFILE_COMPLETE         							= 0x0001;
@@ -51,9 +59,9 @@ public abstract class BaseActivity extends Activity {
 	public static final int MESSAGE_LOADLIST_REFRESH_PROGRESS							= 0x0010;
 	public static final int MESSAGE_LOADLIST_COMPLETE									= 0x0011;
 	
-	public static final String UNCHANGEDPATH=StorageUtil.getSDPath()+"/Backup";
+	public static  String savepath=Constants.PREFERENCE_SAVE_PATH_DEFAULT;
 	
-	public static  String savepath=UNCHANGEDPATH;
+	public static String storage_path=StorageUtil.getMainStoragePath();
 	
 	public static Handler handler = new Handler(){
 		public void handleMessage(Message msg){
@@ -76,32 +84,10 @@ public abstract class BaseActivity extends Activity {
             window.setStatusBarColor(Color.parseColor(this.getResources().getString(R.color.color_actionbar)));
 		}
 		
-		this.settings=this.getSharedPreferences("settings", Activity.MODE_PRIVATE);
-		this.editor=this.settings.edit();
-		/*if(settings.getBoolean(PREFERENCE_FIRSTUSE_VERSION_THIS, true)){
-			AlertDialog firstuseatt=new AlertDialog.Builder(this).setTitle(this.getResources().getString(R.string.dialog_firstuse_title))
-					.setMessage(this.getResources().getString(R.string.dialog_firstuse_message)).setPositiveButton("È·¶¨", new DialogInterface.OnClickListener() {
-						
-						@Override
-						public void onClick(DialogInterface dialog, int which) {
-							// TODO Auto-generated method stub
-							
-						}
-					}).create();
-			//firstuseatt.show();
-			//editor.putBoolean(PREFERENCE_FIRSTUSE_VERSION_THIS, false);
-			//editor.commit();
-		}  */
+		settings=this.getSharedPreferences(Constants.PREFERENCE_NAME, Activity.MODE_PRIVATE);
+		editor=this.settings.edit();
 		
-		if(!settings.getBoolean(PREFERENCE_IF_EDITED_SAVEPATH,false)){
-			savepath=UNCHANGEDPATH;
-			editor.putBoolean(PREFERENCE_IF_EDITED_SAVEPATH,true);
-			editor.putString(PREFERENCE_APKPATH, UNCHANGEDPATH);
-			editor.commit();
-		}
-		else{
-			savepath=settings.getString(PREFERENCE_APKPATH, UNCHANGEDPATH);
-		}
+		savepath=settings.getString(Constants.PREFERENCE_SAVE_PATH, Constants.PREFERENCE_SAVE_PATH_DEFAULT);
 	}
 	
 	public void onResume(){
@@ -131,6 +117,28 @@ public abstract class BaseActivity extends Activity {
 		}
 	}
 	
-	
-
+	/**
+	 * returns the absolute write path for this item
+	 * @param item the AppItemInfo
+	 * @param extension must be "apk" or "zip",or this method will return a blank string
+	 * @return the absolute write path for this AppItemInfo
+	 */
+	public static String getAbsoluteWritePath(Context context,AppItemInfo item,String extension){
+		try{
+			SharedPreferences settings=context.getSharedPreferences(Constants.PREFERENCE_NAME, Activity.MODE_PRIVATE);
+			if(extension.toLowerCase(Locale.ENGLISH).equals("apk")){
+				return savepath+"/"+settings.getString(Constants.PREFERENCE_FILENAME_FONT_APK, Constants.PREFERENCE_FILENAME_FONT_DEFAULT).replace(Constants.FONT_APP_NAME, String.valueOf(item.appName))
+						.replace(Constants.FONT_APP_PACKAGE_NAME, String.valueOf(item.packageName))
+						.replace(Constants.FONT_APP_VERSIONCODE, String.valueOf(item.versioncode))
+						.replace(Constants.FONT_APP_VERSIONNAME, String.valueOf(item.version)).toString()+".apk";
+			}
+			if(extension.toLowerCase(Locale.ENGLISH).equals("zip")){
+				return savepath+"/"+settings.getString(Constants.PREFERENCE_FILENAME_FONT_ZIP, Constants.PREFERENCE_FILENAME_FONT_DEFAULT).replace(Constants.FONT_APP_NAME, String.valueOf(item.appName))
+						.replace(Constants.FONT_APP_PACKAGE_NAME, String.valueOf(item.packageName))
+						.replace(Constants.FONT_APP_VERSIONCODE, String.valueOf(item.versioncode))
+						.replace(Constants.FONT_APP_VERSIONNAME, String.valueOf(item.version)).toString()+".zip";
+			}
+		}catch(Exception e){e.printStackTrace();}
+		return "";
+	}
 }

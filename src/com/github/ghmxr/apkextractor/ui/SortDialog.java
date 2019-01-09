@@ -1,7 +1,7 @@
 package com.github.ghmxr.apkextractor.ui;
 
 import com.github.ghmxr.apkextractor.R;
-import com.github.ghmxr.apkextractor.data.AppItemInfoSortConfig;
+import com.github.ghmxr.apkextractor.data.AppItemInfo;
 
 import android.app.AlertDialog;
 import android.content.Context;
@@ -49,7 +49,7 @@ public class SortDialog extends AlertDialog{
 		this.r_d_size.setChecked(false);
 		this.r_a_date.setChecked(false);
 		this.r_d_date.setChecked(false);
-		switch(AppItemInfoSortConfig.SortConfig){
+		switch(AppItemInfo.SortConfig){
 			default:break;
 			case 0:this.r_default.setChecked(true);break;
 			case 1:this.r_a_appname.setChecked(true);break;

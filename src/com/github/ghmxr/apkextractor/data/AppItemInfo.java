@@ -5,6 +5,19 @@ import com.github.ghmxr.apkextractor.utils.PinYin;
 import android.graphics.drawable.Drawable;
 
 public class AppItemInfo implements Comparable<AppItemInfo>{ 
+	/**
+	 * 排序模式。
+	 * 0 - 默认
+	 * 1 - 名称升序
+	 * 2 - 名称降序
+	 * 3 - 大小升序
+	 * 4 - 大小降序
+	 * 5 - 日期升序
+	 * 6 - 日期降序
+	 * 
+	 */		
+	public static int SortConfig = 0;
+	
 	public String appName="";             // 程序名
 	public String packageName="";         // 程序包名 
 	public Drawable icon;                 // 程序图标 
@@ -118,7 +131,7 @@ public class AppItemInfo implements Comparable<AppItemInfo>{
 	public int compareTo(AppItemInfo o) {
 		// TODO Auto-generated method stub
 		int returnvalue=0;
-		switch(AppItemInfoSortConfig.SortConfig){
+		switch(SortConfig){
 			default:break;
 			case 0:break;
 			case 1:returnvalue=PinYin.getFirstSpell(this.appName).compareTo(PinYin.getFirstSpell(o.appName));break;

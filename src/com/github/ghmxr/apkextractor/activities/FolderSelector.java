@@ -5,26 +5,38 @@ import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Locale;
 
 import com.github.ghmxr.apkextractor.R;
 import com.github.ghmxr.apkextractor.adapters.FileListAdapter;
+import com.github.ghmxr.apkextractor.data.Constants;
 import com.github.ghmxr.apkextractor.data.FileItemInfo;
+import com.github.ghmxr.apkextractor.utils.StorageUtil;
 
 import android.app.AlertDialog;
+import android.database.DataSetObserver;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.os.Message;
 import android.support.v4.widget.SwipeRefreshLayout;
+import android.util.Log;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.ViewGroup;
 import android.view.Window;
 import android.widget.AdapterView;
+import android.widget.AdapterView.OnItemSelectedListener;
+import android.widget.ArrayAdapter;
 import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.RelativeLayout;
+import android.widget.SimpleAdapter;
+import android.widget.Spinner;
+import android.support.v7.widget.AppCompatSpinner;
+import android.widget.SpinnerAdapter;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -32,11 +44,10 @@ import android.widget.Toast;
 public class FolderSelector extends BaseActivity implements Runnable{
 	
 	File path = new File(savepath);
-	File path_ra;
-	
+	//List<String> storages=new ArrayList<String>();
+		
 	List <FileItemInfo> filelist=new ArrayList<FileItemInfo>();
-	
-	TextView currentpath;
+		
 	ListView listview;
 	RelativeLayout rl_load,rl_face;
 	SwipeRefreshLayout swl;
@@ -46,6 +57,7 @@ public class FolderSelector extends BaseActivity implements Runnable{
 	Thread thread_refreshlist;
 	
 	private boolean isInterrupted=false;
+	private boolean isSpinnerSelectedListenerSet=false;
 	
 	public static final int MESSAGE_REFRESH_FILELIST_COMPLETE = 0x0050;
 	
@@ -55,8 +67,7 @@ public class FolderSelector extends BaseActivity implements Runnable{
 		this.setContentView(R.layout.layout_folderselector);
 		this.getActionBar().setDisplayShowHomeEnabled(false);
 		this.getActionBar().setDisplayHomeAsUpEnabled(true);
-		this.getActionBar().setTitle("选择路径");		
-		this.currentpath=this.findViewById(R.id.folderselector_pathname);
+		this.getActionBar().setTitle(getResources().getString(R.string.activity_folder_selector_title));				
 		this.listview=this.findViewById(R.id.folderselector_filelist);
 		this.rl_load=this.findViewById(R.id.folderselector_refresharea);
 		this.rl_face=this.findViewById(R.id.folderselector_facearea);
@@ -68,15 +79,52 @@ public class FolderSelector extends BaseActivity implements Runnable{
 		this.swl.setProgressViewEndTarget(false, 200);
 		
 		this.listadapter=new FileListAdapter(this.filelist,this);
+		
+		try{
+			final List<String> storages=StorageUtil.getAvailableStoragePaths();
+			Spinner spinner=(Spinner)findViewById(R.id.folderselector_spinner);			
+			//String[] displayValues=new String[storages.size()];
+			//for(int i=0;i<displayValues.length;i++) displayValues[i]=String.valueOf(getResources().getString(R.string.activity_folder_selector_storage_title)+(i+1));			
+			spinner.setAdapter(new ArrayAdapter<String>(FolderSelector.this,R.layout.layout_item_spinner_storage,R.id.item_storage_text,storages));			
+			OUT:
+			for(int i=0;i<storages.size();i++){
+				try{
+					if(path.getAbsolutePath().toLowerCase(Locale.getDefault()).trim().equals(storages.get(i).toLowerCase(Locale.getDefault()).trim())){
+						spinner.setSelection(i);
+						break;
+					}else{
+						File file=new File(path.getAbsolutePath());
+						while((file=file.getParentFile())!=null){							
+							if(file.getAbsolutePath().toLowerCase(Locale.getDefault()).trim().equals(storages.get(i).toLowerCase(Locale.getDefault()).trim())){
+								spinner.setSelection(i);								
+								break OUT;								
+							}
+						}
+					}
+					
+				}catch(Exception e){}
+			}
+		}catch(Exception e){
+			e.printStackTrace();
+			Toast.makeText(this, e.toString(), Toast.LENGTH_SHORT).show();
+		}
+		
 		this.path=new File (savepath);
-		if(path.exists()&&!path.isDirectory()){
-			path.delete();			
+		try{
+			/*if(path.exists()&&!path.isDirectory()){
+				path.delete();			
+			}*/			
+			if(!path.exists()){
+				if(!path.mkdirs()){
+					Toast.makeText(this, getResources().getString(R.string.activity_folder_selector_initial_failed), Toast.LENGTH_SHORT).show();
+				}
+			}
+			
+		}catch(Exception e){
+			e.printStackTrace();
+			Toast.makeText(this, e.toString(), Toast.LENGTH_SHORT).show();
 		}
-		
-		if(!path.exists()){
-			path.mkdirs();
-		}
-		
+				
 		refreshList(true);
 		
 		this.swl.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
@@ -88,7 +136,8 @@ public class FolderSelector extends BaseActivity implements Runnable{
 			}
 		});
 		
-		Toast.makeText(this, getResources().getString(R.string.activity_folder_selector_att), Toast.LENGTH_SHORT).show();
+		//Toast.makeText(this, getResources().getString(R.string.activity_folder_selector_att), Toast.LENGTH_SHORT).show();
+						
 	}
 	
 	
@@ -142,12 +191,40 @@ public class FolderSelector extends BaseActivity implements Runnable{
 						@Override
 						public void onClick(int position) {
 							// TODO Auto-generated method stub
-							FolderSelector.this.path_ra=FolderSelector.this.filelist.get(position).file;
-							FolderSelector.this.setInfoAtt(FolderSelector.this.path_ra.getAbsolutePath());
-							FolderSelector.this.listadapter.setSelected(position);
+							path=filelist.get(position).file;
+							setInfoAtt(path.getAbsolutePath());
+							listadapter.setSelected(position);
 						}
 					});
+				}	
+				
+				if(!this.isSpinnerSelectedListenerSet){
+					this.isSpinnerSelectedListenerSet=true;
+					final Spinner spinner=(Spinner)findViewById(R.id.folderselector_spinner);
+					spinner.setOnItemSelectedListener(new OnItemSelectedListener(){
+
+						@Override
+						public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+							// TODO Auto-generated method stub			
+							Log.d("Spinner", "position is "+position);
+							try{
+								path=new File((String)spinner.getSelectedItem());
+							}catch(Exception e){
+								e.printStackTrace();
+								Toast.makeText(FolderSelector.this, e.toString(), Toast.LENGTH_SHORT).show();
+							}
+							refreshList(true);							
+						}
+
+						@Override
+						public void onNothingSelected(AdapterView<?> parent) {
+							// TODO Auto-generated method stub
+							
+						}
+						
+					});
 				}
+														
 				if(this.rl_load!=null){
 					this.rl_load.setVisibility(View.GONE);
 				}
@@ -174,42 +251,47 @@ public class FolderSelector extends BaseActivity implements Runnable{
 		if(att.length()>50){
 			att="/..."+att.substring(att.length()-50);
 		}
-		if(this.currentpath!=null){
-			this.currentpath.setText("当前路径： "+att);
-		}
+		((TextView)findViewById(R.id.folderselector_pathname)).setText(getResources().getString(R.string.activity_folder_selector_current)+att);
+		
 	}
 
 
 	@Override
 	public void run() {
 		// TODO Auto-generated method stub
-		if(FolderSelector.this.path!=null&&FolderSelector.this.path.isDirectory()){
+		try{
+			//storages.clear();
+			//storages=StorageUtil.getAvailableStoragePaths();
 			
-			File[] files=FolderSelector.this.path.listFiles();										
-			FolderSelector.this.filelist=new ArrayList<FileItemInfo>();
-			
-			if(files!=null&&files.length>0){
+			if(path.isDirectory()){				
+				File[] files=FolderSelector.this.path.listFiles();										
+				FolderSelector.this.filelist=new ArrayList<FileItemInfo>();
 				
-				for(int i=0;i<files.length;i++){
-					if(!this.isInterrupted){
-						if(files[i].isDirectory()&&files[i].getName().indexOf(".")!=0){
-							FileItemInfo fileitem=new FileItemInfo(files[i]);
-							FolderSelector.this.filelist.add(fileitem);
-							//Log.i("FolderSelector", "已添加文件夹"+fileitem.file.getName());
+				if(files!=null&&files.length>0){
+					
+					for(int i=0;i<files.length;i++){
+						if(!this.isInterrupted){
+							if(files[i].isDirectory()&&files[i].getName().indexOf(".")!=0){
+								FileItemInfo fileitem=new FileItemInfo(files[i]);
+								FolderSelector.this.filelist.add(fileitem);
+								//Log.i("FolderSelector", "已添加文件夹"+fileitem.file.getName());
+							}
+						}
+						else{
+							break;
 						}
 					}
-					else{
-						break;
-					}
+					
+					Collections.sort(FolderSelector.this.filelist);
 				}
 				
-				Collections.sort(FolderSelector.this.filelist);
+				
 			}
-			
-			
+			if(!this.isInterrupted)
+			sendEmptyMessage(MESSAGE_REFRESH_FILELIST_COMPLETE);
+		}catch(Exception e){
+			e.printStackTrace();
 		}
-		if(!this.isInterrupted)
-		sendEmptyMessage(MESSAGE_REFRESH_FILELIST_COMPLETE);
 	}
 	
 	@Override
@@ -243,26 +325,16 @@ public class FolderSelector extends BaseActivity implements Runnable{
 		switch(id){
 			default:break;
 			case R.id.folderselector_action_confirm:{								
-				if(this.listadapter!=null){
-					if(this.listadapter.getSelectedPosition()>=0&&this.path_ra!=null){
-						savepath=this.path_ra.getAbsolutePath();
-					}
-					else{
-						savepath=this.path.getAbsolutePath();
-					}
-				}
-				else if(this.path!=null){
-					savepath=this.path.getAbsolutePath();
-				}					
-				editor.putBoolean(PREFERENCE_IF_EDITED_SAVEPATH, true);
-				editor.putString(PREFERENCE_APKPATH, savepath);
-				editor.commit();
-				Toast.makeText(this, "已更改APK导出路径至 "+savepath, Toast.LENGTH_SHORT).show();
-				this.finish();								
+				savepath=path.getAbsolutePath();
+				//editor.putBoolean(PREFERENCE_IF_EDITED_SAVEPATH, true);
+				editor.putString(Constants.PREFERENCE_SAVE_PATH, savepath);
+				editor.apply();
+				Toast.makeText(this, getResources().getString(R.string.activity_folder_selector_saved_font)+savepath, Toast.LENGTH_SHORT).show();
+				finish();								
 			}
 			break;
 			case R.id.folderselector_action_cancel:{
-				this.finish();
+				finish();
 			}
 			break;
 			case R.id.folderselector_action_sort_ascending:{
@@ -285,7 +357,7 @@ public class FolderSelector extends BaseActivity implements Runnable{
 				LayoutInflater inflater = LayoutInflater.from(this);
 				View dialogview=inflater.inflate(R.layout.layout_dialog_newfolder, null);
 				final AlertDialog newfolder=new AlertDialog.Builder(this)
-						.setTitle("新建文件夹")
+						.setTitle(getResources().getString(R.string.new_folder))
 						.setIcon(R.drawable.ic_newfolder)
 						.setView(dialogview)
 						.setPositiveButton("确定", null)
@@ -299,31 +371,36 @@ public class FolderSelector extends BaseActivity implements Runnable{
 					@Override
 					public void onClick(View v) {
 						// TODO Auto-generated method stub
-						String foldername=edittext.getText().toString().trim();
-						File newfile = new File(FolderSelector.this.path.getAbsolutePath()+"/"+foldername);
-						if(foldername.length()==0||foldername.equals("")){
-							Toast.makeText(FolderSelector.this, "请输入有效的字符", Toast.LENGTH_SHORT).show();
-							return;
-						}else if(foldername.contains("?")||foldername.contains("\\")||foldername.contains("/")||foldername.contains(":")
-								||foldername.contains("*")||foldername.contains("\"")||foldername.contains("<")||foldername.contains(">")
-								||foldername.contains("|")){
-							Toast.makeText(FolderSelector.this, "名称中包含非法字符（? \\ / : * \" < > |）", Toast.LENGTH_SHORT).show();							
-							return;
-						}else if(newfile.exists()){
-							Toast.makeText(FolderSelector.this, "已存在重名文件夹 "+foldername, Toast.LENGTH_SHORT).show();
-							return;
-						}else{
-							if(newfile.mkdirs()){
-								FolderSelector.this.refreshList(true);
-								newfolder.cancel();
-							}
-							else{
-								Toast.makeText(FolderSelector.this, "Make Dirs error", Toast.LENGTH_SHORT).show();
+						try{
+							String foldername=edittext.getText().toString().trim();
+							File newfile = new File(FolderSelector.this.path.getAbsolutePath()+"/"+foldername);
+							if(foldername.length()==0||foldername.equals("")){
+								Toast.makeText(FolderSelector.this, getResources().getString(R.string.activity_folder_selector_invalid_pathname), Toast.LENGTH_SHORT).show();
 								return;
+							}else if(foldername.contains("?")||foldername.contains("\\")||foldername.contains("/")||foldername.contains(":")
+									||foldername.contains("*")||foldername.contains("\"")||foldername.contains("<")||foldername.contains(">")
+									||foldername.contains("|")){
+								Toast.makeText(FolderSelector.this, getResources().getString(R.string.activity_folder_selector_invalid_foldername), Toast.LENGTH_SHORT).show();							
+								return;
+							}else if(newfile.exists()){
+								Toast.makeText(FolderSelector.this, getResources().getString(R.string.activity_folder_selector_folder_already_exists)+foldername, Toast.LENGTH_SHORT).show();
+								return;
+							}else{
+								if(newfile.mkdirs()){
+									FolderSelector.this.refreshList(true);
+									newfolder.cancel();
+								}
+								else{
+									Toast.makeText(FolderSelector.this, "Make Dirs error", Toast.LENGTH_SHORT).show();
+									return;
+								}
+								
 							}
-							
+						}catch(Exception e){
+							e.printStackTrace();
+							Toast.makeText(FolderSelector.this, e.toString(), Toast.LENGTH_SHORT).show();
 						}
-						
+												
 					}
 				});
 				
@@ -341,11 +418,11 @@ public class FolderSelector extends BaseActivity implements Runnable{
 			
 			break;
 			case R.id.folderselector_action_reset:{
-				savepath=BaseActivity.UNCHANGEDPATH;
-				editor.putBoolean(PREFERENCE_IF_EDITED_SAVEPATH, true);
-				editor.putString(PREFERENCE_APKPATH, BaseActivity.UNCHANGEDPATH);
-				editor.commit();
-				Toast.makeText(this, "已恢复APK导出路径至 "+BaseActivity.UNCHANGEDPATH, Toast.LENGTH_SHORT).show();
+				savepath=Constants.PREFERENCE_SAVE_PATH_DEFAULT;
+				//editor.putBoolean(PREFERENCE_IF_EDITED_SAVEPATH, true);
+				editor.putString(Constants.PREFERENCE_SAVE_PATH, Constants.PREFERENCE_SAVE_PATH_DEFAULT);
+				editor.apply();
+				Toast.makeText(this, "已恢复APK导出路径至 "+Constants.PREFERENCE_SAVE_PATH_DEFAULT, Toast.LENGTH_SHORT).show();
 				this.finish();
 			}
 			break;
@@ -358,15 +435,17 @@ public class FolderSelector extends BaseActivity implements Runnable{
 	}
 	
 	public void backtoParent(){
-		if(this.path!=null){			
-			if(this.path.getParentFile()==null){
-				this.finish();
+		try{
+			File parent=path.getParentFile();
+			Log.d("parent", parent==null?"null":parent.toString());
+			if(parent==null){
+				finish();
 			}
 			else{
-				this.path=this.path.getParentFile();
+				path=parent;
 				refreshList(true);
 			}
-		}
+		}catch(Exception e){e.printStackTrace();}		
 	}
 	
 	@Override

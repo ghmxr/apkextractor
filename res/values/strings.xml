@@ -8,14 +8,43 @@
     <string name="action_sort">排序</string>
     <string name="action_about">关于</string>
     <string name="action_editpath">更改导出路径</string>
+    <string name="action_filename">导出命名规则</string>
+    <string name="action_sharemode">分享模式</string>
     <string name="action_confirm">确定</string>
     <string name="action_cancel">取消</string>
+    <string name="activity_main_exception_head">以下应用未成功导出，错误信息如下：\n\n</string>
+    <string name="activity_main_exception_end">\n可能的异常包括存储空间不足，源文件被删除，写入文件名不合法，或者没有写入权限等。</string>
     <string name="action_folderselector_newfolder">新建文件夹</string>
     <string name="action_folderselector_sort_ascending">名称升序（A→Z）</string>
     <string name="action_folderselector_sort_descending">名称降序（Z→A）</string>
     <string name="action_folderselector_sort_default">默认排序</string>
     <string name="action_folderselector_reset_default">恢复默认路径</string>
+    <string name="dialog_button_positive">确定</string>
+    <string name="dialog_button_negative">取消</string>
+    <string name="activity_main_loading">正在加载</string>
+    <string name="activity_folder_selector_initial_failed">不能初始化导出路径，请检查并重试</string>
+    <string name="activity_folder_selector_title">选择路径</string>
+    <string name="activity_folder_selector_current">当前路径:</string>
     <string name="activity_folder_selector_att">请务必选择正确可读写的媒体存储路径，否则会导致应用无法导出！</string>
+    <string name="activity_folder_selector_saved_font">已更改APK导出路径至 </string>
+    <string name="activity_folder_selector_invalid_pathname">请输入有效的字符</string>
+    <string name="activity_folder_selector_invalid_foldername">名称中包含非法字符</string>
+    <string name="activity_folder_selector_folder_already_exists">已存在重名文件夹</string>
+    <string name="activity_folder_selector_storage_title">存储</string>
+    <string name="copytask_apk_current">正在复制到</string>
+    <string name="copytask_zip_current">正在压缩</string>
+    <string name="dialog_filename_title">命名规则</string>
+    <string name="dialog_filename_variables">插入变量</string>
+    <string name="dialog_filename_button_appname">应用名称</string>
+    <string name="dialog_filename_button_packagename">包名</string>
+    <string name="dialog_filename_button_version">版本</string>
+    <string name="dialog_filename_button_versioncode">版本号</string>
+    <string name="dialog_filename_preview_appname">示例应用</string>
+    <string name="dialog_filename_preview_packagename">com.example</string>
+    <string name="dialog_filename_preview_version">1.0</string>
+    <string name="dialog_filename_preview_versioncode">1</string>
+    <string name="dialog_filename_toast_blank">命名规则不能为空</string>
+    <string name="preview">预览</string>
     <string name="dialog_sort_default">默认</string>
     <string name="dialog_sort_ascending_appname">按名称升序（从A到Z）</string>
     <string name="dialog_sort_descending_appname">按名称降序（从Z到A）</string>
@@ -33,6 +62,7 @@
     <string name="button_deselectall"><u>全不选</u></string>
     <string name="button_extract"><u>导出</u></string>
     <string name="button_share"><u>分享</u></string>
+    <string name="toast_request_rw_permission">请为本应用授予存储读写权限</string>
     <string name="dialog_appdetail_selectable_extract">导出</string>
     <string name="dialog_appdetail_selectable_share">分享</string>
     <string name="dialog_appdetail_selectable_detail">应用详情</string>
@@ -65,7 +95,7 @@
         </string>   
     <string name="dialog_firstuse_title">提示</string>
     <string name="dialog_firstuse_message">所有导出的应用将会以“包名+版本号”的方式命名并默认保存在“存储/Backup”路径下。\n\n导出路径可自行更改。</string>
-    
+    <string name="new_folder">新建文件夹</string>
     
     <color name="color_searchview_hinttext">#aaaaaa</color>
     <color name="color_text_clickable_true">#FF3E96</color>
@@ -77,5 +107,5 @@
     <color name="color_swiperefresh_color3">#e67e22</color>
     <color name="color_swiperefresh_color4">#3498db</color>
     <color name="color_text_black">#000000</color>
-
+	<color name="color_att">#0068ea</color>
 </resources>

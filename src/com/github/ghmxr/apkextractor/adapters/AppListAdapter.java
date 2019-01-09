@@ -53,20 +53,9 @@ public class AppListAdapter extends BaseAdapter {
         return position;  
     }  
        
-  //  public AppListAdapter setList(List<AppItemInfo> applist,boolean ifAnim){
-  //  	this.applist=applist;
-  //  	this.isSelected=new boolean [this.applist.size()];
-   // 	this.ifshowedAnim=new boolean[this.applist.size()];
-   // 	this.ifAnim=ifAnim;
-   // 	this.notifyDataSetChanged();
-   // 	return this;
-  //  }
-    
     public void setMultiSelectMode(int position){   	
     	this.isSelected=new boolean [this.applist.size()];
-    	//isSelected[position]=true;
-    	this.isMultiSelectMode=true;
-    	//this.notifyDataSetChanged();
+    	this.isMultiSelectMode=true;  
     }
     
     public void cancelMutiSelectMode(){
@@ -124,6 +113,7 @@ public class AppListAdapter extends BaseAdapter {
     }
     
     public void onItemClicked(int position){
+    	if(position<0||position>this.applist.size()) return;
     	this.isSelected[position]=!this.isSelected[position];
     	this.notifyDataSetChanged();
     }
@@ -139,8 +129,7 @@ public class AppListAdapter extends BaseAdapter {
     @Override 
     public View getView(int position, View convertView, ViewGroup parent) {  
             ViewHolder holder;  
-            if (convertView == null) {  
-                // 使用View的对象itemView与R.layout.item关联  
+            if (convertView == null) {                
                 convertView = inflater.inflate(R.layout.layout_item_applist, parent,false);  
                 holder = new ViewHolder();  
                 holder.icon = (ImageView) convertView  
@@ -178,7 +167,12 @@ public class AppListAdapter extends BaseAdapter {
             }
             
             return convertView;  
-        }
+   }
+   
+    public void onDataSetChanged(List<AppItemInfo> list){
+    	
+    }
+    
         public static final  class ViewHolder{  
             private ImageView icon;  
             private TextView label;

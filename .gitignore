@@ -3,3 +3,6 @@
 
 #Build
 bin/
+
+# Generated R.java
+gen/

@@ -3,17 +3,39 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent" >
     
+    <LinearLayout 
+        android:id="@+id/folderselector_spinner_area"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:layout_centerHorizontal="true"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentTop="true"
+        android:layout_margin="5dp">
+        <ImageView 
+            android:layout_width="35dp"
+            android:layout_height="35dp"
+            android:src="@drawable/icon_sd"/>
+        <Spinner 
+        	android:id="@+id/folderselector_spinner"
+        	android:layout_width="wrap_content"
+        	android:layout_height="wrap_content"/>
+    </LinearLayout>
+    
+    
+    
     <TextView 
         android:id="@+id/folderselector_pathname"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textSize="12sp"
-        android:layout_marginLeft="3dp"
-        android:layout_marginTop="5dp"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentTop="true"
+        android:layout_marginLeft="5dp"
+        android:layout_marginBottom="10dp"       
+        android:layout_alignParentLeft="true"       
+        android:layout_below="@+id/folderselector_spinner_area"
         android:visibility="visible"/>
     
+   
     <android.support.v4.widget.SwipeRefreshLayout
         android:id="@+id/folderselector_swiperefreshlayout"
         android:layout_width="match_parent"

@@ -58,28 +58,10 @@
         <ListView 
         	android:id="@+id/applist"
         	android:layout_width="match_parent"
-        	android:layout_height="match_parent"
-        	>
-        
-    	</ListView>
-        
+        	android:layout_height="match_parent"/>      
     </android.support.v4.widget.SwipeRefreshLayout>
     
-    <ListView
-        android:id="@+id/applist_searchmode"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:paddingLeft="1dp"
-        android:paddingRight="1dp" 
-        android:layout_marginTop="3dp"     
-        android:layout_below="@+id/topArea"
-        android:layout_above="@+id/area_multiselect"
-        android:visibility="gone"
-        >
-        
-    </ListView>
-    
-    
+       
     <RelativeLayout 
         android:id="@+id/area_multiselect"        
         android:background="@color/color_multiselectarea"

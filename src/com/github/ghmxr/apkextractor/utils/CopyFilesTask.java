@@ -10,10 +10,12 @@ import java.util.List;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
 
+import com.github.ghmxr.apkextractor.R;
 import com.github.ghmxr.apkextractor.activities.BaseActivity;
 import com.github.ghmxr.apkextractor.activities.Main;
 import com.github.ghmxr.apkextractor.data.AppItemInfo;
 
+import android.content.Context;
 import android.os.Message;
 
 /**
@@ -22,7 +24,7 @@ import android.os.Message;
  */
 
 public class CopyFilesTask implements Runnable{
-			
+	private Context context;		
 	public List<AppItemInfo> applist;
 	private String savepath=BaseActivity.savepath,currentWritePath=null;
 	private boolean isInterrupted=false;
@@ -35,9 +37,9 @@ public class CopyFilesTask implements Runnable{
 	 * @param list 要导出的APK的list
 	 * @param savepath  导出保存位置
 	 */
-	public CopyFilesTask(List<AppItemInfo> list,String savepath){
+	public CopyFilesTask(List<AppItemInfo> list,Context context){
 		applist=list;
-		this.savepath=savepath;
+		this.context=context;
 		this.isInterrupted=false;
 		File initialpath=new File(this.savepath);
 		if(initialpath.exists()&&!initialpath.isDirectory()){
@@ -65,7 +67,8 @@ public class CopyFilesTask implements Runnable{
 				if((!item.exportData)&&(!item.exportObb)){
 					int byteread=0;															
 					try{
-						String writepath=this.savepath+"/"+item.getPackageName()+"-"+item.getVersionCode()+".apk";
+						//String writepath=this.savepath+"/"+item.getPackageName()+"-"+item.getVersionCode()+".apk";
+						String writepath=BaseActivity.getAbsoluteWritePath(context, item, "apk");
 						this.currentWritePath=writepath;
 						InputStream in = new FileInputStream(item.getResourcePath()); //读入原文件   						
 						BufferedOutputStream out= new BufferedOutputStream(new FileOutputStream(writepath));											
@@ -73,8 +76,8 @@ public class CopyFilesTask implements Runnable{
 						Message msg_currentfile = new Message();				        	       
 				        msg_currentfile.what=BaseActivity.MESSAGE_COPYFILE_CURRENTFILE;
 				        String sendpath=new String(writepath);
-				        if(sendpath.length()>50) sendpath="..."+sendpath.substring(sendpath.length()-50,sendpath.length());
-				        msg_currentfile.obj="正在复制到 "+sendpath;
+				        if(sendpath.length()>90) sendpath="..."+sendpath.substring(sendpath.length()-90,sendpath.length());
+				        msg_currentfile.obj=context.getResources().getString(R.string.copytask_apk_current)+sendpath;
 				        BaseActivity.sendMessage(msg_currentfile);
 						
 				        byte[] buffer = new byte[1024*10];   				       				        			        
@@ -137,16 +140,17 @@ public class CopyFilesTask implements Runnable{
 					
 				}else {
 					try{
-						String writePath=this.savepath+"/"+item.getPackageName()+"-"+item.getVersionCode()+".zip";
+						//String writePath=this.savepath+"/"+item.getPackageName()+"-"+item.getVersionCode()+".zip";
+						String writePath=BaseActivity.getAbsoluteWritePath(context, item, "zip");
 						this.currentWritePath=writePath;
 						ZipOutputStream zos=new ZipOutputStream(new BufferedOutputStream(new FileOutputStream(new File(writePath))));						
 						zos.setComment("Packaged by com.github.ghmxr.apkextractor \nhttps://github.com/ghmxr/apkextractor");
 						writeZip(new File(item.getResourcePath()),"",zos);
 						if(item.exportData){
-							writeZip(new File(StorageUtil.getSDPath()+"/android/data/"+item.packageName),"Android/data/",zos);
+							writeZip(new File(StorageUtil.getMainStoragePath()+"/android/data/"+item.packageName),"Android/data/",zos);
 						}
 						if(item.exportObb){
-							writeZip(new File(StorageUtil.getSDPath()+"/android/obb/"+item.packageName),"Android/obb/",zos);
+							writeZip(new File(StorageUtil.getMainStoragePath()+"/android/obb/"+item.packageName),"Android/obb/",zos);
 						}
 						zos.flush();
 						zos.close();
@@ -212,8 +216,8 @@ public class CopyFilesTask implements Runnable{
 					Message msg_currentfile = new Message();			       		       
 			        msg_currentfile.what=BaseActivity.MESSAGE_COPYFILE_CURRENTFILE;
 			        String currentPath=file.getAbsolutePath();
-			        if(currentPath.length()>50) currentPath="..."+currentPath.substring(currentPath.length()-50,currentPath.length());
-			        msg_currentfile.obj="正在压缩 "+currentPath;
+			        if(currentPath.length()>90) currentPath="..."+currentPath.substring(currentPath.length()-90,currentPath.length());
+			        msg_currentfile.obj=context.getResources().getString(R.string.copytask_zip_current)+currentPath;
 			        BaseActivity.sendMessage(msg_currentfile);
 					
 					while((length=in.read(buffer))!=-1&&!isInterrupted){
@@ -252,10 +256,10 @@ public class CopyFilesTask implements Runnable{
 		for(AppItemInfo item:applist){
 			total+=item.appsize;
 			if(item.exportData){
-				total+=FileSize.getFileOrFolderSize(new File(StorageUtil.getSDPath()+"/android/data/"+item.packageName));
+				total+=FileSize.getFileOrFolderSize(new File(StorageUtil.getMainStoragePath()+"/android/data/"+item.packageName));
 			}
 			if(item.exportObb){
-				total+=FileSize.getFileOrFolderSize(new File(StorageUtil.getSDPath()+"/android/obb/"+item.packageName));
+				total+=FileSize.getFileOrFolderSize(new File(StorageUtil.getMainStoragePath()+"/android/obb/"+item.packageName));
 			}
 		}
 		return total;

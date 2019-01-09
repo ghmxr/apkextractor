@@ -6,6 +6,12 @@ import java.util.List;
 import com.github.ghmxr.apkextractor.activities.BaseActivity;
 import com.github.ghmxr.apkextractor.data.AppItemInfo;
 
+/**
+ * @deprecated
+ * @author z003vpwn
+ *
+ */
+
 public class FileChecker {
 	
 	private List <AppItemInfo> applist;

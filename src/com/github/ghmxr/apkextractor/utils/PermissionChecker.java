@@ -16,7 +16,11 @@ import android.os.Build;
 import android.provider.Settings;
 import android.support.v4.app.ActivityCompat;
 
-
+/**
+ * @deprecated
+ * @author mxremail@qq.com 
+ *
+ */
 public class PermissionChecker {
 	
 	public static boolean isHaveRWPermissions(Context context){		
