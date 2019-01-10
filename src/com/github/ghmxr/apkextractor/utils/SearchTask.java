@@ -30,17 +30,20 @@ public class SearchTask implements Runnable{
 				for (int i =0;i<this.listsum.size();i++){
 					
 					if(this.ifCanSearch){
-						if(this.listsum.get(i).getAppName().toLowerCase(Locale.ENGLISH).indexOf(searchinfo)!=-1
-								||this.listsum.get(i).getPackageName().toLowerCase(Locale.ENGLISH).indexOf(searchinfo)!=-1
-								||this.listsum.get(i).getVersion().toLowerCase(Locale.ENGLISH).indexOf(searchinfo)!=-1
-								||PinYin.getFullSpell(this.listsum.get(i).getAppName()).toLowerCase(Locale.ENGLISH).indexOf(searchinfo)!=-1
-								||PinYin.getFirstSpell(this.listsum.get(i).getAppName()).toLowerCase(Locale.ENGLISH).indexOf(searchinfo)!=-1
-								||PinYin.getPinYin(this.listsum.get(i).getAppName()).toLowerCase(Locale.ENGLISH).indexOf(searchinfo)!=-1
-								){
-									
-							listsearch.add(this.listsum.get(i));
-									
-						}
+						try{
+							if(this.listsum.get(i).getAppName().toLowerCase(Locale.ENGLISH).indexOf(searchinfo)!=-1
+									||this.listsum.get(i).getPackageName().toLowerCase(Locale.ENGLISH).indexOf(searchinfo)!=-1
+									||this.listsum.get(i).getVersion().toLowerCase(Locale.ENGLISH).indexOf(searchinfo)!=-1
+									||PinYin.getFullSpell(this.listsum.get(i).getAppName()).toLowerCase(Locale.ENGLISH).indexOf(searchinfo)!=-1
+									||PinYin.getFirstSpell(this.listsum.get(i).getAppName()).toLowerCase(Locale.ENGLISH).indexOf(searchinfo)!=-1
+									||PinYin.getPinYin(this.listsum.get(i).getAppName()).toLowerCase(Locale.ENGLISH).indexOf(searchinfo)!=-1
+									){
+										
+								listsearch.add(this.listsum.get(i));
+										
+							}
+						}catch(Exception e){e.printStackTrace();}
+						
 					}
 					else{
 						listsearch.clear();

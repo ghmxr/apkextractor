@@ -326,8 +326,12 @@ public class FolderSelector extends BaseActivity implements Runnable{
 			default:break;
 			case R.id.folderselector_action_confirm:{								
 				savepath=path.getAbsolutePath();
+				try{
+					storage_path=((String)((Spinner)findViewById(R.id.folderselector_spinner)).getSelectedItem());
+				}catch(Exception e){e.printStackTrace();}
 				//editor.putBoolean(PREFERENCE_IF_EDITED_SAVEPATH, true);
 				editor.putString(Constants.PREFERENCE_SAVE_PATH, savepath);
+				editor.putString(Constants.PREFERENCE_STORAGE_PATH, storage_path);
 				editor.apply();
 				Toast.makeText(this, getResources().getString(R.string.activity_folder_selector_saved_font)+savepath, Toast.LENGTH_SHORT).show();
 				finish();								
@@ -360,8 +364,8 @@ public class FolderSelector extends BaseActivity implements Runnable{
 						.setTitle(getResources().getString(R.string.new_folder))
 						.setIcon(R.drawable.ic_newfolder)
 						.setView(dialogview)
-						.setPositiveButton("确定", null)
-						.setNegativeButton("取消", null)
+						.setPositiveButton(getResources().getString(R.string.dialog_button_positive), null)
+						.setNegativeButton(getResources().getString(R.string.dialog_button_negative), null)
 						.create();
 				newfolder.show();
 				
@@ -438,7 +442,7 @@ public class FolderSelector extends BaseActivity implements Runnable{
 		try{
 			File parent=path.getParentFile();
 			Log.d("parent", parent==null?"null":parent.toString());
-			if(parent==null){
+			if(parent==null||parent.getAbsolutePath().trim().length()<((String)((Spinner)findViewById(R.id.folderselector_spinner)).getSelectedItem()).trim().length()){
 				finish();
 			}
 			else{

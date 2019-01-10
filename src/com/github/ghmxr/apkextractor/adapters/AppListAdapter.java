@@ -142,11 +142,26 @@ public class AppListAdapter extends BaseAdapter {
                 convertView.setTag(holder);  
             } else {  
                 holder = (ViewHolder) convertView.getTag();  
-            }     
-            holder.icon.setImageDrawable(this.applist.get(position).getIcon());  
-            holder.label.setText(this.applist.get(position).getAppName().toString()+"("+this.applist.get(position).getVersion()+")"); 
-            holder.packagename.setText(this.applist.get(position).getPackageName().toString());
-            holder.appsize.setText(Formatter.formatFileSize(context, this.applist.get(position).getPackageSize()));            
+            }  
+            AppItemInfo item=null;
+            try{
+            	item=applist.get(position);
+            }catch(Exception e){
+            	e.printStackTrace();
+            }
+            if(item==null){
+            	convertView.setVisibility(View.GONE);
+            	return convertView;
+            }
+            holder.icon.setImageDrawable(item.getIcon());  
+            holder.label.setText(item.getAppName().toString()+"("+item.getVersion()+")");                       
+            holder.packagename.setText(item.getPackageName().toString());
+            if(item.isSystemApp) {
+            	holder.label.setTextColor(context.getResources().getColor(R.color.color_text_darkred));           	
+            }else{
+            	holder.label.setTextColor(context.getResources().getColor(R.color.color_text_black));            	
+            }
+            holder.appsize.setText(Formatter.formatFileSize(context, item.getPackageSize()));            
             if(this.isMultiSelectMode&&this.isSelected!=null){
             	if(position<this.isSelected.length){
             		holder.select.setChecked(this.isSelected[position]);

@@ -15,7 +15,6 @@ import com.github.ghmxr.apkextractor.ui.AppDetailDialog;
 import com.github.ghmxr.apkextractor.ui.FileCopyDialog;
 import com.github.ghmxr.apkextractor.ui.LoadListDialog;
 import com.github.ghmxr.apkextractor.ui.SortDialog;
-import com.github.ghmxr.apkextractor.utils.FileChecker;
 import com.github.ghmxr.apkextractor.utils.CopyFilesTask;
 import com.github.ghmxr.apkextractor.utils.FileSize;
 import com.github.ghmxr.apkextractor.utils.SearchTask;
@@ -39,7 +38,6 @@ import android.os.Message;
 import android.provider.Settings;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.PermissionChecker;
-//import android.support.v4.content.FileProvider;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.text.Editable;
 import android.text.TextWatcher;
@@ -60,6 +58,7 @@ import android.widget.CompoundButton.OnCheckedChangeListener;
 import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.ProgressBar;
+import android.widget.RadioButton;
 import android.widget.SearchView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -86,23 +85,26 @@ public class Main extends BaseActivity {
 	FileCopyDialog  dialog_copyfile;
 	SortDialog dialog_sort;
 	AlertDialog dialog_wait;
+	
+	private boolean shareAfterExtract=false;
 		
-	public static final int MESSAGE_SET_NORMAL_TEXTATT				= 0x0012;
+	public static final int MESSAGE_SET_NORMAL_TEXTATT				= 12;
+	public static final int MESSAGE_SORT_LIST_COMPLETE				= 13;
 	
-	public static final int MESSAGE_EXTRACT_SINGLE_APP				= 0x0020;
-	public static final int MESSAGE_EXTRACT_MULTI_APP				= 0x0021;
+	public static final int MESSAGE_EXTRACT_SINGLE_APP				= 20;
+	public static final int MESSAGE_EXTRACT_MULTI_APP				= 21;
 				
-	public static final int MESSAGE_SHARE_SINGLE_APP				= 0x0022;
-	public static final int MESSAGE_SHARE_MULTI_APP					= 0x0023;
+	public static final int MESSAGE_SHARE_SINGLE_APP				= 22;
+	public static final int MESSAGE_SHARE_MULTI_APP					= 23;
 	
-	public static final int MESSAGE_SEARCH_COMPLETE					= 0x0030;
+	public static final int MESSAGE_SEARCH_COMPLETE					= 30;
 	
-	public static final int MESSAGE_PERMISSION_DENIED				= 0x0040;
-	public static final int MESSAGE_PERMISSION_GRANTED				= 0x0041;
+	public static final int MESSAGE_PERMISSION_DENIED				= 40;
+	public static final int MESSAGE_PERMISSION_GRANTED				= 41;
 	
-	private static final int MESSAGE_REFRESH_DATA_OBB_SIZE=0x0050;
+	private static final int MESSAGE_REFRESH_DATA_OBB_SIZE=50;
 	
-	private static final int MESSAGE_EXTRA_MULTI_SHOW_SELECTION_DIAG=0x0060;
+	private static final int MESSAGE_EXTRA_MULTI_SHOW_SELECTION_DIAG=60;
 	
 	AppListAdapter listadapter;
 	
@@ -157,32 +159,35 @@ public class Main extends BaseActivity {
 						final boolean obb=((CheckBox)dialog_appdetail.findViewById(R.id.dialog_appdetail_extract_obb_cb)).isChecked();
 						List<AppItemInfo> selectedList=new ArrayList<AppItemInfo>();
 						selectedList.add(item);
-						
-						FileChecker apkchecker=new FileChecker(selectedList,(data||obb)?"zip":"apk");
-						apkchecker.startCheck();								
+												
+						List<AppItemInfo> list_item=new ArrayList<AppItemInfo>();
+						list_item.add(listsum.get(position));
+						String duplicate=getDulplicateFileInfo(list_item,(data||obb)?"zip":"apk");
+						//apkchecker.startCheck();								
 						//if(StorageUtil.getSDAvaliableSize()<(item.getPackageSize()+1024*1024)){
 						//	showStorageNotEnoughDialog();
 						//}
 						//else 
-							if(apkchecker.getIsApkAlreadyExist()){
+							if(duplicate.length()>0){
 							
 							new AlertDialog.Builder(Main.this)
 							.setIcon(R.drawable.ic_warn)
-							.setTitle("存在重名文件")
+							.setTitle(getResources().getString(R.string.activity_main_duplicate_title))
 							.setCancelable(true)									
-							.setMessage("存在下列重名文件：\n"+apkchecker.getDuplicatedAPKInfo()+"是否覆盖？")
-							.setPositiveButton("确定", new DialogInterface.OnClickListener() {
+							.setMessage(getResources().getString(R.string.activity_main_duplicate_message)+"\n\n"+duplicate)
+							.setPositiveButton(getResources().getString(R.string.dialog_button_positive), new DialogInterface.OnClickListener() {
 								
 								@Override
 								public void onClick(DialogInterface dialog, int which) {
-									// TODO Auto-generated method stub									
+									// TODO Auto-generated method stub	
+									shareAfterExtract=false;
 									Message msg_extract=new Message();
 									msg_extract.what=Main.MESSAGE_EXTRACT_SINGLE_APP;
 									msg_extract.obj=new Integer[]{Integer.valueOf(position),data?1:0,obb?1:0};
 									Main.this.processExtractMsg(msg_extract);
 								}
 							})
-							.setNegativeButton("取消", new DialogInterface.OnClickListener() {
+							.setNegativeButton(getResources().getString(R.string.dialog_button_negative), new DialogInterface.OnClickListener() {
 								
 								@Override
 								public void onClick(DialogInterface dialog, int which) {
@@ -194,6 +199,7 @@ public class Main extends BaseActivity {
 							
 						}								
 						else{
+							shareAfterExtract=false;
 							Message msg_extract=new Message();
 							msg_extract.what=Main.MESSAGE_EXTRACT_SINGLE_APP;
 							//msg_extract.obj=Integer.valueOf(position);
@@ -209,11 +215,20 @@ public class Main extends BaseActivity {
 					public void onClick(View v) {
 						// TODO Auto-generated method stub
 						if(Main.this.dialog_appdetail!=null) Main.this.dialog_appdetail.cancel();
-						Message msg_share=new Message();
-						msg_share.what=Main.MESSAGE_SHARE_SINGLE_APP;
-						msg_share.obj=Integer.valueOf(position);
-						Main.sendMessage(msg_share);
-						//Main.this.processShareMsg(msg_share);
+																		
+						if(settings.getInt(Constants.PREFERENCE_SHAREMODE, Constants.PREFERENCE_SHAREMODE_DEFAULT)==Constants.SHARE_MODE_DIRECT){
+							shareAfterExtract=false;
+							Message msg_share=new Message();
+							msg_share.what=Main.MESSAGE_SHARE_SINGLE_APP;
+							msg_share.obj=Integer.valueOf(position);
+							Main.sendMessage(msg_share);
+						}else if(settings.getInt(Constants.PREFERENCE_SHAREMODE, Constants.PREFERENCE_SHAREMODE_DEFAULT)==Constants.SHARE_MODE_AFTER_EXTRACT){
+							//shareAfterExtract=true;							
+							List<AppItemInfo> list_single=new ArrayList<AppItemInfo>();
+							list_single.add(listsum.get(position));
+							extractMultiSelectedApps(list_single, true);
+						}
+												
 					}
 				});
 				
@@ -259,44 +274,12 @@ public class Main extends BaseActivity {
 		@Override
 		public void onClick(View v) {
 			// TODO Auto-generated method stub
-			if(PermissionChecker.checkSelfPermission(Main.this, Manifest.permission.WRITE_EXTERNAL_STORAGE)!=PermissionChecker.PERMISSION_GRANTED){
-				ActivityCompat.requestPermissions(Main.this,new String[]{"android.permission.READ_EXTERNAL_STORAGE","android.permission.WRITE_EXTERNAL_STORAGE"} , 1);
-				Toast.makeText(Main.this, getResources().getString(R.string.toast_request_rw_permission), Toast.LENGTH_SHORT).show();
-				return;
+			if(listadapter==null) return;
+			List<AppItemInfo> list_extract=new ArrayList<AppItemInfo>();
+			for(int i=0;i<listadapter.getAppList().size();i++){					
+				if(listadapter.getIsSelected()[i]) list_extract.add(listadapter.getAppList().get(i));
 			}
-			if(Main.this.listadapter==null)return;
-			final List<AppItemInfo> list=new ArrayList<AppItemInfo> ();//Main.this.listadapter.getAppList();
-			for(int i=0;i<listadapter.getAppList().size();i++){
-				if(listadapter.getIsSelected()[i]) list.add(new AppItemInfo(listadapter.getAppList().get(i)));
-			}
-			list_extract_multi=list;								
-			
-				dialog_wait=new AlertDialog.Builder(Main.this)
-						.setTitle("请等待")
-						.setView(LayoutInflater.from(Main.this).inflate(R.layout.layout_extract_multi_extra,null))
-						.setCancelable(false)
-						.show();
-				new Thread(new Runnable(){
-
-					@Override
-					public void run() {
-						// TODO Auto-generated method stub					
-						long data=0,obb=0;
-						for(AppItemInfo item:list_extract_multi){
-							long data_get=FileSize.getFileOrFolderSize(new File(StorageUtil.getMainStoragePath()+"/android/data/"+item.packageName));
-							long obb_get=FileSize.getFileOrFolderSize(new File(StorageUtil.getMainStoragePath()+"/android/obb/"+item.packageName));
-							if(data_get>0) item.exportData=true;
-							if(obb_get>0) item.exportObb=true;
-							data+=data_get;
-							obb+=obb_get;
-						}
-						Message msg=new Message();
-						msg.what=MESSAGE_EXTRA_MULTI_SHOW_SELECTION_DIAG;
-						msg.obj=new Long[]{data,obb};
-						sendMessage(msg);
-					}
-					
-				}).start();
+			extractMultiSelectedApps(list_extract,false);
 
 		}
 	};
@@ -305,7 +288,15 @@ public class Main extends BaseActivity {
 		@Override
 		public void onClick(View v) {
 			// TODO Auto-generated method stub
-			Main.sendEmptyMessage(MESSAGE_SHARE_MULTI_APP);
+			if(settings.getInt(Constants.PREFERENCE_SHAREMODE, Constants.PREFERENCE_SHAREMODE_DEFAULT)==Constants.SHARE_MODE_DIRECT) Main.sendEmptyMessage(MESSAGE_SHARE_MULTI_APP);
+			else if (settings.getInt(Constants.PREFERENCE_SHAREMODE, Constants.PREFERENCE_SHAREMODE_DEFAULT)==Constants.SHARE_MODE_AFTER_EXTRACT){
+				if(listadapter==null) return;
+				List<AppItemInfo> list_share=new ArrayList<AppItemInfo>();
+				for(int i=0;i<listadapter.getAppList().size();i++){					
+					if(listadapter.getIsSelected()[i]) list_share.add(listadapter.getAppList().get(i));
+				}
+				extractMultiSelectedApps(list_share,true);
+			}
 		}
 	};
 	
@@ -338,7 +329,47 @@ public class Main extends BaseActivity {
 	};
 	
 	
-	
+	private void extractMultiSelectedApps(List<AppItemInfo> extract_list,boolean ifshare){
+		if(PermissionChecker.checkSelfPermission(Main.this, Manifest.permission.WRITE_EXTERNAL_STORAGE)!=PermissionChecker.PERMISSION_GRANTED){
+			ActivityCompat.requestPermissions(Main.this,new String[]{"android.permission.READ_EXTERNAL_STORAGE","android.permission.WRITE_EXTERNAL_STORAGE"} , 1);
+			Toast.makeText(Main.this, getResources().getString(R.string.toast_request_rw_permission), Toast.LENGTH_SHORT).show();
+			return;
+		}
+		//if(Main.this.listadapter==null)return;
+		shareAfterExtract=ifshare;
+		final List<AppItemInfo> list=new ArrayList<AppItemInfo> ();//Main.this.listadapter.getAppList();
+		for(int i=0;i<extract_list.size();i++){
+			list.add(new AppItemInfo(extract_list.get(i)));
+		}
+		list_extract_multi=list;								
+		
+			dialog_wait=new AlertDialog.Builder(Main.this)
+					.setTitle(getResources().getString(R.string.activity_main_wait))
+					.setView(LayoutInflater.from(Main.this).inflate(R.layout.layout_extract_multi_extra,null))
+					.setCancelable(false)
+					.show();
+			new Thread(new Runnable(){
+
+				@Override
+				public void run() {
+					// TODO Auto-generated method stub					
+					long data=0,obb=0;
+					for(AppItemInfo item:list_extract_multi){
+						long data_get=FileSize.getFileOrFolderSize(new File(StorageUtil.getMainStoragePath()+"/android/data/"+item.packageName));
+						long obb_get=FileSize.getFileOrFolderSize(new File(StorageUtil.getMainStoragePath()+"/android/obb/"+item.packageName));
+						if(data_get>0) item.exportData=true;
+						if(obb_get>0) item.exportObb=true;
+						data+=data_get;
+						obb+=obb_get;
+					}
+					Message msg=new Message();
+					msg.what=MESSAGE_EXTRA_MULTI_SHOW_SELECTION_DIAG;
+					msg.obj=new Long[]{data,obb};
+					sendMessage(msg);
+				}
+				
+			}).start();
+	}
 	
 	
 	public void onCreate(Bundle savedInstanceState) {
@@ -358,8 +389,7 @@ public class Main extends BaseActivity {
 		}	
 		searchview.setIconifiedByDefault(false);
 		
-		getActionBar().setCustomView(actionbarSearchView); 
-	
+		getActionBar().setCustomView(actionbarSearchView); 				
 		
 		SwipeRefreshLayout swrlayout=(SwipeRefreshLayout)findViewById(R.id.main_swiperefreshlayout);
 		swrlayout.setColorSchemeColors(Color.parseColor(this.getResources().getString(R.color.color_actionbar)));
@@ -373,7 +403,9 @@ public class Main extends BaseActivity {
 		dialog_loadlist.setCancelable(false);
 		dialog_loadlist.setCanceledOnTouchOutside(false);
 		dialog_loadlist.setMax(getPackageManager().getInstalledPackages(PackageManager.COMPONENT_ENABLED_STATE_DEFAULT).size());
-						
+		AppItemInfo.SortConfig=settings.getInt(Constants.PREFERENCE_SORT_CONFIG, 0);
+		showSystemApp=settings.getBoolean(Constants.PREFERENCE_SHOW_SYSTEM_APP, false);
+		((CheckBox)findViewById(R.id.showSystemAPP)).setChecked(showSystemApp);
 		refreshList(true);						
 		((CheckBox)findViewById(R.id.showSystemAPP)).setOnCheckedChangeListener(new OnCheckedChangeListener(){
 			public void onCheckedChanged(CompoundButton button , boolean isChecked){
@@ -381,9 +413,12 @@ public class Main extends BaseActivity {
 					Main.this.closeMultiSelectMode();
 				}
 				showSystemApp=isChecked;
+				editor.putBoolean(Constants.PREFERENCE_SHOW_SYSTEM_APP, isChecked);
+				editor.apply();
 				refreshList(true);								
 			}
-		});								
+		});	
+		storage_path=settings.getString(Constants.PREFERENCE_STORAGE_PATH, Constants.PREFERENCE_STORAGE_PATH_DEFAULT);
 	}
 	
 	@Override
@@ -534,7 +569,8 @@ public class Main extends BaseActivity {
 		TextView extract=(TextView)findViewById(R.id.text_extract);
 		TextView share=(TextView)findViewById(R.id.text_share);
 		listadapter.onItemClicked(position);
-		appinst.setText("已选择"+Main.this.listadapter.getSelectedNum()+"项"+"\n"+"共计大小："+Formatter.formatFileSize(Main.this, listadapter.getSelectedAppsSize()));			
+		appinst.setText(getResources().getString(R.string.activity_main_multiselect_att_head)+Main.this.listadapter.getSelectedNum()+getResources().getString(R.string.activity_main_multiselect_att_item)
+				+"\n"+getResources().getString(R.string.activity_main_multiselect_att_end)+Formatter.formatFileSize(Main.this, listadapter.getSelectedAppsSize()));			
 		extract.setText(Main.this.getResources().getString(R.string.button_extract)+"("+this.listadapter.getSelectedNum()+")");
 		share.setText(Main.this.getResources().getString(R.string.button_share)+"("+this.listadapter.getSelectedNum()+")");
 		extract.getPaint().setFlags(Paint.UNDERLINE_TEXT_FLAG);
@@ -632,6 +668,7 @@ public class Main extends BaseActivity {
 			            appitem.setLastUpdateTime(pak.lastUpdateTime);
 			            if(Build.VERSION.SDK_INT>=24)
 			            appitem.setMinSDKVersion(pak.applicationInfo.minSdkVersion);
+			            if ((pak.applicationInfo.flags & ApplicationInfo.FLAG_SYSTEM) > 0) appitem.isSystemApp=true;
 			            listsum.add(appitem);  
 		            }		            
 		            Message msg_thisloop = new Message();
@@ -651,7 +688,7 @@ public class Main extends BaseActivity {
 	private void updateSearchList(String text){
 		final String searchinfo=text.trim().toLowerCase(Locale.ENGLISH);
 		findViewById(R.id.progressbar_search).setVisibility(View.VISIBLE);
-		//this.applist_searchmode.setAdapter(null);				
+		((ListView)findViewById(R.id.applist)).setAdapter(null);			
 		if(this.thread_search!=null){
 			if(this.runnable_search!=null){
 				this.runnable_search.setInterrupted();
@@ -702,13 +739,12 @@ public class Main extends BaseActivity {
 			default:break;						
 			case MESSAGE_SET_NORMAL_TEXTATT:{
 				if(!this.isMultiSelectMode&&!this.isSearchMode){
-					((TextView)findViewById(R.id.appinst)).setText(Main.this.getResources().getString(R.string.text_appinst)+"\n"+this.getResources().getString(R.string.text_avaliableroom)+Formatter.formatFileSize(this, StorageUtil.getMainStorageAvaliableSize()));				
+					((TextView)findViewById(R.id.appinst)).setText(Main.this.getResources().getString(R.string.text_appinst)+"\n"+this.getResources().getString(R.string.text_avaliableroom)+Formatter.formatFileSize(this, StorageUtil.getAvaliableSizeOfPath(storage_path)));				
 				}				
 			}
 			break;
 			
-			case MESSAGE_LOADLIST_COMPLETE:{
-				((CheckBox)findViewById(R.id.showSystemAPP)).setEnabled(true);				
+			case MESSAGE_LOADLIST_COMPLETE:{							
 				if(this.dialog_loadlist!=null) this.dialog_loadlist.cancel();
 					
 				ListView applist=(ListView)findViewById(R.id.applist);
@@ -717,11 +753,12 @@ public class Main extends BaseActivity {
 				applist.setDivider(null);
 				applist.setOnItemClickListener(listener_listview_onclick_normalmode);
 				applist.setOnItemLongClickListener(listener_listview_onlongclick);
-				
+								
 				if(AppItemInfo.SortConfig!=0)Main.this.sortList();
-												
-				((SwipeRefreshLayout)findViewById(R.id.main_swiperefreshlayout)).setRefreshing(false);
-												
+				else{
+					((SwipeRefreshLayout)findViewById(R.id.main_swiperefreshlayout)).setRefreshing(false);
+					((CheckBox)findViewById(R.id.showSystemAPP)).setEnabled(true);	
+				}
 			}
 			break;
 			case MESSAGE_SEARCH_COMPLETE:{
@@ -763,8 +800,8 @@ public class Main extends BaseActivity {
 							this.dialog_copyfile.setCanceledOnTouchOutside(false);
 							this.dialog_copyfile.setMax(list.get(position[0]).getPackageSize());
 							this.dialog_copyfile.setIcon(list.get(position[0]).getIcon());
-							this.dialog_copyfile.setTitle("正在导出："+list.get(position[0]).getAppName());
-							this.dialog_copyfile.setButton(AlertDialog.BUTTON_NEGATIVE, "停止", this.listener_stopbutton);
+							this.dialog_copyfile.setTitle(getResources().getString(R.string.activity_main_extracting_title));
+							this.dialog_copyfile.setButton(AlertDialog.BUTTON_NEGATIVE, getResources().getString(R.string.activity_main_stop), this.listener_stopbutton);
 							this.dialog_copyfile.show();
 							this.thread_extractapp.start();
 						}
@@ -788,32 +825,32 @@ public class Main extends BaseActivity {
 				Main.this.closeMultiSelectMode();
 				if(list_extract_multi==null) return;
 				String msg_dulplicate="";
-				boolean ifdulplicate=false;
+				boolean ifdulplicate=false;				
 				for(AppItemInfo item:list_extract_multi){
 					List<AppItemInfo> checklist=new ArrayList<AppItemInfo> ();
 					checklist.add(item);
-					if(item.exportData||item.exportObb){
-						FileChecker checker=new FileChecker(checklist,"zip").startCheck();
-						if(checker.getIsApkAlreadyExist()){
+					if(item.exportData||item.exportObb){												
+						String duplicate=getDulplicateFileInfo(checklist,"zip");
+						if(duplicate.length()>0){
 							ifdulplicate=true;
-							msg_dulplicate+=checker.getDuplicatedAPKInfo();
+							msg_dulplicate+=duplicate;
 						}
 						
-					}else{
-						FileChecker checker=new FileChecker(checklist,"apk").startCheck();
-						if(checker.getIsApkAlreadyExist()){
+					}else{						
+						String duplicate=getDulplicateFileInfo(checklist,"apk");
+						if(duplicate.length()>0){
 							ifdulplicate=true;
-							msg_dulplicate+=checker.getDuplicatedAPKInfo();
+							msg_dulplicate+=duplicate;
 						}
 					}
 				}
 				if(ifdulplicate){
 					new AlertDialog.Builder(Main.this)
 					.setIcon(R.drawable.ic_warn)
-					.setTitle("存在重名文件")
+					.setTitle(getResources().getString(R.string.activity_main_duplicate_title))
 					.setCancelable(true)									
-					.setMessage("存在下列重名文件：\n"+msg_dulplicate+"是否覆盖？")
-					.setPositiveButton("确定", new DialogInterface.OnClickListener() {
+					.setMessage(getResources().getString(R.string.activity_main_duplicate_message)+"\n\n"+msg_dulplicate)
+					.setPositiveButton(getResources().getString(R.string.dialog_button_positive), new DialogInterface.OnClickListener() {
 						
 						@Override
 						public void onClick(DialogInterface dialog, int which) {
@@ -822,16 +859,16 @@ public class Main extends BaseActivity {
 							Main.this.thread_extractapp=new Thread(Main.this.runnable_extractapp);
 							Main.this.dialog_copyfile=new FileCopyDialog(Main.this);
 							//Main.this.dialog_copyfile.setMax(100);
-							Main.this.dialog_copyfile.setTitle("正在导出");
+							Main.this.dialog_copyfile.setTitle(getResources().getString(R.string.activity_main_extracting_title));
 							Main.this.dialog_copyfile.setIcon(R.drawable.ic_launcher);
-							Main.this.dialog_copyfile.setButton(AlertDialog.BUTTON_NEGATIVE, "停止", Main.this.listener_stopbutton);
+							Main.this.dialog_copyfile.setButton(AlertDialog.BUTTON_NEGATIVE, getResources().getString(R.string.activity_main_stop), Main.this.listener_stopbutton);
 							Main.this.dialog_copyfile.setCancelable(false);
 							Main.this.dialog_copyfile.setCanceledOnTouchOutside(false);
 							Main.this.dialog_copyfile.show();
 							Main.this.thread_extractapp.start();
 						}
 					})
-					.setNegativeButton("取消", new DialogInterface.OnClickListener() {
+					.setNegativeButton(getResources().getString(R.string.dialog_button_negative), new DialogInterface.OnClickListener() {
 						
 						@Override
 						public void onClick(DialogInterface dialog, int which) {
@@ -845,9 +882,9 @@ public class Main extends BaseActivity {
 					Main.this.thread_extractapp=new Thread(Main.this.runnable_extractapp);
 					Main.this.dialog_copyfile=new FileCopyDialog(Main.this);
 					//Main.this.dialog_copyfile.setMax(100);
-					Main.this.dialog_copyfile.setTitle("正在导出");
+					Main.this.dialog_copyfile.setTitle(getResources().getString(R.string.activity_main_extracting_title));
 					Main.this.dialog_copyfile.setIcon(R.drawable.ic_launcher);
-					Main.this.dialog_copyfile.setButton(AlertDialog.BUTTON_NEGATIVE, "停止", Main.this.listener_stopbutton);
+					Main.this.dialog_copyfile.setButton(AlertDialog.BUTTON_NEGATIVE, getResources().getString(R.string.activity_main_stop), Main.this.listener_stopbutton);
 					Main.this.dialog_copyfile.setCancelable(false);
 					Main.this.dialog_copyfile.setCanceledOnTouchOutside(false);
 					Main.this.dialog_copyfile.show();
@@ -863,7 +900,7 @@ public class Main extends BaseActivity {
 				if(runnable_extractapp==null) return;
 				try{
 					dialog_copyfile.setIcon(runnable_extractapp.applist.get(i).icon);
-					dialog_copyfile.setTitle("正在导出 "+(i+1)+"/"+runnable_extractapp.applist.size()+" "+runnable_extractapp.applist.get(i).appName);
+					dialog_copyfile.setTitle(getResources().getString(R.string.activity_main_extracting_title)+(i+1)+"/"+runnable_extractapp.applist.size()+" "+runnable_extractapp.applist.get(i).appName);
 				}catch (Exception e){
 					e.printStackTrace();
 				}
@@ -897,16 +934,16 @@ public class Main extends BaseActivity {
 				if(this.dialog_copyfile!=null){
 					this.dialog_copyfile.cancel();
 				}
-				if(isExtractSuccess) Toast.makeText(this, "应用已导出至 "+savepath,Toast.LENGTH_LONG).show();
+				if(isExtractSuccess) Toast.makeText(this, getResources().getString(R.string.activity_main_complete)+savepath,Toast.LENGTH_LONG).show();
 				if(!this.isSearchMode) {
 					Main.sendEmptyMessage(Main.MESSAGE_SET_NORMAL_TEXTATT);
 				}
 				
 				if(!this.isExtractSuccess){
-					new AlertDialog.Builder(this).setTitle("提示")
+					new AlertDialog.Builder(this).setTitle(getResources().getString(R.string.attention))
 					.setIcon(R.drawable.ic_warn)
 					.setMessage(getResources().getString(R.string.activity_main_exception_head)+this.errorMessage+getResources().getString(R.string.activity_main_exception_end))
-					.setPositiveButton("确定", new DialogInterface.OnClickListener() {
+					.setPositiveButton(getResources().getString(R.string.dialog_button_positive), new DialogInterface.OnClickListener() {
 						
 						@Override
 						public void onClick(DialogInterface dialog, int which) {
@@ -917,7 +954,39 @@ public class Main extends BaseActivity {
 					.show();
 				}
 				this.isExtractSuccess=true;
-				this.errorMessage="";				
+				this.errorMessage="";
+				if(this.shareAfterExtract&&settings.getInt(Constants.PREFERENCE_SHAREMODE, Constants.PREFERENCE_SHAREMODE_DEFAULT)==Constants.SHARE_MODE_AFTER_EXTRACT){
+					try{
+						List<String> paths=(List<String>)msg.obj;
+						Intent i=new Intent();
+						//i.setType("application/vnd.android.package-archive");
+						i.setType("application/x-zip-compressed");
+						if(paths.size()==1){							
+							i.setAction(Intent.ACTION_SEND);
+							//Uri uri=FileProvider.getUriForFile(this,getPackageName()+".FileProvider", new File(paths.get(0)));	
+							Uri uri=Uri.fromFile(new File(paths.get(0)));
+							i.putExtra(Intent.EXTRA_STREAM, uri);														
+						}else{
+							i.setAction(Intent.ACTION_SEND_MULTIPLE);
+							ArrayList<Uri> uris=new ArrayList<Uri>();
+							for(int n=0;n<paths.size();n++){
+								//uris.add(FileProvider.getUriForFile(this, getPackageName()+".FileProvider", new File(paths.get(n))));
+								uris.add(Uri.fromFile(new File(paths.get(n))));
+							}
+							i.putExtra(Intent.EXTRA_STREAM, uris);
+						}
+						i.putExtra(Intent.EXTRA_SUBJECT, getResources().getString(R.string.share)); 
+						i.putExtra(Intent.EXTRA_TEXT, getResources().getString(R.string.share));  
+						//i.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
+						//i.addFlags(Intent.FLAG_GRANT_WRITE_URI_PERMISSION);
+						i.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+						startActivity(Intent.createChooser(i,getResources().getString(R.string.share) ));
+					}catch(Exception e){
+						e.printStackTrace();
+						Toast.makeText(this, e.toString(), Toast.LENGTH_SHORT).show();
+					}
+					
+				}
 			}
 			break;
 			
@@ -932,10 +1001,10 @@ public class Main extends BaseActivity {
 					Uri uri = Uri.fromFile(apk);					
 					intent.setType("application/vnd.android.package-archive");
 					intent.putExtra(Intent.EXTRA_STREAM,uri);
-					intent.putExtra(Intent.EXTRA_SUBJECT, "分享 "+list.get(pos).getAppName()); 
-					intent.putExtra(Intent.EXTRA_TEXT, "分享 "+list.get(pos).getAppName());  
+					intent.putExtra(Intent.EXTRA_SUBJECT, getResources().getString(R.string.share)+list.get(pos).getAppName()); 
+					intent.putExtra(Intent.EXTRA_TEXT, getResources().getString(R.string.share)+list.get(pos).getAppName());  
 					intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-					startActivity(Intent.createChooser(intent,  "分享 "+list.get(pos).getAppName()   )  );
+					startActivity(Intent.createChooser(intent,  getResources().getString(R.string.share)+list.get(pos).getAppName()   )  );
 					
 				}
 			}
@@ -959,10 +1028,10 @@ public class Main extends BaseActivity {
 						}						
 						intent.putExtra(Intent.EXTRA_STREAM, uris);
 						intent.setType("application/vnd.android.package-archive");
-						intent.putExtra(Intent.EXTRA_SUBJECT, "分享应用"); 
-						intent.putExtra(Intent.EXTRA_TEXT, "分享应用");  
+						intent.putExtra(Intent.EXTRA_SUBJECT, getResources().getString(R.string.activity_main_share_title)); 
+						intent.putExtra(Intent.EXTRA_TEXT, getResources().getString(R.string.activity_main_share_title));  
 						intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-						startActivity(Intent.createChooser(intent,  "分享应用"   )  );
+						startActivity(Intent.createChooser(intent,  getResources().getString(R.string.activity_main_share_title)  )  );
 						
 					}
 					else if(this.listadapter.getSelectedNum()==1){
@@ -977,10 +1046,10 @@ public class Main extends BaseActivity {
 						}
 						intent.putExtra(Intent.EXTRA_STREAM, Uri.fromFile(new File(path)));
 						intent.setType("application/vnd.android.package-archive");
-						intent.putExtra(Intent.EXTRA_SUBJECT, "分享 "+appname); 
-						intent.putExtra(Intent.EXTRA_TEXT, "分享 "+appname);  
+						intent.putExtra(Intent.EXTRA_SUBJECT, getResources().getString(R.string.share)+appname); 
+						intent.putExtra(Intent.EXTRA_TEXT, getResources().getString(R.string.share)+appname);  
 						intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-						startActivity(Intent.createChooser(intent,  "分享 "+appname   )  );
+						startActivity(Intent.createChooser(intent,  getResources().getString(R.string.share)+appname   )  );
 					}
 															
 				}
@@ -1045,10 +1114,10 @@ public class Main extends BaseActivity {
 				if(msg.obj==null) return;
 				dialog_wait.cancel();
 				dialog_wait=new AlertDialog.Builder(this)
-						.setTitle("附加选项")
+						.setTitle(getResources().getString(R.string.activity_main_extract_multi_additional_title))
 						.setView(LayoutInflater.from(this).inflate(R.layout.layout_extract_multi_extra, null))
-						.setPositiveButton("继续", null)
-						.setNegativeButton("取消", null)
+						.setPositiveButton(getResources().getString(R.string.dialog_button_continue), null)
+						.setNegativeButton(getResources().getString(R.string.dialog_button_negative), null)
 						.show();
 				final CheckBox cb_data=(CheckBox)dialog_wait.findViewById(R.id.extract_multi_data_cb);
 				final CheckBox cb_obb=(CheckBox)dialog_wait.findViewById(R.id.extract_multi_obb_cb);
@@ -1102,6 +1171,16 @@ public class Main extends BaseActivity {
 				
 				}
 				
+			}
+			break;
+			case MESSAGE_SORT_LIST_COMPLETE:{
+				Main.this.listadapter=new AppListAdapter(this,listsum,true);
+				
+				((ListView)findViewById(R.id.applist)).setAdapter(this.listadapter);
+				
+				((SwipeRefreshLayout)findViewById(R.id.main_swiperefreshlayout)).setRefreshing(false);
+				
+				((CheckBox)findViewById(R.id.showSystemAPP)).setEnabled(true);
 			}
 			break;
 		}
@@ -1217,7 +1296,13 @@ public class Main extends BaseActivity {
 		if(id==R.id.action_sort){
 			this.dialog_sort=new SortDialog(this);
 			this.dialog_sort.show();
-			
+			dialog_sort.r_default.setChecked(AppItemInfo.SortConfig==0);
+			dialog_sort.r_a_appname.setChecked(AppItemInfo.SortConfig==1);
+			dialog_sort.r_d_appname.setChecked(AppItemInfo.SortConfig==2);
+			dialog_sort.r_a_size.setChecked(AppItemInfo.SortConfig==3);
+			dialog_sort.r_d_size.setChecked(AppItemInfo.SortConfig==4);
+			dialog_sort.r_a_date.setChecked(AppItemInfo.SortConfig==5);
+			dialog_sort.r_d_date.setChecked(AppItemInfo.SortConfig==6);
 			this.dialog_sort.r_default.setOnClickListener(new View.OnClickListener() {
 				
 				@Override
@@ -1301,6 +1386,17 @@ public class Main extends BaseActivity {
 				}
 			});
 			
+			dialog_sort.setOnCancelListener(new DialogInterface.OnCancelListener(){
+
+				@Override
+				public void onCancel(DialogInterface dialog) {
+					// TODO Auto-generated method stub
+					editor.putInt(Constants.PREFERENCE_SORT_CONFIG, AppItemInfo.SortConfig);
+					editor.apply();
+				}
+				
+			});
+			
 		}
 		
 		if(id==R.id.action_editpath){
@@ -1316,7 +1412,7 @@ public class Main extends BaseActivity {
 		}
 		
 		if(id==R.id.action_filename){
-			View dialogView=LayoutInflater.from(this).inflate(R.layout.layout_dialog_filename,null);
+			final View dialogView=LayoutInflater.from(this).inflate(R.layout.layout_dialog_filename,null);
 			final EditText edit_apk=(EditText)dialogView.findViewById(R.id.filename_apk);
 			final EditText edit_zip=(EditText)dialogView.findViewById(R.id.filename_zip);
 			final TextView preview=((TextView)dialogView.findViewById(R.id.filename_preview));
@@ -1324,6 +1420,21 @@ public class Main extends BaseActivity {
 			edit_apk.setText(settings.getString(Constants.PREFERENCE_FILENAME_FONT_APK, Constants.PREFERENCE_FILENAME_FONT_DEFAULT));
 			edit_zip.setText(settings.getString(Constants.PREFERENCE_FILENAME_FONT_ZIP, Constants.PREFERENCE_FILENAME_FONT_DEFAULT));
 			preview.setText(getFormatedExportFileName(edit_apk.getText().toString(),edit_zip.getText().toString()));
+			
+			if(!edit_apk.getText().toString().contains(Constants.FONT_APP_NAME)&&!edit_apk.getText().toString().contains(Constants.FONT_APP_PACKAGE_NAME)
+					&&!edit_apk.getText().toString().contains(Constants.FONT_APP_VERSIONCODE)&&!edit_apk.getText().toString().contains(Constants.FONT_APP_VERSIONNAME)){
+				dialogView.findViewById(R.id.filename_apk_warn).setVisibility(View.VISIBLE);
+			}else{
+				dialogView.findViewById(R.id.filename_apk_warn).setVisibility(View.GONE);
+			}
+			
+			if(!edit_zip.getText().toString().contains(Constants.FONT_APP_NAME)&&!edit_zip.getText().toString().contains(Constants.FONT_APP_PACKAGE_NAME)
+					&&!edit_zip.getText().toString().contains(Constants.FONT_APP_VERSIONCODE)&&!edit_zip.getText().toString().contains(Constants.FONT_APP_VERSIONNAME)){
+				dialogView.findViewById(R.id.filename_zip_warn).setVisibility(View.VISIBLE);
+			}else{
+				dialogView.findViewById(R.id.filename_zip_warn).setVisibility(View.GONE);
+			}
+			
 			final AlertDialog dialog=new AlertDialog.Builder(this)
 			.setTitle(getResources().getString(R.string.dialog_filename_title))
 			.setView(dialogView)
@@ -1344,6 +1455,16 @@ public class Main extends BaseActivity {
 					// TODO Auto-generated method stub
 					if(edit_apk.getText().toString().trim().equals("")||edit_zip.getText().toString().trim().equals("")){
 						Toast.makeText(Main.this,getResources().getString(R.string.dialog_filename_toast_blank) , Toast.LENGTH_SHORT).show();
+						return;
+					}
+					
+					String apk_replaced_variables=edit_apk.getText().toString().replace(Constants.FONT_APP_NAME, "").replace(Constants.FONT_APP_PACKAGE_NAME, "").replace(Constants.FONT_APP_VERSIONCODE, "").replace(Constants.FONT_APP_VERSIONNAME, "");
+					String zip_replaced_variables=edit_zip.getText().toString().replace(Constants.FONT_APP_NAME, "").replace(Constants.FONT_APP_PACKAGE_NAME, "").replace(Constants.FONT_APP_VERSIONCODE, "").replace(Constants.FONT_APP_VERSIONNAME, "");
+					if(apk_replaced_variables.contains("?")||apk_replaced_variables.contains("\\")||apk_replaced_variables.contains("/")||apk_replaced_variables.contains(":")||apk_replaced_variables.contains("*")||apk_replaced_variables.contains("\"")
+							||apk_replaced_variables.contains("<")||apk_replaced_variables.contains(">")||apk_replaced_variables.contains("|")
+							||zip_replaced_variables.contains("?")||zip_replaced_variables.contains("\\")||zip_replaced_variables.contains("/")||zip_replaced_variables.contains(":")||zip_replaced_variables.contains("*")||zip_replaced_variables.contains("\"")
+							||zip_replaced_variables.contains("<")||zip_replaced_variables.contains(">")||zip_replaced_variables.contains("|")){
+						Toast.makeText(Main.this, getResources().getString(R.string.activity_folder_selector_invalid_foldername), Toast.LENGTH_SHORT).show();
 						return;
 					}
 					editor.putString(Constants.PREFERENCE_FILENAME_FONT_APK, edit_apk.getText().toString());
@@ -1370,6 +1491,12 @@ public class Main extends BaseActivity {
 				public void afterTextChanged(Editable s) {
 					// TODO Auto-generated method stub
 					preview.setText(getFormatedExportFileName(edit_apk.getText().toString(),edit_zip.getText().toString()));
+					if(!edit_apk.getText().toString().contains(Constants.FONT_APP_NAME)&&!edit_apk.getText().toString().contains(Constants.FONT_APP_PACKAGE_NAME)
+							&&!edit_apk.getText().toString().contains(Constants.FONT_APP_VERSIONCODE)&&!edit_apk.getText().toString().contains(Constants.FONT_APP_VERSIONNAME)){
+						dialogView.findViewById(R.id.filename_apk_warn).setVisibility(View.VISIBLE);
+					}else{
+						dialogView.findViewById(R.id.filename_apk_warn).setVisibility(View.GONE);
+					}
 				}
 				
 			});
@@ -1391,6 +1518,12 @@ public class Main extends BaseActivity {
 				public void afterTextChanged(Editable s) {
 					// TODO Auto-generated method stub
 					preview.setText(getFormatedExportFileName(edit_apk.getText().toString(),edit_zip.getText().toString()));
+					if(!edit_zip.getText().toString().contains(Constants.FONT_APP_NAME)&&!edit_zip.getText().toString().contains(Constants.FONT_APP_PACKAGE_NAME)
+							&&!edit_zip.getText().toString().contains(Constants.FONT_APP_VERSIONCODE)&&!edit_zip.getText().toString().contains(Constants.FONT_APP_VERSIONNAME)){
+						dialogView.findViewById(R.id.filename_zip_warn).setVisibility(View.VISIBLE);
+					}else{
+						dialogView.findViewById(R.id.filename_zip_warn).setVisibility(View.GONE);
+					}
 				}
 				
 			});
@@ -1480,6 +1613,38 @@ public class Main extends BaseActivity {
 			});
 			
 		}
+		if(id==R.id.action_sharemode){
+			int mode=settings.getInt(Constants.PREFERENCE_SHAREMODE, Constants.PREFERENCE_SHAREMODE_DEFAULT);
+			View dialogView=LayoutInflater.from(this).inflate(R.layout.layout_dialog_sharemode,null,false);
+			RadioButton ra_direct=((RadioButton)dialogView.findViewById(R.id.share_mode_direct_ra));
+			RadioButton ra_after_extract=((RadioButton)dialogView.findViewById(R.id.share_mode_after_extract_ra));
+			ra_direct.setChecked(mode==Constants.SHARE_MODE_DIRECT);
+			ra_after_extract.setChecked(mode==Constants.SHARE_MODE_AFTER_EXTRACT);
+			final AlertDialog dialog=new AlertDialog.Builder(this)
+			.setTitle(getResources().getString(R.string.action_sharemode))
+			.setView(dialogView)
+			.show();
+			dialogView.findViewById(R.id.share_mode_direct).setOnClickListener(new View.OnClickListener() {
+				
+				@Override
+				public void onClick(View v) {
+					// TODO Auto-generated method stub
+					editor.putInt(Constants.PREFERENCE_SHAREMODE, Constants.SHARE_MODE_DIRECT);
+					editor.apply();
+					dialog.cancel();
+				}
+			});
+			dialogView.findViewById(R.id.share_mode_after_extract).setOnClickListener(new View.OnClickListener() {
+				
+				@Override
+				public void onClick(View v) {
+					// TODO Auto-generated method stub
+					editor.putInt(Constants.PREFERENCE_SHAREMODE, Constants.SHARE_MODE_AFTER_EXTRACT);
+					editor.apply();
+					dialog.cancel();
+				}
+			});
+		}
 		return super.onOptionsItemSelected(item);
 	}
 	
@@ -1499,10 +1664,23 @@ public class Main extends BaseActivity {
 			if(Main.this.isMultiSelectMode){
 				Main.this.closeMultiSelectMode();
 			}
-			Collections.sort(listsum);
-			Main.this.listadapter=new AppListAdapter(this,listsum,true);
+			((CheckBox)findViewById(R.id.showSystemAPP)).setEnabled(false);
+			((SwipeRefreshLayout)findViewById(R.id.main_swiperefreshlayout)).setRefreshing(true);
+			((ListView)findViewById(R.id.applist)).setAdapter(null);
+			new Thread(new Runnable(){
+
+				@Override
+				public void run() {
+					// TODO Auto-generated method stub
+					synchronized(Main.class){
+						Collections.sort(listsum);
+						sendEmptyMessage(MESSAGE_SORT_LIST_COMPLETE);
+					}					
+				}
+				
+			}).start();
 			
-			((ListView)findViewById(R.id.applist)).setAdapter(this.listadapter);
+			
 			
 		}
 	}
@@ -1514,7 +1692,7 @@ public class Main extends BaseActivity {
 				File file=new File (getAbsoluteWritePath(this,item,extension));
 				if(file.exists()&&!file.isDirectory()){
 					result+=file.getAbsolutePath();
-					result+="\n";
+					result+="\n\n";
 				}
 			}
 			return result;
@@ -1524,8 +1702,7 @@ public class Main extends BaseActivity {
 	
 	@Override
 	public void finish(){
-		super.finish();
-		AppItemInfo.SortConfig=0;
+		super.finish();		
 	}
 	
 }

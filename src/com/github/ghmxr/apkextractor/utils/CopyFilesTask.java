@@ -6,6 +6,7 @@ import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
@@ -32,6 +33,8 @@ public class CopyFilesTask implements Runnable{
 	private long progress_check=0;
 	private long zipTime=0;
 	private long zipWriteLength_second=0;
+	
+	private List<String> writePaths=new ArrayList<String>();
 	/**
 	 * 导出指定AppItemInfo的apk或者包含数据包的zip至savepath
 	 * @param list 要导出的APK的list
@@ -110,7 +113,8 @@ public class CopyFilesTask implements Runnable{
 				         } 
 				        out.flush();
 				        in.close();
-				        out.close();				      		        		        
+				        out.close();
+				        writePaths.add(writepath);
 					}
 					/*catch(FileNotFoundException fe){
 						fe.printStackTrace();						
@@ -154,6 +158,7 @@ public class CopyFilesTask implements Runnable{
 						}
 						zos.flush();
 						zos.close();
+						writePaths.add(writePath);
 					}catch(Exception e){
 						e.printStackTrace();
 						try{
@@ -181,8 +186,13 @@ public class CopyFilesTask implements Runnable{
 												
 		}
 		
-		if(!this.isInterrupted)
-		BaseActivity.sendEmptyMessage(BaseActivity.MESSAGE_COPYFILE_COMPLETE);
+		if(!this.isInterrupted){
+			Message msg=new Message();
+			msg.what=BaseActivity.MESSAGE_COPYFILE_COMPLETE;
+			msg.obj=writePaths;
+			BaseActivity.sendMessage(msg);
+		}
+		
 	
 	}
 	

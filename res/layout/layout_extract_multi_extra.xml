@@ -20,7 +20,7 @@
             android:layout_marginLeft="10dp"
             android:layout_centerVertical="true"
             android:textSize="15sp"
-            android:text="请等待..."/>
+            android:text="@string/activity_main_wait"/>
     </RelativeLayout>
     <LinearLayout 
         android:id="@+id/extract_multi_selections"

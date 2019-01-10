@@ -42,22 +42,22 @@ public abstract class BaseActivity extends Activity {
 	public static final String PREFERENCE_IF_EDITED_SAVEPATH="ifeditedsavepath";
 	public boolean isatFront=false;
 	
-	public static final int MESSAGE_COPYFILE_COMPLETE         							= 0x0001;
-	public static final int MESSAGE_COPYFILE_INTERRUPT        							= 0x0002;
-	public static final int MESSAGE_COPYFILE_FILE_NOTFOUND_EXCEPTION  					= 0x0003;
+	public static final int MESSAGE_COPYFILE_COMPLETE         							= 1;
+	public static final int MESSAGE_COPYFILE_INTERRUPT        							= 2;
+	public static final int MESSAGE_COPYFILE_FILE_NOTFOUND_EXCEPTION  					= 3;
 	
-	public static final int MESSAGE_STORAGE_NOTENOUGH        							= 0x0004;
+	public static final int MESSAGE_STORAGE_NOTENOUGH        							= 4;
 	
-	public static final int MESSAGE_COPYFILE_REFRESH_SPEED            					= 0x0005;
-	public static final int MESSAGE_COPYFILE_REFRESH_PROGRESS         					= 0x0006;
+	public static final int MESSAGE_COPYFILE_REFRESH_SPEED            					= 5;
+	public static final int MESSAGE_COPYFILE_REFRESH_PROGRESS         					= 6;
 	
-	public static final int MESSAGE_COPYFILE_IOEXCEPTION              					= 0x0007;
+	public static final int MESSAGE_COPYFILE_IOEXCEPTION              					= 7;
 	
-	public static final int MESSAGE_COPYFILE_CURRENTFILE 								= 0x0008;
-	public static final int MESSAGE_COPYFILE_CURRENTAPP									= 0x0009;
+	public static final int MESSAGE_COPYFILE_CURRENTFILE 								= 8;
+	public static final int MESSAGE_COPYFILE_CURRENTAPP									= 9;
 				
-	public static final int MESSAGE_LOADLIST_REFRESH_PROGRESS							= 0x0010;
-	public static final int MESSAGE_LOADLIST_COMPLETE									= 0x0011;
+	public static final int MESSAGE_LOADLIST_REFRESH_PROGRESS							= 10;
+	public static final int MESSAGE_LOADLIST_COMPLETE									= 11;
 	
 	public static  String savepath=Constants.PREFERENCE_SAVE_PATH_DEFAULT;
 	
@@ -87,7 +87,7 @@ public abstract class BaseActivity extends Activity {
 		settings=this.getSharedPreferences(Constants.PREFERENCE_NAME, Activity.MODE_PRIVATE);
 		editor=this.settings.edit();
 		
-		savepath=settings.getString(Constants.PREFERENCE_SAVE_PATH, Constants.PREFERENCE_SAVE_PATH_DEFAULT);
+		savepath=settings.getString(Constants.PREFERENCE_SAVE_PATH, Constants.PREFERENCE_SAVE_PATH_DEFAULT);		
 	}
 	
 	public void onResume(){

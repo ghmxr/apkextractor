@@ -26,14 +26,14 @@
      <item
         android:id="@+id/action_filename"
         android:orderInCategory="3"
-        android:icon="@android:drawable/ic_menu_preferences"
+        android:icon="@android:drawable/ic_menu_edit"
         android:showAsAction="never"
         android:title="@string/action_filename"/>
     
      <item
         android:id="@+id/action_sharemode"
         android:orderInCategory="4"
-        android:icon="@android:drawable/ic_menu_preferences"
+        android:icon="@android:drawable/ic_menu_share"
         android:showAsAction="never"
         android:title="@string/action_sharemode"/>
     

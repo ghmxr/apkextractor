@@ -15,14 +15,51 @@
         	android:textSize="15sp"
         	android:textColor="@color/color_att"
         	android:text="APK"/>
-    
-    	<EditText 
-    	    android:id="@+id/filename_apk"
-        	android:layout_width="match_parent"
-        	android:layout_height="wrap_content"
-        	android:layout_marginLeft="15dp"
-        	android:layout_marginRight="15dp"/>
-    	
+        
+        <RelativeLayout 
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+            <EditText 
+    	    	android:id="@+id/filename_apk"
+        		android:layout_width="match_parent"
+        		android:layout_height="wrap_content"
+        		android:layout_toLeftOf="@+id/filename_apk_end"
+        		android:layout_marginLeft="15dp"
+        		android:singleLine="true"/>
+            <TextView 
+                android:id="@+id/filename_apk_end"
+                android:layout_width="45dp"
+                android:layout_height="45dp"
+                android:textSize="16sp"  
+                android:gravity="center_vertical"       
+                android:layout_centerVertical="true"
+                android:layout_alignParentRight="true"
+                android:layout_marginRight="5dp"
+                android:textColor="@color/color_text_black"               
+                android:text=".apk"/>
+        </RelativeLayout>
+    	<LinearLayout 
+    	    android:id="@+id/filename_apk_warn"
+    	    android:layout_width="wrap_content"
+    	    android:layout_height="wrap_content"
+    	    android:layout_marginTop="3dp"
+    	    android:layout_marginLeft="15dp"
+    	    android:orientation="horizontal"
+    	    android:visibility="gone">
+    	    <ImageView 
+    	        android:layout_width="14dp"
+    	        android:layout_height="14dp"
+    	        android:src="@drawable/ic_warn"/>
+    	    <TextView 
+    	        android:layout_width="wrap_content"
+    	        android:layout_height="wrap_content"
+    	        android:layout_gravity="center_vertical"
+    	        android:layout_marginLeft="3dp"
+    	        android:textSize="9sp"
+    	        android:textColor="@color/color_text_darkred"
+    	        android:text="@string/dialog_filename_warn_no_variables"/>
+    	</LinearLayout>
+    	   	
     	 <TextView 
         	android:layout_width="wrap_content"
         	android:layout_height="wrap_content"
@@ -31,14 +68,54 @@
         	android:textSize="15sp"
         	android:textColor="@color/color_att"
         	android:text="ZIP"/>
-    
-    	<EditText 
-    	    android:id="@+id/filename_zip"
-        	android:layout_width="match_parent"
-        	android:layout_height="wrap_content"
-        	android:layout_marginLeft="15dp"
-        	android:layout_marginRight="15dp"/>
-    	
+    	 
+    	 <RelativeLayout 
+    	     android:layout_width="match_parent"
+    	     android:layout_height="wrap_content">
+    	     <EditText 
+    	    	android:id="@+id/filename_zip"
+        		android:layout_width="match_parent"
+        		android:layout_height="wrap_content"
+        		android:layout_marginLeft="15dp"
+        		android:layout_toLeftOf="@+id/filename_zip_end"
+        		android:singleLine="true"/>
+    	     
+    	     <TextView 
+                android:id="@+id/filename_zip_end"
+                android:layout_width="45dp"
+                android:layout_height="45dp"
+                android:textSize="16sp"  
+                android:gravity="center_vertical"       
+                android:layout_centerVertical="true"
+                android:layout_alignParentRight="true"
+                android:layout_marginRight="5dp"
+                android:textColor="@color/color_text_black"               
+                android:text=".zip"/>
+    	     
+    	 </RelativeLayout>
+    	 
+    	 <LinearLayout 
+    	    android:id="@+id/filename_zip_warn"
+    	    android:layout_width="wrap_content"
+    	    android:layout_height="wrap_content"
+    	    android:layout_marginTop="3dp"
+    	    android:layout_marginLeft="15dp"
+    	    android:orientation="horizontal"
+    	    android:visibility="gone">
+    	    <ImageView 
+    	        android:layout_width="14dp"
+    	        android:layout_height="14dp"
+    	        android:src="@drawable/ic_warn"/>
+    	    <TextView 
+    	        android:layout_width="wrap_content"
+    	        android:layout_height="wrap_content"
+    	        android:layout_gravity="center_vertical"
+    	        android:layout_marginLeft="3dp"
+    	        android:textSize="9sp"
+    	        android:textColor="@color/color_text_darkred"
+    	        android:text="@string/dialog_filename_warn_no_variables"/>
+    	</LinearLayout>
+       	   	
     	<TextView 
     	    android:layout_width="wrap_content"
     	    android:layout_height="wrap_content"

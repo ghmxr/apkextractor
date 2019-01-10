@@ -31,6 +31,9 @@ public class AppItemInfo implements Comparable<AppItemInfo>{
 	public boolean exportData=false;
 	public boolean exportObb=false;
 	
+	//if is system app
+	public boolean isSystemApp=false;
+	
 	public AppItemInfo(){
 		
 	}

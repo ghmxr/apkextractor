@@ -12,8 +12,23 @@
     <string name="action_sharemode">分享模式</string>
     <string name="action_confirm">确定</string>
     <string name="action_cancel">取消</string>
+    <string name="activity_main_wait">请等待</string>
     <string name="activity_main_exception_head">以下应用未成功导出，错误信息如下：\n\n</string>
     <string name="activity_main_exception_end">\n可能的异常包括存储空间不足，源文件被删除，写入文件名不合法，或者没有写入权限等。</string>
+    <string name="activity_main_share_title">分享应用</string>
+    <string name="activity_main_stop">停止</string>
+    <string name="activity_main_extracting_title">正在导出</string>
+    <string name="activity_main_complete">应用已导出至</string>
+    <string name="activity_main_duplicate_title">存在重名文件</string>
+    <string name="activity_main_duplicate_message">存在下列重名文件，是否覆盖？</string>
+    <string name="activity_main_multiselect_att_head">已选择</string>
+    <string name="activity_main_multiselect_att_item">项</string>
+    <string name="activity_main_multiselect_att_end">共计大小：</string>
+    <string name="activity_main_extract_multi_additional_title">附加选项</string>
+    <string name="share_mode_direct">直接分享</string>
+    <string name="share_mode_direct_att">直接分享应用源APK文件，无需导出，但不能自定义文件名，不能分享打包有Data或Obb的zip文件</string>
+    <string name="share_mode_after_extract">导出后分享</string>
+    <string name="share_mode_after_extract_att">先导出到指定的路径再分享导出后的文件，会占用存储空间</string>
     <string name="action_folderselector_newfolder">新建文件夹</string>
     <string name="action_folderselector_sort_ascending">名称升序（A→Z）</string>
     <string name="action_folderselector_sort_descending">名称降序（Z→A）</string>
@@ -21,6 +36,7 @@
     <string name="action_folderselector_reset_default">恢复默认路径</string>
     <string name="dialog_button_positive">确定</string>
     <string name="dialog_button_negative">取消</string>
+    <string name="dialog_button_continue">继续</string>
     <string name="activity_main_loading">正在加载</string>
     <string name="activity_folder_selector_initial_failed">不能初始化导出路径，请检查并重试</string>
     <string name="activity_folder_selector_title">选择路径</string>
@@ -35,16 +51,19 @@
     <string name="copytask_zip_current">正在压缩</string>
     <string name="dialog_filename_title">命名规则</string>
     <string name="dialog_filename_variables">插入变量</string>
-    <string name="dialog_filename_button_appname">应用名称</string>
-    <string name="dialog_filename_button_packagename">包名</string>
-    <string name="dialog_filename_button_version">版本</string>
-    <string name="dialog_filename_button_versioncode">版本号</string>
+    <string name="dialog_filename_button_appname">应用名称(?N)</string>
+    <string name="dialog_filename_button_packagename">包名(?P)</string>
+    <string name="dialog_filename_button_version">版本(?V)</string>
+    <string name="dialog_filename_button_versioncode">版本号(?C)</string>
     <string name="dialog_filename_preview_appname">示例应用</string>
     <string name="dialog_filename_preview_packagename">com.example</string>
     <string name="dialog_filename_preview_version">1.0</string>
     <string name="dialog_filename_preview_versioncode">1</string>
     <string name="dialog_filename_toast_blank">命名规则不能为空</string>
+    <string name="dialog_filename_warn_no_variables">注意:没有输入变量，这会导致多选导出无法正常导出文件！</string>
     <string name="preview">预览</string>
+    <string name="share">分享</string>
+    <string name="attention">提示</string>
     <string name="dialog_sort_default">默认</string>
     <string name="dialog_sort_ascending_appname">按名称升序（从A到Z）</string>
     <string name="dialog_sort_descending_appname">按名称降序（从Z到A）</string>
@@ -73,23 +92,24 @@
     <string name="dialog_appdetail_text_appsize">应用大小：</string>
     <string name="dialog_appdetail_text_minsdkversion">最低要求API：</string>
     <string name="dialog_extract_multi_has_data_obb">检测到部分应用含有Data和Obb数据。\n勾选下面的选项，将会把含有Data或Obb数据的应用打包成zip导出。\n或者不勾选任何项，将会直接导出APK。</string>
-    <string name="dialog_about_title">APK Kit(Build 3)</string>
-    <string name="dialog_about_message">\n导出的应用默认将会保存至“存储/Backup”路径内，并以“包名+版本号(BuildInt)”的方式命名，或者可以在菜单“更改导出路径”中更改。\n\n
+    <string name="dialog_about_title">APK Kit(Build 4)</string>
+    <string name="dialog_about_message">\n导出的应用默认将会保存至“存储/Backup”路径内，并默认以“包名+版本号(versionCode)”的方式命名，或者可以在菜单“更改导出路径”，“导出命名规则”中更改。\n\n
         
         点击“分享”，可以使用支持分享的应用例如蓝牙、QQ面对面快传等来分享已选择的应用。\n\n
         
     勾选导出Data或者Obb选项后，会将应用APK和Data或Obb数据打包成zip导出。\n\n
     
-   <b>Build 3 更新日志：</b> \n
-    <b>支持从系统根目录开始选择导出路径(通过此方式可以尝试选择外置存储设备)</b>\n\n
-    <b>注意：请务必选择正确的媒体存储路径，否则会因为没有足够的写入权限导致导出报异常，内置、外置存储路径一般会挂载在“/storage”或者“/mnt”下。</b>\n\n
+   <b>Build 4 更新日志：</b> \n
+	<b>新增：导出设备选择（由于设备品牌和Android版本不同，实际使用可能会有差异）；</b>\n
+	<b>新增：导出文件命名规则设定和分享模式设定；</b>\n\n
+	<b>注意：导出命名规则请至少设定一个变量，否则在多选导出应用时将无法正常导出（由于没有变量规则导致文件被覆盖）。</b>\n\n
         
-        应用开源地址:\n
+        开源地址:\n
          https://github.com/ghmxr/apkextractor \n\n
-         应用获取更新地址:\n
+         获取更新地址:\n
          https://github.com/ghmxr/apkextractor/releases \n\n
         
-        作者邮箱: \n
+        邮箱: \n
         mxremail@qq.com \n\n
         如果您喜欢本应用，欢迎您捐赠来支持作者。
         </string>   
@@ -107,5 +127,6 @@
     <color name="color_swiperefresh_color3">#e67e22</color>
     <color name="color_swiperefresh_color4">#3498db</color>
     <color name="color_text_black">#000000</color>
+    <color name="color_text_darkred">#ee2c2c</color>
 	<color name="color_att">#0068ea</color>
 </resources>
