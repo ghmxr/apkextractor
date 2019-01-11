@@ -14,7 +14,6 @@ import com.github.ghmxr.apkextractor.data.FileItemInfo;
 import com.github.ghmxr.apkextractor.utils.StorageUtil;
 
 import android.app.AlertDialog;
-import android.database.DataSetObserver;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.os.Message;
@@ -25,7 +24,6 @@ import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.ViewGroup;
 import android.view.Window;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemSelectedListener;
@@ -33,10 +31,7 @@ import android.widget.ArrayAdapter;
 import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.RelativeLayout;
-import android.widget.SimpleAdapter;
 import android.widget.Spinner;
-import android.support.v7.widget.AppCompatSpinner;
-import android.widget.SpinnerAdapter;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -57,7 +52,7 @@ public class FolderSelector extends BaseActivity implements Runnable{
 	Thread thread_refreshlist;
 	
 	private boolean isInterrupted=false;
-	private boolean isSpinnerSelectedListenerSet=false;
+	private String currentSelectedStoragePath=new String(storage_path);
 	
 	public static final int MESSAGE_REFRESH_FILELIST_COMPLETE = 0x0050;
 	
@@ -82,7 +77,7 @@ public class FolderSelector extends BaseActivity implements Runnable{
 		
 		try{
 			final List<String> storages=StorageUtil.getAvailableStoragePaths();
-			Spinner spinner=(Spinner)findViewById(R.id.folderselector_spinner);			
+			final Spinner spinner=(Spinner)findViewById(R.id.folderselector_spinner);			
 			//String[] displayValues=new String[storages.size()];
 			//for(int i=0;i<displayValues.length;i++) displayValues[i]=String.valueOf(getResources().getString(R.string.activity_folder_selector_storage_title)+(i+1));			
 			spinner.setAdapter(new ArrayAdapter<String>(FolderSelector.this,R.layout.layout_item_spinner_storage,R.id.item_storage_text,storages));			
@@ -104,6 +99,30 @@ public class FolderSelector extends BaseActivity implements Runnable{
 					
 				}catch(Exception e){}
 			}
+			spinner.setOnItemSelectedListener(new OnItemSelectedListener(){
+
+				@Override
+				public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+					// TODO Auto-generated method stub			
+					Log.d("Spinner", "position is "+position);					
+					try{
+						if(currentSelectedStoragePath.toLowerCase(Locale.getDefault()).trim().equals(((String)spinner.getSelectedItem()).toLowerCase(Locale.getDefault()).trim())) return;
+						path=new File((String)spinner.getSelectedItem());
+						currentSelectedStoragePath=(String)spinner.getSelectedItem();
+						refreshList(true);	
+					}catch(Exception e){
+						e.printStackTrace();
+						Toast.makeText(FolderSelector.this, e.toString(), Toast.LENGTH_SHORT).show();
+					}											
+				}
+
+				@Override
+				public void onNothingSelected(AdapterView<?> parent) {
+					// TODO Auto-generated method stub
+					
+				}
+				
+			});
 		}catch(Exception e){
 			e.printStackTrace();
 			Toast.makeText(this, e.toString(), Toast.LENGTH_SHORT).show();
@@ -196,35 +215,8 @@ public class FolderSelector extends BaseActivity implements Runnable{
 							listadapter.setSelected(position);
 						}
 					});
-				}	
-				
-				if(!this.isSpinnerSelectedListenerSet){
-					this.isSpinnerSelectedListenerSet=true;
-					final Spinner spinner=(Spinner)findViewById(R.id.folderselector_spinner);
-					spinner.setOnItemSelectedListener(new OnItemSelectedListener(){
-
-						@Override
-						public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-							// TODO Auto-generated method stub			
-							Log.d("Spinner", "position is "+position);
-							try{
-								path=new File((String)spinner.getSelectedItem());
-							}catch(Exception e){
-								e.printStackTrace();
-								Toast.makeText(FolderSelector.this, e.toString(), Toast.LENGTH_SHORT).show();
-							}
-							refreshList(true);							
-						}
-
-						@Override
-						public void onNothingSelected(AdapterView<?> parent) {
-							// TODO Auto-generated method stub
-							
-						}
-						
-					});
-				}
-														
+				}									
+								
 				if(this.rl_load!=null){
 					this.rl_load.setVisibility(View.GONE);
 				}

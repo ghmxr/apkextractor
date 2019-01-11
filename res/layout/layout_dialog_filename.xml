@@ -25,7 +25,8 @@
         		android:layout_height="wrap_content"
         		android:layout_toLeftOf="@+id/filename_apk_end"
         		android:layout_marginLeft="15dp"
-        		android:singleLine="true"/>
+        		android:singleLine="true"
+        		android:hint="@string/hint_filename_apk"/>
             <TextView 
                 android:id="@+id/filename_apk_end"
                 android:layout_width="45dp"
@@ -78,7 +79,8 @@
         		android:layout_height="wrap_content"
         		android:layout_marginLeft="15dp"
         		android:layout_toLeftOf="@+id/filename_zip_end"
-        		android:singleLine="true"/>
+        		android:singleLine="true"
+        		android:hint="@string/hint_filename_zip"/>
     	     
     	     <TextView 
                 android:id="@+id/filename_zip_end"

@@ -8,9 +8,12 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Locale;
 
+import android.annotation.SuppressLint;
+import android.os.Build;
 import android.os.Environment;
 import android.os.StatFs;
 import android.util.Log;
+
 
 public class StorageUtil {
 	
@@ -18,13 +21,15 @@ public class StorageUtil {
 	 * 获取SD卡剩余空间的字节数
 	 * 
 	 */
+	@SuppressLint("NewApi")
 	public static long getMainStorageAvaliableSize(){
 		try{
 			if(Environment.getExternalStorageState().equals(android.os.Environment.MEDIA_MOUNTED)){
 				 File path = Environment.getExternalStorageDirectory();  
-			       StatFs stat = new StatFs(path.getPath());  
-			       long blockSize = stat.getBlockSize();  
-			       long availableBlocks = stat.getAvailableBlocks();   
+			       StatFs stat = new StatFs(path.getPath());
+			       int version=Build.VERSION.SDK_INT;
+			       long blockSize = version>=18?stat.getBlockSizeLong():stat.getBlockSize();  
+			       long availableBlocks = version>=18?stat.getAvailableBlocksLong():stat.getAvailableBlocks();   
 			       return  blockSize * availableBlocks;
 			}			
 		}catch(Exception e){e.printStackTrace();}
@@ -82,12 +87,14 @@ public class StorageUtil {
 		return new ArrayList<String>();
 	}
 	
+	@SuppressLint("NewApi")
 	public static long getAvaliableSizeOfPath(String path){
 		try{
-			StatFs stat = new StatFs(path);  
-		       long blockSize = stat.getBlockSize();  
-		       long availableBlocks = stat.getAvailableBlocks();   
-		       return  blockSize * availableBlocks;
+			StatFs stat = new StatFs(path);
+			int version=Build.VERSION.SDK_INT;
+		    long blockSize = version>=18?stat.getBlockSizeLong():stat.getBlockSize();  
+		    long availableBlocks = version>=18?stat.getAvailableBlocksLong():stat.getAvailableBlocks();   
+		    return  blockSize * availableBlocks;
 		}catch(Exception e){e.printStackTrace();}
 		return 0;
 	}

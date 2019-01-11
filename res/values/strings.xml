@@ -28,7 +28,7 @@
     <string name="share_mode_direct">直接分享</string>
     <string name="share_mode_direct_att">直接分享应用源APK文件，无需导出，但不能自定义文件名，不能分享打包有Data或Obb的zip文件</string>
     <string name="share_mode_after_extract">导出后分享</string>
-    <string name="share_mode_after_extract_att">先导出到指定的路径再分享导出后的文件，会占用存储空间</string>
+    <string name="share_mode_after_extract_att">先按照命名规则导出到指定的路径再分享导出后的文件，会占用存储空间</string>
     <string name="action_folderselector_newfolder">新建文件夹</string>
     <string name="action_folderselector_sort_ascending">名称升序（A→Z）</string>
     <string name="action_folderselector_sort_descending">名称降序（Z→A）</string>
@@ -71,7 +71,9 @@
     <string name="dialog_sort_descending_appsize">按大小降序（从大到小）</string>
     <string name="dialog_sort_ascending_date">按安装日期升序（从旧到新）</string>
     <string name="dialog_sort_descending_date">按安装日期降序（从新到旧）</string>
-    <string name="text_hint_searchview">搜索内容(支持模糊搜索)</string>        
+    <string name="text_hint_searchview">搜索内容</string>
+    <string name="hint_filename_apk">输入apk命名规则</string>
+    <string name="hint_filename_zip">输入zip命名规则</string>        
     <string name="text_appinst">点击相应条目来导出应用</string>
     <string name="text_showsysapp">显示系统应用</string>
     <string name="text_nofolder">此目录没有子文件夹</string>
@@ -99,10 +101,13 @@
         
     勾选导出Data或者Obb选项后，会将应用APK和Data或Obb数据打包成zip导出。\n\n
     
+    当分享模式设定为“导出后分享”时，会先按照预设的导出路径和命名规则导出应用然后再分享导出后的文件。\n\n
+    
+   <b>注意:导出命名规则请至少设定一个变量，否则在多选导出应用时将无法正常导出(由于没有变量规则导致文件重名而被覆盖)。</b>\n\n
+    
    <b>Build 4 更新日志：</b> \n
-	<b>新增：导出设备选择（由于设备品牌和Android版本不同，实际使用可能会有差异）；</b>\n
-	<b>新增：导出文件命名规则设定和分享模式设定；</b>\n\n
-	<b>注意：导出命名规则请至少设定一个变量，否则在多选导出应用时将无法正常导出（由于没有变量规则导致文件被覆盖）。</b>\n\n
+	<b>新增:导出存储设备选择(由于设备型号和Android版本不同，实际使用可能会有差异)；</b>\n
+	<b>新增:导出文件命名规则设定和分享模式设定；</b>\n\n
         
         开源地址:\n
          https://github.com/ghmxr/apkextractor \n\n

@@ -4,7 +4,7 @@
     <item
         android:id="@+id/folderselector_action_confirm"
         android:orderInCategory="100"
-        android:icon="@drawable/ic_confirm"
+        android:icon="@android:drawable/ic_menu_save"
         android:showAsAction="ifRoom"
         android:title="@string/action_confirm"/>
     

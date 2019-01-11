@@ -135,7 +135,7 @@ public class CopyFilesTask implements Runnable{
 						}
 						progress+=item.getPackageSize();
 						Message msg_exception = new Message();
-						String filename = item.getAppName()+item.getVersion();
+						String filename = item.getAppName()+" "+item.getVersion();
 						msg_exception.what=BaseActivity.MESSAGE_COPYFILE_FILE_NOTFOUND_EXCEPTION;
 						msg_exception.obj=filename+"\nError Message:"+e.toString();
 						BaseActivity.sendMessage(msg_exception);
@@ -170,7 +170,7 @@ public class CopyFilesTask implements Runnable{
 							ee.printStackTrace();
 						}
 						Message msg_filenotfound_exception = new Message();
-						String filename = item.getAppName()+item.getVersion();
+						String filename = item.getAppName()+" "+item.getVersion();
 						msg_filenotfound_exception.what=BaseActivity.MESSAGE_COPYFILE_FILE_NOTFOUND_EXCEPTION;
 						msg_filenotfound_exception.obj=filename+"\n"+"Error Message:"+e.toString();
 						BaseActivity.sendMessage(msg_filenotfound_exception);

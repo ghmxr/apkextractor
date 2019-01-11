@@ -144,7 +144,9 @@ public class Main extends BaseActivity {
 					@Override
 					public void onCancel(DialogInterface dialog) {
 						// TODO Auto-generated method stub
-						thread.interrupt();						
+						try{
+							thread.interrupt();						
+						}catch(Exception e){}
 					}
 					
 				});
@@ -161,7 +163,7 @@ public class Main extends BaseActivity {
 						selectedList.add(item);
 												
 						List<AppItemInfo> list_item=new ArrayList<AppItemInfo>();
-						list_item.add(listsum.get(position));
+						list_item.add(listadapter.getAppList().get(position));
 						String duplicate=getDulplicateFileInfo(list_item,(data||obb)?"zip":"apk");
 						//apkchecker.startCheck();								
 						//if(StorageUtil.getSDAvaliableSize()<(item.getPackageSize()+1024*1024)){
@@ -225,7 +227,7 @@ public class Main extends BaseActivity {
 						}else if(settings.getInt(Constants.PREFERENCE_SHAREMODE, Constants.PREFERENCE_SHAREMODE_DEFAULT)==Constants.SHARE_MODE_AFTER_EXTRACT){
 							//shareAfterExtract=true;							
 							List<AppItemInfo> list_single=new ArrayList<AppItemInfo>();
-							list_single.add(listsum.get(position));
+							list_single.add(listadapter.getAppList().get(position));
 							extractMultiSelectedApps(list_single, true);
 						}
 												
@@ -822,7 +824,7 @@ public class Main extends BaseActivity {
 					}
 									
 				}*/
-				Main.this.closeMultiSelectMode();
+				if(!isSearchMode)Main.this.closeMultiSelectMode();
 				if(list_extract_multi==null) return;
 				String msg_dulplicate="";
 				boolean ifdulplicate=false;				
@@ -991,7 +993,7 @@ public class Main extends BaseActivity {
 			break;
 			
 			case MESSAGE_SHARE_SINGLE_APP:{
-				if(this.listadapter!=null){
+				try{
 					Intent intent=new Intent(Intent.ACTION_SEND);
 					Integer position = (Integer)msg.obj;
 					int pos = position.intValue();
@@ -1006,12 +1008,15 @@ public class Main extends BaseActivity {
 					intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
 					startActivity(Intent.createChooser(intent,  getResources().getString(R.string.share)+list.get(pos).getAppName()   )  );
 					
+				}catch(Exception e){
+					e.printStackTrace();
+					Toast.makeText(this, e.toString(), Toast.LENGTH_SHORT).show();
 				}
 			}
 			break;
 			
 			case MESSAGE_SHARE_MULTI_APP:{
-				if(this.listadapter!=null){
+				try{
 					List<AppItemInfo> list=this.listadapter.getAppList();
 					boolean isSelected[] = this.listadapter.getIsSelected();
 					Intent intent;
@@ -1052,6 +1057,9 @@ public class Main extends BaseActivity {
 						startActivity(Intent.createChooser(intent,  getResources().getString(R.string.share)+appname   )  );
 					}
 															
+				}catch(Exception e){
+					e.printStackTrace();
+					Toast.makeText(this, e.toString(), Toast.LENGTH_SHORT).show();
 				}
 			}
 			break;
@@ -1263,7 +1271,7 @@ public class Main extends BaseActivity {
 					.setCancelable(true)	
 					.setView(dialogview)
 					//.setMessage(this.getResources().getString(R.string.dialog_about_message))
-					.setPositiveButton("È·¶¨", new DialogInterface.OnClickListener() {
+					.setPositiveButton(getResources().getString(R.string.dialog_button_positive), new DialogInterface.OnClickListener() {
 						
 						@Override
 						public void onClick(DialogInterface arg0, int arg1) {
