@@ -52,6 +52,7 @@ import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.CompoundButton.OnCheckedChangeListener;
@@ -60,6 +61,7 @@ import android.widget.ListView;
 import android.widget.ProgressBar;
 import android.widget.RadioButton;
 import android.widget.SearchView;
+import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -80,7 +82,7 @@ public class Main extends BaseActivity {
 	
 	Menu menu;	
 	
-	AppDetailDialog dialog_appdetail;
+	//AppDetailDialog dialog_appdetail;
 	LoadListDialog  dialog_loadlist;
 	FileCopyDialog  dialog_copyfile;
 	SortDialog dialog_sort;
@@ -102,7 +104,7 @@ public class Main extends BaseActivity {
 	public static final int MESSAGE_PERMISSION_DENIED				= 40;
 	public static final int MESSAGE_PERMISSION_GRANTED				= 41;
 	
-	private static final int MESSAGE_REFRESH_DATA_OBB_SIZE=50;
+	//private static final int MESSAGE_REFRESH_DATA_OBB_SIZE=50;
 	
 	private static final int MESSAGE_EXTRA_MULTI_SHOW_SELECTION_DIAG=60;
 	
@@ -116,47 +118,55 @@ public class Main extends BaseActivity {
 			if(Main.this.listadapter!=null){
 				//final List<AppItemInfo> list = Main.this.listadapter.getAppList();							
 				final AppItemInfo item=listadapter.getAppList().get(position);
-				Main.this.dialog_appdetail=new AppDetailDialog(Main.this);
-				Main.this.dialog_appdetail.setTitle(item.getAppName()+" "+item.getVersion());		
-				Main.this.dialog_appdetail.setIcon(item.getIcon());
-				Main.this.dialog_appdetail.setAppInfo(item.getVersionCode(), item.getLastUpdateTime(), item.getPackageSize());
+				final AppDetailDialog dialog_appdetail=new AppDetailDialog(Main.this);
+				dialog_appdetail.setTitle(item.getAppName()+" "+item.getVersion());		
+				dialog_appdetail.setIcon(item.getIcon());
+				dialog_appdetail.setAppInfo(item.getVersionCode(), item.getLastUpdateTime(), item.getPackageSize());
 				if(Build.VERSION.SDK_INT>=24) {
-					Main.this.dialog_appdetail.setAPPMinSDKVersion(item.getMinSDKVersion());
+					dialog_appdetail.setAPPMinSDKVersion(item.getMinSDKVersion());
 				}						
-				Main.this.dialog_appdetail.show();
-				final Thread thread=new Thread(new Runnable(){
+				dialog_appdetail.show();
+				new Thread(new Runnable(){
 
 					@Override
 					public void run() {
 						// TODO Auto-generated method stub
-						long dataSize=FileSize.getFileOrFolderSize(new File(StorageUtil.getMainStoragePath()+"/android/data/"+item.packageName));
-						long obbSize=FileSize.getFileOrFolderSize(new File(StorageUtil.getMainStoragePath()+"/android/obb/"+item.packageName));
-						Message msg=new Message();
-						msg.what=MESSAGE_REFRESH_DATA_OBB_SIZE;
-						msg.obj=new Long[]{dataSize,obbSize};
-						sendMessage(msg);
-					}
-					
-				});
-				thread.start();
-				dialog_appdetail.setOnCancelListener(new DialogInterface.OnCancelListener(){
+						final long dataSize=FileSize.getFileOrFolderSize(new File(StorageUtil.getMainStoragePath()+"/android/data/"+item.packageName));
+						final long obbSize=FileSize.getFileOrFolderSize(new File(StorageUtil.getMainStoragePath()+"/android/obb/"+item.packageName));
+						//Message msg=new Message();
+						//msg.what=MESSAGE_REFRESH_DATA_OBB_SIZE;
+						//msg.obj=new Long[]{dataSize,obbSize};
+						//sendMessage(msg);
+						handler.post(new Runnable(){
 
-					@Override
-					public void onCancel(DialogInterface dialog) {
-						// TODO Auto-generated method stub
-						try{
-							thread.interrupt();						
-						}catch(Exception e){}
+							@Override
+							public void run() {
+								// TODO Auto-generated method stub
+								try{
+									CheckBox cb_data=(CheckBox)dialog_appdetail.findViewById(R.id.dialog_appdetail_extract_data_cb);
+									CheckBox cb_obb=(CheckBox)dialog_appdetail.findViewById(R.id.dialog_appdetail_extract_obb_cb);
+									cb_data.setText("Data("+Formatter.formatFileSize(Main.this, dataSize)+")");
+									cb_obb.setText("Obb("+Formatter.formatFileSize(Main.this, obbSize)+")");
+									cb_data.setVisibility(View.VISIBLE);
+									cb_obb.setVisibility(View.VISIBLE);
+									dialog_appdetail.findViewById(R.id.dialog_appdetail_extract_extra_pb).setVisibility(View.GONE);
+									cb_data.setEnabled(dataSize>0);
+									cb_obb.setEnabled(obbSize>0);
+								}catch(Exception e){e.printStackTrace();}								
+							}
+							
+						});				
 					}
 					
-				});
-				Main.this.dialog_appdetail.area_extract.setOnClickListener(new View.OnClickListener() {
+				}).start();
+
+				dialog_appdetail.area_extract.setOnClickListener(new View.OnClickListener() {
 
 					@Override
 					public void onClick(View v) {
 						// TODO Auto-generated method stub
 						//extract
-						if(Main.this.dialog_appdetail!=null) Main.this.dialog_appdetail.cancel();
+						if(dialog_appdetail!=null) dialog_appdetail.cancel();
 						final boolean data=((CheckBox)dialog_appdetail.findViewById(R.id.dialog_appdetail_extract_data_cb)).isChecked();
 						final boolean obb=((CheckBox)dialog_appdetail.findViewById(R.id.dialog_appdetail_extract_obb_cb)).isChecked();
 						List<AppItemInfo> selectedList=new ArrayList<AppItemInfo>();
@@ -211,12 +221,12 @@ public class Main extends BaseActivity {
 					}										
 				});
 				
-				Main.this.dialog_appdetail.area_share.setOnClickListener(new View.OnClickListener() {
+				dialog_appdetail.area_share.setOnClickListener(new View.OnClickListener() {
 					
 					@Override
 					public void onClick(View v) {
 						// TODO Auto-generated method stub
-						if(Main.this.dialog_appdetail!=null) Main.this.dialog_appdetail.cancel();
+						if(dialog_appdetail!=null) dialog_appdetail.cancel();
 																		
 						if(settings.getInt(Constants.PREFERENCE_SHAREMODE, Constants.PREFERENCE_SHAREMODE_DEFAULT)==Constants.SHARE_MODE_DIRECT){
 							shareAfterExtract=false;
@@ -234,12 +244,12 @@ public class Main extends BaseActivity {
 					}
 				});
 				
-				Main.this.dialog_appdetail.area_detail.setOnClickListener(new View.OnClickListener() {
+				dialog_appdetail.area_detail.setOnClickListener(new View.OnClickListener() {
 					
 					@Override
 					public void onClick(View v) {
 						// TODO Auto-generated method stub
-						if(Main.this.dialog_appdetail!=null) Main.this.dialog_appdetail.cancel();
+						if(dialog_appdetail!=null) dialog_appdetail.cancel();
 						Intent appdetail = new Intent();  
 						appdetail.setAction(Settings.ACTION_APPLICATION_DETAILS_SETTINGS);  
 						appdetail.setData(Uri.fromParts("package", item.getPackageName(), null));   
@@ -1101,7 +1111,7 @@ public class Main extends BaseActivity {
 				.show();
 			}
 			break;*/		
-			case MESSAGE_REFRESH_DATA_OBB_SIZE:{
+			/*case MESSAGE_REFRESH_DATA_OBB_SIZE:{
 				if(this.dialog_appdetail==null) return;
 				if(msg.obj==null) return;
 				Long[] sizes=(Long[])msg.obj;
@@ -1115,7 +1125,7 @@ public class Main extends BaseActivity {
 				cb_data.setEnabled(sizes[0]>0);
 				cb_obb.setEnabled(sizes[1]>0);
 			}
-			break;
+			break;*/
 			
 			case MESSAGE_EXTRA_MULTI_SHOW_SELECTION_DIAG:{
 				if(dialog_wait==null) return;
@@ -1424,10 +1434,23 @@ public class Main extends BaseActivity {
 			final EditText edit_apk=(EditText)dialogView.findViewById(R.id.filename_apk);
 			final EditText edit_zip=(EditText)dialogView.findViewById(R.id.filename_zip);
 			final TextView preview=((TextView)dialogView.findViewById(R.id.filename_preview));
+			final Spinner spinner=((Spinner)dialogView.findViewById(R.id.spinner_zip_level));
 			
 			edit_apk.setText(settings.getString(Constants.PREFERENCE_FILENAME_FONT_APK, Constants.PREFERENCE_FILENAME_FONT_DEFAULT));
 			edit_zip.setText(settings.getString(Constants.PREFERENCE_FILENAME_FONT_ZIP, Constants.PREFERENCE_FILENAME_FONT_DEFAULT));
 			preview.setText(getFormatedExportFileName(edit_apk.getText().toString(),edit_zip.getText().toString()));
+			spinner.setAdapter(new ArrayAdapter<String>(this,R.layout.layout_item_spinner_text,R.id.item_storage_text,new String[]{getResources().getString(R.string.zip_level_default),
+					getResources().getString(R.string.zip_level_stored),getResources().getString(R.string.zip_level_low),getResources().getString(R.string.zip_level_normal),getResources().getString(R.string.zip_level_high)}));
+			int level_set=settings.getInt(Constants.PREFERENCE_ZIP_COMPRESS_LEVEL, Constants.PREFERENCE_ZIP_COMPRESS_LEVEL_DEFAULT);
+			try{
+				switch(level_set){
+					default:spinner.setSelection(0);break;
+					case Constants.ZIP_LEVEL_STORED:spinner.setSelection(1);break;
+					case Constants.ZIP_LEVEL_LOW:spinner.setSelection(2);break;
+					case Constants.ZIP_LEVEL_NORMAL:spinner.setSelection(3);break;
+					case Constants.ZIP_LEVEL_HIGH:spinner.setSelection(4);break;
+				}
+			}catch(Exception e){e.printStackTrace();}
 			
 			if(!edit_apk.getText().toString().contains(Constants.FONT_APP_NAME)&&!edit_apk.getText().toString().contains(Constants.FONT_APP_PACKAGE_NAME)
 					&&!edit_apk.getText().toString().contains(Constants.FONT_APP_VERSIONCODE)&&!edit_apk.getText().toString().contains(Constants.FONT_APP_VERSIONNAME)){
@@ -1477,6 +1500,15 @@ public class Main extends BaseActivity {
 					}
 					editor.putString(Constants.PREFERENCE_FILENAME_FONT_APK, edit_apk.getText().toString());
 					editor.putString(Constants.PREFERENCE_FILENAME_FONT_ZIP, edit_zip.getText().toString());
+					int zip_selection=spinner.getSelectedItemPosition();				
+					switch(zip_selection){
+						default:break;
+						case 0:editor.putInt(Constants.PREFERENCE_ZIP_COMPRESS_LEVEL, Constants.PREFERENCE_ZIP_COMPRESS_LEVEL_DEFAULT);break;
+						case 1:editor.putInt(Constants.PREFERENCE_ZIP_COMPRESS_LEVEL, Constants.ZIP_LEVEL_STORED);break;
+						case 2:editor.putInt(Constants.PREFERENCE_ZIP_COMPRESS_LEVEL, Constants.ZIP_LEVEL_LOW);break;
+						case 3:editor.putInt(Constants.PREFERENCE_ZIP_COMPRESS_LEVEL, Constants.ZIP_LEVEL_NORMAL);break;
+						case 4:editor.putInt(Constants.PREFERENCE_ZIP_COMPRESS_LEVEL, Constants.ZIP_LEVEL_HIGH);break;
+					}
 					editor.apply();
 					dialog.cancel();
 				}

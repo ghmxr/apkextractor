@@ -1,5 +1,6 @@
 package com.github.ghmxr.apkextractor.utils;
 
+import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
@@ -8,6 +9,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.zip.CRC32;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
 
@@ -15,6 +17,7 @@ import com.github.ghmxr.apkextractor.R;
 import com.github.ghmxr.apkextractor.activities.BaseActivity;
 import com.github.ghmxr.apkextractor.activities.Main;
 import com.github.ghmxr.apkextractor.data.AppItemInfo;
+import com.github.ghmxr.apkextractor.data.Constants;
 
 import android.content.Context;
 import android.os.Message;
@@ -149,12 +152,16 @@ public class CopyFilesTask implements Runnable{
 						this.currentWritePath=writePath;
 						ZipOutputStream zos=new ZipOutputStream(new BufferedOutputStream(new FileOutputStream(new File(writePath))));						
 						zos.setComment("Packaged by com.github.ghmxr.apkextractor \nhttps://github.com/ghmxr/apkextractor");
-						writeZip(new File(item.getResourcePath()),"",zos);
+						int zip_level=context.getSharedPreferences(Constants.PREFERENCE_NAME, Context.MODE_PRIVATE).getInt(Constants.PREFERENCE_ZIP_COMPRESS_LEVEL, Constants.PREFERENCE_ZIP_COMPRESS_LEVEL_DEFAULT);
+												
+						if(zip_level>=0&&zip_level<=9) zos.setLevel(zip_level);
+						
+						writeZip(new File(item.getResourcePath()),"",zos,zip_level);
 						if(item.exportData){
-							writeZip(new File(StorageUtil.getMainStoragePath()+"/android/data/"+item.packageName),"Android/data/",zos);
+							writeZip(new File(StorageUtil.getMainStoragePath()+"/android/data/"+item.packageName),"Android/data/",zos,zip_level);
 						}
 						if(item.exportObb){
-							writeZip(new File(StorageUtil.getMainStoragePath()+"/android/obb/"+item.packageName),"Android/obb/",zos);
+							writeZip(new File(StorageUtil.getMainStoragePath()+"/android/obb/"+item.packageName),"Android/obb/",zos,zip_level);
 						}
 						zos.flush();
 						zos.close();
@@ -196,7 +203,7 @@ public class CopyFilesTask implements Runnable{
 	
 	}
 	
-	private void writeZip(File file,String parent,ZipOutputStream zos) {
+	private void writeZip(File file,String parent,ZipOutputStream zos,final int zip_level) {
 		if(file==null||parent==null||zos==null) return;
 		if(isInterrupted) return;
 		if(file.exists()){
@@ -205,7 +212,7 @@ public class CopyFilesTask implements Runnable{
 				File files[]=file.listFiles();	
 				if(files.length>0){
 					for(File f:files){
-						writeZip(f,parent,zos);
+						writeZip(f,parent,zos,zip_level);
 					}
 				}else{
 					try{
@@ -217,8 +224,16 @@ public class CopyFilesTask implements Runnable{
 			}else{
 				try{					
 					FileInputStream in=new FileInputStream(file);
-					ZipEntry zipextry=new ZipEntry(parent+file.getName());
-					zos.putNextEntry(zipextry);
+					ZipEntry zipentry=new ZipEntry(parent+file.getName());
+					
+					if(zip_level==Constants.ZIP_LEVEL_STORED){
+						zipentry.setMethod(ZipOutputStream.STORED);
+						zipentry.setCompressedSize(file.length());
+						zipentry.setSize(file.length());
+						zipentry.setCrc(getCRC32FromFile(file).getValue());
+					}
+					
+					zos.putNextEntry(zipentry);
 					byte[] buffer=new byte[1024];
 					int length;
 					//long progressCheck=this.progress;
@@ -286,5 +301,17 @@ public class CopyFilesTask implements Runnable{
 			e.printStackTrace();
 		}
 		
+	}
+	
+	public static CRC32 getCRC32FromFile(File file) throws Exception{
+		InputStream inputStream = new BufferedInputStream(new FileInputStream(file.getAbsolutePath()));
+        CRC32 crc = new CRC32();
+        byte[] bytes = new byte[1024];
+        int cnt;
+        while ((cnt = inputStream.read(bytes)) != -1) {
+            crc.update(bytes, 0, cnt);
+        }
+        inputStream.close();
+		return crc;
 	}
 }

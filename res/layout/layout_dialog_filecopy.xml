@@ -7,14 +7,14 @@
     <TextView 
         android:id="@+id/currentfile"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_height="49dp"
         android:layout_alignParentTop="true"
         android:layout_alignParentLeft="true"
         android:layout_marginTop="10dp"
         android:layout_marginLeft="15dp"
         android:layout_marginRight="15dp"
         android:layout_marginBottom="10dp"
-        android:textSize="14sp"
+        android:textSize="13sp"
         android:text="请等待"
         
         />
@@ -25,7 +25,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_below="@+id/currentfile" 
-        android:layout_marginTop="10dp"     
+        android:layout_marginTop="3dp"     
         android:layout_marginLeft="30dp"
         android:layout_marginRight="30dp"
         />

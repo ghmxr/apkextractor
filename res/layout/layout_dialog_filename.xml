@@ -14,7 +14,7 @@
         	android:layout_marginLeft="10dp"
         	android:textSize="15sp"
         	android:textColor="@color/color_att"
-        	android:text="APK"/>
+        	android:text="@string/dialog_filename_apk_att"/>
         
         <RelativeLayout 
             android:layout_width="match_parent"
@@ -68,7 +68,7 @@
         	android:layout_marginLeft="10dp"
         	android:textSize="15sp"
         	android:textColor="@color/color_att"
-        	android:text="ZIP"/>
+        	android:text="@string/dialog_filename_zip_att"/>
     	 
     	 <RelativeLayout 
     	     android:layout_width="match_parent"
@@ -117,12 +117,36 @@
     	        android:textColor="@color/color_text_darkred"
     	        android:text="@string/dialog_filename_warn_no_variables"/>
     	</LinearLayout>
-       	   	
+    	
+    	 <RelativeLayout 
+    	     android:layout_width="wrap_content"
+    	     android:layout_height="wrap_content">
+    	     
+    	     <TextView 
+    	        android:id="@+id/zip_level_att"
+        		android:layout_width="wrap_content"
+        		android:layout_height="wrap_content"
+        		android:layout_marginTop="10dp"
+        		android:layout_marginLeft="10dp"
+        		android:gravity="center_vertical"
+        		android:layout_centerVertical="true"     		
+        		android:textSize="14sp"
+        		android:textColor="@color/color_att"
+        		android:text="@string/zip_level_att"/>
+    	
+    		<Spinner android:id="@+id/spinner_zip_level"
+    	    	android:layout_width="wrap_content"
+    	    	android:layout_height="wrap_content"
+    	    	android:layout_toRightOf="@+id/zip_level_att"
+    	    	android:layout_centerVertical="true"
+    	    	android:layout_marginLeft="15dp"/>
+    	 </RelativeLayout>
+    	      	   	
     	<TextView 
     	    android:layout_width="wrap_content"
     	    android:layout_height="wrap_content"
     	    android:layout_marginLeft="10dp"
-    	    android:layout_marginTop="15dp"
+    	    android:layout_marginTop="10dp"
     	    android:layout_marginBottom="5dp"
     	    android:textColor="@color/color_att"
     	    android:text="@string/dialog_filename_variables"/>

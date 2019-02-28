@@ -7,8 +7,8 @@
     <string name="action_search">搜索</string>
     <string name="action_sort">排序</string>
     <string name="action_about">关于</string>
-    <string name="action_editpath">更改导出路径</string>
-    <string name="action_filename">导出命名规则</string>
+    <string name="action_editpath">导出路径</string>
+    <string name="action_filename">导出规则</string>
     <string name="action_sharemode">分享模式</string>
     <string name="action_confirm">确定</string>
     <string name="action_cancel">取消</string>
@@ -49,7 +49,9 @@
     <string name="activity_folder_selector_storage_title">存储</string>
     <string name="copytask_apk_current">正在复制到</string>
     <string name="copytask_zip_current">正在压缩</string>
-    <string name="dialog_filename_title">命名规则</string>
+    <string name="dialog_filename_title">导出规则</string>
+    <string name="dialog_filename_apk_att">APK命名规则</string>
+    <string name="dialog_filename_zip_att">ZIP命名规则</string>
     <string name="dialog_filename_variables">插入变量</string>
     <string name="dialog_filename_button_appname">应用名称(?N)</string>
     <string name="dialog_filename_button_packagename">包名(?P)</string>
@@ -61,6 +63,12 @@
     <string name="dialog_filename_preview_versioncode">1</string>
     <string name="dialog_filename_toast_blank">命名规则不能为空</string>
     <string name="dialog_filename_warn_no_variables">注意:没有输入变量，这会导致多选导出无法正常导出文件！</string>
+    <string name="zip_level_att">ZIP压缩级别</string>
+    <string name="zip_level_default">默认</string>
+    <string name="zip_level_stored">存储</string>
+    <string name="zip_level_low">低</string>
+    <string name="zip_level_normal">普通</string>
+    <string name="zip_level_high">高</string>
     <string name="preview">预览</string>
     <string name="share">分享</string>
     <string name="attention">提示</string>
@@ -94,7 +102,7 @@
     <string name="dialog_appdetail_text_appsize">应用大小：</string>
     <string name="dialog_appdetail_text_minsdkversion">最低要求API：</string>
     <string name="dialog_extract_multi_has_data_obb">检测到部分应用含有Data和Obb数据。\n勾选下面的选项，将会把含有Data或Obb数据的应用打包成zip导出。\n或者不勾选任何项，将会直接导出APK。</string>
-    <string name="dialog_about_title">APK Kit(Build 4)</string>
+    <string name="dialog_about_title">APK Kit(Build 5)</string>
     <string name="dialog_about_message">\n导出的应用默认将会保存至“存储/Backup”路径内，并默认以“包名+版本号(versionCode)”的方式命名，或者可以在菜单“更改导出路径”，“导出命名规则”中更改。\n\n
         
         点击“分享”，可以使用支持分享的应用例如蓝牙、QQ面对面快传等来分享已选择的应用。\n\n
@@ -105,9 +113,9 @@
     
    <b>注意:导出命名规则请至少设定一个变量，否则在多选导出应用时将无法正常导出(由于没有变量规则导致文件重名而被覆盖)。</b>\n\n
     
-   <b>Build 4 更新日志：</b> \n
-	<b>新增:导出存储设备选择(由于设备型号和Android版本不同，实际使用可能会有差异)；</b>\n
-	<b>新增:导出文件命名规则设定和分享模式设定；</b>\n\n
+   <b>Build 5 更新日志：</b> \n
+	<b>新增：导出ZIP文件压缩级别选项；</b>\n
+	<b>修复：在某些情况下Data和Obb大小显示错乱的问题。</b>\n\n
         
         开源地址:\n
          https://github.com/ghmxr/apkextractor \n\n
@@ -116,7 +124,7 @@
         
         邮箱: \n
         mxremail@qq.com \n\n
-        如果您喜欢本应用，欢迎您捐赠来支持作者。
+        打赏作者：
         </string>   
     <string name="dialog_firstuse_title">提示</string>
     <string name="dialog_firstuse_message">所有导出的应用将会以“包名+版本号”的方式命名并默认保存在“存储/Backup”路径下。\n\n导出路径可自行更改。</string>

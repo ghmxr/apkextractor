@@ -80,7 +80,7 @@ public class FolderSelector extends BaseActivity implements Runnable{
 			final Spinner spinner=(Spinner)findViewById(R.id.folderselector_spinner);			
 			//String[] displayValues=new String[storages.size()];
 			//for(int i=0;i<displayValues.length;i++) displayValues[i]=String.valueOf(getResources().getString(R.string.activity_folder_selector_storage_title)+(i+1));			
-			spinner.setAdapter(new ArrayAdapter<String>(FolderSelector.this,R.layout.layout_item_spinner_storage,R.id.item_storage_text,storages));			
+			spinner.setAdapter(new ArrayAdapter<String>(FolderSelector.this,R.layout.layout_item_spinner_text,R.id.item_storage_text,storages));			
 			OUT:
 			for(int i=0;i<storages.size();i++){
 				try{
