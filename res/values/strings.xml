@@ -103,25 +103,17 @@
     <string name="dialog_appdetail_text_minsdkversion">最低要求API：</string>
     <string name="dialog_extract_multi_has_data_obb">检测到部分应用含有Data和Obb数据。\n勾选下面的选项，将会把含有Data或Obb数据的应用打包成zip导出。\n或者不勾选任何项，将会直接导出APK。</string>
     <string name="dialog_about_title">APK Kit(Build 5)</string>
-    <string name="dialog_about_message">\n导出的应用默认将会保存至“存储/Backup”路径内，并默认以“包名+版本号(versionCode)”的方式命名，或者可以在菜单“更改导出路径”，“导出命名规则”中更改。\n\n
+    <string name="dialog_about_message">\n这是一个快速导出或者分享本地已安装APP的小工具。\n\n
         
         点击“分享”，可以使用支持分享的应用例如蓝牙、QQ面对面快传等来分享已选择的应用。\n\n
         
-    勾选导出Data或者Obb选项后，会将应用APK和Data或Obb数据打包成zip导出。\n\n
-    
-    当分享模式设定为“导出后分享”时，会先按照预设的导出路径和命名规则导出应用然后再分享导出后的文件。\n\n
-    
-   <b>注意:导出命名规则请至少设定一个变量，否则在多选导出应用时将无法正常导出(由于没有变量规则导致文件重名而被覆盖)。</b>\n\n
-    
+    勾选导出Data或者Obb选项后，会将应用APK和Data或Obb数据打包成zip导出。\n\n    
    <b>Build 5 更新日志：</b> \n
 	<b>新增：导出ZIP文件压缩级别选项；</b>\n
 	<b>修复：在某些情况下Data和Obb大小显示错乱的问题。</b>\n\n
         
         开源地址:\n
-         https://github.com/ghmxr/apkextractor \n\n
-         获取更新地址:\n
-         https://github.com/ghmxr/apkextractor/releases \n\n
-        
+         https://github.com/ghmxr/apkextractor \n\n       
         邮箱: \n
         mxremail@qq.com \n\n
         打赏作者：
