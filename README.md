@@ -3,9 +3,9 @@
 *********************
 酷安市场：<a href="https://www.coolapk.com/apk/com.github.ghmxr.apkextractor">https://www.coolapk.com/apk/com.github.ghmxr.apkextractor</a>
 
-<center class="half">
-    <img src="https://github.com/ghmxr/apkextractor/raw/master/preview/apkextractor_1.png" width="200"/>
-	<img src="https://github.com/ghmxr/apkextractor/raw/master/preview/apkextractor_2.png" width="200"/>
-	<img src="https://github.com/ghmxr/apkextractor/raw/master/preview/apkextractor_3.png" width="200"/>
-	<img src="https://github.com/ghmxr/apkextractor/raw/master/preview/apkextractor_4.png" width="200"/>
-</center>
+<div align="center">
+    <img src="https://github.com/ghmxr/apkextractor/raw/master/preview/apkextractor_1.png" alt="avator" title="" width="200"/>
+	<img src="https://github.com/ghmxr/apkextractor/raw/master/preview/apkextractor_2.png" alt="avator" title="" width="200"/>
+	<img src="https://github.com/ghmxr/apkextractor/raw/master/preview/apkextractor_3.png" alt="avator" title="" width="200"/>
+	<img src="https://github.com/ghmxr/apkextractor/raw/master/preview/apkextractor_4.png" alt="avator" title="" width="200"/>
+</div>
