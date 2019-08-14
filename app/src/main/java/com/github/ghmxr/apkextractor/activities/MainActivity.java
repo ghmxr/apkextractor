@@ -12,6 +12,7 @@ import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.ActivityOptionsCompat;
 import android.support.v4.content.PermissionChecker;
 import android.support.v4.util.Pair;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
@@ -33,6 +34,8 @@ import java.util.List;
 public class MainActivity extends BaseActivity {
 
     private RecyclerView recyclerView;
+    private SwipeRefreshLayout swipeRefreshLayout;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -55,6 +58,8 @@ public class MainActivity extends BaseActivity {
         recyclerView.setLayoutManager(linearLayoutManager);
         final LoadingListDialog dialog=new LoadingListDialog(this);
         dialog.show();
+        swipeRefreshLayout=findViewById(R.id.main_swipe_refresh_layout);
+        swipeRefreshLayout.setColorSchemeColors(getResources().getColor(R.color.colorTitle));
         new Global.RefreshInstalledListTask(this, true, new Global.RefreshInstalledListTaskCallback() {
             @Override
             public void onRefreshProgressUpdated(int current, int total) {
@@ -65,6 +70,24 @@ public class MainActivity extends BaseActivity {
             public void onRefreshCompleted(List<AppItem> appList) {
                 dialog.cancel();
                 recyclerView.setAdapter(new ListAdapter(appList));
+                swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+                    @Override
+                    public void onRefresh() {
+                        recyclerView.setAdapter(null);
+                        new Global.RefreshInstalledListTask(MainActivity.this, true, new Global.RefreshInstalledListTaskCallback() {
+                            @Override
+                            public void onRefreshProgressUpdated(int current, int total) {
+
+                            }
+
+                            @Override
+                            public void onRefreshCompleted(List<AppItem> appList) {
+                                swipeRefreshLayout.setRefreshing(false);
+                                recyclerView.setAdapter(new ListAdapter(appList));
+                            }
+                        }).start();
+                    }
+                });
                 if(Build.VERSION.SDK_INT>=23&&PermissionChecker.checkSelfPermission(MainActivity.this, Manifest.permission.WRITE_EXTERNAL_STORAGE)!=PermissionChecker.PERMISSION_GRANTED){
                     requestPermissions(new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE},0);
                 }
@@ -79,6 +102,7 @@ public class MainActivity extends BaseActivity {
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.menu_main, menu);
+        //setIconEnable(menu,true);
         return true;
     }
 
@@ -91,6 +115,7 @@ public class MainActivity extends BaseActivity {
 
         //noinspection SimplifiableIfStatement
         if (id == R.id.action_settings) {
+            startActivity(new Intent(this,SettingActivity.class));
             return true;
         }
 

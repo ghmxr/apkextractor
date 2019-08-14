@@ -1,6 +1,9 @@
 <resources>
     <string name="app_name">APK Kit</string>
-    <string name="action_settings">Settings</string>
+    <string name="action_settings">设置</string>
+    <string name="action_search">搜索</string>
+    <string name="action_sort">排序</string>
+    <string name="action_view">视图</string>
     <string name="dialog_loading_title">正在载入</string>
 
     <string name="permission_write">需要授权读取/写入存储权限</string>
@@ -21,6 +24,22 @@
     <string name="activity_detail_minimum_api">最低API</string>
     <string name="activity_detail_target_api">目标API</string>
     <string name="activity_detail_signature">签名MD5</string>
+
+    <string name="activity_settings_title">设置</string>
+    <string name="activity_settings_path">导出路径</string>
+    <string name="activity_settings_rules">导出规则</string>
+    <string name="activity_settings_share_mode">分享模式</string>
+    <string name="activity_settings_night_mode">夜间模式</string>
+    <string name="activity_settings_loading_options">读取项</string>
+    <string name="loading_activity">Activity(活动组件)</string>
+    <string name="loading_receiver">Receiver(广播接收器)</string>
+    <string name="loading_boot_receivers">自启接收器(会拖慢加载速度)</string>
+    <string name="activity_settings_about">关于</string>
+
+    <string name="share_mode_direct">直接分享</string>
+    <string name="share_mode_direct_att">直接分享应用源APK文件，无需导出，但不能自定义文件名，不能分享打包有Data或Obb的zip文件</string>
+    <string name="share_mode_export">导出后分享</string>
+    <string name="share_mode_export_att">先按照命名规则导出到指定的路径再分享导出后的文件，会占用存储空间</string>
 
     <string name="dialog_export_title">正在导出</string>
     <string name="dialog_export_msg_apk">正在复制到</string>

@@ -3,8 +3,27 @@
     xmlns:tools="http://schemas.android.com/tools"
     tools:context="com.github.ghmxr.apkextractor.activities.MainActivity">
     <item
+        android:id="@+id/action_search"
+        android:orderInCategory="0"
+        android:title="@string/action_search"
+        android:icon="@drawable/icon_search"
+        app:showAsAction="ifRoom" />
+    <item
+        android:id="@+id/action_sort"
+        android:orderInCategory="1"
+        android:title="@string/action_sort"
+        android:icon="@drawable/icon_sort"
+        app:showAsAction="ifRoom" />
+    <item
+        android:id="@+id/action_view"
+        android:orderInCategory="2"
+        android:title="@string/action_view"
+        android:icon="@drawable/icon_view"
+        app:showAsAction="ifRoom" />
+    <item
         android:id="@+id/action_settings"
-        android:orderInCategory="100"
+        android:orderInCategory="3"
+        android:icon="@drawable/icon_settings"
         android:title="@string/action_settings"
-        app:showAsAction="never" />
+        app:showAsAction="ifRoom" />
 </menu>

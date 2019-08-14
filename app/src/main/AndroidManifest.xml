@@ -3,6 +3,7 @@
     package="com.github.ghmxr.apkextractor">
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
     <application
+        android:name=".MyApplication"
         android:allowBackup="true"
         android:icon="@drawable/icon_launcher"
         android:label="@string/app_name"
@@ -20,6 +21,9 @@
         </activity>
         <activity android:name=".activities.AppDetailActivity"
             android:label="Detail"
+            android:theme="@style/AppTheme.NoActionBar"/>
+        <activity android:name=".activities.SettingActivity"
+            android:label="@string/activity_settings_title"
             android:theme="@style/AppTheme.NoActionBar"/>
     </application>
 
