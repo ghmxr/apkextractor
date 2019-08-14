@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string-array name="static_receiver_filters">
+        <item>android.intent.action.LOCKED_BOOT_COMPLETED</item>
+        <item>android.intent.action.BOOT_COMPLETED</item>
+        <item>android.intent.action.USER_INITIALIZE</item>
+        <item>android.intent.action.USER_ADDED</item>
+        <item>android.intent.action.USER_REMOVED</item>
+        <item>android.intent.action.TIME_SET</item>
+        <item>android.intent.action.TIMEZONE_CHANGED</item>
+    </string-array>
+</resources>

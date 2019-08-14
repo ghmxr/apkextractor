@@ -1,0 +1,56 @@
+<resources>
+    <string name="app_name">APK Kit</string>
+    <string name="action_settings">Settings</string>
+    <string name="dialog_loading_title">正在载入</string>
+
+    <string name="permission_write">需要授权读取/写入存储权限</string>
+    <string name="permission_grant">立即授权</string>
+
+    <string name="activity_detail_run">运行</string>
+    <string name="activity_detail_export">导出</string>
+    <string name="activity_detail_share">分享</string>
+    <string name="activity_detail_system_detail">详情</string>
+    <string name="activity_detail_market">在应用商店查看</string>
+    <string name="activity_detail_uninstall">卸载</string>
+    <string name="activity_detail_package_name">应用包名</string>
+    <string name="activity_detail_version_name">版本名</string>
+    <string name="activity_detail_version_code">版本号</string>
+    <string name="activity_detail_package_size">应用包大小</string>
+    <string name="activity_detail_first_install_time">首次安装时间</string>
+    <string name="activity_detail_last_update_time">上次更新时间</string>
+    <string name="activity_detail_minimum_api">最低API</string>
+    <string name="activity_detail_target_api">目标API</string>
+    <string name="activity_detail_signature">签名MD5</string>
+
+    <string name="dialog_export_title">正在导出</string>
+    <string name="dialog_export_msg_apk">正在复制到</string>
+    <string name="dialog_export_zip">正在压缩</string>
+    <string name="dialog_export_stop">停止</string>
+
+    <string name="toast_export_complete">应用已导出至</string>
+
+    <string name="exception_title">提示</string>
+    <string name="exception_message">下列文件导出异常，可能的异常包括存储空间不足，源文件被删除，写入路径不合法，或者没有写入权限等。\n异常信息如下：\n\n</string>
+    
+    <string name="dialog_duplicate_title">重复文件</string>
+    <string name="dialog_duplicate_msg">发现下列重复文件，是否覆盖？\n\n</string>
+
+    <string name="dialog_wait">请等待&#8230;</string>
+    <string name="dialog_data_obb_title">附加选项</string>
+    <string name="dialog_data_obb_message">发现部分应用包含外置存储Data和Obb数据，勾选下面的选项将打包成zip导出。</string>
+
+    <string name="dialog_button_confirm">确定</string>
+    <string name="dialog_button_cancel">取消</string>
+    <string name="dialog_button_yes">是</string>
+    <string name="dialog_button_continue">继续</string>
+
+    <string name="share_title">分享</string>
+
+    <string name="activity_detail_permissions">权限</string>
+    <string name="activity_detail_activities">活动组件</string>
+    <string name="activity_detail_receivers">广播接收器</string>
+    <string name="activity_detail_static_loaders">自启接收器</string>
+
+    <string name="unit_item">项</string>
+    <string name="word_unknown">未知</string>
+</resources>
