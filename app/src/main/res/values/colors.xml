@@ -8,6 +8,7 @@
     <color name="colorTitleDark">#2387ca</color>
 
     <color name="colorCardArea">#ffffff</color>
+    <color name="colorMainBottomCard">#e7ffffff</color>
     <color name="colorHighLightText">#000000</color>
     <color name="color_text_normal">#303030</color>
 

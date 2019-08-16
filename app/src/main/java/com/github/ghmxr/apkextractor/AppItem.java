@@ -2,8 +2,6 @@ package com.github.ghmxr.apkextractor;
 
 import android.content.Context;
 import android.content.pm.PackageInfo;
-import android.content.pm.PackageManager;
-import android.graphics.Bitmap;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.os.Parcel;
@@ -15,13 +13,11 @@ import com.github.ghmxr.apkextractor.utils.EnvironmentUtil;
 import com.github.ghmxr.apkextractor.utils.FileUtil;
 
 import java.io.File;
-import java.util.HashMap;
-import java.util.List;
 
 /**
  * 单个应用项的所有信息
  */
-public class AppItem implements Parcelable {
+public class AppItem implements Parcelable ,Comparable<AppItem>{
 
     public static transient int sort_config=0;
 
@@ -167,14 +163,25 @@ public class AppItem implements Parcelable {
         return static_receivers_bundle;
     }
 
+    /**
+     * 排序模式。
+     * 0 - 默认
+     * 1 - 名称升序
+     * 2 - 名称降序
+     * 3 - 大小升序
+     * 4 - 大小降序
+     * 5 - 更新日期升序
+     * 6 - 更新日期降序
+     * 7 - 安装日期升序
+     * 8 - 安装日期降序
+     */
     @Override
-    public @NonNull String toString() {
-        return "AppItem{" +
-                "info=" + info +
-                ", title='" + title + '\'' +
-                ", size=" + size +
-                ", exportData=" + exportData +
-                ", exportObb=" + exportObb +
-                '}';
+    public int compareTo(@NonNull AppItem o) {
+        switch (sort_config){
+            default:break;
+            case 0:break;
+            case 1:break;
+        }
+        return 0;
     }
 }

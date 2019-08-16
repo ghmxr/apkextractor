@@ -4,6 +4,7 @@ import android.Manifest;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.pm.ActivityInfo;
 import android.content.pm.PackageInfo;
 import android.net.Uri;
@@ -29,6 +30,7 @@ import android.widget.Toast;
 import com.github.ghmxr.apkextractor.AppItem;
 import com.github.ghmxr.apkextractor.Global;
 import com.github.ghmxr.apkextractor.R;
+import com.github.ghmxr.apkextractor.data.Constants;
 import com.github.ghmxr.apkextractor.ui.ToastManager;
 import com.github.ghmxr.apkextractor.utils.EnvironmentUtil;
 import com.github.ghmxr.apkextractor.utils.FileUtil;
@@ -56,6 +58,7 @@ public class AppDetailActivity extends BaseActivity implements View.OnClickListe
             return;
         }
         setContentView(R.layout.activity_app_detail);
+        final SharedPreferences settings=Global.getGlobalSharedPreferences(this);
 
         setSupportActionBar((Toolbar)findViewById(R.id.toolbar_app_detail));
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
@@ -91,82 +94,6 @@ public class AppDetailActivity extends BaseActivity implements View.OnClickListe
         findViewById(R.id.app_detail_market_area).setOnClickListener(this);
         findViewById(R.id.app_detail_delete_area).setOnClickListener(this);
 
-        String[] permissions=packageInfo.requestedPermissions;
-        ActivityInfo[] activities=packageInfo.activities;
-        ActivityInfo[] receivers=packageInfo.receivers;
-
-        TextView att_permission=((TextView)findViewById(R.id.app_detail_permission_area_att));
-        if(permissions!=null){
-            att_permission.setText(getResources().getString(R.string.activity_detail_permissions)
-            +"("+permissions.length+getResources().getString(R.string.unit_item)+")");
-            for(String permission:permissions){
-                if(permission==null)continue;
-                permission_views.addView(getSingleItemView(permission_views,permission,null,null));
-            }
-        }else{
-            att_permission.setText(getResources().getString(R.string.activity_detail_permissions)+"(0"+getResources().getString(R.string.unit_item)+")");
-        }
-
-        TextView att_activity=((TextView)findViewById(R.id.app_detail_activity_area_att));
-        if(activities!=null){
-            att_activity.setText(getResources().getString(R.string.activity_detail_activities)
-            +"("+activities.length+getResources().getString(R.string.unit_item)+")");
-            for(final ActivityInfo info:activities){
-                if(info==null)continue;
-                activity_views.addView(getSingleItemView(activity_views, info.name, null,new View.OnLongClickListener() {
-                    @Override
-                    public boolean onLongClick(View v) {
-                        try{
-                            Intent intent=new Intent();
-                            intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                            intent.setClassName(info.packageName,info.name);
-                            startActivity(intent);
-                            return true;
-                        }catch (Exception e){
-                            e.printStackTrace();
-                            ToastManager.showToast(AppDetailActivity.this,e.toString(), Toast.LENGTH_SHORT);
-                        }
-                        return false;
-                    }
-                }));
-            }
-        }else{
-            //findViewById(R.id.app_detail_card_activities).setVisibility(View.GONE);
-            att_activity.setText(getResources().getString(R.string.activity_detail_activities)+"(0"+getResources().getString(R.string.unit_item)+")");
-        }
-
-        TextView att_receiver=findViewById(R.id.app_detail_receiver_area_att);
-
-        if(receivers!=null){
-            att_receiver.setText(getResources().getString(R.string.activity_detail_receivers)+"("+receivers.length+getResources().getString(R.string.unit_item)+")");
-            for(ActivityInfo activityInfo:receivers){
-                receiver_views.addView(getSingleItemView(receiver_views,activityInfo.name,null,null));
-            }
-
-        }else {
-            att_receiver.setText(getResources().getString(R.string.activity_detail_receivers)+"(0"+getResources().getString(R.string.unit_item)+")");
-        }
-
-        TextView att_static_loader=findViewById(R.id.app_detail_static_loader_area_att);
-        //Map<String, List<String>>map=appItem.getStaticReceivers();
-        Bundle bundle=appItem.getStaticReceiversBundle();
-        Set<String>keys=bundle.keySet();
-        att_static_loader.setText(getResources().getString(R.string.activity_detail_static_loaders)+"("+keys.size()+getResources().getString(R.string.unit_item)+")");
-
-        for(String s:keys){
-            View static_loader_item_view=LayoutInflater.from(this).inflate(R.layout.item_static_loader,static_loader_views,false);
-            ((TextView)static_loader_item_view.findViewById(R.id.static_loader_name)).setText(s);
-            ViewGroup filter_views=static_loader_item_view.findViewById(R.id.static_loader_intents);
-            List<String>filters=bundle.getStringArrayList(s);
-            if(filters==null)continue;
-            for(String filter:filters){
-               View itemView=LayoutInflater.from(this).inflate(R.layout.item_single_textview,filter_views,false);
-                ((TextView)itemView.findViewById(R.id.item_textview)).setText(filter);
-                filter_views.addView(itemView);
-            }
-            static_loader_views.addView(static_loader_item_view);
-        }
-
         findViewById(R.id.app_detail_permission_area).setOnClickListener(this);
         findViewById(R.id.app_detail_activity_area).setOnClickListener(this);
         findViewById(R.id.app_detail_receiver_area).setOnClickListener(this);
@@ -188,6 +115,110 @@ public class AppDetailActivity extends BaseActivity implements View.OnClickListe
                         findViewById(R.id.app_detail_export_checkboxes).setVisibility(View.VISIBLE);
                     }
                 });
+            }
+        }).start();
+
+
+
+        final String[] permissions=packageInfo.requestedPermissions;
+        final ActivityInfo[] activities=packageInfo.activities;
+        final ActivityInfo[] receivers=packageInfo.receivers;
+
+        final boolean get_permissions=settings.getBoolean(Constants.PREFERENCE_LOAD_PERMISSIONS,Constants.PREFERENCE_LOAD_PERMISSIONS_DEFAULT);
+        final boolean get_activities=settings.getBoolean(Constants.PREFERENCE_LOAD_ACTIVITIES,Constants.PREFERENCE_LOAD_ACTIVITIES_DEFAULT);
+        final boolean get_receivers=settings.getBoolean(Constants.PREFERENCE_LOAD_RECEIVERS,Constants.PREFERENCE_LOAD_RECEIVERS_DEFAULT);
+        final boolean get_static_loaders=settings.getBoolean(Constants.PREFERENCE_LOAD_STATIC_LOADERS,Constants.PREFERENCE_LOAD_STATIC_LOADERS_DEFAULT);
+
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                final ArrayList<View>permission_child_views=new ArrayList<>();
+                final ArrayList<View>activity_child_views=new ArrayList<>();
+                final ArrayList<View>receiver_child_views=new ArrayList<>();
+                final ArrayList<View>loaders_child_views=new ArrayList<>();
+
+                if(permissions!=null&&get_permissions){
+                    for(String s:permissions){
+                        if(s==null)continue;
+                        permission_child_views.add(getSingleItemView(permission_views,s,null,null));
+                    }
+                }
+                if(activities!=null&&get_activities){
+                    for(final ActivityInfo info:activities){
+                        activity_child_views.add(getSingleItemView(activity_views, info.name, null, new View.OnLongClickListener() {
+                            @Override
+                            public boolean onLongClick(View v) {
+                                try{
+                                    Intent intent=new Intent();
+                                    intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                                    intent.setClassName(info.packageName,info.name);
+                                    startActivity(intent);
+                                    return true;
+                                }catch (Exception e){
+                                    ToastManager.showToast(AppDetailActivity.this,e.toString(),Toast.LENGTH_SHORT);
+                                }
+                                return false;
+                            }
+                        }));
+                    }
+                }
+                if(receivers!=null&&get_receivers){
+                    for(ActivityInfo activityInfo:receivers){
+                        receiver_child_views.add(getSingleItemView(receiver_views,activityInfo.name,null,null));
+                    }
+                }
+
+                Bundle bundle=appItem.getStaticReceiversBundle();
+                final Set<String>keys=bundle.keySet();
+                if(get_static_loaders){
+                    for(String s:keys){
+                        View static_loader_item_view=LayoutInflater.from(AppDetailActivity.this).inflate(R.layout.item_static_loader,static_loader_views,false);
+                        ((TextView)static_loader_item_view.findViewById(R.id.static_loader_name)).setText(s);
+                        ViewGroup filter_views=static_loader_item_view.findViewById(R.id.static_loader_intents);
+                        List<String>filters=bundle.getStringArrayList(s);
+                        if(filters==null)continue;
+                        for(String filter:filters){
+                            View itemView=LayoutInflater.from(AppDetailActivity.this).inflate(R.layout.item_single_textview,filter_views,false);
+                            ((TextView)itemView.findViewById(R.id.item_textview)).setText(filter);
+                            filter_views.addView(itemView);
+                        }
+                        loaders_child_views.add(static_loader_item_view);
+                    }
+                }
+
+                Global.handler.post(new Runnable() {
+                    @Override
+                    public void run() {
+                        if(get_permissions) {
+                            for(View view:permission_child_views) permission_views.addView(view);
+                            TextView att_permission=((TextView)findViewById(R.id.app_detail_permission_area_att));
+                            att_permission.setText(getResources().getString(R.string.activity_detail_permissions)
+                                    +"("+permission_child_views.size()+getResources().getString(R.string.unit_item)+")");
+                        }
+                        if(get_activities) {
+                            for(View view:activity_child_views)activity_views.addView(view);
+                            TextView att_activity=((TextView)findViewById(R.id.app_detail_activity_area_att));
+                            att_activity.setText(getResources().getString(R.string.activity_detail_activities)
+                                    +"("+activity_child_views.size()+getResources().getString(R.string.unit_item)+")");
+                        }
+                        if(get_receivers) {
+                            for(View view:receiver_child_views) receiver_views.addView(view);
+                            TextView att_receiver=findViewById(R.id.app_detail_receiver_area_att);
+                            att_receiver.setText(getResources().getString(R.string.activity_detail_receivers)+"("+receiver_child_views.size()+getResources().getString(R.string.unit_item)+")");
+                        }
+                        if(get_static_loaders) {
+                            for(View view:loaders_child_views) static_loader_views.addView(view);
+                            TextView att_static_loader=findViewById(R.id.app_detail_static_loader_area_att);
+                            att_static_loader.setText(getResources().getString(R.string.activity_detail_static_loaders)+"("+keys.size()+getResources().getString(R.string.unit_item)+")");
+                        }
+                        findViewById(R.id.app_detail_card_pg).setVisibility(View.GONE);
+                        findViewById(R.id.app_detail_card_permissions).setVisibility(get_permissions?View.VISIBLE:View.GONE);
+                        findViewById(R.id.app_detail_card_activities).setVisibility(get_activities?View.VISIBLE:View.GONE);
+                        findViewById(R.id.app_detail_card_receivers).setVisibility(get_receivers?View.VISIBLE:View.GONE);
+                        findViewById(R.id.app_detail_card_static_loaders).setVisibility(get_static_loaders?View.VISIBLE:View.GONE);
+                    }
+                });
+
             }
         }).start();
     }
@@ -212,9 +243,20 @@ public class AppDetailActivity extends BaseActivity implements View.OnClickListe
                 }
                 final List<AppItem>single_list=getSingleItemArrayList(true);
                 final AppItem item=single_list.get(0);
-                Global.checkAndExportCertainAppItemsToSetPathAndShare(this,single_list , new Global.ExportTaskFinishedListener() {
+                Global.checkAndExportCertainAppItemsToSetPathWithoutShare(this,single_list , new Global.ExportTaskFinishedListener() {
                     @Override
                     public void onFinished(@NonNull String error_message) {
+                        if(!error_message.trim().equals("")){
+                            new AlertDialog.Builder(AppDetailActivity.this)
+                                    .setTitle(getResources().getString(R.string.exception_title))
+                                    .setMessage(getResources().getString(R.string.exception_message)+error_message)
+                                    .setPositiveButton(getResources().getString(R.string.dialog_button_confirm), new DialogInterface.OnClickListener() {
+                                        @Override
+                                        public void onClick(DialogInterface dialog, int which) {}
+                                    })
+                                    .show();
+                            return;
+                        }
                         ToastManager.showToast(AppDetailActivity.this,getResources().getString(R.string.toast_export_complete)
                                 +Global.getAbsoluteWritePath(AppDetailActivity.this,single_list.get(0),(item.exportData||item.exportObb)?"zip":"apk"),Toast.LENGTH_SHORT);
                     }
@@ -334,10 +376,25 @@ public class AppDetailActivity extends BaseActivity implements View.OnClickListe
     @Override
     public boolean onKeyDown(int keyCode, KeyEvent event) {
         if(keyCode==KeyEvent.KEYCODE_BACK){
-            ActivityCompat.finishAfterTransition(this);
+            checkHeightAndFinish();
             return true;
         }
         return super.onKeyDown(keyCode, event);
+    }
+
+    private void checkHeightAndFinish(){
+        SharedPreferences settings=Global.getGlobalSharedPreferences(this);
+        boolean show_permissions=settings.getBoolean(Constants.PREFERENCE_LOAD_PERMISSIONS,Constants.PREFERENCE_LOAD_PERMISSIONS_DEFAULT);
+        boolean show_activities=settings.getBoolean(Constants.PREFERENCE_LOAD_ACTIVITIES,Constants.PREFERENCE_LOAD_ACTIVITIES_DEFAULT);
+        boolean show_receivers=settings.getBoolean(Constants.PREFERENCE_LOAD_RECEIVERS,Constants.PREFERENCE_LOAD_RECEIVERS_DEFAULT);
+        boolean show_static_loaders=settings.getBoolean(Constants.PREFERENCE_LOAD_STATIC_LOADERS,Constants.PREFERENCE_LOAD_STATIC_LOADERS_DEFAULT);
+        boolean b=show_permissions||show_activities||show_receivers||show_static_loaders;
+        if(Build.VERSION.SDK_INT>=26){ //根布局项目太多时低版本Android会引发一个底层崩溃。版本号暂定26
+            ActivityCompat.finishAfterTransition(this);
+        }else {
+            if(b)finish();
+            else ActivityCompat.finishAfterTransition(this);
+        }
     }
 
     @Override
@@ -345,7 +402,7 @@ public class AppDetailActivity extends BaseActivity implements View.OnClickListe
         switch (item.getItemId()){
             default:break;
             case android.R.id.home:{
-                ActivityCompat.finishAfterTransition(this);
+                checkHeightAndFinish();
             }
             break;
         }

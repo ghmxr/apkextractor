@@ -6,16 +6,20 @@
     <TextView
         android:id="@+id/dialog_att"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_height="50dp"
         android:layout_alignParentTop="true"
         android:textSize="13sp"
-        android:layout_margin="15dp"
-        tools:text="提示"/>
+        android:layout_marginTop="15dp"
+        android:layout_marginLeft="15dp"
+        android:layout_marginRight="15dp"
+        android:ellipsize="start"
+        tools:text="提示\n提示\n提示"/>
     <ProgressBar
         android:id="@+id/dialog_progress_bar"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_below="@+id/dialog_att"
+        android:layout_marginTop="15dp"
         android:layout_marginLeft="30dp"
         android:layout_marginRight="30dp"
         style="?android:attr/progressBarStyleHorizontal"/>

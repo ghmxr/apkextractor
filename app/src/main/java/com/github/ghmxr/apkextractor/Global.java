@@ -16,6 +16,7 @@ import android.support.annotation.NonNull;
 import com.github.ghmxr.apkextractor.data.Constants;
 import com.github.ghmxr.apkextractor.ui.DataObbDialog;
 import com.github.ghmxr.apkextractor.ui.ExportingDialog;
+import com.github.ghmxr.apkextractor.ui.ToastManager;
 import com.github.ghmxr.apkextractor.utils.ExportTask;
 
 import java.io.File;
@@ -26,6 +27,7 @@ import android.os.Handler;
 import android.support.annotation.Nullable;
 import android.support.design.widget.Snackbar;
 import android.view.View;
+import android.widget.Toast;
 
 public class Global {
 
@@ -55,7 +57,7 @@ public class Global {
      * 选择data,obb项，确认重复文件，导出list集合中的应用，并向activity显示一个dialog，传入接口来监听完成回调（在主线程）
      * @param list AppItem的副本，除singleList外data obb值须为false
      */
-    public static void checkAndExportCertainAppItemsToSetPathAndShare(@NonNull final Activity activity, @NonNull final List<AppItem>list, @Nullable final ExportTaskFinishedListener listener){
+    public static void checkAndExportCertainAppItemsToSetPathWithoutShare(@NonNull final Activity activity, @NonNull final List<AppItem>list, @Nullable final ExportTaskFinishedListener listener){
         if(list.size()==0)return;
         if(list.size()==1){
             String dulplicated_info=getDuplicatedFileInfo(activity,list);
@@ -174,13 +176,30 @@ public class Global {
      */
     public static void shareCertainAppsByItems(@NonNull final Activity activity,@NonNull final List<AppItem>items){
         if(items.size()==0)return;
-        boolean ifNeedExport=activity.getSharedPreferences(Constants.PREFERENCE_NAME,Context.MODE_PRIVATE)
+        boolean ifNeedExport= Global.getGlobalSharedPreferences(activity)
                 .getInt(Constants.PREFERENCE_SHAREMODE,Constants.PREFERENCE_SHAREMODE_DEFAULT)==Constants.SHARE_MODE_AFTER_EXTRACT;
         if(ifNeedExport){
             DataObbDialog dialog=new DataObbDialog(activity, items, new DataObbDialog.DialogDataObbConfirmedCallback() {
                 @Override
                 public void onDialogDataObbConfirmed(@NonNull List<AppItem> export_list) {
                     String dulplicated_info=getDuplicatedFileInfo(activity,items);
+                    final ExportTaskFinishedListener exportTaskFinishedListener=new ExportTaskFinishedListener() {
+                        @Override
+                        public void onFinished(@NonNull String error_message) {
+                            if(!error_message.trim().equals("")){
+                                new AlertDialog.Builder(activity)
+                                        .setTitle(activity.getResources().getString(R.string.exception_title))
+                                        .setMessage(activity.getResources().getString(R.string.exception_message)+error_message)
+                                        .setPositiveButton(activity.getResources().getString(R.string.dialog_button_confirm), new DialogInterface.OnClickListener() {
+                                            @Override
+                                            public void onClick(DialogInterface dialog, int which) {}
+                                        })
+                                        .show();
+                                return;
+                            }
+                            ToastManager.showToast(activity,activity.getResources().getString(R.string.toast_export_complete)+getSavePath(activity), Toast.LENGTH_SHORT);
+                        }
+                    };
                     if(!dulplicated_info.trim().equals("")){
                         new AlertDialog.Builder(activity)
                                 .setTitle(activity.getResources().getString(R.string.dialog_duplicate_title))
@@ -188,7 +207,7 @@ public class Global {
                                 .setPositiveButton(activity.getResources().getString(R.string.dialog_button_confirm), new DialogInterface.OnClickListener() {
                                     @Override
                                     public void onClick(DialogInterface dialog, int which) {
-                                        exportCertainAppItemsToSetPathAndShare(activity, items, true,null);
+                                        exportCertainAppItemsToSetPathAndShare(activity, items, true,exportTaskFinishedListener);
                                     }
                                 })
                                 .setNegativeButton(activity.getResources().getString(R.string.dialog_button_cancel), new DialogInterface.OnClickListener() {
@@ -198,7 +217,7 @@ public class Global {
                                 .show();
                         return;
                     }
-                    exportCertainAppItemsToSetPathAndShare(activity, items, true,null);
+                    exportCertainAppItemsToSetPathAndShare(activity, items, true,exportTaskFinishedListener);
                 }
             });
             dialog.show();
@@ -223,6 +242,8 @@ public class Global {
     private static void shareCertainApps(@NonNull Activity activity, @NonNull List<String>paths, @NonNull String title){
         if(paths.size()==0)return;
         Intent intent=new Intent();
+        //intent.setType("application/vnd.android.package-archive");
+        intent.setType("application/x-zip-compressed");
         if(paths.size()>1){
             intent.setAction(Intent.ACTION_SEND_MULTIPLE);
             ArrayList<Uri> uris=new ArrayList<>();
@@ -230,11 +251,11 @@ public class Global {
             intent.putExtra(Intent.EXTRA_STREAM, uris);
         }else{
             intent.setAction(Intent.ACTION_SEND);
-            intent.setData(Uri.fromFile(new File(paths.get(0))));
+            intent.putExtra(Intent.EXTRA_STREAM,Uri.fromFile(new File(paths.get(0))));
         }
         intent.putExtra(Intent.EXTRA_SUBJECT, title);
         intent.putExtra(Intent.EXTRA_TEXT, title);
-        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
         activity.startActivity(Intent.createChooser(intent,title));
     }
 
@@ -251,8 +272,7 @@ public class Global {
      */
     public static @NonNull String getSavePath(@NonNull Context context){
         try{
-            return context.getSharedPreferences(Constants.PREFERENCE_NAME,Context.MODE_PRIVATE)
-                    .getString(Constants.PREFERENCE_SAVE_PATH, Constants.PREFERENCE_SAVE_PATH_DEFAULT);
+            return getGlobalSharedPreferences(context).getString(Constants.PREFERENCE_SAVE_PATH, Constants.PREFERENCE_SAVE_PATH_DEFAULT);
         }catch (Exception e){e.printStackTrace();}
         return Constants.PREFERENCE_SAVE_PATH_DEFAULT;
     }
@@ -263,7 +283,7 @@ public class Global {
      */
     public static @NonNull String getAbsoluteWritePath(@NonNull Context context, @NonNull AppItem item, @NonNull String extension){
         try{
-            SharedPreferences settings=context.getSharedPreferences(Constants.PREFERENCE_NAME, Context.MODE_PRIVATE);
+            SharedPreferences settings=getGlobalSharedPreferences(context);
             if(extension.toLowerCase(Locale.getDefault()).equals("apk")){
                 return settings.getString(Constants.PREFERENCE_SAVE_PATH, Constants.PREFERENCE_SAVE_PATH_DEFAULT)
                         +"/"+settings.getString(Constants.PREFERENCE_FILENAME_FONT_APK, Constants.PREFERENCE_FILENAME_FONT_DEFAULT).replace(Constants.FONT_APP_NAME, String.valueOf(item.getAppName()))
@@ -282,6 +302,10 @@ public class Global {
         return "";
     }
 
+    public static SharedPreferences getGlobalSharedPreferences(@NonNull Context context){
+        return context.getSharedPreferences(Constants.PREFERENCE_NAME,Context.MODE_PRIVATE);
+    }
+
     /**
      * 刷新已安装的应用列表
      */
@@ -298,8 +322,13 @@ public class Global {
         @Override
         public void run(){
             PackageManager manager=context.getApplicationContext().getPackageManager();
-            final List<PackageInfo> list = manager.getInstalledPackages(PackageManager.GET_ACTIVITIES|PackageManager.GET_SERVICES
-                    |PackageManager.GET_INTENT_FILTERS |PackageManager.GET_RECEIVERS|PackageManager.GET_PERMISSIONS|PackageManager.GET_SIGNATURES);
+            SharedPreferences settings=getGlobalSharedPreferences(context);
+            int flag=PackageManager.GET_SIGNATURES;
+            if(settings.getBoolean(Constants.PREFERENCE_LOAD_PERMISSIONS,Constants.PREFERENCE_LOAD_PERMISSIONS_DEFAULT))flag|=PackageManager.GET_PERMISSIONS;
+            if(settings.getBoolean(Constants.PREFERENCE_LOAD_ACTIVITIES,Constants.PREFERENCE_LOAD_ACTIVITIES_DEFAULT))flag|=PackageManager.GET_ACTIVITIES;
+            if(settings.getBoolean(Constants.PREFERENCE_LOAD_RECEIVERS,Constants.PREFERENCE_LOAD_RECEIVERS_DEFAULT))flag|=PackageManager.GET_RECEIVERS;
+
+            final List<PackageInfo> list = manager.getInstalledPackages(flag);
             for(int i=0;i<list.size();i++){
                 PackageInfo info=list.get(i);
                 boolean info_is_system_app=((info.applicationInfo.flags&ApplicationInfo.FLAG_SYSTEM)>0);
@@ -313,11 +342,6 @@ public class Global {
                 if(!flag_system&&info_is_system_app)continue;
                 list_sum.add(new AppItem(context,info));
             }
-
-            /*synchronized (Global.list){
-                Global.list.clear();
-                Global.list.addAll(list_sum);
-            }*/
 
             Global.handler.post(new Runnable() {
                 @Override

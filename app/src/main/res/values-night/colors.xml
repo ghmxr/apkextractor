@@ -8,6 +8,7 @@
     <color name="colorTitleDark">#202020</color>
 
     <color name="colorCardArea">#000000</color>
+    <color name="colorMainBottomCard">#e7000000</color>
     <color name="colorHighLightText">#ffffff</color>
     <color name="color_text_normal">#cfcfcf</color>
 

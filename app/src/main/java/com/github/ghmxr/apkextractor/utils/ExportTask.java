@@ -152,7 +152,7 @@ public class ExportTask extends Thread {
 
                     ZipOutputStream zos=new ZipOutputStream(new BufferedOutputStream(new FileOutputStream(new File(this.currentWritePath))));
                     zos.setComment("Packaged by com.github.ghmxr.apkextractor \nhttps://github.com/ghmxr/apkextractor");
-                    int zip_level=context.getSharedPreferences(Constants.PREFERENCE_NAME, Context.MODE_PRIVATE).getInt(Constants.PREFERENCE_ZIP_COMPRESS_LEVEL, Constants.PREFERENCE_ZIP_COMPRESS_LEVEL_DEFAULT);
+                    int zip_level= Global.getGlobalSharedPreferences(context).getInt(Constants.PREFERENCE_ZIP_COMPRESS_LEVEL, Constants.PREFERENCE_ZIP_COMPRESS_LEVEL_DEFAULT);
 
                     if(zip_level>=0&&zip_level<=9) zos.setLevel(zip_level);
 

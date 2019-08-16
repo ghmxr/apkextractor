@@ -44,6 +44,12 @@ public class Constants {
      */
     public static final String PREFERENCE_SHOW_SYSTEM_APP="show_system_app";
 
+    public static final boolean PREFERENCE_SHOW_SYSTEM_APP_DEFAULT=false;
+
+    /**
+     * stands for a boolean value
+     */
+    public static final String PREFERENCE_LOAD_PERMISSIONS="load_permissions";
     /**
      * stands for a boolean value
      */
@@ -56,6 +62,13 @@ public class Constants {
      * stands for a boolean value
      */
     public static final String PREFERENCE_LOAD_STATIC_LOADERS="load_static_receivers";
+
+    public static final boolean PREFERENCE_LOAD_PERMISSIONS_DEFAULT=true;
+    public static final boolean PREFERENCE_LOAD_ACTIVITIES_DEFAULT=true;
+    public static final boolean PREFERENCE_LOAD_RECEIVERS_DEFAULT=true;
+    public static final boolean PREFERENCE_LOAD_STATIC_LOADERS_DEFAULT=false;
+
+
 
     public static final int SHARE_MODE_DIRECT=-1;
     public static final int SHARE_MODE_AFTER_EXTRACT=0;

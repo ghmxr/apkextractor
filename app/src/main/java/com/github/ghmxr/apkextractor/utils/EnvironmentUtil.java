@@ -12,7 +12,9 @@ import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 
+import com.github.ghmxr.apkextractor.Global;
 import com.github.ghmxr.apkextractor.R;
+import com.github.ghmxr.apkextractor.data.Constants;
 
 import java.security.MessageDigest;
 import java.util.ArrayList;
@@ -115,8 +117,15 @@ public class EnvironmentUtil {
 
     }
 
+    /**
+     * 当SharedPreference中设置了加载启动项的值，则会查询启动Receiver，否则会直接返回一个空Bundle（查询为耗时操作，此方法会阻塞）
+     */
     public static @NonNull Bundle getStaticRegisteredReceiversOfBundleTypeForPackageName(@NonNull Context context,@NonNull String package_name){
         Bundle bundle=new Bundle();
+        if(!Global.getGlobalSharedPreferences(context)
+                .getBoolean(Constants.PREFERENCE_LOAD_STATIC_LOADERS,Constants.PREFERENCE_LOAD_STATIC_LOADERS_DEFAULT)){
+            return bundle;
+        }
         PackageManager packageManager=context.getPackageManager();
         String[] static_filters=context.getResources().getStringArray(R.array.static_receiver_filters);
 

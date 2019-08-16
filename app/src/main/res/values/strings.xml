@@ -8,6 +8,14 @@
 
     <string name="permission_write">需要授权读取/写入存储权限</string>
     <string name="permission_grant">立即授权</string>
+    <string name="permission_denied_att">未获得读取/写入权限，可能无法获取外置存储Data/Obb大小</string>
+
+    <string name="main_card_show_system_app">显示系统应用</string>
+    <string name="main_card_remaining_storage">剩余存储空间</string>
+    <string name="main_card_multi_select_export">导出</string>
+    <string name="main_card_multi_select_select_all">全选</string>
+    <string name="main_card_multi_select_deselect_all">全不选</string>
+    <string name="main_card_multi_select_share">分享</string>
 
     <string name="activity_detail_run">运行</string>
     <string name="activity_detail_export">导出</string>
@@ -69,6 +77,23 @@
     <string name="activity_detail_activities">活动组件</string>
     <string name="activity_detail_receivers">广播接收器</string>
     <string name="activity_detail_static_loaders">自启接收器</string>
+
+    <string name="dialog_loading_selection_permissions">权限(uses-permissions)</string>
+    <string name="dialog_loading_selection_activities">活动组件(activity)</string>
+    <string name="dialog_loading_selection_receivers">广播接收器(receiver)</string>
+    <string name="dialog_loading_selection_static_loaders">自启接收器(会拖慢加载速度)</string>
+
+    <string name="dialog_sort_default">默认</string>
+    <string name="dialog_sort_ascending_app_name">按名称升序（从A到Z）</string>
+    <string name="dialog_sort_descending_app_name">按名称降序（从Z到A）</string>
+    <string name="dialog_sort_ascending_app_size">按大小升序（从小到大）</string>
+    <string name="dialog_sort_descending_app_size">按大小降序（从大到小）</string>
+    <string name="dialog_sort_ascending_date">按更新日期升序（从旧到新）</string>
+    <string name="dialog_sort_descending_date">按更新日期降序（从新到旧）</string>
+    <string name="dialog_sort_ascending_install_date">按安装日期升序（从旧到新）</string>
+    <string name="dialog_sort_descending_install_date">按安装日期降序（从新到旧）</string>
+
+    <string name="text_hint_searchview">搜索内容</string>
 
     <string name="unit_item">项</string>
     <string name="word_unknown">未知</string>
