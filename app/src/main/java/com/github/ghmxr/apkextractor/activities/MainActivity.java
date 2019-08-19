@@ -8,6 +8,7 @@ import android.graphics.drawable.Drawable;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.ActivityOptionsCompat;
 import android.support.v4.content.PermissionChecker;
@@ -19,6 +20,7 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.text.format.Formatter;
+import android.util.Log;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -237,7 +239,7 @@ public class MainActivity extends BaseActivity implements View.OnClickListener{
         final boolean is_show_sys=Global.getGlobalSharedPreferences(this).getBoolean(Constants.PREFERENCE_SHOW_SYSTEM_APP,Constants.PREFERENCE_SHOW_SYSTEM_APP_DEFAULT);
         final CheckBox cb_show_sys=findViewById(R.id.main_show_system_app);
         final LoadingListDialog dialog=new LoadingListDialog(this);
-        dialog.show();
+        try{dialog.show();}catch (Exception e){e.printStackTrace();}
         new Global.RefreshInstalledListTask(this, is_show_sys, new Global.RefreshInstalledListTaskCallback() {
             @Override
             public void onRefreshProgressUpdated(int current, int total) {
@@ -246,7 +248,9 @@ public class MainActivity extends BaseActivity implements View.OnClickListener{
 
             @Override
             public void onRefreshCompleted(List<AppItem> appList) {
-                dialog.cancel();
+               try {
+                   dialog.cancel();
+               }catch (Exception e){e.printStackTrace();}
                 adapter=new ListAdapter(appList);
                 recyclerView.setAdapter(adapter);
                 swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
@@ -344,7 +348,7 @@ public class MainActivity extends BaseActivity implements View.OnClickListener{
 
         //noinspection SimplifiableIfStatement
         if (id == R.id.action_settings) {
-            startActivity(new Intent(this,SettingActivity.class));
+            startActivityForResult(new Intent(this,SettingActivity.class),REQUEST_CODE_SETTINGS);
             return true;
         }
 
@@ -366,6 +370,21 @@ public class MainActivity extends BaseActivity implements View.OnClickListener{
             return true;
         }
         return super.onKeyDown(keyCode, event);
+    }
+
+    private static final int REQUEST_CODE_SETTINGS=0;
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        switch (requestCode){
+            default:break;
+            case REQUEST_CODE_SETTINGS:{
+                if(resultCode==RESULT_OK){
+                    recreate();
+                }
+            }
+            break;
+        }
     }
 
     private void openSearchMode(){

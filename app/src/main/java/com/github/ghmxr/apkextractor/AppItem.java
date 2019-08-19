@@ -50,8 +50,8 @@ public class AppItem implements Parcelable ,Comparable<AppItem>{
     private Bundle static_receivers_bundle;
 
     //仅当构造ExportTask时用
-    public volatile boolean exportData=false;
-    public volatile boolean exportObb=false;
+    public transient boolean exportData=false;
+    public transient boolean exportObb=false;
 
     /**
      * 初始化一个全新的AppItem

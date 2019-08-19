@@ -15,4 +15,6 @@
     <color name="colorHighLightTextDarkBackground">#ffffff</color>
 
     <color name="colorDividingLine">#dddddd</color>
+    <color name="colorWarnText">#ee2c2c</color>
+    <color name="colorFirstAttention">#0068ea</color>
 </resources>

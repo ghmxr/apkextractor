@@ -30,7 +30,6 @@ public class SearchTask extends Thread {
         super.run();
         for(AppItem item:totalList){
             if(isInterrupted){
-                totalList.clear();
                 search_result.clear();
                 return;
             }

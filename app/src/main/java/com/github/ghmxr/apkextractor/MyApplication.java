@@ -1,12 +1,17 @@
 package com.github.ghmxr.apkextractor;
 
 import android.app.Application;
+import android.content.SharedPreferences;
 import android.support.v7.app.AppCompatDelegate;
+
+import com.github.ghmxr.apkextractor.data.Constants;
 
 public class MyApplication extends Application {
     @Override
     public void onCreate() {
         super.onCreate();
-        AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES);
+        SharedPreferences settings=Global.getGlobalSharedPreferences(this);
+        int night_mode=settings.getInt(Constants.PREFERENCE_NIGHT_MODE,Constants.PREFERENCE_NIGHT_MODE_DEFAULT);
+        AppCompatDelegate.setDefaultNightMode(night_mode);
     }
 }

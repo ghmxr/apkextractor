@@ -49,6 +49,11 @@
     <string name="share_mode_export">导出后分享</string>
     <string name="share_mode_export_att">先按照命名规则导出到指定的路径再分享导出后的文件，会占用存储空间</string>
 
+    <string name="night_mode_enabled">启用</string>
+    <string name="night_mode_disabled">禁用</string>
+    <string name="night_mode_auto">自动</string>
+    <string name="night_mode_follow_system">跟随系统</string>
+
     <string name="dialog_export_title">正在导出</string>
     <string name="dialog_export_msg_apk">正在复制到</string>
     <string name="dialog_export_zip">正在压缩</string>
@@ -93,8 +98,38 @@
     <string name="dialog_sort_ascending_install_date">按安装日期升序（从旧到新）</string>
     <string name="dialog_sort_descending_install_date">按安装日期降序（从新到旧）</string>
 
+    <string name="dialog_filename_title">导出规则</string>
+    <string name="dialog_filename_apk_att">APK命名规则</string>
+    <string name="dialog_filename_zip_att">ZIP命名规则</string>
+    <string name="dialog_filename_variables">插入变量</string>
+    <string name="dialog_filename_button_appname">应用名称(?N)</string>
+    <string name="dialog_filename_button_packagename">包名(?P)</string>
+    <string name="dialog_filename_button_version">版本(?V)</string>
+    <string name="dialog_filename_button_versioncode">版本号(?C)</string>
+    <string name="dialog_filename_preview_appname">示例应用</string>
+    <string name="dialog_filename_preview_packagename">com.example</string>
+    <string name="dialog_filename_preview_version">1.0</string>
+    <string name="dialog_filename_preview_versioncode">1</string>
+    <string name="dialog_filename_toast_blank">命名规则不能为空</string>
+    <string name="dialog_filename_warn_no_variables">注意:没有输入变量，这会导致多选导出无法正常导出文件！</string>
+
+    <string name="hint_filename_apk">输入apk命名规则</string>
+    <string name="hint_filename_zip">输入zip命名规则</string>
+
     <string name="text_hint_searchview">搜索内容</string>
+
+    <string name="zip_level_att">ZIP压缩级别</string>
+    <string name="zip_level_default">默认</string>
+    <string name="zip_level_stored">存储</string>
+    <string name="zip_level_low">低</string>
+    <string name="zip_level_normal">普通</string>
+    <string name="zip_level_high">高</string>
+
+    <string name="file_invalid_name">名称包含非法字符</string>
+    <string name="file_blank_attention">文件/路径名不能为空</string>
+
 
     <string name="unit_item">项</string>
     <string name="word_unknown">未知</string>
+    <string name="word_preview">预览</string>
 </resources>

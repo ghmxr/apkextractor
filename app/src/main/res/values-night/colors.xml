@@ -13,4 +13,5 @@
     <color name="color_text_normal">#cfcfcf</color>
 
     <color name="colorDividingLine">#666666</color>
+    <color name="colorFirstAttention">#ffffff</color>
 </resources>
