@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+    <item
+        android:id="@+id/action_confirm"
+        android:orderInCategory="0"
+        android:title="@string/action_confirm"
+        android:icon="@drawable/icon_confirm"
+        app:showAsAction="ifRoom" />
+    <item
+        android:id="@+id/action_cancel"
+        android:orderInCategory="1"
+        android:title="@string/action_cancel"
+        android:icon="@drawable/icon_close"
+        app:showAsAction="ifRoom" />
+    <item
+        android:id="@+id/action_new_folder"
+        android:orderInCategory="2"
+        android:title="@string/action_new_folder"
+        android:icon="@drawable/icon_folder"
+        app:showAsAction="ifRoom" />
+    <item
+        android:id="@+id/action_name_ascend"
+        android:orderInCategory="3"
+        android:title="@string/action_name_ascend"
+        app:showAsAction="never" />
+    <item
+        android:id="@+id/action_name_descend"
+        android:orderInCategory="4"
+        android:title="@string/action_name_descend"
+        app:showAsAction="never" />
+</menu>

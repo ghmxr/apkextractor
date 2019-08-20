@@ -230,8 +230,8 @@ public class Global {
             }else{
                 for(AppItem item:items){
                     paths.add(item.getSourcePath());
-                    shareCertainApps(activity,paths,activity.getResources().getString(R.string.share_title));
                 }
+                shareCertainApps(activity,paths,activity.getResources().getString(R.string.share_title));
             }
         }
     }

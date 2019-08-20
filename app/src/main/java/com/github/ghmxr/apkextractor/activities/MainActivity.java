@@ -390,6 +390,7 @@ public class MainActivity extends BaseActivity implements View.OnClickListener{
     private void openSearchMode(){
         try{
             isSearchMode=true;
+            if(adapter!=null&&adapter.getIsMultiSelectMode())adapter.closeMultiSelectMode();
             getSupportActionBar().setDisplayShowCustomEnabled(true);
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
             setMenuVisible(false);

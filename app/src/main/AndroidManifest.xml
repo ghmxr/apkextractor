@@ -25,6 +25,9 @@
         <activity android:name=".activities.SettingActivity"
             android:label="@string/activity_settings_title"
             android:theme="@style/AppTheme.NoActionBar"/>
+        <activity android:name=".activities.FolderSelectorActivity"
+            android:label="@string/activity_folder_selector_title"
+            android:theme="@style/AppTheme.NoActionBar"/>
     </application>
 
 </manifest>

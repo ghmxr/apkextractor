@@ -1,8 +1,10 @@
 package com.github.ghmxr.apkextractor.activities;
 
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.support.annotation.Nullable;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatDelegate;
 import android.support.v7.widget.Toolbar;
@@ -26,6 +28,8 @@ public class SettingActivity extends BaseActivity implements View.OnClickListene
     private int result_code=RESULT_CANCELED;
     private SharedPreferences settings;
 
+    private static final int REQUEST_CODE_SET_PATH=0;
+
     @Override
     protected void onCreate(Bundle bundle) {
         super.onCreate(bundle);
@@ -39,6 +43,7 @@ public class SettingActivity extends BaseActivity implements View.OnClickListene
         findViewById(R.id.settings_night_mode_area).setOnClickListener(this);
         findViewById(R.id.settings_loading_options_area).setOnClickListener(this);
         findViewById(R.id.settings_rules_area).setOnClickListener(this);
+        findViewById(R.id.settings_path_area).setOnClickListener(this);
 
         refreshSettingValues();
 
@@ -167,6 +172,10 @@ public class SettingActivity extends BaseActivity implements View.OnClickListene
                 new ExportRuleDialog(this).show();
             }
             break;
+            case R.id.settings_path_area:{
+                startActivityForResult(new Intent(this,FolderSelectorActivity.class),REQUEST_CODE_SET_PATH);
+            }
+            break;
         }
     }
 
@@ -217,5 +226,13 @@ public class SettingActivity extends BaseActivity implements View.OnClickListene
     protected void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
         outState.putInt(ACTIVITY_RESULT,result_code);
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if(requestCode==REQUEST_CODE_SET_PATH&&resultCode==RESULT_OK){
+            refreshSettingValues();
+        }
     }
 }

@@ -4,6 +4,11 @@
     <string name="action_search">搜索</string>
     <string name="action_sort">排序</string>
     <string name="action_view">视图</string>
+    <string name="action_confirm">确定</string>
+    <string name="action_cancel">取消</string>
+    <string name="action_new_folder">新建文件夹</string>
+    <string name="action_name_ascend">名称升序(A→Z)</string>
+    <string name="action_name_descend">名称降序(Z→A)</string>
     <string name="dialog_loading_title">正在载入</string>
 
     <string name="permission_write">需要授权读取/写入存储权限</string>
@@ -43,6 +48,12 @@
     <string name="loading_receiver">Receiver(广播接收器)</string>
     <string name="loading_boot_receivers">自启接收器(会拖慢加载速度)</string>
     <string name="activity_settings_about">关于</string>
+
+    <string name="activity_folder_selector_title">选择路径</string>
+    <string name="activity_folder_selector_select_storage">选择存储</string>
+    <string name="activity_folder_selector_blank_folder">没有文件夹</string>
+    <string name="activity_attention_select_folder">请选择文件夹</string>
+    <string name="activity_attention_path_set">已设置导出路径至</string>
 
     <string name="share_mode_direct">直接分享</string>
     <string name="share_mode_direct_att">直接分享应用源APK文件，无需导出，但不能自定义文件名，不能分享打包有Data或Obb的zip文件</string>
