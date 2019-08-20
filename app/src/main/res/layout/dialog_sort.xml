@@ -81,7 +81,7 @@
             android:layout_marginRight="10dp"
             android:text="@string/dialog_sort_ascending_install_date"/>
         <RadioButton
-            android:id="@+id/sort_descending_install_date"
+            android:id="@+id/sort_ra_descending_install_date"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="5dp"

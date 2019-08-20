@@ -21,6 +21,7 @@ import com.github.ghmxr.apkextractor.utils.ExportTask;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Locale;
 import android.os.Handler;
@@ -342,6 +343,8 @@ public class Global {
                 if(!flag_system&&info_is_system_app)continue;
                 list_sum.add(new AppItem(context,info));
             }
+            AppItem.sort_config=settings.getInt(Constants.PREFERENCE_SORT_CONFIG,0);
+            Collections.sort(list_sum);
 
             Global.handler.post(new Runnable() {
                 @Override

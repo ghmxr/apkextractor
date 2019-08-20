@@ -17,4 +17,6 @@
     <color name="colorDividingLine">#dddddd</color>
     <color name="colorWarnText">#ee2c2c</color>
     <color name="colorFirstAttention">#0068ea</color>
+
+    <color name="colorSelectedBackground">#228B22</color>
 </resources>

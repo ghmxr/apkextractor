@@ -3,12 +3,14 @@ package com.github.ghmxr.apkextractor.activities;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatDelegate;
 import android.support.v7.widget.Toolbar;
 import android.view.LayoutInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.CheckBox;
@@ -44,6 +46,7 @@ public class SettingActivity extends BaseActivity implements View.OnClickListene
         findViewById(R.id.settings_loading_options_area).setOnClickListener(this);
         findViewById(R.id.settings_rules_area).setOnClickListener(this);
         findViewById(R.id.settings_path_area).setOnClickListener(this);
+        findViewById(R.id.settings_about_area).setOnClickListener(this);
 
         refreshSettingValues();
 
@@ -176,6 +179,32 @@ public class SettingActivity extends BaseActivity implements View.OnClickListene
                 startActivityForResult(new Intent(this,FolderSelectorActivity.class),REQUEST_CODE_SET_PATH);
             }
             break;
+            case R.id.settings_about_area:{
+                View dialogView=LayoutInflater.from(this).inflate(R.layout.dialog_about, null);
+                dialogView.findViewById(R.id.layout_about_donate).setOnClickListener(new View.OnClickListener() {
+
+                    @Override
+                    public void onClick(View v) {
+                        // TODO Auto-generated method stub
+                        try{
+                            startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("https://qr.alipay.com/FKX08041Y09ZGT6ZT91FA5")));
+                        }catch (Exception e){
+                            e.printStackTrace();
+                        }
+
+                    }
+                });
+                new AlertDialog.Builder(this)
+                        .setTitle(this.getResources().getString(R.string.activity_settings_about))
+                        .setIcon(R.drawable.icon_launcher)
+                        .setCancelable(true)
+                        .setView(dialogView)
+                        .setPositiveButton(getResources().getString(R.string.dialog_button_confirm), new DialogInterface.OnClickListener() {
+                            @Override public void onClick(DialogInterface arg0, int arg1) {}
+                        }).show();
+
+            }
+            break;
         }
     }
 
@@ -218,6 +247,7 @@ public class SettingActivity extends BaseActivity implements View.OnClickListene
             if(!read_options.equals(""))read_options+=",";
             read_options+=getResources().getString(R.string.activity_detail_static_loaders);
         }
+        if(read_options.trim().equals(""))read_options=getResources().getString(R.string.word_blank);
         ((TextView)findViewById(R.id.settings_loading_options_value)).setText(read_options);
 
     }
@@ -234,5 +264,14 @@ public class SettingActivity extends BaseActivity implements View.OnClickListene
         if(requestCode==REQUEST_CODE_SET_PATH&&resultCode==RESULT_OK){
             refreshSettingValues();
         }
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        if(item.getItemId()==android.R.id.home){
+            finish();
+            return true;
+        }
+        return super.onOptionsItemSelected(item);
     }
 }

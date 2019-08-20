@@ -59,6 +59,7 @@ public class FolderSelectorActivity extends BaseActivity {
         //LinearLayoutManager manager=new LinearLayoutManager(this);
         //manager.setOrientation(LinearLayoutManager.VERTICAL);
         //recyclerView.setLayoutManager(manager);
+        listView.setDivider(null);
         try{
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         }catch (Exception e){}

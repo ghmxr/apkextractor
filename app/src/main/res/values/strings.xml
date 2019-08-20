@@ -3,7 +3,7 @@
     <string name="action_settings">设置</string>
     <string name="action_search">搜索</string>
     <string name="action_sort">排序</string>
-    <string name="action_view">视图</string>
+    <string name="action_view">切换视图</string>
     <string name="action_confirm">确定</string>
     <string name="action_cancel">取消</string>
     <string name="action_new_folder">新建文件夹</string>
@@ -143,4 +143,22 @@
     <string name="unit_item">项</string>
     <string name="word_unknown">未知</string>
     <string name="word_preview">预览</string>
+    <string name="word_blank">空</string>
+
+    <string name="dialog_about_message">\n这是一个快速导出或者分享本地已安装APP的小工具。\n\n
+
+        点击“分享”，可以使用支持分享的应用例如蓝牙、QQ面对面快传等来分享已选择的应用。\n\n
+
+    勾选导出Data或者Obb选项后，会将应用APK和Data或Obb数据打包成zip导出。\n\n
+   <b>Build 6 更新日志：</b> \n
+	<b>改动：新的Material Design主题；</b>\n
+    <b>新增：权限(uses-permission)，活动组件(activities)，广播接收器(Receiver)查看功能；</b>\n
+	<b>新增：夜间黑色主题适配；</b>\n\n
+
+        开源地址:\n
+         https://github.com/ghmxr/apkextractor \n\n
+        邮箱: \n
+        mxremail@qq.com \n\n
+        打赏作者：
+        </string>
 </resources>

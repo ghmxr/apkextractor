@@ -42,6 +42,11 @@ public class Constants {
      */
     public static final String PREFERENCE_SORT_CONFIG="sort_config";
     /**
+     * this preference stands for a int value
+     */
+    public static final String PREFERENCE_MAIN_PAGE_VIEW_MODE="main_view_mode";
+    public static final int PREFERENCE_MAIN_PAGE_VIEW_MODE_DEFAULT=0;
+    /**
      * this preference stands for a boolean value;
      */
     public static final String PREFERENCE_SHOW_SYSTEM_APP="show_system_app";

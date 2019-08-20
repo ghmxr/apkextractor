@@ -4,7 +4,6 @@ import android.Manifest;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.graphics.drawable.Drawable;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -16,11 +15,11 @@ import android.support.v4.util.Pair;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.CardView;
+import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.text.format.Formatter;
-import android.util.Log;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -33,6 +32,7 @@ import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
+import android.widget.RadioButton;
 import android.widget.SearchView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -183,7 +183,22 @@ public class MainActivity extends BaseActivity implements View.OnClickListener{
                         @Override
                         public void onSearchTaskCompleted(@NonNull List<AppItem> result) {
                             progressBar.setVisibility(View.GONE);
-                            recyclerView.setAdapter(new ListAdapter(result));
+                            //recyclerView.setAdapter(new ListAdapter(result,1));
+                            ListAdapter adapter;
+                            int mode=Global.getGlobalSharedPreferences(MainActivity.this).getInt(Constants.PREFERENCE_MAIN_PAGE_VIEW_MODE
+                                    ,Constants.PREFERENCE_MAIN_PAGE_VIEW_MODE_DEFAULT);
+                            if(mode==1){
+                                GridLayoutManager gridLayoutManager=new GridLayoutManager(MainActivity.this,4);
+                                recyclerView.setLayoutManager(gridLayoutManager);
+                                adapter=new ListAdapter(result,1);
+                            }else{
+                                LinearLayoutManager linearLayoutManager=new LinearLayoutManager(MainActivity.this);
+                                linearLayoutManager.setOrientation(LinearLayoutManager.VERTICAL);
+                                recyclerView.setLayoutManager(linearLayoutManager);
+                                adapter=new ListAdapter(result,0);
+                            }
+
+                            recyclerView.setAdapter(adapter);
                         }
                     });
                     searchTask.start();
@@ -232,10 +247,6 @@ public class MainActivity extends BaseActivity implements View.OnClickListener{
         isScrollable=false;
         recyclerView.setAdapter(null);
 
-        LinearLayoutManager linearLayoutManager=new LinearLayoutManager(this);
-        linearLayoutManager.setOrientation(LinearLayoutManager.VERTICAL);
-        recyclerView.setLayoutManager(linearLayoutManager);
-
         final boolean is_show_sys=Global.getGlobalSharedPreferences(this).getBoolean(Constants.PREFERENCE_SHOW_SYSTEM_APP,Constants.PREFERENCE_SHOW_SYSTEM_APP_DEFAULT);
         final CheckBox cb_show_sys=findViewById(R.id.main_show_system_app);
         final LoadingListDialog dialog=new LoadingListDialog(this);
@@ -251,14 +262,26 @@ public class MainActivity extends BaseActivity implements View.OnClickListener{
                try {
                    dialog.cancel();
                }catch (Exception e){e.printStackTrace();}
-                adapter=new ListAdapter(appList);
+                int mode=Global.getGlobalSharedPreferences(MainActivity.this).getInt(Constants.PREFERENCE_MAIN_PAGE_VIEW_MODE
+                        ,Constants.PREFERENCE_MAIN_PAGE_VIEW_MODE_DEFAULT);
+               if(mode==1){
+                   GridLayoutManager gridLayoutManager=new GridLayoutManager(MainActivity.this,4);
+                   recyclerView.setLayoutManager(gridLayoutManager);
+                   adapter=new ListAdapter(appList,1);
+               }else{
+                   LinearLayoutManager linearLayoutManager=new LinearLayoutManager(MainActivity.this);
+                   linearLayoutManager.setOrientation(LinearLayoutManager.VERTICAL);
+                   recyclerView.setLayoutManager(linearLayoutManager);
+                   adapter=new ListAdapter(appList,0);
+               }
+
                 recyclerView.setAdapter(adapter);
                 swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
                     @Override
                     public void onRefresh() {
                         try{
                             ListAdapter adapter=(ListAdapter)recyclerView.getAdapter();
-                            if(adapter.getIsMultiSelectMode())return;
+                            if(adapter.getIsMultiSelectMode()||isSearchMode)return;
                         }catch (Exception e){e.printStackTrace();}
                         refreshList();
                     }
@@ -360,6 +383,130 @@ public class MainActivity extends BaseActivity implements View.OnClickListener{
             openSearchMode();
         }
 
+        if(id==R.id.action_view){
+            SharedPreferences settings=Global.getGlobalSharedPreferences(this);
+            int mode=settings.getInt(Constants.PREFERENCE_MAIN_PAGE_VIEW_MODE,Constants.PREFERENCE_MAIN_PAGE_VIEW_MODE_DEFAULT);
+            SharedPreferences.Editor editor=settings.edit();
+            editor.putInt(Constants.PREFERENCE_MAIN_PAGE_VIEW_MODE,mode==0?1:0);
+            editor.apply();
+            refreshList();
+        }
+
+        if(id==R.id.action_sort){
+            final SharedPreferences settings=Global.getGlobalSharedPreferences(this);
+            final SharedPreferences.Editor editor=settings.edit();
+            int sort=settings.getInt(Constants.PREFERENCE_SORT_CONFIG,0);
+            View dialogView=LayoutInflater.from(this).inflate(R.layout.dialog_sort,null);
+            RadioButton ra_default=dialogView.findViewById(R.id.sort_ra_default);
+            RadioButton ra_name_ascend=dialogView.findViewById(R.id.sort_ra_ascending_appname);
+            RadioButton ra_name_descend=dialogView.findViewById(R.id.sort_ra_descending_appname);
+            RadioButton ra_size_ascend=dialogView.findViewById(R.id.sort_ra_ascending_appsize);
+            RadioButton ra_size_descend=dialogView.findViewById(R.id.sort_ra_descending_appsize);
+            RadioButton ra_update_time_ascend=dialogView.findViewById(R.id.sort_ra_ascending_date);
+            RadioButton ra_update_time_descend=dialogView.findViewById(R.id.sort_ra_descending_date);
+            RadioButton ra_install_time_ascend=dialogView.findViewById(R.id.sort_ra_ascending_install_date);
+            RadioButton ra_install_time_descend=dialogView.findViewById(R.id.sort_ra_descending_install_date);
+            ra_default.setChecked(sort==0);
+            ra_name_ascend.setChecked(sort==1);
+            ra_name_descend.setChecked(sort==2);
+            ra_size_ascend.setChecked(sort==3);
+            ra_size_descend.setChecked(sort==4);
+            ra_update_time_ascend.setChecked(sort==5);
+            ra_update_time_descend.setChecked(sort==6);
+            ra_install_time_ascend.setChecked(sort==7);
+            ra_install_time_descend.setChecked(sort==8);
+            final AlertDialog dialog=new AlertDialog.Builder(this)
+                    .setTitle(getResources().getString(R.string.action_sort))
+                    .setView(dialogView)
+                    .setNegativeButton(getResources().getString(R.string.dialog_button_cancel), new DialogInterface.OnClickListener() {
+                        @Override public void onClick(DialogInterface dialog, int which) {}
+                    })
+                    .show();
+            ra_default.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    editor.putInt(Constants.PREFERENCE_SORT_CONFIG,0);
+                    editor.apply();
+                    dialog.cancel();
+                    refreshList();
+                }
+            });
+            ra_name_ascend.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    editor.putInt(Constants.PREFERENCE_SORT_CONFIG,1);
+                    editor.apply();
+                    dialog.cancel();
+                    refreshList();
+                }
+            });
+            ra_name_descend.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    editor.putInt(Constants.PREFERENCE_SORT_CONFIG,2);
+                    editor.apply();
+                    dialog.cancel();
+                    refreshList();
+                }
+            });
+            ra_size_ascend.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    editor.putInt(Constants.PREFERENCE_SORT_CONFIG,3);
+                    editor.apply();
+                    dialog.cancel();
+                    refreshList();
+                }
+            });
+            ra_size_descend.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    editor.putInt(Constants.PREFERENCE_SORT_CONFIG,4);
+                    editor.apply();
+                    dialog.cancel();
+                    refreshList();
+                }
+            });
+            ra_update_time_ascend.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    editor.putInt(Constants.PREFERENCE_SORT_CONFIG,5);
+                    editor.apply();
+                    dialog.cancel();
+                    refreshList();
+                }
+            });
+            ra_update_time_descend.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    editor.putInt(Constants.PREFERENCE_SORT_CONFIG,6);
+                    editor.apply();
+                    dialog.cancel();
+                    refreshList();
+                }
+            });
+            ra_install_time_ascend.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    editor.putInt(Constants.PREFERENCE_SORT_CONFIG,7);
+                    editor.apply();
+                    dialog.cancel();
+                    refreshList();
+                }
+            });
+            ra_install_time_descend.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    editor.putInt(Constants.PREFERENCE_SORT_CONFIG,8);
+                    editor.apply();
+                    dialog.cancel();
+                    refreshList();
+                }
+            });
+
+        }
+
+
         return super.onOptionsItemSelected(item);
     }
 
@@ -437,18 +584,26 @@ public class MainActivity extends BaseActivity implements View.OnClickListener{
     }
 
     private class ListAdapter extends RecyclerView.Adapter<ViewHolder>{
+
+        static final int MODE_LINEAR=0;
+        static final int MODE_GRID=1;
+
         private List<AppItem>list;
         private boolean[] isSelected;
         private boolean isMultiSelectMode=false;
-        private ListAdapter(@NonNull List<AppItem> list){
+        private int mode=0;
+
+        private ListAdapter(@NonNull List<AppItem> list,int mode){
             this.list=list;
             isSelected=new boolean[list.size()];
+            if(mode==1)this.mode=1;
         }
 
         @NonNull
         @Override
         public ViewHolder onCreateViewHolder(@NonNull ViewGroup viewGroup, int i) {
-            return new ViewHolder(LayoutInflater.from(MainActivity.this).inflate(R.layout.item_app_info,viewGroup,false));
+            return new ViewHolder(LayoutInflater.from(MainActivity.this).inflate(mode==0?R.layout.item_app_info_linear
+                    :R.layout.item_app_info_grid,viewGroup,false),mode);
         }
 
         @Override
@@ -459,11 +614,19 @@ public class MainActivity extends BaseActivity implements View.OnClickListener{
                 viewHolder.title.setText(String.valueOf(item.getAppName()));
                 //viewHolder.icon.setImageDrawable(item.getIcon());
                 viewHolder.icon.setImageDrawable(item.getIcon(MainActivity.this));
-                viewHolder.description.setText(String.valueOf(item.getPackageName()));
-                viewHolder.right.setText(Formatter.formatFileSize(MainActivity.this,item.getSize()));
-                viewHolder.cb.setChecked(isSelected[viewHolder.getAdapterPosition()]);
-                viewHolder.right.setVisibility(isMultiSelectMode?View.GONE:View.VISIBLE);
-                viewHolder.cb.setVisibility(isMultiSelectMode?View.VISIBLE:View.GONE);
+                if(mode==0){
+                    viewHolder.description.setText(String.valueOf(item.getPackageName()));
+                    viewHolder.right.setText(Formatter.formatFileSize(MainActivity.this,item.getSize()));
+                    viewHolder.cb.setChecked(isSelected[viewHolder.getAdapterPosition()]);
+                    viewHolder.right.setVisibility(isMultiSelectMode?View.GONE:View.VISIBLE);
+                    viewHolder.cb.setVisibility(isMultiSelectMode?View.VISIBLE:View.GONE);
+                }else if(mode==1){
+                    if(isMultiSelectMode)viewHolder.root.setBackgroundColor(getResources().getColor(isSelected[viewHolder.getAdapterPosition()]
+                            ?R.color.colorSelectedBackground
+                            :R.color.colorCardArea));
+                    else viewHolder.root.setBackgroundColor(getResources().getColor(R.color.colorCardArea));
+                }
+
                 viewHolder.root.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
@@ -577,14 +740,16 @@ public class MainActivity extends BaseActivity implements View.OnClickListener{
         TextView right;
         CheckBox cb;
         View root;
-        public ViewHolder(@NonNull View itemView) {
+        public ViewHolder(@NonNull View itemView,int mode) {
             super(itemView);
             root=itemView.findViewById(R.id.item_app_root);
             icon=itemView.findViewById(R.id.item_app_icon);
             title=itemView.findViewById(R.id.item_app_title);
-            description=itemView.findViewById(R.id.item_app_description);
-            right=itemView.findViewById(R.id.item_app_right);
-            cb=itemView.findViewById(R.id.item_app_cb);
+            if(mode==0){
+                description=itemView.findViewById(R.id.item_app_description);
+                right=itemView.findViewById(R.id.item_app_right);
+                cb=itemView.findViewById(R.id.item_app_cb);
+            }
         }
     }
 }

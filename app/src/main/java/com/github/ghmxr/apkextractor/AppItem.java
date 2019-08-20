@@ -11,6 +11,7 @@ import android.support.annotation.Nullable;
 
 import com.github.ghmxr.apkextractor.utils.EnvironmentUtil;
 import com.github.ghmxr.apkextractor.utils.FileUtil;
+import com.github.ghmxr.apkextractor.utils.PinyinUtil;
 
 import java.io.File;
 
@@ -180,7 +181,50 @@ public class AppItem implements Parcelable ,Comparable<AppItem>{
         switch (sort_config){
             default:break;
             case 0:break;
-            case 1:break;
+            case 1:{
+                try{
+                    if(PinyinUtil.getFirstSpell(title).compareTo(o.title)>0)return 1;
+                    if(PinyinUtil.getFirstSpell(title).compareTo(o.title)<0) return -1;
+                }catch (Exception e){e.printStackTrace();}
+            }
+            break;
+            case 2:{
+                try{
+                    if(PinyinUtil.getFirstSpell(title).compareTo(o.title)<0)return 1;
+                    if(PinyinUtil.getFirstSpell(title).compareTo(o.title)>0)return -1;
+                }catch (Exception e){e.printStackTrace();}
+            }
+            break;
+            case 3:{
+                if(size-o.size>0)return 1;
+                if(size-o.size<0)return -1;
+            }
+            break;
+            case 4:{
+                if(size-o.size<0)return 1;
+                if(size-o.size>0)return -1;
+            }
+            break;
+            case 5:{
+                if(info.lastUpdateTime-o.info.lastUpdateTime>0)return 1;
+                if(info.lastUpdateTime-o.info.lastUpdateTime<0)return -1;
+            }
+            break;
+            case 6:{
+                if(info.lastUpdateTime-o.info.lastUpdateTime<0)return 1;
+                if(info.lastUpdateTime-o.info.lastUpdateTime>0)return -1;
+            }
+            break;
+            case 7:{
+                if(info.firstInstallTime-o.info.firstInstallTime>0)return 1;
+                if(info.firstInstallTime-o.info.firstInstallTime<0)return -1;
+            }
+            break;
+            case 8:{
+                if(info.firstInstallTime-o.info.firstInstallTime<0)return 1;
+                if(info.firstInstallTime-o.info.firstInstallTime>0)return -1;
+            }
+            break;
         }
         return 0;
     }
