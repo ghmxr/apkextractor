@@ -331,6 +331,11 @@ public class MainActivity extends BaseActivity implements View.OnClickListener{
             }
             break;
             case R.id.main_export:{
+                if(Build.VERSION.SDK_INT>=23&&PermissionChecker.checkSelfPermission(this,Manifest.permission.WRITE_EXTERNAL_STORAGE)!=PermissionChecker.PERMISSION_GRANTED){
+                    Global.showRequestingWritePermissionSnackBar(this);
+                    requestPermissions(new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE},0);
+                    return;
+                }
                 bottom_card_multi_select.startAnimation(AnimationUtils.loadAnimation(MainActivity.this,R.anim.exit_300));
                 bottom_card_multi_select.setVisibility(View.GONE);
                 final ArrayList<AppItem>arrayList=new ArrayList<>();
@@ -362,6 +367,11 @@ public class MainActivity extends BaseActivity implements View.OnClickListener{
             }
             break;
             case R.id.main_share:{
+                if(Build.VERSION.SDK_INT>=23&&PermissionChecker.checkSelfPermission(this,Manifest.permission.WRITE_EXTERNAL_STORAGE)!=PermissionChecker.PERMISSION_GRANTED){
+                    Global.showRequestingWritePermissionSnackBar(this);
+                    requestPermissions(new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE},0);
+                    return;
+                }
                 bottom_card_multi_select.startAnimation(AnimationUtils.loadAnimation(MainActivity.this,R.anim.exit_300));
                 bottom_card_multi_select.setVisibility(View.GONE);
                 final ArrayList<AppItem>arrayList=new ArrayList<>();

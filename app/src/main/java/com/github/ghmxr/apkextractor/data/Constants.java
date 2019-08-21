@@ -75,7 +75,7 @@ public class Constants {
      */
     public static final String PREFERENCE_NIGHT_MODE="night_mode";
 
-    public static final int PREFERENCE_NIGHT_MODE_DEFAULT= AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM;
+    public static final int PREFERENCE_NIGHT_MODE_DEFAULT= AppCompatDelegate.MODE_NIGHT_NO;
 
     public static final boolean PREFERENCE_LOAD_PERMISSIONS_DEFAULT=true;
     public static final boolean PREFERENCE_LOAD_ACTIVITIES_DEFAULT=true;
