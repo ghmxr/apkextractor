@@ -32,9 +32,9 @@
         app:srcCompat="@android:drawable/ic_dialog_info" />
     <android.support.v7.widget.CardView
         android:id="@+id/main_card"
-        android:layout_width="match_parent"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_gravity="bottom"
+        android:layout_gravity="bottom|center_horizontal"
         android:layout_marginLeft="25dp"
         android:layout_marginRight="25dp"
         android:layout_marginBottom="15dp"
@@ -84,9 +84,9 @@
 
     <android.support.v7.widget.CardView
         android:id="@+id/main_card_multi_select"
-        android:layout_width="match_parent"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_gravity="bottom"
+        android:layout_gravity="bottom|center_horizontal"
         android:layout_marginLeft="25dp"
         android:layout_marginRight="25dp"
         android:layout_marginBottom="15dp"
@@ -98,7 +98,18 @@
         <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent">
+            <TextView
+                android:id="@+id/main_select_num_size"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerHorizontal="true"
+                android:layout_alignParentTop="true"
+                android:layout_marginTop="10dp"
+                android:textSize="12sp"
+                android:textColor="@color/colorHighLightText"
+                tools:text="10项/1024MB"/>
             <LinearLayout
+                android:layout_below="@+id/main_select_num_size"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:orientation="horizontal"
@@ -108,8 +119,6 @@
                     android:id="@+id/main_select_all"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="5dp"
-                    android:layout_marginBottom="5dp"
                     android:layout_centerVertical="true"
                     style="@style/Widget.AppCompat.Button.ButtonBar.AlertDialog"
                     android:textSize="13sp"
@@ -121,8 +130,6 @@
                     android:id="@+id/main_deselect_all"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="5dp"
-                    android:layout_marginBottom="5dp"
                     android:layout_centerVertical="true"
                     style="@style/Widget.AppCompat.Button.ButtonBar.AlertDialog"
                     android:textSize="13sp"
@@ -135,27 +142,25 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     style="@style/Widget.AppCompat.Button.ButtonBar.AlertDialog"
-                    android:layout_marginTop="5dp"
-                    android:layout_marginBottom="5dp"
                     android:layout_centerVertical="true"
                     android:textSize="13sp"
                     android:singleLine="true"
                     android:text="@string/main_card_multi_select_export"
                     android:clickable="true"
-                    android:focusable="true"/>
+                    android:focusable="true"
+                    android:ellipsize="end" />
                 <Button
                     android:id="@+id/main_share"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     style="@style/Widget.AppCompat.Button.ButtonBar.AlertDialog"
-                    android:layout_marginTop="5dp"
-                    android:layout_marginBottom="5dp"
                     android:layout_centerVertical="true"
                     android:textSize="13sp"
                     android:singleLine="true"
                     android:text="@string/main_card_multi_select_share"
                     android:clickable="true"
-                    android:focusable="true"/>
+                    android:focusable="true"
+                    android:ellipsize="end"/>
             </LinearLayout>
         </RelativeLayout>
     </android.support.v7.widget.CardView>

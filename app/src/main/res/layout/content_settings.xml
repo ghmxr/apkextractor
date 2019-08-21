@@ -37,6 +37,7 @@
                     android:id="@+id/settings_path_value"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:textSize="13sp"
                     tools:text="/storage/emulated/0/Backup"/>
             </LinearLayout>
             <ImageView
@@ -110,6 +111,7 @@
                     android:id="@+id/settings_share_mode_value"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:textSize="13sp"
                     tools:text="直接分享"/>
             </LinearLayout>
             <ImageView
@@ -149,6 +151,7 @@
                     android:id="@+id/settings_night_mode_value"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:textSize="13sp"
                     tools:text="跟随系统"/>
             </LinearLayout>
             <ImageView
@@ -188,6 +191,7 @@
                     android:id="@+id/settings_loading_options_value"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:textSize="13sp"
                     tools:text="Activity,Receiver,自启接收器"/>
             </LinearLayout>
             <ImageView

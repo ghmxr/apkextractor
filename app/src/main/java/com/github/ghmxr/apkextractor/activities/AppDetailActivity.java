@@ -2,6 +2,9 @@ package com.github.ghmxr.apkextractor.activities;
 
 import android.Manifest;
 import android.app.AlertDialog;
+import android.content.ClipData;
+import android.content.ClipboardManager;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -12,6 +15,7 @@ import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.design.widget.Snackbar;
 import android.support.transition.TransitionManager;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.PermissionChecker;
@@ -52,8 +56,12 @@ public class AppDetailActivity extends BaseActivity implements View.OnClickListe
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        appItem=getIntent().getParcelableExtra(EXTRA_PARCELED_APP_ITEM);
+        //appItem=getIntent().getParcelableExtra(EXTRA_PARCELED_APP_ITEM);
+        try{
+            appItem=Global.getAppItemByPackageNameFromList(Global.list,getIntent().getStringExtra(EXTRA_PACKAGE_NAME));
+        }catch (Exception e){e.printStackTrace();}
         if(appItem==null){
+            ToastManager.showToast(this,"(-_-)The AppItem info is null, try to restart this application.",Toast.LENGTH_SHORT);
             finish();
             return;
         }
@@ -138,24 +146,34 @@ public class AppDetailActivity extends BaseActivity implements View.OnClickListe
                 final ArrayList<View>loaders_child_views=new ArrayList<>();
 
                 if(permissions!=null&&get_permissions){
-                    for(String s:permissions){
+                    for(final String s:permissions){
                         if(s==null)continue;
-                        permission_child_views.add(getSingleItemView(permission_views,s,null,null));
+                        permission_child_views.add(getSingleItemView(permission_views, s, new View.OnClickListener() {
+                            @Override
+                            public void onClick(View v) {
+                                clip2ClipboardAndShowSnackbar(s);
+                            }
+                        }, null));
                     }
                 }
                 if(activities!=null&&get_activities){
                     for(final ActivityInfo info:activities){
-                        activity_child_views.add(getSingleItemView(activity_views, info.name, null, new View.OnLongClickListener() {
+                        activity_child_views.add(getSingleItemView(activity_views, info.name, new View.OnClickListener() {
+                            @Override
+                            public void onClick(View v) {
+                                clip2ClipboardAndShowSnackbar(info.name);
+                            }
+                        }, new View.OnLongClickListener() {
                             @Override
                             public boolean onLongClick(View v) {
-                                try{
-                                    Intent intent=new Intent();
+                                try {
+                                    Intent intent = new Intent();
                                     intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                                    intent.setClassName(info.packageName,info.name);
+                                    intent.setClassName(info.packageName, info.name);
                                     startActivity(intent);
                                     return true;
-                                }catch (Exception e){
-                                    ToastManager.showToast(AppDetailActivity.this,e.toString(),Toast.LENGTH_SHORT);
+                                } catch (Exception e) {
+                                    ToastManager.showToast(AppDetailActivity.this, e.toString(), Toast.LENGTH_SHORT);
                                 }
                                 return false;
                             }
@@ -163,23 +181,40 @@ public class AppDetailActivity extends BaseActivity implements View.OnClickListe
                     }
                 }
                 if(receivers!=null&&get_receivers){
-                    for(ActivityInfo activityInfo:receivers){
-                        receiver_child_views.add(getSingleItemView(receiver_views,activityInfo.name,null,null));
+                    for(final ActivityInfo activityInfo:receivers){
+                        receiver_child_views.add(getSingleItemView(receiver_views, activityInfo.name, new View.OnClickListener() {
+                            @Override
+                            public void onClick(View v) {
+                                clip2ClipboardAndShowSnackbar(activityInfo.name);
+                            }
+                        }, null));
                     }
                 }
 
                 Bundle bundle=appItem.getStaticReceiversBundle();
                 final Set<String>keys=bundle.keySet();
                 if(get_static_loaders){
-                    for(String s:keys){
+                    for(final String s:keys){
                         View static_loader_item_view=LayoutInflater.from(AppDetailActivity.this).inflate(R.layout.item_static_loader,static_loader_views,false);
                         ((TextView)static_loader_item_view.findViewById(R.id.static_loader_name)).setText(s);
+                        static_loader_item_view.setOnClickListener(new View.OnClickListener() {
+                            @Override
+                            public void onClick(View v) {
+                                clip2ClipboardAndShowSnackbar(s);
+                            }
+                        });
                         ViewGroup filter_views=static_loader_item_view.findViewById(R.id.static_loader_intents);
                         List<String>filters=bundle.getStringArrayList(s);
                         if(filters==null)continue;
-                        for(String filter:filters){
+                        for(final String filter:filters){
                             View itemView=LayoutInflater.from(AppDetailActivity.this).inflate(R.layout.item_single_textview,filter_views,false);
                             ((TextView)itemView.findViewById(R.id.item_textview)).setText(filter);
+                            itemView.setOnClickListener(new View.OnClickListener() {
+                                @Override
+                                public void onClick(View v) {
+                                    clip2ClipboardAndShowSnackbar(filter);
+                                }
+                            });
                             filter_views.addView(itemView);
                         }
                         loaders_child_views.add(static_loader_item_view);
@@ -347,7 +382,51 @@ public class AppDetailActivity extends BaseActivity implements View.OnClickListe
                 }
             }
             break;
+            case R.id.app_detail_package_name_area:{
+                clip2ClipboardAndShowSnackbar(appItem.getPackageName());
+            }
+            break;
+            case R.id.app_detail_version_name_area:{
+                clip2ClipboardAndShowSnackbar(appItem.getVersionName());
+            }
+            break;
+            case R.id.app_detail_version_code_area:{
+                clip2ClipboardAndShowSnackbar(String.valueOf(appItem.getVersionCode()));
+            }
+            break;
+            case R.id.app_detail_size_area:{
+                clip2ClipboardAndShowSnackbar(Formatter.formatFileSize(this,appItem.getSize()));
+            }
+            break;
+            case R.id.app_detail_install_time_area:{
+                clip2ClipboardAndShowSnackbar(EnvironmentUtil.getFormatDateAndTime(appItem.getPackageInfo().firstInstallTime));
+            }
+            break;
+            case R.id.app_detail_update_time_area:{
+                clip2ClipboardAndShowSnackbar(EnvironmentUtil.getFormatDateAndTime(appItem.getPackageInfo().lastUpdateTime));
+            }
+            break;
+            case R.id.app_detail_minimum_api_area:{
+                if(Build.VERSION.SDK_INT>=24)clip2ClipboardAndShowSnackbar(String.valueOf(appItem.getPackageInfo().applicationInfo.minSdkVersion));
+            }
+            break;
+            case R.id.app_detail_target_api_area:{
+                clip2ClipboardAndShowSnackbar(String.valueOf(appItem.getPackageInfo().applicationInfo.targetSdkVersion));
+            }
+            break;
+            case R.id.app_detail_signature_area:{
+                clip2ClipboardAndShowSnackbar(((TextView)findViewById(R.id.app_detail_signature)).getText().toString());
+            }
+            break;
         }
+    }
+
+    private void clip2ClipboardAndShowSnackbar(String s){
+        try{
+            ClipboardManager manager=(ClipboardManager)getSystemService(Context.CLIPBOARD_SERVICE);
+            manager.setPrimaryClip(ClipData.newPlainText("message",s));
+            Snackbar.make(findViewById(android.R.id.content),getResources().getString(R.string.snack_bar_clipboard),Snackbar.LENGTH_SHORT).show();
+        }catch (Exception e){e.printStackTrace();}
     }
 
     /**

@@ -9,7 +9,12 @@ import java.lang.reflect.Method;
 
 public abstract class BaseActivity extends AppCompatActivity {
 
+    /**
+     * @deprecated 使用传递包名的方式
+     */
     public static final String EXTRA_PARCELED_APP_ITEM ="app_item";
+
+    public static final String EXTRA_PACKAGE_NAME="package_name";
 
     @Override
     protected void onCreate(Bundle bundle){

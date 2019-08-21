@@ -37,6 +37,11 @@ public class Global {
      */
     public static final Handler handler=new Handler(Looper.getMainLooper());
 
+    /**
+     * 用于持有对读取出的list的引用
+     */
+    public static List<AppItem> list;
+
     public static void showRequestingWritePermissionSnackBar(@NonNull final Activity activity){
         Snackbar snackbar=Snackbar.make(activity.findViewById(android.R.id.content),activity.getResources().getString(R.string.permission_write),Snackbar.LENGTH_SHORT);
         snackbar.setAction(activity.getResources().getString(R.string.permission_grant), new View.OnClickListener() {
@@ -156,6 +161,21 @@ public class Global {
             }
         });
         task.start();
+    }
+
+    /**
+     * 通过包名获取指定list中的item
+     * @param list 要遍历的list
+     * @param package_name 要定位的包名
+     * @return 查询到的AppItem
+     */
+    public static @Nullable AppItem getAppItemByPackageNameFromList(@NonNull List<AppItem>list,@NonNull String package_name){
+        try{
+            for(AppItem item:list){
+                if(item.getPackageName().trim().toLowerCase().equals(package_name.trim().toLowerCase()))return item;
+            }
+        }catch (Exception e){e.printStackTrace();}
+        return null;
     }
 
     public static String getDuplicatedFileInfo(@NonNull Context context,@NonNull List<AppItem>items){
@@ -345,7 +365,9 @@ public class Global {
             }
             AppItem.sort_config=settings.getInt(Constants.PREFERENCE_SORT_CONFIG,0);
             Collections.sort(list_sum);
-
+            synchronized (Global.class){
+                Global.list=list_sum;//向全局list保存一个引用
+            }
             Global.handler.post(new Runnable() {
                 @Override
                 public void run() {

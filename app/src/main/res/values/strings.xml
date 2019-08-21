@@ -124,6 +124,8 @@
     <string name="dialog_filename_toast_blank">命名规则不能为空</string>
     <string name="dialog_filename_warn_no_variables">注意:没有输入变量，这会导致多选导出无法正常导出文件！</string>
 
+    <string name="snack_bar_clipboard">已复制到剪贴板</string>
+
     <string name="hint_filename_apk">输入apk命名规则</string>
     <string name="hint_filename_zip">输入zip命名规则</string>
 
@@ -145,13 +147,15 @@
     <string name="word_preview">预览</string>
     <string name="word_blank">空</string>
 
+    <string name="dialog_about_title">APK Kit(Build 6)</string>
     <string name="dialog_about_message">\n这是一个快速导出或者分享本地已安装APP的小工具。\n\n
 
         点击“分享”，可以使用支持分享的应用例如蓝牙、QQ面对面快传等来分享已选择的应用。\n\n
 
     勾选导出Data或者Obb选项后，会将应用APK和Data或Obb数据打包成zip导出。\n\n
    <b>Build 6 更新日志：</b> \n
-	<b>改动：新的Material Design主题；</b>\n
+	<b>改动：新的Material Design主题和部分重构界面、逻辑；</b>\n
+    <b>改动：搜索模式下可以进行多选操作；</b>\n
     <b>新增：权限(uses-permission)，活动组件(activities)，广播接收器(Receiver)查看功能；</b>\n
 	<b>新增：夜间黑色主题适配；</b>\n\n
 

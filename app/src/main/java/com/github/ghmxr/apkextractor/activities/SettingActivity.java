@@ -195,7 +195,7 @@ public class SettingActivity extends BaseActivity implements View.OnClickListene
                     }
                 });
                 new AlertDialog.Builder(this)
-                        .setTitle(this.getResources().getString(R.string.activity_settings_about))
+                        .setTitle(this.getResources().getString(R.string.dialog_about_title))
                         .setIcon(R.drawable.icon_launcher)
                         .setCancelable(true)
                         .setView(dialogView)
