@@ -1,9 +1,11 @@
 package com.github.ghmxr.apkextractor.activities;
 
+import android.content.DialogInterface;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.KeyEvent;
@@ -14,6 +16,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.BaseAdapter;
+import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.ProgressBar;
@@ -24,6 +27,7 @@ import com.github.ghmxr.apkextractor.Global;
 import com.github.ghmxr.apkextractor.R;
 import com.github.ghmxr.apkextractor.data.Constants;
 import com.github.ghmxr.apkextractor.ui.ToastManager;
+import com.github.ghmxr.apkextractor.utils.EnvironmentUtil;
 import com.github.ghmxr.apkextractor.utils.Storage;
 
 import java.io.File;
@@ -67,6 +71,15 @@ public class FolderSelectorActivity extends BaseActivity {
         settings= Global.getGlobalSharedPreferences(this);
         file=new File(settings.getString(Constants.PREFERENCE_SAVE_PATH,Constants.PREFERENCE_SAVE_PATH_DEFAULT));
         current_storage_path=getStoragePathOfFile(file);
+
+        try{
+            if(file.exists()&&!file.isDirectory())file.delete();
+            if(!file.exists())file.mkdirs();
+        }catch (Exception e){
+            e.printStackTrace();
+            ToastManager.showToast(this,getResources().getString(R.string.toast_mkdirs_error)+"\n"+e.toString(),Toast.LENGTH_SHORT);
+        }
+
         refreshList(file);
     }
 
@@ -89,7 +102,7 @@ public class FolderSelectorActivity extends BaseActivity {
                             for(String s:storages)arrayList.add(new FileItem(new File(s)));
                         }else{
                             final File[]files=file.listFiles();
-                            for(File file1:files)if(file1.isDirectory())arrayList.add(new FileItem(file1));
+                            for(File file1:files)if(file1.isDirectory()&&!file1.isHidden())arrayList.add(new FileItem(file1));
                         }
                         Collections.sort(arrayList);
                     }catch (Exception e){e.printStackTrace();}
@@ -150,6 +163,49 @@ public class FolderSelectorActivity extends BaseActivity {
                 finish();
             }
             break;
+            case R.id.action_new_folder:{
+                View dialogView=LayoutInflater.from(this).inflate(R.layout.layout_edittext,null);
+                final EditText editText=dialogView.findViewById(R.id.dialog_edit_text);
+
+                final AlertDialog dialog=new AlertDialog.Builder(this)
+                        .setTitle(getResources().getString(R.string.action_new_folder))
+                        .setView(dialogView)
+                        .setPositiveButton(getResources().getString(R.string.dialog_button_confirm), null)
+                        .setNegativeButton(getResources().getString(R.string.dialog_button_cancel), new DialogInterface.OnClickListener() {
+                            @Override public void onClick(DialogInterface dialog, int which) {}
+                        })
+                        .show();
+                dialog.getButton(AlertDialog.BUTTON_POSITIVE).setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        String s=editText.getText().toString().trim();
+                        if(!EnvironmentUtil.isALegalFileName(s)){
+                            ToastManager.showToast(FolderSelectorActivity.this,getResources().getString(R.string.file_invalid_name),Toast.LENGTH_SHORT);
+                            return;
+                        }
+                        if(s.length()==0){
+                            ToastManager.showToast(FolderSelectorActivity.this,getResources().getString(R.string.file_blank_name),Toast.LENGTH_SHORT);
+                            return;
+                        }
+                        try{
+                            File file=new File(FolderSelectorActivity.this.file.getAbsolutePath()+File.separator+s);
+                            file.mkdir();
+                            refreshList(FolderSelectorActivity.this.file);
+                        }catch (Exception e){e.printStackTrace();}
+                        dialog.cancel();
+                    }
+                });
+            }
+            break;
+            case R.id.action_name_ascend:{
+                FileItem.config=0;
+                refreshList(file);
+            }
+            break;
+            case R.id.action_name_descend:{
+                FileItem.config=1;
+                refreshList(file);
+            }
         }
         return super.onOptionsItemSelected(item);
     }

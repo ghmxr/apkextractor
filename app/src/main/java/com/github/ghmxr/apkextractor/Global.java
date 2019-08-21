@@ -1,7 +1,6 @@
 package com.github.ghmxr.apkextractor;
 
 import android.app.Activity;
-import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -12,6 +11,12 @@ import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.os.Looper;
 import android.support.annotation.NonNull;
+import android.os.Handler;
+import android.support.annotation.Nullable;
+import android.support.design.widget.Snackbar;
+import android.support.v7.app.AlertDialog;
+import android.view.View;
+import android.widget.Toast;
 
 import com.github.ghmxr.apkextractor.data.Constants;
 import com.github.ghmxr.apkextractor.ui.DataObbDialog;
@@ -24,11 +29,6 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Locale;
-import android.os.Handler;
-import android.support.annotation.Nullable;
-import android.support.design.widget.Snackbar;
-import android.view.View;
-import android.widget.Toast;
 
 public class Global {
 
@@ -280,12 +280,6 @@ public class Global {
         activity.startActivity(Intent.createChooser(intent,title));
     }
 
-    private static String getExportPathForAppItem(@NonNull Context context,@NonNull AppItem item){
-        try{
-            //return getSavePath(context)+"/"+
-        }catch (Exception e){e.printStackTrace();}
-        return "";
-    }
 
     /**
      * 获取当前应用导出的主路径

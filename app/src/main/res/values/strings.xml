@@ -94,6 +94,7 @@
     <string name="activity_detail_receivers">广播接收器</string>
     <string name="activity_detail_static_loaders">自启接收器</string>
 
+    <string name="dialog_loading_selection_att">勾选项越多，加载速度越慢 -_-</string>
     <string name="dialog_loading_selection_permissions">权限(uses-permissions)</string>
     <string name="dialog_loading_selection_activities">活动组件(activity)</string>
     <string name="dialog_loading_selection_receivers">广播接收器(receiver)</string>
@@ -125,11 +126,13 @@
     <string name="dialog_filename_warn_no_variables">注意:没有输入变量，这会导致多选导出无法正常导出文件！</string>
 
     <string name="snack_bar_clipboard">已复制到剪贴板</string>
+    <string name="toast_mkdirs_error">初始化导出路径失败，请检查文件路径</string>
 
     <string name="hint_filename_apk">输入apk命名规则</string>
     <string name="hint_filename_zip">输入zip命名规则</string>
 
     <string name="text_hint_searchview">搜索内容</string>
+    <string name="text_hint_edittext">输入内容</string>
 
     <string name="zip_level_att">ZIP压缩级别</string>
     <string name="zip_level_default">默认</string>
@@ -139,6 +142,7 @@
     <string name="zip_level_high">高</string>
 
     <string name="file_invalid_name">名称包含非法字符</string>
+    <string name="file_blank_name">名称不能为空</string>
     <string name="file_blank_attention">文件/路径名不能为空</string>
 
 

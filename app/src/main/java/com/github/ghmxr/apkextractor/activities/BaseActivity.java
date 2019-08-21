@@ -2,7 +2,6 @@ package com.github.ghmxr.apkextractor.activities;
 
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
-import android.support.v7.app.AppCompatDelegate;
 import android.view.Menu;
 
 import java.lang.reflect.Method;

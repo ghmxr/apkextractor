@@ -183,15 +183,15 @@ public class AppItem implements Parcelable ,Comparable<AppItem>{
             case 0:break;
             case 1:{
                 try{
-                    if(PinyinUtil.getFirstSpell(title).compareTo(o.title)>0)return 1;
-                    if(PinyinUtil.getFirstSpell(title).compareTo(o.title)<0) return -1;
+                    if(PinyinUtil.getFirstSpell(title).compareTo(PinyinUtil.getFirstSpell(o.title))>0)return 1;
+                    if(PinyinUtil.getFirstSpell(title).compareTo(PinyinUtil.getFirstSpell(o.title))<0) return -1;
                 }catch (Exception e){e.printStackTrace();}
             }
             break;
             case 2:{
                 try{
-                    if(PinyinUtil.getFirstSpell(title).compareTo(o.title)<0)return 1;
-                    if(PinyinUtil.getFirstSpell(title).compareTo(o.title)>0)return -1;
+                    if(PinyinUtil.getFirstSpell(title).compareTo(PinyinUtil.getFirstSpell(o.title))<0)return 1;
+                    if(PinyinUtil.getFirstSpell(title).compareTo(PinyinUtil.getFirstSpell(o.title))>0)return -1;
                 }catch (Exception e){e.printStackTrace();}
             }
             break;

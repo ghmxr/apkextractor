@@ -1,7 +1,7 @@
 package com.github.ghmxr.apkextractor.activities;
 
 import android.Manifest;
-import android.app.AlertDialog;
+import android.support.v7.app.AlertDialog;
 import android.content.ClipData;
 import android.content.ClipboardManager;
 import android.content.Context;

@@ -17,6 +17,7 @@ import android.widget.Toast;
 import com.github.ghmxr.apkextractor.Global;
 import com.github.ghmxr.apkextractor.R;
 import com.github.ghmxr.apkextractor.data.Constants;
+import com.github.ghmxr.apkextractor.utils.EnvironmentUtil;
 
 public class ExportRuleDialog extends AlertDialog implements View.OnClickListener ,TextWatcher,DialogInterface.OnClickListener{
 
@@ -214,11 +215,7 @@ public class ExportRuleDialog extends AlertDialog implements View.OnClickListene
 
                 String apk_replaced_variables=edit_apk.getText().toString().replace(Constants.FONT_APP_NAME, "").replace(Constants.FONT_APP_PACKAGE_NAME, "").replace(Constants.FONT_APP_VERSIONCODE, "").replace(Constants.FONT_APP_VERSIONNAME, "");
                 String zip_replaced_variables=edit_zip.getText().toString().replace(Constants.FONT_APP_NAME, "").replace(Constants.FONT_APP_PACKAGE_NAME, "").replace(Constants.FONT_APP_VERSIONCODE, "").replace(Constants.FONT_APP_VERSIONNAME, "");
-                if(apk_replaced_variables.contains("?")||apk_replaced_variables.contains("\\")||apk_replaced_variables.contains("/")||apk_replaced_variables.contains(":")||apk_replaced_variables.contains("*")||apk_replaced_variables.contains("\"")
-                        ||apk_replaced_variables.contains("<")||apk_replaced_variables.contains(">")||apk_replaced_variables.contains("|")
-                        ||zip_replaced_variables.contains("?")||zip_replaced_variables.contains("\\")||zip_replaced_variables.contains("/")||zip_replaced_variables.contains(":")||zip_replaced_variables.contains("*")||zip_replaced_variables.contains("\"")
-                        ||zip_replaced_variables.contains("<")||zip_replaced_variables.contains(">")||zip_replaced_variables.contains("|")){
-
+                if(!EnvironmentUtil.isALegalFileName(apk_replaced_variables)||!EnvironmentUtil.isALegalFileName(zip_replaced_variables)){
                     ToastManager.showToast(getContext(),getContext().getResources().getString(R.string.file_invalid_name),Toast.LENGTH_SHORT);
                     return;
                 }

@@ -150,5 +150,18 @@ public class EnvironmentUtil {
         return bundle;
     }
 
+    /**
+     * 判断一个字符串是否为标准Linux/Windows的标准合法文件名（不包含非法字符）
+     * @param name 文件名称（仅文件名，不包含路径）
+     * @return true-合法文件名  false-包含非法字符
+     */
+    public static boolean isALegalFileName(@NonNull String name){
+        try{
+            if(name.contains("?")||name.contains("\\")||name.contains("/")||name.contains(":")||name.contains("*")||name.contains("\"")
+                    ||name.contains("<")||name.contains(">")||name.contains("|")) return false;
+        }catch (Exception e){e.printStackTrace();}
+        return true;
+    }
+
 
 }

@@ -4,8 +4,10 @@ import android.os.Build;
 import android.os.Environment;
 import android.os.StatFs;
 import android.support.annotation.NonNull;
+import android.util.Log;
 
 import java.io.BufferedReader;
+import java.io.File;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.List;
@@ -52,17 +54,16 @@ public class Storage {
             BufferedReader reader=new BufferedReader(new InputStreamReader(process.getInputStream()));
             String line;
             while((line=reader.readLine())!=null){
-                //Log.d("", line);
-                if (line.contains("proc") || line.contains("tmpfs") || line.contains("media") || line.contains("asec") || line.contains("secure") || line.contains("system") || line.contains("cache")
-                        || line.contains("sys") || line.contains("data") || line.contains("shell") || line.contains("root") || line.contains("acct") || line.contains("misc") || line.contains("obb")){
-                    continue;
-                }
-                if (line.contains("fat") || line.contains("fuse") || (line.contains("ntfs"))){
-
-                    String items[] = line.split(" ");
-                    if (items != null && items.length > 1){
-                        String path = items[1].toLowerCase(Locale.getDefault());
-                        if(!path.toLowerCase(Locale.getDefault()).trim().equals(mainStorage)) paths.add(path);
+                //Log.d("aa", line);
+                //if (line.contains("proc") || line.contains("tmpfs") || line.contains("media") || line.contains("asec") || line.contains("secure") || line.contains("system") || line.contains("cache")
+                 //       || line.contains("sys") || line.contains("data") || line.contains("shell") || line.contains("root") || line.contains("acct") || line.contains("misc") || line.contains("obb")){
+                 //   continue;
+                //}
+                if (line.contains("fat") || line.contains("fuse") || line.contains("ntfs")||line.contains("sdcardfs")||line.contains("fuseblk")){
+                    String [] items = line.split(" ");
+                    for(String s:items){
+                        s=s.trim().toLowerCase();
+                        if((s.contains(File.separator)||s.contains("/"))&&!paths.contains(s)) paths.add(s);
                     }
                 }
             }

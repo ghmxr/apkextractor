@@ -265,6 +265,9 @@ public class MainActivity extends BaseActivity implements View.OnClickListener{
             @Override
             public void onRefreshProgressUpdated(int current, int total) {
                 dialog.setProgress(current,total);
+                try{
+                    if(current==total)dialog.cancel();
+                }catch (Exception e){e.printStackTrace();}
             }
 
             @Override
