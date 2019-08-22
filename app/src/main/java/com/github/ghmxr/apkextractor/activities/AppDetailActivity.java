@@ -175,11 +175,10 @@ public class AppDetailActivity extends BaseActivity implements View.OnClickListe
                                     intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                                     intent.setClassName(info.packageName, info.name);
                                     startActivity(intent);
-                                    return true;
                                 } catch (Exception e) {
                                     ToastManager.showToast(AppDetailActivity.this, e.toString(), Toast.LENGTH_SHORT);
                                 }
-                                return false;
+                                return true;
                             }
                         }));
                     }

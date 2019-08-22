@@ -107,7 +107,7 @@ public class EnvironmentUtil {
                     if(pn.equals(package_name))map.put(info.activityInfo.name,filters_class);
                 }
                 else{
-                    filters_class.add(s);
+                    if(!filters_class.contains(s)) filters_class.add(s);
                 }
 
             }
@@ -142,7 +142,7 @@ public class EnvironmentUtil {
                     if(pn.equals(package_name))bundle.putStringArrayList(info.activityInfo.name,filters_class);
                 }
                 else{
-                    filters_class.add(s);
+                    if(!filters_class.contains(s)) filters_class.add(s);
                 }
 
             }

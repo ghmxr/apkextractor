@@ -28,6 +28,7 @@ import com.github.ghmxr.apkextractor.R;
 import com.github.ghmxr.apkextractor.data.Constants;
 import com.github.ghmxr.apkextractor.ui.ToastManager;
 import com.github.ghmxr.apkextractor.utils.EnvironmentUtil;
+import com.github.ghmxr.apkextractor.utils.PinyinUtil;
 import com.github.ghmxr.apkextractor.utils.Storage;
 
 import java.io.File;
@@ -383,13 +384,17 @@ public class FolderSelectorActivity extends BaseActivity {
             switch (config){
                 default:break;
                 case 0:{
-                    if(this.name.compareTo(o.name)>0)return 1;
-                    if(this.name.compareTo(o.name)<0)return -1;
+                    try{
+                        if(PinyinUtil.getFirstSpell(this.name).toLowerCase().compareTo(PinyinUtil.getFirstSpell(o.name).toLowerCase())>0)return 1;
+                        if(PinyinUtil.getFirstSpell(this.name).toLowerCase().compareTo(PinyinUtil.getFirstSpell(o.name).toLowerCase())<0)return -1;
+                    }catch (Exception e){e.printStackTrace();}
                 }
                 break;
                 case 1:{
-                    if(this.name.compareTo(o.name)>0)return -1;
-                    if(this.name.compareTo(o.name)<0)return 1;
+                    try{
+                        if(PinyinUtil.getFirstSpell(this.name).toLowerCase().compareTo(PinyinUtil.getFirstSpell(o.name).toLowerCase())>0)return -1;
+                        if(PinyinUtil.getFirstSpell(this.name).toLowerCase().compareTo(PinyinUtil.getFirstSpell(o.name).toLowerCase())<0)return 1;
+                    }catch (Exception e){e.printStackTrace();}
                 }
                 break;
             }
