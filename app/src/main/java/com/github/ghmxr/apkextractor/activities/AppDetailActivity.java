@@ -1,6 +1,7 @@
 package com.github.ghmxr.apkextractor.activities;
 
 import android.Manifest;
+import android.content.pm.ApplicationInfo;
 import android.support.v7.app.AlertDialog;
 import android.content.ClipData;
 import android.content.ClipboardManager;
@@ -53,6 +54,8 @@ public class AppDetailActivity extends BaseActivity implements View.OnClickListe
     private ViewGroup receiver_views;
     private ViewGroup static_loader_views;
 
+    private int item_permission=0,item_activity=0,item_receiver=0,item_loader=0;
+
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -93,6 +96,7 @@ public class AppDetailActivity extends BaseActivity implements View.OnClickListe
         ((TextView)findViewById(R.id.app_detail_update_time)).setText(EnvironmentUtil.getFormatDateAndTime(packageInfo.lastUpdateTime));
         ((TextView)findViewById(R.id.app_detail_minimum_api)).setText(Build.VERSION.SDK_INT>=24?String.valueOf(packageInfo.applicationInfo.minSdkVersion):getResources().getString(R.string.word_unknown));
         ((TextView)findViewById(R.id.app_detail_target_api)).setText(String.valueOf(packageInfo.applicationInfo.targetSdkVersion));
+        ((TextView)findViewById(R.id.app_detail_is_system_app)).setText(getResources().getString((appItem.getPackageInfo().applicationInfo.flags& ApplicationInfo.FLAG_SYSTEM)>0?R.string.word_yes:R.string.word_no));
         ((TextView)findViewById(R.id.app_detail_signature)).setText(EnvironmentUtil.getSignatureStringOfPackageInfo(packageInfo));
 
         findViewById(R.id.app_detail_run_area).setOnClickListener(this);
@@ -246,6 +250,12 @@ public class AppDetailActivity extends BaseActivity implements View.OnClickListe
                             TextView att_static_loader=findViewById(R.id.app_detail_static_loader_area_att);
                             att_static_loader.setText(getResources().getString(R.string.activity_detail_static_loaders)+"("+keys.size()+getResources().getString(R.string.unit_item)+")");
                         }
+
+                        item_permission=permission_child_views.size();
+                        item_activity=activity_child_views.size();
+                        item_receiver=receiver_child_views.size();
+                        item_loader=loaders_child_views.size();
+
                         findViewById(R.id.app_detail_card_pg).setVisibility(View.GONE);
                         findViewById(R.id.app_detail_card_permissions).setVisibility(get_permissions?View.VISIBLE:View.GONE);
                         findViewById(R.id.app_detail_card_activities).setVisibility(get_activities?View.VISIBLE:View.GONE);
@@ -414,6 +424,10 @@ public class AppDetailActivity extends BaseActivity implements View.OnClickListe
                 clip2ClipboardAndShowSnackbar(String.valueOf(appItem.getPackageInfo().applicationInfo.targetSdkVersion));
             }
             break;
+            case R.id.app_detail_is_system_app_area:{
+                clip2ClipboardAndShowSnackbar(((TextView)findViewById(R.id.app_detail_is_system_app)).getText().toString());
+            }
+            break;
             case R.id.app_detail_signature_area:{
                 clip2ClipboardAndShowSnackbar(((TextView)findViewById(R.id.app_detail_signature)).getText().toString());
             }
@@ -462,16 +476,18 @@ public class AppDetailActivity extends BaseActivity implements View.OnClickListe
     }
 
     private void checkHeightAndFinish(){
-        SharedPreferences settings=Global.getGlobalSharedPreferences(this);
-        boolean show_permissions=settings.getBoolean(Constants.PREFERENCE_LOAD_PERMISSIONS,Constants.PREFERENCE_LOAD_PERMISSIONS_DEFAULT);
-        boolean show_activities=settings.getBoolean(Constants.PREFERENCE_LOAD_ACTIVITIES,Constants.PREFERENCE_LOAD_ACTIVITIES_DEFAULT);
-        boolean show_receivers=settings.getBoolean(Constants.PREFERENCE_LOAD_RECEIVERS,Constants.PREFERENCE_LOAD_RECEIVERS_DEFAULT);
-        boolean show_static_loaders=settings.getBoolean(Constants.PREFERENCE_LOAD_STATIC_LOADERS,Constants.PREFERENCE_LOAD_STATIC_LOADERS_DEFAULT);
-        boolean b=show_permissions||show_activities||show_receivers||show_static_loaders;
-        if(Build.VERSION.SDK_INT>=26){ //根布局项目太多时低版本Android会引发一个底层崩溃。版本号暂定26
+        //SharedPreferences settings=Global.getGlobalSharedPreferences(this);
+        //boolean show_permissions=settings.getBoolean(Constants.PREFERENCE_LOAD_PERMISSIONS,Constants.PREFERENCE_LOAD_PERMISSIONS_DEFAULT);
+        //boolean show_activities=settings.getBoolean(Constants.PREFERENCE_LOAD_ACTIVITIES,Constants.PREFERENCE_LOAD_ACTIVITIES_DEFAULT);
+        //boolean show_receivers=settings.getBoolean(Constants.PREFERENCE_LOAD_RECEIVERS,Constants.PREFERENCE_LOAD_RECEIVERS_DEFAULT);
+        //boolean show_static_loaders=settings.getBoolean(Constants.PREFERENCE_LOAD_STATIC_LOADERS,Constants.PREFERENCE_LOAD_STATIC_LOADERS_DEFAULT);
+        int visible_items=(permission_views.getVisibility()==View.VISIBLE?item_permission:0)+(activity_views.getVisibility()==View.VISIBLE?item_activity:0)
+                +(receiver_views.getVisibility()==View.VISIBLE?item_receiver:0)+(static_loader_views.getVisibility()==View.VISIBLE?item_loader:0);
+
+        if(Build.VERSION.SDK_INT>=28){ //根布局项目太多时低版本Android会引发一个底层崩溃。版本号暂定28
             ActivityCompat.finishAfterTransition(this);
         }else {
-            if(b)finish();
+            if(visible_items>170)finish();
             else ActivityCompat.finishAfterTransition(this);
         }
     }

@@ -19,4 +19,5 @@
     <color name="colorFirstAttention">#0068ea</color>
 
     <color name="colorSelectedBackground">#90EE90</color>
+    <color name="colorSystemAppTitleColor">#FF4500</color>
 </resources>

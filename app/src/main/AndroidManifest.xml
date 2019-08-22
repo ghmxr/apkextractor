@@ -29,6 +29,9 @@
         <activity android:name=".activities.FolderSelectorActivity"
             android:label="@string/activity_folder_selector_title"
             android:theme="@style/AppTheme.NoActionBar"/>
+        <meta-data
+            android:name="android.max_aspect"
+            android:value="2.4" />
     </application>
 
 </manifest>

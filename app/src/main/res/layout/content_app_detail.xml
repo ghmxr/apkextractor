@@ -558,6 +558,42 @@
                     android:background="@color/colorDividingLine"/>
 
                 <RelativeLayout
+                    android:id="@+id/app_detail_is_system_app_area"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:clickable="true"
+                    android:focusable="true"
+                    android:background="?attr/selectableItemBackground"
+                    android:onClick="onClick">
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentLeft="true"
+                        android:layout_marginLeft="5dp"
+                        android:layout_marginTop="10dp"
+                        android:layout_marginBottom="10dp"
+                        android:layout_centerVertical="true"
+                        android:textSize="14sp"
+                        android:textColor="@color/colorHighLightText"
+                        android:text="@string/activity_detail_is_system_app"/>
+                    <TextView
+                        android:id="@+id/app_detail_is_system_app"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentRight="true"
+                        android:layout_centerVertical="true"
+                        android:singleLine="true"
+                        android:layout_marginLeft="5dp"
+                        android:layout_marginRight="5dp"
+                        android:textSize="12sp"
+                        tools:text="@string/word_no"/>
+                </RelativeLayout>
+                <ImageView
+                    android:layout_width="match_parent"
+                    android:layout_height="1px"
+                    android:background="@color/colorDividingLine"/>
+
+                <RelativeLayout
                     android:id="@+id/app_detail_signature_area"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"

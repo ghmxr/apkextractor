@@ -172,7 +172,7 @@ public class ExportRuleDialog extends AlertDialog implements View.OnClickListene
                 }
             }
             break;
-            case R.id.app_detail_version_code:{
+            case R.id.filename_versioncode:{
                 if(edit_apk.isFocused()){
                     edit_apk.getText().insert(edit_apk.getSelectionStart(), Constants.FONT_APP_VERSIONCODE);
                 }

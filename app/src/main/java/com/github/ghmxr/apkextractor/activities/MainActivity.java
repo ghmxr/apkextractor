@@ -5,6 +5,7 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.pm.ApplicationInfo;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -694,6 +695,8 @@ public class MainActivity extends BaseActivity implements View.OnClickListener{
                 final AppItem item=list.get(viewHolder.getAdapterPosition());
                 if(item==null)return;
                 viewHolder.title.setText(String.valueOf(item.getAppName()));
+                viewHolder.title.setTextColor(getResources().getColor((item.getPackageInfo().applicationInfo.flags&ApplicationInfo.FLAG_SYSTEM)>0?
+                        R.color.colorSystemAppTitleColor:R.color.colorHighLightText));
                 //viewHolder.icon.setImageDrawable(item.getIcon());
                 viewHolder.icon.setImageDrawable(item.getIcon(MainActivity.this));
                 if(mode==0){
