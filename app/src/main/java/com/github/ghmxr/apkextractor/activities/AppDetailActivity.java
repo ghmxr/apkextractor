@@ -287,7 +287,7 @@ public class AppDetailActivity extends BaseActivity implements View.OnClickListe
                 }
                 final List<AppItem>single_list=getSingleItemArrayList(true);
                 final AppItem item=single_list.get(0);
-                Global.checkAndExportCertainAppItemsToSetPathWithoutShare(this,single_list , new Global.ExportTaskFinishedListener() {
+                Global.checkAndExportCertainAppItemsToSetPathWithoutShare(this,single_list , false,new Global.ExportTaskFinishedListener() {
                     @Override
                     public void onFinished(@NonNull String error_message) {
                         if(!error_message.trim().equals("")){

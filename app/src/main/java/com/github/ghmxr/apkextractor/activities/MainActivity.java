@@ -343,7 +343,7 @@ public class MainActivity extends BaseActivity implements View.OnClickListener{
                 try{
                     arrayList.addAll(((ListAdapter)recyclerView.getAdapter()).getSelectedAppItems());
                 }catch (Exception e){e.printStackTrace();}
-                Global.checkAndExportCertainAppItemsToSetPathWithoutShare(this, arrayList, new Global.ExportTaskFinishedListener() {
+                Global.checkAndExportCertainAppItemsToSetPathWithoutShare(this, arrayList, true,new Global.ExportTaskFinishedListener() {
                     @Override
                     public void onFinished(@NonNull String error_message) {
                         if(!error_message.trim().equals("")){

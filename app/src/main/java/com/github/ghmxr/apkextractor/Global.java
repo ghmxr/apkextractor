@@ -61,11 +61,38 @@ public class Global {
 
     /**
      * 选择data,obb项，确认重复文件，导出list集合中的应用，并向activity显示一个dialog，传入接口来监听完成回调（在主线程）
-     * @param list AppItem的副本，除singleList外data obb值须为false
+     * @param list AppItem的副本，当check_data_obb值为true时无需初始，false时须提前设置好data,obb值
+     * @param check_data_obb 传入true 则会执行一次data,obb检查（list中没有设置data,obb值）
      */
-    public static void checkAndExportCertainAppItemsToSetPathWithoutShare(@NonNull final Activity activity, @NonNull final List<AppItem>list, @Nullable final ExportTaskFinishedListener listener){
+    public static void checkAndExportCertainAppItemsToSetPathWithoutShare(@NonNull final Activity activity, @NonNull final List<AppItem>list, boolean check_data_obb,@Nullable final ExportTaskFinishedListener listener){
         if(list.size()==0)return;
-        if(list.size()==1){
+        if(check_data_obb){
+            DataObbDialog dialog=new DataObbDialog(activity, list, new DataObbDialog.DialogDataObbConfirmedCallback() {
+                @Override
+                public void onDialogDataObbConfirmed(@NonNull final List<AppItem> export_list) {
+                    String dulplicated_info=getDuplicatedFileInfo(activity,export_list);
+                    if(!dulplicated_info.trim().equals("")){
+                        new AlertDialog.Builder(activity)
+                                .setTitle(activity.getResources().getString(R.string.dialog_duplicate_title))
+                                .setMessage(activity.getResources().getString(R.string.dialog_duplicate_msg)+dulplicated_info)
+                                .setPositiveButton(activity.getResources().getString(R.string.dialog_button_confirm), new DialogInterface.OnClickListener() {
+                                    @Override
+                                    public void onClick(DialogInterface dialog, int which) {
+                                        exportCertainAppItemsToSetPathAndShare(activity, export_list, false,listener);
+                                    }
+                                })
+                                .setNegativeButton(activity.getResources().getString(R.string.dialog_button_cancel), new DialogInterface.OnClickListener() {
+                                    @Override
+                                    public void onClick(DialogInterface dialog, int which) {}
+                                })
+                                .show();
+                        return;
+                    }
+                    exportCertainAppItemsToSetPathAndShare(activity, export_list, false,listener);
+                }
+            });
+            dialog.show();
+        }else{
             String dulplicated_info=getDuplicatedFileInfo(activity,list);
             if(!dulplicated_info.trim().equals("")){
                 new AlertDialog.Builder(activity)
@@ -85,34 +112,8 @@ public class Global {
                 return;
             }
             exportCertainAppItemsToSetPathAndShare(activity, list, false,listener);
-            return;
         }
 
-        DataObbDialog dialog=new DataObbDialog(activity, list, new DataObbDialog.DialogDataObbConfirmedCallback() {
-            @Override
-            public void onDialogDataObbConfirmed(@NonNull final List<AppItem> export_list) {
-                String dulplicated_info=getDuplicatedFileInfo(activity,export_list);
-                if(!dulplicated_info.trim().equals("")){
-                    new AlertDialog.Builder(activity)
-                            .setTitle(activity.getResources().getString(R.string.dialog_duplicate_title))
-                            .setMessage(activity.getResources().getString(R.string.dialog_duplicate_msg)+dulplicated_info)
-                            .setPositiveButton(activity.getResources().getString(R.string.dialog_button_confirm), new DialogInterface.OnClickListener() {
-                                @Override
-                                public void onClick(DialogInterface dialog, int which) {
-                                    exportCertainAppItemsToSetPathAndShare(activity, export_list, false,listener);
-                                }
-                            })
-                            .setNegativeButton(activity.getResources().getString(R.string.dialog_button_cancel), new DialogInterface.OnClickListener() {
-                                @Override
-                                public void onClick(DialogInterface dialog, int which) {}
-                            })
-                            .show();
-                    return;
-                }
-                exportCertainAppItemsToSetPathAndShare(activity, export_list, false,listener);
-            }
-        });
-        dialog.show();
     }
 
     /**
