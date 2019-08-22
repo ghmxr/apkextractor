@@ -19,7 +19,7 @@ import com.github.ghmxr.apkextractor.R;
 import com.github.ghmxr.apkextractor.data.Constants;
 import com.github.ghmxr.apkextractor.utils.EnvironmentUtil;
 
-public class ExportRuleDialog extends AlertDialog implements View.OnClickListener ,TextWatcher,DialogInterface.OnClickListener{
+public class ExportRuleDialog extends AlertDialog implements View.OnClickListener,DialogInterface.OnClickListener{
 
 
     private EditText edit_apk,edit_zip;
@@ -75,7 +75,7 @@ public class ExportRuleDialog extends AlertDialog implements View.OnClickListene
         }
         setTitle(context.getResources().getString(R.string.dialog_filename_title));
         setView(dialogView);
-        setButton(AlertDialog.BUTTON_POSITIVE, context.getResources().getString(R.string.dialog_button_confirm), this);
+        setButton(AlertDialog.BUTTON_POSITIVE, context.getResources().getString(R.string.dialog_button_confirm), (DialogInterface.OnClickListener)null);
         setButton(AlertDialog.BUTTON_NEGATIVE,context.getResources().getString(R.string.dialog_button_cancel),this);
 
         edit_apk.addTextChangedListener(new TextWatcher(){
@@ -203,11 +203,11 @@ public class ExportRuleDialog extends AlertDialog implements View.OnClickListene
     }
 
     @Override
-    public void onClick(DialogInterface dialog, int which) {
-        SharedPreferences.Editor editor=settings.edit();
-        switch (which){
-            default:break;
-            case AlertDialog.BUTTON_POSITIVE:{
+    public void show(){
+        super.show();
+        getButton(AlertDialog.BUTTON_POSITIVE).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
                 if(edit_apk.getText().toString().trim().equals("")||edit_zip.getText().toString().trim().equals("")){
                     ToastManager.showToast(getContext(),getContext().getResources().getString(R.string.dialog_filename_toast_blank), Toast.LENGTH_SHORT);
                     return;
@@ -219,6 +219,8 @@ public class ExportRuleDialog extends AlertDialog implements View.OnClickListene
                     ToastManager.showToast(getContext(),getContext().getResources().getString(R.string.file_invalid_name),Toast.LENGTH_SHORT);
                     return;
                 }
+
+                SharedPreferences.Editor editor=settings.edit();
                 editor.putString(Constants.PREFERENCE_FILENAME_FONT_APK, edit_apk.getText().toString());
                 editor.putString(Constants.PREFERENCE_FILENAME_FONT_ZIP, edit_zip.getText().toString());
                 int zip_selection=spinner.getSelectedItemPosition();
@@ -231,26 +233,13 @@ public class ExportRuleDialog extends AlertDialog implements View.OnClickListene
                     case 4:editor.putInt(Constants.PREFERENCE_ZIP_COMPRESS_LEVEL, Constants.ZIP_LEVEL_HIGH);break;
                 }
                 editor.apply();
-
+                cancel();
             }
-            break;
-        }
+        });
     }
 
     @Override
-    public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-
-    }
-
-    @Override
-    public void onTextChanged(CharSequence s, int start, int before, int count) {
-
-    }
-
-    @Override
-    public void afterTextChanged(Editable s) {
-
-    }
+    public void onClick(DialogInterface dialog, int which) {}
 
     private String getFormatedExportFileName(String apk, String zip){
         final String PREVIEW_APPNAME=getContext().getResources().getString(R.string.dialog_filename_preview_appname);
