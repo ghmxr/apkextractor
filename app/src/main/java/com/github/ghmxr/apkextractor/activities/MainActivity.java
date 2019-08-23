@@ -585,18 +585,16 @@ public class MainActivity extends BaseActivity implements View.OnClickListener{
     }
 
     private void openSearchMode(){
-        try{
-            isSearchMode=true;
-            swipeRefreshLayout.setEnabled(false);
-            closeMultiSelectModeForExternalVariables(false);
-            getSupportActionBar().setDisplayShowCustomEnabled(true);
-            getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-            setMenuVisible(false);
-            recyclerView.setAdapter(null);
-            bottom_card.setVisibility(View.GONE);
-            searchView.requestFocus();
-            inputMethodManager.showSoftInput(searchView.findFocus(),0);
-        }catch (Exception e){e.printStackTrace();}
+        isSearchMode=true;
+        closeMultiSelectModeForExternalVariables(false);
+        swipeRefreshLayout.setEnabled(false);
+        setMenuVisible(false);
+        recyclerView.setAdapter(null);
+        bottom_card.setVisibility(View.GONE);
+        searchView.requestFocus();
+        inputMethodManager.showSoftInput(searchView.findFocus(),0);
+        try{getSupportActionBar().setDisplayShowCustomEnabled(true);}catch (Exception e){e.printStackTrace();}
+        try{getSupportActionBar().setDisplayHomeAsUpEnabled(true);}catch (Exception e){e.printStackTrace();}
     }
 
     private void closeSearchMode(){
