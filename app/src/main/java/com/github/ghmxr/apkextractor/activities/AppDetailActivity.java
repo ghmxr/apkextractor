@@ -32,14 +32,16 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.github.ghmxr.apkextractor.AppItem;
+import com.github.ghmxr.apkextractor.items.AppItem;
 import com.github.ghmxr.apkextractor.Global;
 import com.github.ghmxr.apkextractor.R;
-import com.github.ghmxr.apkextractor.data.Constants;
+import com.github.ghmxr.apkextractor.Constants;
 import com.github.ghmxr.apkextractor.ui.ToastManager;
 import com.github.ghmxr.apkextractor.utils.EnvironmentUtil;
 import com.github.ghmxr.apkextractor.utils.FileUtil;
-import com.github.ghmxr.apkextractor.utils.Storage;
+import com.github.ghmxr.apkextractor.utils.OutputUtil;
+import com.github.ghmxr.apkextractor.utils.SPUtil;
+import com.github.ghmxr.apkextractor.utils.StorageUtil;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -54,14 +56,14 @@ public class AppDetailActivity extends BaseActivity implements View.OnClickListe
     private ViewGroup receiver_views;
     private ViewGroup static_loader_views;
 
-    private int item_permission=0,item_activity=0,item_receiver=0,item_loader=0;
+    //private int item_permission=0,item_activity=0,item_receiver=0,item_loader=0;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         //appItem=getIntent().getParcelableExtra(EXTRA_PARCELED_APP_ITEM);
         try{
-            appItem=Global.getAppItemByPackageNameFromList(Global.list,getIntent().getStringExtra(EXTRA_PACKAGE_NAME));
+            appItem=Global.getAppItemByPackageNameFromList(Global.app_list,getIntent().getStringExtra(EXTRA_PACKAGE_NAME));
         }catch (Exception e){e.printStackTrace();}
         if(appItem==null){
             ToastManager.showToast(this,"(-_-)The AppItem info is null, try to restart this application.",Toast.LENGTH_SHORT);
@@ -69,7 +71,7 @@ public class AppDetailActivity extends BaseActivity implements View.OnClickListe
             return;
         }
         setContentView(R.layout.activity_app_detail);
-        final SharedPreferences settings=Global.getGlobalSharedPreferences(this);
+        final SharedPreferences settings= SPUtil.getGlobalSharedPreferences(this);
 
         setSupportActionBar((Toolbar)findViewById(R.id.toolbar_app_detail));
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
@@ -86,7 +88,7 @@ public class AppDetailActivity extends BaseActivity implements View.OnClickListe
 
         ((TextView)findViewById(R.id.app_detail_name)).setText(appItem.getAppName());
         ((TextView)findViewById(R.id.app_detail_version_name_title)).setText(appItem.getVersionName());
-        ((ImageView)findViewById(R.id.app_detail_icon)).setImageDrawable(appItem.getIcon(this));
+        ((ImageView)findViewById(R.id.app_detail_icon)).setImageDrawable(appItem.getIcon());
 
         ((TextView)findViewById(R.id.app_detail_package_name)).setText(appItem.getPackageName());
         ((TextView)findViewById(R.id.app_detail_version_name)).setText(appItem.getVersionName());
@@ -114,8 +116,8 @@ public class AppDetailActivity extends BaseActivity implements View.OnClickListe
         new Thread(new Runnable() {
             @Override
             public void run() {
-                final long data= FileUtil.getFileOrFolderSize(new File(Storage.getMainExternalStoragePath()+"/android/data/"+appItem.getPackageName()));
-                final long obb= FileUtil.getFileOrFolderSize(new File(Storage.getMainExternalStoragePath()+"/android/obb/"+appItem.getPackageName()));
+                final long data= FileUtil.getFileOrFolderSize(new File(StorageUtil.getMainExternalStoragePath()+"/android/data/"+appItem.getPackageName()));
+                final long obb= FileUtil.getFileOrFolderSize(new File(StorageUtil.getMainExternalStoragePath()+"/android/obb/"+appItem.getPackageName()));
                 Global.handler.post(new Runnable() {
                     @Override
                     public void run() {
@@ -250,10 +252,10 @@ public class AppDetailActivity extends BaseActivity implements View.OnClickListe
                             att_static_loader.setText(getResources().getString(R.string.activity_detail_static_loaders)+"("+keys.size()+getResources().getString(R.string.unit_item)+")");
                         }
 
-                        item_permission=permission_child_views.size();
-                        item_activity=activity_child_views.size();
-                        item_receiver=receiver_child_views.size();
-                        item_loader=loaders_child_views.size();
+                        //item_permission=permission_child_views.size();
+                        //item_activity=activity_child_views.size();
+                        //item_receiver=receiver_child_views.size();
+                        //item_loader=loaders_child_views.size();
 
                         findViewById(R.id.app_detail_card_pg).setVisibility(View.GONE);
                         findViewById(R.id.app_detail_card_permissions).setVisibility(get_permissions?View.VISIBLE:View.GONE);
@@ -302,7 +304,7 @@ public class AppDetailActivity extends BaseActivity implements View.OnClickListe
                             return;
                         }
                         ToastManager.showToast(AppDetailActivity.this,getResources().getString(R.string.toast_export_complete)
-                                +Global.getAbsoluteWritePath(AppDetailActivity.this,single_list.get(0),(item.exportData||item.exportObb)?"zip":"apk"),Toast.LENGTH_SHORT);
+                                + OutputUtil.getAbsoluteWritePath(AppDetailActivity.this,single_list.get(0),(item.exportData||item.exportObb)?"zip":"apk"),Toast.LENGTH_SHORT);
                     }
                 });
             }
@@ -480,13 +482,15 @@ public class AppDetailActivity extends BaseActivity implements View.OnClickListe
         //boolean show_activities=settings.getBoolean(Constants.PREFERENCE_LOAD_ACTIVITIES,Constants.PREFERENCE_LOAD_ACTIVITIES_DEFAULT);
         //boolean show_receivers=settings.getBoolean(Constants.PREFERENCE_LOAD_RECEIVERS,Constants.PREFERENCE_LOAD_RECEIVERS_DEFAULT);
         //boolean show_static_loaders=settings.getBoolean(Constants.PREFERENCE_LOAD_STATIC_LOADERS,Constants.PREFERENCE_LOAD_STATIC_LOADERS_DEFAULT);
-        int visible_items=(permission_views.getVisibility()==View.VISIBLE?item_permission:0)+(activity_views.getVisibility()==View.VISIBLE?item_activity:0)
-                +(receiver_views.getVisibility()==View.VISIBLE?item_receiver:0)+(static_loader_views.getVisibility()==View.VISIBLE?item_loader:0);
+        //int visible_items=(permission_views.getVisibility()==View.VISIBLE?item_permission:0)+(activity_views.getVisibility()==View.VISIBLE?item_activity:0)
+                //+(receiver_views.getVisibility()==View.VISIBLE?item_receiver:0)+(static_loader_views.getVisibility()==View.VISIBLE?item_loader:0);
+        boolean normal_finish=permission_views.getVisibility()==View.VISIBLE||activity_views.getVisibility()==View.VISIBLE||receiver_views.getVisibility()==View.VISIBLE
+                ||static_loader_views.getVisibility()==View.VISIBLE;
 
         if(Build.VERSION.SDK_INT>=28){ //根布局项目太多时低版本Android会引发一个底层崩溃。版本号暂定28
             ActivityCompat.finishAfterTransition(this);
         }else {
-            if(visible_items>170)finish();
+            if(normal_finish)finish();
             else ActivityCompat.finishAfterTransition(this);
         }
     }

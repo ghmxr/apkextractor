@@ -1,14 +1,15 @@
-package com.github.ghmxr.apkextractor;
+package com.github.ghmxr.apkextractor.items;
 
 import android.content.Context;
+import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageInfo;
+import android.content.pm.PackageManager;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
-import android.os.Parcel;
-import android.os.Parcelable;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
+import com.github.ghmxr.apkextractor.DisplayItem;
 import com.github.ghmxr.apkextractor.utils.EnvironmentUtil;
 import com.github.ghmxr.apkextractor.utils.FileUtil;
 import com.github.ghmxr.apkextractor.utils.PinyinUtil;
@@ -18,11 +19,11 @@ import java.io.File;
 /**
  * 单个应用项的所有信息
  */
-public class AppItem implements Parcelable ,Comparable<AppItem>{
+public class AppItem implements Comparable<AppItem>, DisplayItem {
 
     public static transient int sort_config=0;
 
-    public static final Creator<AppItem> CREATOR=new Creator<AppItem>() {
+    /*public static final Creator<AppItem> CREATOR=new Creator<AppItem>() {
         @Override
         public AppItem createFromParcel(Parcel source) {
             return new AppItem(source);
@@ -32,7 +33,7 @@ public class AppItem implements Parcelable ,Comparable<AppItem>{
         public AppItem[] newArray(int size) {
             return new AppItem[size];
         }
-    };
+    };*/
 
     private PackageInfo info;
 
@@ -40,6 +41,10 @@ public class AppItem implements Parcelable ,Comparable<AppItem>{
      * 程序名
      */
     private String title;
+    /**
+     * 应用图标
+     */
+    private Drawable drawable;
 
     /**
      *应用大小
@@ -60,9 +65,11 @@ public class AppItem implements Parcelable ,Comparable<AppItem>{
      * @param info PackageInfo实例，对应的本AppItem的信息
      */
     public AppItem(@NonNull Context context, @NonNull PackageInfo info){
+        PackageManager packageManager=context.getApplicationContext().getPackageManager();
         this.info=info;
-        this.title=context.getPackageManager().getApplicationLabel(info.applicationInfo).toString();
+        this.title=packageManager.getApplicationLabel(info.applicationInfo).toString();
         this.size= FileUtil.getFileOrFolderSize(new File(info.applicationInfo.sourceDir));
+        this.drawable=packageManager.getApplicationIcon(info.applicationInfo);
         //this.static_receivers= EnvironmentUtil.getStaticRegisteredReceiversForPackageName(context,info.packageName);
         this.static_receivers_bundle=EnvironmentUtil.getStaticRegisteredReceiversOfBundleTypeForPackageName(context,info.packageName);
     }
@@ -77,23 +84,44 @@ public class AppItem implements Parcelable ,Comparable<AppItem>{
         this.title=wrapper.title;
         this.size=wrapper.size;
         this.info=wrapper.info;
+        this.drawable=wrapper.drawable;
         this.exportData=flag_data;
         this.exportObb=flag_obb;
     }
 
-    private AppItem(Parcel in){
+    /*private AppItem(Parcel in){
         title=in.readString();
         size=in.readLong();
         info=in.readParcelable(PackageInfo.class.getClassLoader());
         //static_receivers=in.readHashMap(HashMap.class.getClassLoader());
         static_receivers_bundle=in.readBundle(Bundle.class.getClassLoader());
+    }*/
+
+    @Override
+    public Drawable getIconDrawable() {
+        return drawable;
+    }
+
+    @Override
+    public String getTitle() {
+        return title;
+    }
+
+    @Override
+    public String getDescription() {
+        return info.packageName;
+    }
+
+    @Override
+    public boolean isRedMarked() {
+        return (info.applicationInfo.flags&ApplicationInfo.FLAG_SYSTEM)>0;
     }
 
     /**
      * 获取应用图标
      */
-    public @Nullable Drawable getIcon(@NonNull Context context){
-        return context.getPackageManager().getApplicationIcon(info.applicationInfo);
+    public @Nullable Drawable getIcon(){
+        return drawable;
     }
 
     /**
@@ -120,6 +148,7 @@ public class AppItem implements Parcelable ,Comparable<AppItem>{
     /**
      * 获取应用大小（源文件），单位字节
      */
+    @Override
     public long getSize(){
         return size;
     }
@@ -145,7 +174,7 @@ public class AppItem implements Parcelable ,Comparable<AppItem>{
         return info;
     }
 
-    @Override
+    /*@Override
     public int describeContents() {
         return 0;
     }
@@ -157,7 +186,7 @@ public class AppItem implements Parcelable ,Comparable<AppItem>{
         dest.writeParcelable(info,0);
         //dest.writeMap(static_receivers);
         dest.writeBundle(static_receivers_bundle);
-    }
+    }*/
 
 
     public @NonNull Bundle getStaticReceiversBundle(){

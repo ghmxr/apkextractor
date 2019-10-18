@@ -21,8 +21,9 @@ import android.widget.TextView;
 
 import com.github.ghmxr.apkextractor.Global;
 import com.github.ghmxr.apkextractor.R;
-import com.github.ghmxr.apkextractor.data.Constants;
+import com.github.ghmxr.apkextractor.Constants;
 import com.github.ghmxr.apkextractor.ui.ExportRuleDialog;
+import com.github.ghmxr.apkextractor.utils.SPUtil;
 
 public class SettingActivity extends BaseActivity implements View.OnClickListener{
 
@@ -35,7 +36,7 @@ public class SettingActivity extends BaseActivity implements View.OnClickListene
     @Override
     protected void onCreate(Bundle bundle) {
         super.onCreate(bundle);
-        settings=Global.getGlobalSharedPreferences(SettingActivity.this);
+        settings= SPUtil.getGlobalSharedPreferences(SettingActivity.this);
         setContentView(R.layout.activity_settings);
         setSupportActionBar((Toolbar)findViewById(R.id.toolbar_settings));
         try{
@@ -222,7 +223,7 @@ public class SettingActivity extends BaseActivity implements View.OnClickListene
     private void refreshSettingValues(){
         if(settings==null)return;
         //SharedPreferences.Editor editor=settings.edit();
-        ((TextView)findViewById(R.id.settings_path_value)).setText(settings.getString(Constants.PREFERENCE_SAVE_PATH,Constants.PREFERENCE_SAVE_PATH_DEFAULT));
+        ((TextView)findViewById(R.id.settings_path_value)).setText(SPUtil.getDisplayingExportPath(this));
         ((TextView)findViewById(R.id.settings_share_mode_value)).setText(
                 getResources().getString(
                         settings.getInt(Constants.PREFERENCE_SHAREMODE,Constants.PREFERENCE_SHAREMODE_DEFAULT)==Constants.SHARE_MODE_DIRECT?

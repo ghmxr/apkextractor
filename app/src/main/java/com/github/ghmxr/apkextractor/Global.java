@@ -4,31 +4,31 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.content.SharedPreferences;
-import android.content.pm.ApplicationInfo;
-import android.content.pm.PackageInfo;
-import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.os.Looper;
 import android.support.annotation.NonNull;
 import android.os.Handler;
 import android.support.annotation.Nullable;
 import android.support.design.widget.Snackbar;
+import android.support.v4.provider.DocumentFile;
 import android.support.v7.app.AlertDialog;
 import android.view.View;
 import android.widget.Toast;
 
-import com.github.ghmxr.apkextractor.data.Constants;
+import com.github.ghmxr.apkextractor.items.AppItem;
+import com.github.ghmxr.apkextractor.items.FileItem;
+import com.github.ghmxr.apkextractor.items.ImportItem;
 import com.github.ghmxr.apkextractor.ui.DataObbDialog;
 import com.github.ghmxr.apkextractor.ui.ExportingDialog;
 import com.github.ghmxr.apkextractor.ui.ToastManager;
-import com.github.ghmxr.apkextractor.utils.ExportTask;
+import com.github.ghmxr.apkextractor.tasks.ExportTask;
+import com.github.ghmxr.apkextractor.utils.DocumentFileUtil;
+import com.github.ghmxr.apkextractor.utils.OutputUtil;
+import com.github.ghmxr.apkextractor.utils.SPUtil;
 
 import java.io.File;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
-import java.util.Locale;
 
 public class Global {
 
@@ -40,7 +40,12 @@ public class Global {
     /**
      * 用于持有对读取出的list的引用
      */
-    public static List<AppItem> list;
+    public static final List<AppItem> app_list=new ArrayList<>();
+
+    /**
+     * 导出目录下的文件list引用
+     */
+    public static final List<ImportItem> item_list=new ArrayList<>();
 
     public static void showRequestingWritePermissionSnackBar(@NonNull final Activity activity){
         Snackbar snackbar=Snackbar.make(activity.findViewById(android.R.id.content),activity.getResources().getString(R.string.permission_write),Snackbar.LENGTH_SHORT);
@@ -182,13 +187,27 @@ public class Global {
     public static String getDuplicatedFileInfo(@NonNull Context context,@NonNull List<AppItem>items){
         if(items.size()==0)return "";
         StringBuilder builder=new StringBuilder();
-        for(AppItem item:items){
-            File file=new File(getAbsoluteWritePath(context,item,(item.exportData||item.exportObb)?"zip":"apk"));
-            if(file.exists()){
-                builder.append(file.getAbsolutePath());
-                builder.append("\n\n");
+        boolean external=SPUtil.getIsSaved2ExternalStorage(context);
+        if(external){
+            for(AppItem item:items){
+                try{
+                    DocumentFile searchFile=OutputUtil.getExportPathDocumentFile(context).findFile(OutputUtil.getWriteFileNameForAppItem(context,item,(item.exportData||item.exportObb)?"zip":"apk"));
+                    if(searchFile!=null){
+                        builder.append(DocumentFileUtil.getDisplayPathForDocumentFile(context,searchFile));
+                        builder.append("\n\n");
+                    }
+                }catch (Exception e){e.printStackTrace();}
+            }
+        }else {
+            for(AppItem item:items){
+                File file=new File(OutputUtil.getAbsoluteWritePath(context,item,(item.exportData||item.exportObb)?"zip":"apk"));
+                if(file.exists()){
+                    builder.append(file.getAbsolutePath());
+                    builder.append("\n\n");
+                }
             }
         }
+
         return builder.toString();
     }
 
@@ -198,7 +217,7 @@ public class Global {
      */
     public static void shareCertainAppsByItems(@NonNull final Activity activity,@NonNull final List<AppItem>items){
         if(items.size()==0)return;
-        boolean ifNeedExport= Global.getGlobalSharedPreferences(activity)
+        boolean ifNeedExport= SPUtil.getGlobalSharedPreferences(activity)
                 .getInt(Constants.PREFERENCE_SHAREMODE,Constants.PREFERENCE_SHAREMODE_DEFAULT)==Constants.SHARE_MODE_AFTER_EXTRACT;
         if(ifNeedExport){
             DataObbDialog dialog=new DataObbDialog(activity, items, new DataObbDialog.DialogDataObbConfirmedCallback() {
@@ -219,7 +238,7 @@ public class Global {
                                         .show();
                                 return;
                             }
-                            ToastManager.showToast(activity,activity.getResources().getString(R.string.toast_export_complete)+getSavePath(activity), Toast.LENGTH_SHORT);
+                            ToastManager.showToast(activity,activity.getResources().getString(R.string.toast_export_complete)+ SPUtil.getDisplayingExportPath(activity), Toast.LENGTH_SHORT);
                         }
                     };
                     if(!dulplicated_info.trim().equals("")){
@@ -281,101 +300,5 @@ public class Global {
         activity.startActivity(Intent.createChooser(intent,title));
     }
 
-
-    /**
-     * 获取当前应用导出的主路径
-     * @return 应用导出路径，最后没有文件分隔符，例如 /storage/emulated/0
-     */
-    public static @NonNull String getSavePath(@NonNull Context context){
-        try{
-            return getGlobalSharedPreferences(context).getString(Constants.PREFERENCE_SAVE_PATH, Constants.PREFERENCE_SAVE_PATH_DEFAULT);
-        }catch (Exception e){e.printStackTrace();}
-        return Constants.PREFERENCE_SAVE_PATH_DEFAULT;
-    }
-
-    /**
-     * 为AppItem获取一个绝对写入路径
-     * @param extension "apk"或者"zip"
-     */
-    public static @NonNull String getAbsoluteWritePath(@NonNull Context context, @NonNull AppItem item, @NonNull String extension){
-        try{
-            SharedPreferences settings=getGlobalSharedPreferences(context);
-            if(extension.toLowerCase(Locale.getDefault()).equals("apk")){
-                return settings.getString(Constants.PREFERENCE_SAVE_PATH, Constants.PREFERENCE_SAVE_PATH_DEFAULT)
-                        +"/"+settings.getString(Constants.PREFERENCE_FILENAME_FONT_APK, Constants.PREFERENCE_FILENAME_FONT_DEFAULT).replace(Constants.FONT_APP_NAME, String.valueOf(item.getAppName()))
-                        .replace(Constants.FONT_APP_PACKAGE_NAME, String.valueOf(item.getPackageName()))
-                        .replace(Constants.FONT_APP_VERSIONCODE, String.valueOf(item.getVersionCode()))
-                        .replace(Constants.FONT_APP_VERSIONNAME, String.valueOf(item.getVersionName()))+".apk";
-            }
-            if(extension.toLowerCase(Locale.ENGLISH).equals("zip")){
-                return settings.getString(Constants.PREFERENCE_SAVE_PATH, Constants.PREFERENCE_SAVE_PATH_DEFAULT)
-                        +"/"+settings.getString(Constants.PREFERENCE_FILENAME_FONT_ZIP, Constants.PREFERENCE_FILENAME_FONT_DEFAULT).replace(Constants.FONT_APP_NAME, String.valueOf(item.getAppName()))
-                        .replace(Constants.FONT_APP_PACKAGE_NAME, String.valueOf(item.getPackageName()))
-                        .replace(Constants.FONT_APP_VERSIONCODE, String.valueOf(item.getVersionCode()))
-                        .replace(Constants.FONT_APP_VERSIONNAME, String.valueOf(item.getVersionName()))+".zip";
-            }
-        }catch(Exception e){e.printStackTrace();}
-        return "";
-    }
-
-    public static SharedPreferences getGlobalSharedPreferences(@NonNull Context context){
-        return context.getSharedPreferences(Constants.PREFERENCE_NAME,Context.MODE_PRIVATE);
-    }
-
-    /**
-     * 刷新已安装的应用列表
-     */
-    public static class RefreshInstalledListTask extends Thread{
-        private Context context;
-        private boolean flag_system;
-        private RefreshInstalledListTaskCallback listener;
-        private List<AppItem> list_sum=new ArrayList<>();
-        public RefreshInstalledListTask(@NonNull Context context,boolean flag_system,@Nullable RefreshInstalledListTaskCallback callback){
-            this.context=context;
-            this.flag_system=flag_system;
-            this.listener=callback;
-        }
-        @Override
-        public void run(){
-            PackageManager manager=context.getApplicationContext().getPackageManager();
-            SharedPreferences settings=getGlobalSharedPreferences(context);
-            int flag=PackageManager.GET_SIGNATURES;
-            if(settings.getBoolean(Constants.PREFERENCE_LOAD_PERMISSIONS,Constants.PREFERENCE_LOAD_PERMISSIONS_DEFAULT))flag|=PackageManager.GET_PERMISSIONS;
-            if(settings.getBoolean(Constants.PREFERENCE_LOAD_ACTIVITIES,Constants.PREFERENCE_LOAD_ACTIVITIES_DEFAULT))flag|=PackageManager.GET_ACTIVITIES;
-            if(settings.getBoolean(Constants.PREFERENCE_LOAD_RECEIVERS,Constants.PREFERENCE_LOAD_RECEIVERS_DEFAULT))flag|=PackageManager.GET_RECEIVERS;
-
-            final List<PackageInfo> list = manager.getInstalledPackages(flag);
-            for(int i=0;i<list.size();i++){
-                PackageInfo info=list.get(i);
-                boolean info_is_system_app=((info.applicationInfo.flags&ApplicationInfo.FLAG_SYSTEM)>0);
-                final int current=i+1;
-                Global.handler.post(new Runnable() {
-                    @Override
-                    public void run() {
-                        if(listener!=null)listener.onRefreshProgressUpdated(current,list.size());
-                    }
-                });
-                if(!flag_system&&info_is_system_app)continue;
-                list_sum.add(new AppItem(context,info));
-            }
-            AppItem.sort_config=settings.getInt(Constants.PREFERENCE_SORT_CONFIG,0);
-            Collections.sort(list_sum);
-            synchronized (Global.class){
-                Global.list=list_sum;//向全局list保存一个引用
-            }
-            Global.handler.post(new Runnable() {
-                @Override
-                public void run() {
-                    if(listener!=null)listener.onRefreshCompleted(list_sum);
-                }
-            });
-
-        }
-    }
-
-    public interface RefreshInstalledListTaskCallback{
-        void onRefreshProgressUpdated(int current, int total);
-        void onRefreshCompleted(List<AppItem> appList);
-    }
 
 }

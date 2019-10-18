@@ -14,10 +14,10 @@ import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.github.ghmxr.apkextractor.Global;
 import com.github.ghmxr.apkextractor.R;
-import com.github.ghmxr.apkextractor.data.Constants;
+import com.github.ghmxr.apkextractor.Constants;
 import com.github.ghmxr.apkextractor.utils.EnvironmentUtil;
+import com.github.ghmxr.apkextractor.utils.SPUtil;
 
 public class ExportRuleDialog extends AlertDialog implements View.OnClickListener,DialogInterface.OnClickListener{
 
@@ -34,7 +34,7 @@ public class ExportRuleDialog extends AlertDialog implements View.OnClickListene
     public ExportRuleDialog(Context context){
         super(context);
 
-        settings= Global.getGlobalSharedPreferences(context);
+        settings= SPUtil.getGlobalSharedPreferences(context);
 
         final View dialogView= LayoutInflater.from(context).inflate(R.layout.dialog_rule,null);
         edit_apk=(EditText)dialogView.findViewById(R.id.filename_apk);

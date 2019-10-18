@@ -5,15 +5,17 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.content.pm.ApplicationInfo;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.design.widget.TabLayout;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.ActivityOptionsCompat;
 import android.support.v4.content.PermissionChecker;
 import android.support.v4.util.Pair;
+import android.support.v4.view.PagerAdapter;
+import android.support.v4.view.ViewPager;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.CardView;
@@ -22,6 +24,7 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.text.format.Formatter;
+import android.util.Log;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -30,7 +33,7 @@ import android.view.MenuItem;
 import android.view.ViewGroup;
 import android.view.animation.AnimationUtils;
 import android.view.inputmethod.InputMethodManager;
-import android.widget.Button;
+import android.widget.BaseAdapter;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.ImageView;
@@ -40,98 +43,246 @@ import android.widget.SearchView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.github.ghmxr.apkextractor.AppItem;
+import com.github.ghmxr.apkextractor.items.AppItem;
+import com.github.ghmxr.apkextractor.DisplayItem;
 import com.github.ghmxr.apkextractor.Global;
+import com.github.ghmxr.apkextractor.items.ImportItem;
 import com.github.ghmxr.apkextractor.R;
-import com.github.ghmxr.apkextractor.data.Constants;
-import com.github.ghmxr.apkextractor.ui.LoadingListDialog;
+import com.github.ghmxr.apkextractor.Constants;
+import com.github.ghmxr.apkextractor.tasks.RefreshImportListTask;
+import com.github.ghmxr.apkextractor.tasks.RefreshInstalledListTask;
 import com.github.ghmxr.apkextractor.ui.ToastManager;
-import com.github.ghmxr.apkextractor.utils.SearchTask;
-import com.github.ghmxr.apkextractor.utils.Storage;
+import com.github.ghmxr.apkextractor.utils.SPUtil;
+import com.github.ghmxr.apkextractor.tasks.SearchTask;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class MainActivity extends BaseActivity implements View.OnClickListener{
+public class MainActivity extends BaseActivity implements View.OnClickListener,ViewPager.OnPageChangeListener, CompoundButton.OnCheckedChangeListener {
 
-    private RecyclerView recyclerView;
-    private SwipeRefreshLayout swipeRefreshLayout;
-    private CardView bottom_card;
-    private CardView bottom_card_multi_select;
-    private boolean isScrollable=false;
+    private TabLayout tabLayout;
+    private ViewPager viewPager;
+
+    private int currentSelection=0;
     private boolean isSearchMode=false;
     private SearchView searchView;
     private Menu menu;
     private InputMethodManager inputMethodManager;
 
-    private Button main_select_all,main_deselect_all,main_export,main_share;
-
-    //private ListAdapter adapter;
     private SearchTask searchTask;
-    private ProgressBar progressBar;
 
-    final RecyclerView.OnScrollListener onScrollListener=new RecyclerView.OnScrollListener() {
-        @Override
-        public void onScrollStateChanged(@NonNull RecyclerView recyclerView, int newState) {
-            super.onScrollStateChanged(recyclerView, newState);
-            //recyclerView.getScrollState()
-        }
+    private final ArrayList<AppItem>applist=new ArrayList<>();
+    private final ArrayList<ImportItem>importList=new ArrayList<>();
 
+    private RecyclerView recyclerView_export;
+    private RecyclerView recyclerView_import;
+
+    //private ListAdapter current_adapter;
+    private boolean isCurrentPageMultiSelectMode=false;
+
+    private CardView card_export_normal,card_export_multi_select;
+    private TextView tv_card_export_multi_select_title,tv_card_import_multi_select_title;
+    private CardView card_import_multi_select;
+
+    private ViewGroup loading_area_export;
+    private ProgressBar pg_export;
+    private TextView tv_export_progress;
+
+    private CheckBox cb_show_sys_app;
+
+    private SwipeRefreshLayout swipeRefreshLayout_export,swipeRefreshLayout_import;
+
+    private SharedPreferences settings;
+
+    private boolean isScrollable_export=false;
+
+    final RecyclerView.OnScrollListener onScrollListener_export=new RecyclerView.OnScrollListener() {
         @Override
         public void onScrolled(@NonNull RecyclerView recyclerView, int dx, int dy) {
             super.onScrolled(recyclerView, dx, dy);
-            if(isSearchMode)return;
-            if(bottom_card==null)return;
-            if(bottom_card_multi_select==null)return;
+            if(card_export_normal==null||card_export_multi_select==null)return;
             boolean isMultiSelectMode=false;
             try{
-                isMultiSelectMode=((ListAdapter)recyclerView.getAdapter()).getIsMultiSelectMode();
+                isMultiSelectMode=((ListAdapter)recyclerView.getAdapter()).isMultiSelectMode();
             }catch (Exception e){e.printStackTrace();}
             if (!recyclerView.canScrollVertically(-1)) {
-               // onScrolledToTop();
+                // onScrolledToTop();
             } else if (!recyclerView.canScrollVertically(1)) {
-               // onScrolledToBottom();
+                // onScrolledToBottom();
                 if(isMultiSelectMode){
-                    if(isScrollable&&bottom_card_multi_select.getVisibility()!= View.GONE){
-                        bottom_card_multi_select.startAnimation(AnimationUtils.loadAnimation(MainActivity.this,R.anim.exit_300));
-                        bottom_card_multi_select.setVisibility(View.GONE);
-                    }
-                }else {
-                    if(isScrollable&&bottom_card.getVisibility()!=View.GONE&&!isSearchMode){
-                        bottom_card.startAnimation(AnimationUtils.loadAnimation(MainActivity.this, R.anim.exit_300));
-                        bottom_card.setVisibility(View.GONE);
-                    }
-                }
-
+                    if(isScrollable_export&&card_export_multi_select.getVisibility()!= View.GONE)
+                        setViewVisibilityWithAnimation(card_export_multi_select,View.GONE);
+                }else if(isScrollable_export&&card_export_normal.getVisibility()!=View.GONE&&!isSearchMode)
+                    setViewVisibilityWithAnimation(card_export_normal,View.GONE);
             } else if (dy < 0) {
-               // onScrolledUp();
+                // onScrolledUp();
                 if(isMultiSelectMode){
-                    if(isScrollable&&bottom_card_multi_select.getVisibility()!=View.VISIBLE){
-                        bottom_card_multi_select.startAnimation(AnimationUtils.loadAnimation(MainActivity.this,R.anim.entry_300));
-                        bottom_card_multi_select.setVisibility(View.VISIBLE);
-                    }
-                }else {
-                    if(isScrollable&&bottom_card.getVisibility()!=View.VISIBLE&&!isSearchMode){
-                        bottom_card.startAnimation(AnimationUtils.loadAnimation(MainActivity.this, R.anim.entry_300));
-                        bottom_card.setVisibility(View.VISIBLE);
+                    if(isScrollable_export&&card_export_multi_select.getVisibility()!=View.VISIBLE)
+                        setViewVisibilityWithAnimation(card_export_multi_select,View.VISIBLE);
+                }else if(isScrollable_export&&card_export_normal.getVisibility()!=View.VISIBLE&&!isSearchMode)
+                    setViewVisibilityWithAnimation(card_export_normal,View.VISIBLE);
+            } else if (dy > 0) {
+                // onScrolledDown();
+                isScrollable_export=true;
+                if(isMultiSelectMode){
+                    if(card_export_multi_select.getVisibility()!= View.GONE)
+                        setViewVisibilityWithAnimation(card_export_multi_select,View.GONE);
+                }else if(card_export_normal.getVisibility()!=View.GONE&&!isSearchMode)
+                    setViewVisibilityWithAnimation(card_export_normal,View.GONE);
+            }
+        }
+    };
+
+    final RefreshInstalledListTask.RefreshInstalledListTaskCallback refreshInstalledListTaskCallback=new RefreshInstalledListTask.RefreshInstalledListTaskCallback() {
+        @Override
+        public void onRefreshProgressStarted(int total) {
+            isScrollable_export=false;
+            loading_area_export.setVisibility(View.VISIBLE);
+            recyclerView_export.setAdapter(null);
+            pg_export.setMax(total);
+            pg_export.setProgress(0);
+            swipeRefreshLayout_export.setRefreshing(true);
+        }
+
+        @Override
+        public void onRefreshProgressUpdated(int current,int total) {
+            pg_export.setProgress(current);
+            tv_export_progress.setText(getResources().getString(R.string.dialog_loading_title)+" "+current+"/"+total);
+        }
+
+        @Override
+        public void onRefreshCompleted(List<AppItem> appList) {
+            loading_area_export.setVisibility(View.GONE);
+            swipeRefreshLayout_export.setRefreshing(false);
+            int mode= SPUtil.getGlobalSharedPreferences(MainActivity.this).getInt(Constants.PREFERENCE_MAIN_PAGE_VIEW_MODE
+                    ,Constants.PREFERENCE_MAIN_PAGE_VIEW_MODE_DEFAULT);
+            ListAdapter adapter=new ListAdapter<>(appList,mode,list_export_operation_callback);
+            setRecyclerViewLayoutManagers(recyclerView_export,mode);
+            recyclerView_export.setAdapter(adapter);
+            //adapter.setListAdapterOperationListener(list_export_operation_callback);
+            //recyclerView_export.addOnScrollListener(onScrollListener_export);
+            cb_show_sys_app.setEnabled(true);
+            swipeRefreshLayout_export.setRefreshing(false);
+            card_export_normal.setVisibility(View.VISIBLE);
+        }
+    };
+
+    private final ListAdapterOperationListener list_export_operation_callback=new ListAdapterOperationListener() {
+        @Override
+        public void onItemClicked(DisplayItem displayItem,ViewHolder viewHolder) {
+            if(!(displayItem instanceof AppItem))return;
+            AppItem appItem=(AppItem)displayItem;
+            Intent intent=new Intent(MainActivity.this,AppDetailActivity.class);
+            intent.putExtra(EXTRA_PACKAGE_NAME,appItem.getPackageName());
+            ActivityOptionsCompat compat = ActivityOptionsCompat.makeSceneTransitionAnimation(MainActivity.this,new Pair<View, String>(viewHolder.icon,"icon"));
+            try{
+                ActivityCompat.startActivity(MainActivity.this, intent, compat.toBundle());
+            }catch (Exception e){e.printStackTrace();}
+        }
+
+        @Override
+        public void onItemLongClicked() {
+            card_export_normal.setVisibility(View.GONE);
+            setViewVisibilityWithAnimation(card_export_multi_select,View.VISIBLE);
+            isCurrentPageMultiSelectMode=true;
+            swipeRefreshLayout_export.setEnabled(false);
+            setBackButtonVisible(true);
+            hideInputMethod();
+        }
+
+        @Override
+        public void onMultiSelectItemChanged(List<DisplayItem> selected_items,long length) {
+            tv_card_export_multi_select_title.setText(selected_items.size()+getResources().getString(R.string.unit_item)+"/"+Formatter.formatFileSize(MainActivity.this,length));
+        }
+
+        @Override
+        public void onMultiSelectModeClosed() {
+            swipeRefreshLayout_export.setEnabled(true);
+            card_export_multi_select.setVisibility(View.GONE);
+            if(!isSearchMode)setViewVisibilityWithAnimation(card_export_normal,View.VISIBLE);
+        }
+    };
+
+    private boolean isScrollable_import=false;
+    final RecyclerView.OnScrollListener onScrollListener_import=new RecyclerView.OnScrollListener() {
+        @Override
+        public void onScrolled(@NonNull RecyclerView recyclerView, int dx, int dy) {
+            super.onScrolled(recyclerView, dx, dy);
+            boolean isMultiSelectMode=false;
+            try{
+                isMultiSelectMode=((ListAdapter)recyclerView.getAdapter()).isMultiSelectMode();
+            }catch (Exception e){e.printStackTrace();}
+            if (!recyclerView.canScrollVertically(-1)) {
+                // onScrolledToTop();
+            } else if (!recyclerView.canScrollVertically(1)) {
+                // onScrolledToBottom();
+                if(isMultiSelectMode){
+                    if(isScrollable_import&&card_import_multi_select.getVisibility()!= View.GONE)
+                        setViewVisibilityWithAnimation(card_import_multi_select,View.GONE);
+                }
+            } else if (dy < 0) {
+                // onScrolledUp();
+                if(isMultiSelectMode){
+                    if(isScrollable_import&&card_import_multi_select.getVisibility()!=View.VISIBLE){
+                        setViewVisibilityWithAnimation(card_import_multi_select,View.VISIBLE);
                     }
                 }
-
             } else if (dy > 0) {
-               // onScrolledDown();
-                isScrollable=true;
+                // onScrolledDown();
+                isScrollable_import=true;
                 if(isMultiSelectMode){
-                    if(bottom_card_multi_select.getVisibility()!= View.GONE){
-                        bottom_card_multi_select.startAnimation(AnimationUtils.loadAnimation(MainActivity.this,R.anim.exit_300));
-                        bottom_card_multi_select.setVisibility(View.GONE);
-                    }
-                }else{
-                    if(bottom_card.getVisibility()!=View.GONE&&!isSearchMode){
-                        bottom_card.startAnimation(AnimationUtils.loadAnimation(MainActivity.this, R.anim.exit_300));
-                        bottom_card.setVisibility(View.GONE);
-                    }
+                    if(card_import_multi_select.getVisibility()!= View.GONE)
+                        setViewVisibilityWithAnimation(card_import_multi_select,View.GONE);
                 }
             }
+        }
+    };
+
+    /**
+     * 导入列表刷新完成回调
+     */
+    final RefreshImportListTask.RefreshImportListTaskCallback refreshImportListTaskCallback=new RefreshImportListTask.RefreshImportListTaskCallback() {
+        @Override
+        public void onRefreshCompleted(List<ImportItem> list) {
+            swipeRefreshLayout_import.setRefreshing(false);
+            isScrollable_import=false;
+            int mode= SPUtil.getGlobalSharedPreferences(MainActivity.this).getInt(Constants.PREFERENCE_MAIN_PAGE_VIEW_MODE
+                    ,Constants.PREFERENCE_MAIN_PAGE_VIEW_MODE_DEFAULT);
+            ListAdapter adapter=new ListAdapter<>(list,mode,listAdapterOperationListener_import);
+            setRecyclerViewLayoutManagers(recyclerView_import,mode);
+            recyclerView_import.setAdapter(adapter);
+        }
+    };
+
+    /**
+     * 导入RecyclerView的操作回调
+     */
+    ListAdapterOperationListener listAdapterOperationListener_import=new ListAdapterOperationListener() {
+        @Override
+        public void onItemClicked(DisplayItem displayItem,ViewHolder viewHolder) {
+            if(!(displayItem instanceof ImportItem))return;
+            ImportItem item=(ImportItem)displayItem;
+            //
+
+        }
+
+        @Override
+        public void onItemLongClicked() {
+            isCurrentPageMultiSelectMode=true;
+            setViewVisibilityWithAnimation(card_import_multi_select,View.VISIBLE);
+            swipeRefreshLayout_import.setEnabled(false);
+            setBackButtonVisible(true);
+            hideInputMethod();
+        }
+
+        @Override
+        public void onMultiSelectItemChanged(List<DisplayItem> selected_items,long length) {
+            tv_card_import_multi_select_title.setText(selected_items.size()+getResources().getString(R.string.unit_item)+"/"+Formatter.formatFileSize(MainActivity.this,length));
+        }
+
+        @Override
+        public void onMultiSelectModeClosed() {
+            card_import_multi_select.setVisibility(View.GONE);
         }
     };
 
@@ -142,20 +293,10 @@ public class MainActivity extends BaseActivity implements View.OnClickListener{
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
-        recyclerView=findViewById(R.id.main_recycler_view);
-        bottom_card=findViewById(R.id.main_card);
-        bottom_card_multi_select=findViewById(R.id.main_card_multi_select);
-
-        main_select_all=findViewById(R.id.main_select_all);
-        main_deselect_all=findViewById(R.id.main_deselect_all);
-        main_export=findViewById(R.id.main_export);
-        main_share=findViewById(R.id.main_share);
-
-        swipeRefreshLayout=findViewById(R.id.main_swipe_refresh_layout);
-        swipeRefreshLayout.setColorSchemeColors(getResources().getColor(R.color.colorTitle));
-
-        progressBar=findViewById(R.id.main_search_pg);
+        tabLayout=findViewById(R.id.main_tablayout);
+        viewPager=findViewById(R.id.main_viewpager);
         inputMethodManager=(InputMethodManager)getSystemService(Context.INPUT_METHOD_SERVICE);
+        settings=SPUtil.getGlobalSharedPreferences(this);
 
         try{
             View view=LayoutInflater.from(this).inflate(R.layout.actionbar_search,null);
@@ -183,31 +324,26 @@ public class MainActivity extends BaseActivity implements View.OnClickListener{
                 @Override
                 public boolean onQueryTextChange(String newText) {
                     if(searchTask!=null)searchTask.setInterrupted();
-                    recyclerView.setAdapter(null);
-                    bottom_card_multi_select.setVisibility(View.GONE);
-                    List<AppItem>total_list=Global.list;
-                    if(total_list==null)return false;
-                    progressBar.setVisibility(View.VISIBLE);
-                    searchTask=new SearchTask(total_list, newText, new SearchTask.SearchTaskCompletedCallback() {
+                    recyclerView_export.setAdapter(null);
+                    recyclerView_import.setAdapter(null);
+                    card_export_multi_select.setVisibility(View.GONE);
+                    card_import_multi_select.setVisibility(View.GONE);
+                    swipeRefreshLayout_export.setRefreshing(true);
+                    swipeRefreshLayout_import.setRefreshing(true);
+                    searchTask=new SearchTask(Global.app_list,Global.item_list ,newText, new SearchTask.SearchTaskCompletedCallback() {
                         @Override
-                        public void onSearchTaskCompleted(@NonNull List<AppItem> result) {
-                            progressBar.setVisibility(View.GONE);
-                            //recyclerView.setAdapter(new ListAdapter(result,1));
-                            ListAdapter adapter;
-                            int mode=Global.getGlobalSharedPreferences(MainActivity.this).getInt(Constants.PREFERENCE_MAIN_PAGE_VIEW_MODE
+                        public void onSearchTaskCompleted(@NonNull List<AppItem> appItems,@NonNull List<ImportItem>importItems) {
+                            swipeRefreshLayout_export.setRefreshing(false);
+                            swipeRefreshLayout_import.setRefreshing(false);
+                            card_export_normal.setVisibility(View.GONE);
+                            int mode= SPUtil.getGlobalSharedPreferences(MainActivity.this).getInt(Constants.PREFERENCE_MAIN_PAGE_VIEW_MODE
                                     ,Constants.PREFERENCE_MAIN_PAGE_VIEW_MODE_DEFAULT);
-                            if(mode==1){
-                                GridLayoutManager gridLayoutManager=new GridLayoutManager(MainActivity.this,4);
-                                recyclerView.setLayoutManager(gridLayoutManager);
-                                adapter=new ListAdapter(result,1);
-                            }else{
-                                LinearLayoutManager linearLayoutManager=new LinearLayoutManager(MainActivity.this);
-                                linearLayoutManager.setOrientation(LinearLayoutManager.VERTICAL);
-                                recyclerView.setLayoutManager(linearLayoutManager);
-                                adapter=new ListAdapter(result,0);
-                            }
-
-                            recyclerView.setAdapter(adapter);
+                            //ListAdapter adapter_export=;
+                            //ListAdapter adapter_import=;
+                            setRecyclerViewLayoutManagers(recyclerView_export,mode);
+                            setRecyclerViewLayoutManagers(recyclerView_import,mode);
+                            recyclerView_export.setAdapter(new ListAdapter<>(appItems,mode,list_export_operation_callback));
+                            recyclerView_import.setAdapter(new ListAdapter<>(importItems,mode,listAdapterOperationListener_import));
                         }
                     });
                     searchTask.start();
@@ -216,7 +352,7 @@ public class MainActivity extends BaseActivity implements View.OnClickListener{
             });
         }catch (Exception e){e.printStackTrace();}
 
-        final SharedPreferences settings=Global.getGlobalSharedPreferences(this);
+       /* final SharedPreferences settings=Global.getGlobalSharedPreferences(this);
         final CheckBox cb_show_sys=findViewById(R.id.main_show_system_app);
         cb_show_sys.setChecked(settings.getBoolean(Constants.PREFERENCE_SHOW_SYSTEM_APP,Constants.PREFERENCE_SHOW_SYSTEM_APP_DEFAULT));
         cb_show_sys.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
@@ -228,18 +364,21 @@ public class MainActivity extends BaseActivity implements View.OnClickListener{
                 editor.apply();
                 refreshList();
             }
-        });
+        });*/
 
 
-        main_select_all.setOnClickListener(this);
+        //main_select_all.setOnClickListener(this);
 
-        main_deselect_all.setOnClickListener(this);
+        //main_deselect_all.setOnClickListener(this);
 
-        main_export.setOnClickListener(this);
+        //main_export.setOnClickListener(this);
 
-        main_share.setOnClickListener(this);
+        //main_share.setOnClickListener(this);
 
-        refreshList();
+        //refreshList();
+        viewPager.setAdapter(new MyPagerAdapter());
+        tabLayout.setupWithViewPager(viewPager,true);
+        viewPager.addOnPageChangeListener(this);
 
         if(Build.VERSION.SDK_INT>=23&&PermissionChecker.checkSelfPermission(MainActivity.this, Manifest.permission.WRITE_EXTERNAL_STORAGE)!=PermissionChecker.PERMISSION_GRANTED){
             requestPermissions(new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE},0);
@@ -252,83 +391,42 @@ public class MainActivity extends BaseActivity implements View.OnClickListener{
         refreshAvailableStorage();
     }
 
-    private void refreshList(){
-        isScrollable=false;
-        swipeRefreshLayout.setRefreshing(true);
-        closeMultiSelectModeForExternalVariables(false);
-        recyclerView.setAdapter(null);
-
-        final boolean is_show_sys=Global.getGlobalSharedPreferences(this).getBoolean(Constants.PREFERENCE_SHOW_SYSTEM_APP,Constants.PREFERENCE_SHOW_SYSTEM_APP_DEFAULT);
-        final CheckBox cb_show_sys=findViewById(R.id.main_show_system_app);
-        final LoadingListDialog dialog=new LoadingListDialog(this);
-        try{dialog.show();}catch (Exception e){e.printStackTrace();}
-        new Global.RefreshInstalledListTask(this, is_show_sys, new Global.RefreshInstalledListTaskCallback() {
-            @Override
-            public void onRefreshProgressUpdated(int current, int total) {
-                dialog.setProgress(current,total);
-                try{
-                    if(current==total)dialog.cancel();
-                }catch (Exception e){e.printStackTrace();}
-            }
-
-            @Override
-            public void onRefreshCompleted(List<AppItem> appList) {
-               try {
-                   dialog.cancel();
-               }catch (Exception e){e.printStackTrace();}
-                int mode=Global.getGlobalSharedPreferences(MainActivity.this).getInt(Constants.PREFERENCE_MAIN_PAGE_VIEW_MODE
-                        ,Constants.PREFERENCE_MAIN_PAGE_VIEW_MODE_DEFAULT);
-               ListAdapter adapter;
-               if(mode==1){
-                   GridLayoutManager gridLayoutManager=new GridLayoutManager(MainActivity.this,4);
-                   recyclerView.setLayoutManager(gridLayoutManager);
-                   adapter=new ListAdapter(appList,1);
-               }else{
-                   LinearLayoutManager linearLayoutManager=new LinearLayoutManager(MainActivity.this);
-                   linearLayoutManager.setOrientation(LinearLayoutManager.VERTICAL);
-                   recyclerView.setLayoutManager(linearLayoutManager);
-                   adapter=new ListAdapter(appList,0);
-               }
-
-                recyclerView.setAdapter(adapter);
-                swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
-                    @Override
-                    public void onRefresh() {
-                        try{
-                            ListAdapter adapter=(ListAdapter)recyclerView.getAdapter();
-                            if(adapter.getIsMultiSelectMode()||isSearchMode)return;
-                        }catch (Exception e){e.printStackTrace();}
-                        refreshList();
-                    }
-                });
-                recyclerView.removeOnScrollListener(onScrollListener);
-                recyclerView.addOnScrollListener(onScrollListener);
-                cb_show_sys.setEnabled(true);
-                swipeRefreshLayout.setRefreshing(false);
-
-            }
-        }).start();
+    private MyPagerAdapter getMyPagerAdapter(){
+        return (MyPagerAdapter)viewPager.getAdapter();
     }
 
     @Override
-    public void onClick(View v){
-        ListAdapter adapter;
-        try{
-            adapter=(ListAdapter)recyclerView.getAdapter();
-            if(adapter==null)return;
-        }catch (Exception e){
-            e.printStackTrace();
-            return;
-        }
+    public void onPageScrolled(int i, float v, int i1) {}
 
+    @Override
+    public void onPageSelected(int i) {
+        this.currentSelection=i;
+        //if(isSearchMode)return;
+        try{
+            ListAdapter adapter=getMyPagerAdapter().getRecyclerViewListAdapter(i);
+            if(adapter!=null)isCurrentPageMultiSelectMode=adapter.isMultiSelectMode();
+        }catch (Exception e){e.printStackTrace();}
+        if(isSearchMode)return;
+        setBackButtonVisible(isCurrentPageMultiSelectMode);
+    }
+
+    @Override
+    public void onPageScrollStateChanged(int i) {}
+
+    @Override
+    public void onClick(View v){
         switch (v.getId()){
             default:break;
             case R.id.main_select_all:{
-                adapter.setSelectAll(true);
+                try{
+                    getMyPagerAdapter().getRecyclerViewListAdapter(0).setSelectAll(true);
+                }catch (Exception e){e.printStackTrace();}
             }
             break;
             case R.id.main_deselect_all:{
-                adapter.setSelectAll(false);
+                try{
+                    getMyPagerAdapter().getRecyclerViewListAdapter(0).setSelectAll(false);
+                }catch (Exception e){e.printStackTrace();}
             }
             break;
             case R.id.main_export:{
@@ -337,11 +435,11 @@ public class MainActivity extends BaseActivity implements View.OnClickListener{
                     requestPermissions(new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE},0);
                     return;
                 }
-                bottom_card_multi_select.startAnimation(AnimationUtils.loadAnimation(MainActivity.this,R.anim.exit_300));
-                bottom_card_multi_select.setVisibility(View.GONE);
+                //bottom_card_multi_select.startAnimation(AnimationUtils.loadAnimation(MainActivity.this,R.anim.exit_300));
+                //bottom_card_multi_select.setVisibility(View.GONE);
                 final ArrayList<AppItem>arrayList=new ArrayList<>();
                 try{
-                    arrayList.addAll(((ListAdapter)recyclerView.getAdapter()).getSelectedAppItems());
+                    arrayList.addAll(((ListAdapter)recyclerView_export.getAdapter()).getSelectedItems());
                 }catch (Exception e){e.printStackTrace();}
                 Global.checkAndExportCertainAppItemsToSetPathWithoutShare(this, arrayList, true,new Global.ExportTaskFinishedListener() {
                     @Override
@@ -357,12 +455,12 @@ public class MainActivity extends BaseActivity implements View.OnClickListener{
                                     .show();
                             return;
                         }
-                        ToastManager.showToast(MainActivity.this,getResources().getString(R.string.toast_export_complete)+Global.getSavePath(MainActivity.this),Toast.LENGTH_SHORT);
+                        ToastManager.showToast(MainActivity.this,getResources().getString(R.string.toast_export_complete)+ SPUtil.getInternalSavePath(MainActivity.this),Toast.LENGTH_SHORT);
                         refreshAvailableStorage();
                     }
                 });
                 try{
-                    ((ListAdapter)recyclerView.getAdapter()).closeMultiSelectMode();
+                    //((ListAdapter)recyclerView.getAdapter()).closeMultiSelectMode();
                 }catch (Exception e){e.printStackTrace();}
                 closeMultiSelectModeForExternalVariables(true);
             }
@@ -373,19 +471,31 @@ public class MainActivity extends BaseActivity implements View.OnClickListener{
                     requestPermissions(new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE},0);
                     return;
                 }
-                bottom_card_multi_select.startAnimation(AnimationUtils.loadAnimation(MainActivity.this,R.anim.exit_300));
-                bottom_card_multi_select.setVisibility(View.GONE);
+                //bottom_card_multi_select.startAnimation(AnimationUtils.loadAnimation(MainActivity.this,R.anim.exit_300));
+                //bottom_card_multi_select.setVisibility(View.GONE);
                 final ArrayList<AppItem>arrayList=new ArrayList<>();
                 try{
-                    arrayList.addAll(((ListAdapter)recyclerView.getAdapter()).getSelectedAppItems());
+                    //arrayList.addAll(((ListAdapter)recyclerView.getAdapter()).getSelectedAppItems());
                 }catch (Exception e){e.printStackTrace();}
                 Global.shareCertainAppsByItems(this,arrayList);
                 try{
-                    ((ListAdapter)recyclerView.getAdapter()).closeMultiSelectMode();
+                    //((ListAdapter)recyclerView.getAdapter()).closeMultiSelectMode();
                 }catch (Exception e){e.printStackTrace();}
                 closeMultiSelectModeForExternalVariables(true);
             }
             break;
+        }
+    }
+
+    @Override
+    public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+        if(buttonView.getId()==R.id.main_show_system_app){
+            //Log.e("checked",""+isChecked);
+            buttonView.setEnabled(false);
+            SharedPreferences.Editor editor=settings.edit();
+            editor.putBoolean(Constants.PREFERENCE_SHOW_SYSTEM_APP,isChecked);
+            editor.apply();
+            new RefreshInstalledListTask(this,isChecked,refreshInstalledListTaskCallback).start();
         }
     }
 
@@ -431,19 +541,17 @@ public class MainActivity extends BaseActivity implements View.OnClickListener{
         }
 
         if(id==R.id.action_view){
-            SharedPreferences settings=Global.getGlobalSharedPreferences(this);
+            SharedPreferences settings= SPUtil.getGlobalSharedPreferences(this);
             int mode=settings.getInt(Constants.PREFERENCE_MAIN_PAGE_VIEW_MODE,Constants.PREFERENCE_MAIN_PAGE_VIEW_MODE_DEFAULT);
             SharedPreferences.Editor editor=settings.edit();
             editor.putInt(Constants.PREFERENCE_MAIN_PAGE_VIEW_MODE,mode==0?1:0);
             editor.apply();
-
-            closeMultiSelectModeForExternalVariables(false);
-
-            refreshList();
+            if(isSearchMode)return false;
+            resetRecyclerViewsWithDataAndAdapter();
         }
 
         if(id==R.id.action_sort){
-            final SharedPreferences settings=Global.getGlobalSharedPreferences(this);
+            final SharedPreferences settings= SPUtil.getGlobalSharedPreferences(this);
             final SharedPreferences.Editor editor=settings.edit();
             int sort=settings.getInt(Constants.PREFERENCE_SORT_CONFIG,0);
             View dialogView=LayoutInflater.from(this).inflate(R.layout.dialog_sort,null);
@@ -584,47 +692,38 @@ public class MainActivity extends BaseActivity implements View.OnClickListener{
         }
     }
 
+    void refreshList(){}
+    void closeMultiSelectModeForExternalVariables(boolean b){}
+
     private void openSearchMode(){
+        isCurrentPageMultiSelectMode=false;
         isSearchMode=true;
-        closeMultiSelectModeForExternalVariables(false);
-        swipeRefreshLayout.setEnabled(false);
+        setBackButtonVisible(true);
         setMenuVisible(false);
-        recyclerView.setAdapter(null);
-        bottom_card.setVisibility(View.GONE);
+        searchView.setQuery("",false);
         searchView.requestFocus();
         inputMethodManager.showSoftInput(searchView.findFocus(),0);
-        try{getSupportActionBar().setDisplayShowCustomEnabled(true);}catch (Exception e){e.printStackTrace();}
-        try{getSupportActionBar().setDisplayHomeAsUpEnabled(true);}catch (Exception e){e.printStackTrace();}
+        setActionbarDisplayCustomView(true);
+        setBackButtonVisible(true);
+        recyclerView_export.setAdapter(null);
+        recyclerView_import.setAdapter(null);
+        swipeRefreshLayout_import.setEnabled(false);
+        swipeRefreshLayout_export.setEnabled(false);
+        card_export_normal.setVisibility(View.GONE);
+        card_export_multi_select.setVisibility(View.GONE);
+        card_import_multi_select.setVisibility(View.GONE);
     }
 
     private void closeSearchMode(){
         isSearchMode=false;
-        swipeRefreshLayout.setEnabled(true);
-        closeMultiSelectModeForExternalVariables(false);
+        setBackButtonVisible(false);
         setMenuVisible(true);
-        List<AppItem>list=Global.list;
-        if(list==null)list=new ArrayList<>();
-        recyclerView.setAdapter(new ListAdapter(list,Global.getGlobalSharedPreferences(this).getInt(Constants.PREFERENCE_MAIN_PAGE_VIEW_MODE,Constants.PREFERENCE_MAIN_PAGE_VIEW_MODE_DEFAULT)));
-        bottom_card.setVisibility(View.VISIBLE);
-        try{
-            getSupportActionBar().setDisplayShowCustomEnabled(false);
-        }catch (Exception e){e.printStackTrace();}
-        try{
-            getSupportActionBar().setDisplayHomeAsUpEnabled(false);
-        }catch (Exception e){e.printStackTrace();}
+        resetRecyclerViewsWithDataAndAdapter();
+        setActionbarDisplayCustomView(false);
+        //setBackButtonVisible(false);
         try{
             inputMethodManager.hideSoftInputFromWindow(getCurrentFocus().getWindowToken(),0);
         }catch (Exception e){e.printStackTrace();}
-    }
-
-    private void closeMultiSelectModeForExternalVariables(boolean b){
-        swipeRefreshLayout.setEnabled(true);
-        bottom_card_multi_select.setVisibility(View.GONE);
-        if(!isSearchMode){
-            if(b)bottom_card.startAnimation(AnimationUtils.loadAnimation(MainActivity.this,R.anim.entry_300));
-            bottom_card.setVisibility(View.VISIBLE);
-            try{getSupportActionBar().setDisplayHomeAsUpEnabled(false);}catch (Exception e){e.printStackTrace();}
-        }
     }
 
     private void setMenuVisible(boolean b){
@@ -634,51 +733,287 @@ public class MainActivity extends BaseActivity implements View.OnClickListener{
         }
     }
 
+    private void setRecyclerViewLayoutManagers(RecyclerView recyclerView,int mode){
+        if(mode==1){
+            GridLayoutManager gridLayoutManager=new GridLayoutManager(MainActivity.this,4);
+            recyclerView.setLayoutManager(gridLayoutManager);
+        }else{
+            LinearLayoutManager linearLayoutManager=new LinearLayoutManager(MainActivity.this);
+            linearLayoutManager.setOrientation(LinearLayoutManager.VERTICAL);
+            recyclerView.setLayoutManager(linearLayoutManager);
+        }
+    }
+
+
     private void refreshAvailableStorage(){
-        ((TextView)findViewById(R.id.main_storage_remain)).setText(getResources().getString(R.string.main_card_remaining_storage)+":"+
-                Formatter.formatFileSize(this, Storage.getAvaliableSizeOfPath(Global.getSavePath(this))));
+        /*((TextView)findViewById(R.id.main_storage_remain)).setText(getResources().getString(R.string.main_card_remaining_storage)+":"+
+                Formatter.formatFileSize(this, Storage.getAvaliableSizeOfPath(Global.getInternalSavePath(this))));*/
+    }
+
+    private void setBackButtonVisible(boolean b){
+        try{
+            getSupportActionBar().setDisplayHomeAsUpEnabled(b);
+        }catch (Exception e){e.printStackTrace();}
+    }
+
+    private void setActionbarDisplayCustomView(boolean b){
+        try{
+            getSupportActionBar().setDisplayShowCustomEnabled(b);
+        }catch (Exception e){e.printStackTrace();}
+    }
+
+    private void hideInputMethod(){
+        try{
+            inputMethodManager.hideSoftInputFromWindow(getCurrentFocus().getWindowToken(),0);
+        }catch (Exception e){e.printStackTrace();}
+    }
+
+    private void setViewVisibilityWithAnimation(View view,int visibility){
+        if(visibility==View.GONE){
+            view.startAnimation(AnimationUtils.loadAnimation(this,R.anim.exit_300));
+            view.setVisibility(View.GONE);
+        }else if(visibility==View.VISIBLE){
+            view.startAnimation(AnimationUtils.loadAnimation(this,R.anim.entry_300));
+            view.setVisibility(View.VISIBLE);
+        }
+    }
+
+    private void resetRecyclerViewsWithDataAndAdapter(){
+        int mode= SPUtil.getGlobalSharedPreferences(MainActivity.this).getInt(Constants.PREFERENCE_MAIN_PAGE_VIEW_MODE
+                ,Constants.PREFERENCE_MAIN_PAGE_VIEW_MODE_DEFAULT);
+        swipeRefreshLayout_export.setRefreshing(false);
+        swipeRefreshLayout_import.setRefreshing(false);
+        loading_area_export.setVisibility(View.GONE);
+        setRecyclerViewLayoutManagers(recyclerView_export,mode);
+        setRecyclerViewLayoutManagers(recyclerView_import,mode);
+        recyclerView_export.setAdapter(new ListAdapter<>(Global.app_list,mode,list_export_operation_callback));
+        recyclerView_import.setAdapter(new ListAdapter<>(Global.item_list,mode,listAdapterOperationListener_import));
+        card_export_normal.setVisibility(View.VISIBLE);
+        card_import_multi_select.setVisibility(View.GONE);
+        card_export_multi_select.setVisibility(View.GONE);
+        swipeRefreshLayout_export.setEnabled(true);
+        swipeRefreshLayout_import.setEnabled(true);
+        setBackButtonVisible(false);
     }
 
     private void checkAndExit(){
         if(isSearchMode){
-            try{
-                ListAdapter adapter=(ListAdapter)recyclerView.getAdapter();
-                if(adapter!=null&&adapter.getIsMultiSelectMode()){
-                    adapter.closeMultiSelectMode();
-                    bottom_card_multi_select.startAnimation(AnimationUtils.loadAnimation(this,R.anim.exit_300));
-                    bottom_card_multi_select.setVisibility(View.GONE);
-                    return;
-                }
-            }catch (Exception e){e.printStackTrace();}
+            if(isCurrentPageMultiSelectMode){
+                getMyPagerAdapter().getRecyclerViewListAdapter(currentSelection).closeMultiSelectMode();
+                isCurrentPageMultiSelectMode=false;
+                return;
+            }
             closeSearchMode();
             return;
         }
-        try{
-            ListAdapter adapter=(ListAdapter)recyclerView.getAdapter();
-            if(adapter!=null&&adapter.getIsMultiSelectMode()){
-                adapter.closeMultiSelectMode();
-                closeMultiSelectModeForExternalVariables(true);
-                return;
-            }
-        }catch (Exception e){e.printStackTrace();}
+        if(isCurrentPageMultiSelectMode) {
+            try{
+                getMyPagerAdapter().getRecyclerViewListAdapter(currentSelection).closeMultiSelectMode();
+            }catch (Exception e){e.printStackTrace();}
+            setBackButtonVisible(false);
+            isCurrentPageMultiSelectMode=false;
+            return;
+        }
         finish();
     }
 
-    private class ListAdapter extends RecyclerView.Adapter<ViewHolder>{
+    private void changeViewStates(int mode){
+        if(mode==1){
+            GridLayoutManager gridLayoutManager=new GridLayoutManager(MainActivity.this,4);
+            recyclerView_export.setLayoutManager(gridLayoutManager);
+        }else{
+
+        }
+    }
+
+    private class MyPagerAdapter extends PagerAdapter{
+        private List<AppItem>list_export;
+        private List<ImportItem>list_import;
+        private final View[] pageViews=new View[2];
+        private boolean isScrollable_export=false;
+        private boolean isScrollable_import=false;
+        MyPagerAdapter(){
+            //this.list_export=list_export;
+            //this.list_import=list_import;
+        }
+        @NonNull
+        @Override
+        public Object instantiateItem(@NonNull ViewGroup container, int position) {
+            if(pageViews[position]==null){
+                switch (position){
+                    default:break;
+                    case 0:{
+                        pageViews[position]=LayoutInflater.from(MainActivity.this).inflate(R.layout.page_export,container,false);
+                        View view=pageViews[position];
+                        swipeRefreshLayout_export=view.findViewById(R.id.content_swipe);
+                        //final RecyclerView recyclerView=view.findViewById(R.id.content_recyclerview);
+                        recyclerView_export=view.findViewById(R.id.content_recyclerview);
+                        loading_area_export=view.findViewById(R.id.loading);
+                        pg_export=view.findViewById(R.id.loading_pg);
+                        tv_export_progress=view.findViewById(R.id.loading_text);
+
+                        boolean is_show_sys= SPUtil.getGlobalSharedPreferences(MainActivity.this).getBoolean(Constants.PREFERENCE_SHOW_SYSTEM_APP,Constants.PREFERENCE_SHOW_SYSTEM_APP_DEFAULT);
+                        cb_show_sys_app =view.findViewById(R.id.main_show_system_app);
+                        cb_show_sys_app.setChecked(is_show_sys);
+                        cb_show_sys_app.setOnCheckedChangeListener(MainActivity.this);
+                        view.findViewById(R.id.main_select_all).setOnClickListener(MainActivity.this);
+                        view.findViewById(R.id.main_deselect_all).setOnClickListener(MainActivity.this);
+                        view.findViewById(R.id.main_export).setOnClickListener(MainActivity.this);
+                        view.findViewById(R.id.main_share).setOnClickListener(MainActivity.this);
+                        card_export_normal=view.findViewById(R.id.export_card);
+                        card_export_multi_select=view.findViewById(R.id.export_card_multi_select);
+                        tv_card_export_multi_select_title=view.findViewById(R.id.main_select_num_size);
+
+                        swipeRefreshLayout_export.setColorSchemeColors(getResources().getColor(R.color.colorTitle));
+                        swipeRefreshLayout_export.setRefreshing(true);
+
+                        recyclerView_export.addOnScrollListener(onScrollListener_export);
+                        loading_area_export.setVisibility(View.VISIBLE);
+                        recyclerView_export.setAdapter(null);
+
+                        new RefreshInstalledListTask(MainActivity.this, is_show_sys,refreshInstalledListTaskCallback).start();
+
+                        swipeRefreshLayout_export.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+                            @Override
+                            public void onRefresh() {
+                                if(isSearchMode)return;
+                                try{
+                                    if(((ListAdapter)recyclerView_export.getAdapter()).isMultiSelectMode())return;
+                                }catch (Exception e){e.printStackTrace();}
+                                new RefreshInstalledListTask(MainActivity.this,
+                                        SPUtil.getGlobalSharedPreferences(MainActivity.this).getBoolean(Constants.PREFERENCE_SHOW_SYSTEM_APP,Constants.PREFERENCE_SHOW_SYSTEM_APP_DEFAULT)
+                                        ,refreshInstalledListTaskCallback).start();
+                            }
+                        });
+                    }
+                    break;
+                    case 1:{
+                        pageViews[position]=LayoutInflater.from(MainActivity.this).inflate(R.layout.page_import,container,false);
+                        View view=pageViews[position];
+                        swipeRefreshLayout_import=view.findViewById(R.id.content_swipe);
+                        recyclerView_import=view.findViewById(R.id.content_recyclerview);
+                        view.findViewById(R.id.loading).setVisibility(View.GONE);
+                        //final ProgressBar progressBar=view.findViewById(R.id.loading_pg);
+                        //final TextView progress_att=view.findViewById(R.id.loading_text);
+                        card_import_multi_select=view.findViewById(R.id.import_card_multi_select);
+                        tv_card_import_multi_select_title=view.findViewById(R.id.import_card_att);
+                        view.findViewById(R.id.import_select_all).setOnClickListener(MainActivity.this);
+                        view.findViewById(R.id.import_deselect_all).setOnClickListener(MainActivity.this);
+                        view.findViewById(R.id.import_delete).setOnClickListener(MainActivity.this);
+                        view.findViewById(R.id.import_action).setOnClickListener(MainActivity.this);
+                        swipeRefreshLayout_import.setColorSchemeColors(getResources().getColor(R.color.colorTitle));
+                        swipeRefreshLayout_import.setRefreshing(true);
+                        //recyclerView.removeOnScrollListener(onScrollListener);
+                        recyclerView_import.addOnScrollListener(onScrollListener_import);
+                        swipeRefreshLayout_import.setRefreshing(false);
+
+                        new RefreshImportListTask(MainActivity.this, refreshImportListTaskCallback).start();
+
+                        swipeRefreshLayout_import.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+                            @Override
+                            public void onRefresh() {
+                                try{
+                                    ListAdapter adapter=(ListAdapter)recyclerView_import.getAdapter();
+                                    if(adapter.isMultiSelectMode()||isSearchMode)return;
+                                }catch (Exception e){e.printStackTrace();}
+                                recyclerView_import.setAdapter(null);
+                                new RefreshImportListTask(MainActivity.this,refreshImportListTaskCallback).start();
+                            }
+                        });
+                    }
+                    break;
+                }
+            }
+            container.addView(pageViews[position]);
+            return pageViews[position];
+        }
+
+        @Override
+        public void destroyItem(@NonNull ViewGroup container, int position, @NonNull Object object) {
+            //super.destroyItem(container, position, object);
+            container.removeView((View)object);
+        }
+
+        @Nullable
+        @Override
+        public CharSequence getPageTitle(int position) {
+            switch (position){
+                default:break;
+                case 0:return getResources().getString(R.string.main_page_export);
+                case 1:return getResources().getString(R.string.main_page_import);
+            }
+            return "";
+        }
+
+        @Override
+        public int getCount() {
+            return 2;
+        }
+
+        @Override
+        public boolean isViewFromObject(@NonNull View view, @NonNull Object o) {
+            return view==o;
+        }
+
+        View getPageView(int position){
+            return pageViews[position];
+        }
+
+        RecyclerView getRecyclerView(int position){
+            return getPageView(position).findViewById(R.id.content_recyclerview);
+        }
+
+        ListAdapter getRecyclerViewListAdapter(int position){
+            return (ListAdapter)((RecyclerView)pageViews[position].findViewById(R.id.content_recyclerview)).getAdapter();
+        }
+
+        boolean isMultiSelectMode(int position){
+            try{
+                return ((ListAdapter)((RecyclerView)pageViews[position].findViewById(R.id.content_recyclerview)).getAdapter()).isMultiSelectMode();
+            }catch (Exception e){e.printStackTrace();}
+            return false;
+        }
+
+        void notifyIsSwipeable(boolean b){
+            for(View view:pageViews){
+                try{
+                    ((SwipeRefreshLayout)view.findViewById(R.id.content_swipe)).setEnabled(b);
+                }catch (Exception e){e.printStackTrace();}
+            }
+        }
+
+
+    }
+
+    interface ListAdapterOperationListener{
+        void onItemClicked(DisplayItem displayItem,ViewHolder viewHolder);
+        void onMultiSelectItemChanged(List<DisplayItem>selected_items,long length);
+        void onMultiSelectModeClosed();
+        void onItemLongClicked();
+    }
+
+    private class ListAdapter<T extends DisplayItem> extends RecyclerView.Adapter<ViewHolder>{
 
         static final int MODE_LINEAR=0;
         static final int MODE_GRID=1;
 
-        private List<AppItem>list;
+        private final ArrayList<DisplayItem>list=new ArrayList<>();
         private boolean[] isSelected;
         private boolean isMultiSelectMode=false;
         private int mode=0;
 
-        private ListAdapter(@NonNull List<AppItem> list,int mode){
-            this.list=list;
+        private ListAdapterOperationListener listener;
+
+        private ListAdapter(@NonNull List<T> list, int mode,ListAdapterOperationListener listener){
+            this.list.addAll(list);
+            this.listener=listener;
             isSelected=new boolean[list.size()];
             if(mode==1)this.mode=1;
         }
+
+        /*void setListAdapterOperationListener(ListAdapterOperationListener listener){
+            this.listener=listener;
+        }*/
 
         @NonNull
         @Override
@@ -690,15 +1025,13 @@ public class MainActivity extends BaseActivity implements View.OnClickListener{
         @Override
         public void onBindViewHolder(@NonNull final ViewHolder viewHolder, int i) {
             try{
-                final AppItem item=list.get(viewHolder.getAdapterPosition());
-                if(item==null)return;
-                viewHolder.title.setText(String.valueOf(item.getAppName()));
-                viewHolder.title.setTextColor(getResources().getColor((item.getPackageInfo().applicationInfo.flags&ApplicationInfo.FLAG_SYSTEM)>0?
-                        R.color.colorSystemAppTitleColor:R.color.colorHighLightText));
-                //viewHolder.icon.setImageDrawable(item.getIcon());
-                viewHolder.icon.setImageDrawable(item.getIcon(MainActivity.this));
+                final DisplayItem item=list.get(viewHolder.getAdapterPosition());
+                viewHolder.title.setText(String.valueOf(item.getTitle()));
+                viewHolder.title.setTextColor(getResources().getColor((item.isRedMarked()?
+                        R.color.colorSystemAppTitleColor:R.color.colorHighLightText)));
+                viewHolder.icon.setImageDrawable(item.getIconDrawable());
                 if(mode==0){
-                    viewHolder.description.setText(String.valueOf(item.getPackageName()));
+                    viewHolder.description.setText(String.valueOf(item.getDescription()));
                     viewHolder.right.setText(Formatter.formatFileSize(MainActivity.this,item.getSize()));
                     viewHolder.cb.setChecked(isSelected[viewHolder.getAdapterPosition()]);
                     viewHolder.right.setVisibility(isMultiSelectMode?View.GONE:View.VISIBLE);
@@ -718,13 +1051,14 @@ public class MainActivity extends BaseActivity implements View.OnClickListener{
                             refreshButtonStatus();
                             notifyItemChanged(viewHolder.getAdapterPosition());
                         }else{
-                            Intent intent=new Intent(MainActivity.this,AppDetailActivity.class);
+                            /*Intent intent=new Intent(MainActivity.this,AppDetailActivity.class);
                             //intent.putExtra(EXTRA_PARCELED_APP_ITEM,item);
                             intent.putExtra(EXTRA_PACKAGE_NAME,item.getPackageName());
                             ActivityOptionsCompat compat = ActivityOptionsCompat.makeSceneTransitionAnimation(MainActivity.this,new Pair<View, String>(viewHolder.icon,"icon"));
                             try{
                                 ActivityCompat.startActivity(MainActivity.this, intent, compat.toBundle());
-                            }catch (Exception e){e.printStackTrace();}
+                            }catch (Exception e){e.printStackTrace();}*/
+                            if(listener!=null)listener.onItemClicked(item,viewHolder);
                         }
 
                     }
@@ -732,21 +1066,22 @@ public class MainActivity extends BaseActivity implements View.OnClickListener{
                 viewHolder.root.setOnLongClickListener(isMultiSelectMode?null:new View.OnLongClickListener() {
                     @Override
                     public boolean onLongClick(View v) {
-                        swipeRefreshLayout.setEnabled(false);
+                        ///swipeRefreshLayout.setEnabled(false);
                         isSelected=new boolean[list.size()];
                         isSelected[viewHolder.getAdapterPosition()]=true;
                         isMultiSelectMode=true;
                         refreshButtonStatus();
                         notifyDataSetChanged();
-                        try{
+                        /*try{
                             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
                         }catch (Exception e){e.printStackTrace();}
                         try{
                             inputMethodManager.hideSoftInputFromWindow(getCurrentFocus().getWindowToken(),0);
-                        }catch (Exception e){e.printStackTrace();}
-                        bottom_card.setVisibility(View.GONE);
+                        }catch (Exception e){e.printStackTrace();}*/
+                        /*bottom_card.setVisibility(View.GONE);
                         bottom_card_multi_select.startAnimation(AnimationUtils.loadAnimation(MainActivity.this,R.anim.entry_300));
-                        bottom_card_multi_select.setVisibility(View.VISIBLE);
+                        bottom_card_multi_select.setVisibility(View.VISIBLE);*/
+                        if(listener!=null)listener.onItemLongClicked();
                         return true;
                     }
                 });
@@ -759,44 +1094,45 @@ public class MainActivity extends BaseActivity implements View.OnClickListener{
             return list.size();
         }
 
-        private void closeMultiSelectMode(){
+        void closeMultiSelectMode(){
             isMultiSelectMode=false;
             notifyDataSetChanged();
+            if(listener!=null)listener.onMultiSelectModeClosed();
         }
 
-        private boolean getIsMultiSelectMode(){
+        private boolean isMultiSelectMode(){
             return isMultiSelectMode;
         }
 
-        private void setSelectAll(boolean selected){
+        void setSelectAll(boolean selected){
             if(!isMultiSelectMode||isSelected==null)return;
             for(int i=0;i<isSelected.length;i++)isSelected[i]=selected;
-            main_export.setEnabled(selected);
-            main_share.setEnabled(selected);
+            //main_export.setEnabled(selected);
+           // main_share.setEnabled(selected);
             refreshButtonStatus();
             notifyDataSetChanged();
         }
 
         private void refreshButtonStatus(){
-            main_export.setEnabled(getSelectedNum()>0);
-            main_share.setEnabled(getSelectedNum()>0);
-            ((TextView)findViewById(R.id.main_select_num_size)).setText(getSelectedNum()+getResources().getString(R.string.unit_item)+"/"+Formatter.formatFileSize(MainActivity.this,getSelectedFileLength()));
+            //main_export.setEnabled(getSelectedNum()>0);
+            //main_share.setEnabled(getSelectedNum()>0);
+            //((TextView)findViewById(R.id.main_select_num_size)).setText(getSelectedNum()+getResources().getString(R.string.unit_item)+"/"+Formatter.formatFileSize(MainActivity.this,getSelectedFileLength()));
             /*main_export.setText(getResources().getString(R.string.main_card_multi_select_export)+"("
                     +getSelectedNum()+getResources().getString(R.string.unit_item)+"/"
                     +Formatter.formatFileSize(MainActivity.this,getSelectedFileLength())+")");
             main_share.setText(getResources().getString(R.string.main_card_multi_select_share)+"("+getSelectedNum()
                     +getResources().getString(R.string.unit_item)+")");*/
+            if(listener!=null)listener.onMultiSelectItemChanged(getSelectedItems(),getSelectedFileLength());
         }
 
-
         /**
-         * 返回的是初始化data,obb为false的副本
+         * 返回的是item的原始项
          */
-        private List<AppItem> getSelectedAppItems(){
-            ArrayList<AppItem>list_selected=new ArrayList<>();
+        private List<DisplayItem> getSelectedItems(){
+            ArrayList<DisplayItem>list_selected=new ArrayList<>();
             if(!isMultiSelectMode)return list_selected;
             for(int i=0;i<list.size();i++){
-                if(isSelected[i])list_selected.add(new AppItem(list.get(i),false,false));
+                if(isSelected[i])list_selected.add(list.get(i));
             }
             return list_selected;
         }

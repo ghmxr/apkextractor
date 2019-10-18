@@ -1,13 +1,17 @@
 package com.github.ghmxr.apkextractor.activities;
 
+import android.annotation.TargetApi;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.content.SharedPreferences;
+import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.v4.provider.DocumentFile;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -25,111 +29,220 @@ import android.widget.Toast;
 
 import com.github.ghmxr.apkextractor.Global;
 import com.github.ghmxr.apkextractor.R;
-import com.github.ghmxr.apkextractor.data.Constants;
+import com.github.ghmxr.apkextractor.Constants;
+import com.github.ghmxr.apkextractor.items.FileItem;
 import com.github.ghmxr.apkextractor.ui.ToastManager;
+import com.github.ghmxr.apkextractor.utils.DocumentFileUtil;
 import com.github.ghmxr.apkextractor.utils.EnvironmentUtil;
-import com.github.ghmxr.apkextractor.utils.PinyinUtil;
-import com.github.ghmxr.apkextractor.utils.Storage;
+import com.github.ghmxr.apkextractor.utils.SPUtil;
+import com.github.ghmxr.apkextractor.utils.StorageUtil;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
+import java.util.LinkedList;
 import java.util.List;
 
 public class FolderSelectorActivity extends BaseActivity {
 
     private SharedPreferences settings;
-    private File file;
+    private FileItem fileItem;
     private final Bundle positions=new Bundle();
 
-    //private RecyclerView recyclerView;
     private ListView listView;
+    private ViewGroup group_storages;
+    private ViewGroup item_others;
     private ProgressBar progressBar;
     private ViewGroup attention;
     private TextView textView;
-    private String current_storage_path;
+    private String current_storage_path="";
 
-    private final List<String>storages= Storage.getAvailableStoragePaths();
+    private final LinkedList<String> segments=new LinkedList<>();
 
     @Override
     protected void onCreate(Bundle bundle) {
         super.onCreate(bundle);
         setContentView(R.layout.activity_folder_selector);
         setSupportActionBar((Toolbar)findViewById(R.id.toolbar_folder_selector));
-        //recyclerView=findViewById(R.id.folder_selector_recyclerview);
         listView=findViewById(R.id.folder_selector_listview);
+        group_storages=findViewById(R.id.folder_selector_storage_selection);
+        item_others=findViewById(R.id.item_other);
         progressBar=findViewById(R.id.folder_selector_loading);
         attention=findViewById(R.id.folder_selector_att);
         textView=findViewById(R.id.folder_selector_current_path);
-        //LinearLayoutManager manager=new LinearLayoutManager(this);
-        //manager.setOrientation(LinearLayoutManager.VERTICAL);
-        //recyclerView.setLayoutManager(manager);
         listView.setDivider(null);
         try{
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         }catch (Exception e){}
 
-        settings= Global.getGlobalSharedPreferences(this);
-        file=new File(settings.getString(Constants.PREFERENCE_SAVE_PATH,Constants.PREFERENCE_SAVE_PATH_DEFAULT));
-        current_storage_path=getStoragePathOfFile(file);
+        if(DocumentFileUtil.canWrite2ExternalStorage(this)&&Build.VERSION.SDK_INT>=21){
+            item_others.setVisibility(View.VISIBLE);
+        }else item_others.setVisibility(View.GONE);
 
-        try{
-            if(file.exists()&&!file.isDirectory())file.delete();
-            if(!file.exists())file.mkdirs();
-        }catch (Exception e){
-            e.printStackTrace();
-            ToastManager.showToast(this,getResources().getString(R.string.toast_mkdirs_error)+"\n"+e.toString(),Toast.LENGTH_SHORT);
+        findViewById(R.id.item_internal).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                refreshList(new FileItem(StorageUtil.getMainExternalStoragePath()));
+            }
+        });
+        findViewById(R.id.item_external).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if(Build.VERSION.SDK_INT>=21){
+                    if(DocumentFileUtil.canWrite2ExternalStorage(FolderSelectorActivity.this)){
+                        try{
+                            refreshList(new FileItem(FolderSelectorActivity.this,Uri.parse(SPUtil.getExternalStorageUri(FolderSelectorActivity.this)),null));
+                        }catch (Exception e){
+                            e.printStackTrace();
+                            restore2DefaultStoragePath();
+                            ToastManager.showToast(FolderSelectorActivity.this,"Getting external storage environment error",Toast.LENGTH_SHORT);
+                        }
+                    }else{
+                        showSelectingStorageDialog();
+                    }
+                }
+                else{
+                    fileItem=null;
+                    List<String>storages= StorageUtil.getAvailableStoragePaths(FolderSelectorActivity.this);
+                    ArrayList<FileItem>arrayList=new ArrayList<>();
+                    for(String s:storages){
+                        arrayList.add(new FileItem(s));
+                    }
+                    listView.setVisibility(View.VISIBLE);
+                    group_storages.setVisibility(View.GONE);
+                    BasicListAdapter adapter=new BasicListAdapter(arrayList);
+                    listView.setAdapter(adapter);
+                    listView.setOnItemClickListener(adapter);
+                }
+            }
+        });
+
+        findViewById(R.id.item_other).setOnClickListener(new View.OnClickListener() {
+            @Override
+            @TargetApi(21)
+            public void onClick(View v) {
+                showSelectingStorageDialog();
+            }
+        });
+        boolean external= SPUtil.getIsSaved2ExternalStorage(this);
+        settings= SPUtil.getGlobalSharedPreferences(this);
+        if(external){
+            try{
+                String segments= SPUtil.getSaveSegment(this);
+                fileItem=new FileItem(this,Uri.parse(SPUtil.getExternalStorageUri(this)),segments);
+                if(segments!=null)this.segments.addAll(Arrays.asList(segments.split("/")));
+                else this.segments.clear();
+                current_storage_path=DocumentFile.fromTreeUri(this,Uri.parse(SPUtil.getExternalStorageUri(this))).getUri().getPath();
+            }catch (Exception e){
+                e.printStackTrace();
+                ToastManager.showToast(this,"Initializing external storage error",Toast.LENGTH_SHORT);
+                fileItem=new FileItem(StorageUtil.getMainExternalStoragePath());
+                current_storage_path= StorageUtil.getMainExternalStoragePath();
+            }
+        }else{
+            fileItem=new FileItem(settings.getString(Constants.PREFERENCE_SAVE_PATH,Constants.PREFERENCE_SAVE_PATH_DEFAULT));
+            try{
+                if(fileItem.exists()&&!fileItem.isDirectory())fileItem.delete();
+                if(!fileItem.exists())fileItem.mkdirs();
+            }catch (Exception e){
+                e.printStackTrace();
+                ToastManager.showToast(this,getResources().getString(R.string.toast_mkdirs_error)+"\n"+e.toString(),Toast.LENGTH_SHORT);
+            }
+            List<String>storage_paths= StorageUtil.getAvailableStoragePaths(this);
+            for(String s:storage_paths){
+                if(fileItem.getPath().toLowerCase().startsWith(s.toLowerCase())){
+                    current_storage_path=s;
+                    break;
+                }
+            }
         }
 
-        refreshList(file);
+        refreshList(fileItem);
     }
 
 
-    private void refreshList(@Nullable final File file){
+    private void refreshList(@Nullable final FileItem fileItem){
         //recyclerView.setAdapter(null);
+        this.fileItem=fileItem;
         listView.setAdapter(null);
-        progressBar.setVisibility(View.VISIBLE);
-        this.file=file;
-        if(file==null||file.getAbsolutePath().length()<current_storage_path.length()){
-            FolderSelectorActivity.this.file=null;
-        }
-        new Thread(new Runnable() {
-            @Override
-            public void run() {
-                final ArrayList<FileItem>arrayList=new ArrayList<>();
-                synchronized (FolderSelectorActivity.this){
-                    try{
-                        if(file==null||file.getAbsolutePath().length()<current_storage_path.length()){
-                            for(String s:storages)arrayList.add(new FileItem(new File(s)));
-                        }else{
-                            final File[]files=file.listFiles();
-                            for(File file1:files)if(file1.isDirectory()&&!file1.isHidden())arrayList.add(new FileItem(file1));
-                        }
-                        Collections.sort(arrayList);
-                    }catch (Exception e){e.printStackTrace();}
-                }
-                Global.handler.post(new Runnable() {
-                    @Override
-                    public void run() {
-                        progressBar.setVisibility(View.GONE);
-                        //recyclerView.setAdapter(new ListAdapter(arrayList));
-                        BasicListAdapter adapter=new BasicListAdapter(arrayList);
-                        listView.setAdapter(adapter);
-                        listView.setOnItemClickListener(adapter);
-                        if(FolderSelectorActivity.this.file!=null){
-                            //recyclerView.scrollTo(0,positions.getInt(getFormateLowercaseString(FolderSelectorActivity.this.file.getAbsolutePath())));
-                            listView.setSelection(positions.getInt(getFormateLowercaseString(FolderSelectorActivity.this.file.getAbsolutePath())));
-                        }
-
-                        textView.setText(FolderSelectorActivity.this.file==null?
-                                getResources().getString(R.string.activity_folder_selector_select_storage)
-                                :FolderSelectorActivity.this.file.getAbsolutePath());
+        attention.setVisibility(View.GONE);
+        if(fileItem==null){
+            textView.setText(getResources().getString(R.string.activity_folder_selector_select_storage));
+            listView.setVisibility(View.GONE);
+            group_storages.setVisibility(View.VISIBLE);
+            attention.setVisibility(View.GONE);
+        }else{
+            group_storages.setVisibility(View.GONE);
+            listView.setVisibility(View.VISIBLE);
+            progressBar.setVisibility(View.VISIBLE);
+            new Thread(new Runnable() {
+                @Override
+                public void run() {
+                    synchronized (FolderSelectorActivity.this){
+                        try{
+                            final List<FileItem>list=new ArrayList<>();
+                            List<FileItem>result=fileItem.listFileItems();
+                            for(FileItem f:result){
+                                if(f.isDirectory()&&!f.isHidden())list.add(f);
+                            }
+                            Collections.sort(list);
+                            Global.handler.post(new Runnable() {
+                                @Override
+                                public void run() {
+                                    progressBar.setVisibility(View.GONE);
+                                    //recyclerView.setAdapter(new ListAdapter(arrayList));
+                                    if(list.size()==0)attention.setVisibility(View.VISIBLE);
+                                    BasicListAdapter adapter=new BasicListAdapter(list);
+                                    listView.setAdapter(adapter);
+                                    listView.setOnItemClickListener(adapter);
+                                    if(FolderSelectorActivity.this.fileItem!=null){
+                                        //recyclerView.scrollTo(0,positions.getInt(getFormateLowercaseString(FolderSelectorActivity.this.file.getAbsolutePath())));
+                                        listView.setSelection(positions.getInt(getFormateLowercaseString(FolderSelectorActivity.this.fileItem.getPath())));
+                                    }
+                                    if(fileItem.isDocumentFile()) textView.setText(DocumentFileUtil.getDisplayPathForDocumentFile(FolderSelectorActivity.this,fileItem.getDocumentFile()));
+                                    else textView.setText(fileItem.getPath());
+                                }
+                            });
+                        }catch (Exception e){e.printStackTrace();}
                     }
-                });
+                }
+            }).start();
+        }
+    }
 
-            }
-        }).start();
+    private void showSelectingStorageDialog(){
+        new AlertDialog.Builder(this)
+                .setTitle(getResources().getString(R.string.activity_folder_selector_external_title))
+                .setMessage(getResources().getString(R.string.activity_folder_selector_external_message))
+                .setPositiveButton(getResources().getString(R.string.dialog_button_confirm), new DialogInterface.OnClickListener() {
+                    @Override @TargetApi(21)
+                    public void onClick(DialogInterface dialog, int which) {
+                        startActivityForResult(new Intent(Intent.ACTION_OPEN_DOCUMENT_TREE),1);
+                        ToastManager.showToast(FolderSelectorActivity.this,getResources().getString(R.string.activity_folder_selector_external_message),Toast.LENGTH_SHORT);
+                    }
+                })
+                .setNegativeButton(getResources().getString(R.string.dialog_button_cancel), new DialogInterface.OnClickListener() {
+                    @Override public void onClick(DialogInterface dialog, int which) {}
+                })
+                .show();
+    }
 
+    private void showSelectingErrorDialog(){
+        new AlertDialog.Builder(this)
+                .setTitle(getResources().getString(R.string.activity_folder_selector_external_title))
+                .setMessage(getResources().getString(R.string.activity_folder_selector_external_error))
+                .setPositiveButton(getResources().getString(R.string.dialog_button_confirm), new DialogInterface.OnClickListener() {
+                    @Override public void onClick(DialogInterface dialog, int which) {}
+                })
+                .show();
+
+    }
+
+    private void restore2DefaultStoragePath(){
+        fileItem=new FileItem(StorageUtil.getMainExternalStoragePath());
+        current_storage_path= StorageUtil.getMainExternalStoragePath();
+        refreshList(fileItem);
     }
 
     @Override
@@ -147,15 +260,28 @@ public class FolderSelectorActivity extends BaseActivity {
             }
             break;
             case R.id.action_confirm:{
-                if(file==null){
+                if(fileItem==null){
                     ToastManager.showToast(this,getResources().getString(R.string.activity_attention_select_folder), Toast.LENGTH_SHORT);
                     return false;
                 }
                 SharedPreferences.Editor editor=settings.edit();
-                editor.putString(Constants.PREFERENCE_SAVE_PATH,file.getAbsolutePath());
+                if(fileItem.isDocumentFile()){
+                    //editor.putString(Constants.PREFERENCE_SAVE_PATH_URI,DocumentFile.fromTreeUri(this,Uri.parse(fileItem.getAbsolutePathOrUri())).getUri().toString());
+                    editor.putBoolean(Constants.PREFERENCE_STORAGE_PATH_EXTERNAL,true);
+                    if(segments.size()>0){
+                        editor.putString(Constants.PREFERENCE_SAVE_PATH_SEGMENT, DocumentFileUtil.toSegmentString(segments.toArray()));
+                    }else{
+                        editor.remove(Constants.PREFERENCE_SAVE_PATH_SEGMENT);
+                    }
+                }else{
+                    editor.putBoolean(Constants.PREFERENCE_STORAGE_PATH_EXTERNAL,false);
+                    editor.putString(Constants.PREFERENCE_SAVE_PATH,fileItem.getPath());
+                    editor.remove(Constants.PREFERENCE_SAVE_PATH_SEGMENT);
+                }
+                //editor.putBoolean(Constants.PREFERENCE_SAVE_PATH_EXTERNAL,fileItem.isDocumentFile());
                 editor.apply();
                 setResult(RESULT_OK);
-                ToastManager.showToast(this,getResources().getString(R.string.activity_attention_path_set)+file.getAbsolutePath(),Toast.LENGTH_SHORT);
+                ToastManager.showToast(this,getResources().getString(R.string.activity_attention_path_set)+fileItem.getPath(),Toast.LENGTH_SHORT);
                 finish();
             }
             break;
@@ -189,26 +315,54 @@ public class FolderSelectorActivity extends BaseActivity {
                             return;
                         }
                         try{
-                            File file=new File(FolderSelectorActivity.this.file.getAbsolutePath()+File.separator+s);
-                            file.mkdir();
-                            refreshList(FolderSelectorActivity.this.file);
+                            if(fileItem.isDocumentFile()){
+                                fileItem.createDirectory(s);
+                            }else{
+                               FileItem fileItem=new FileItem(FolderSelectorActivity.this.fileItem.getPath()+File.separator+s);
+                               fileItem.mkdirs();
+                            }
                         }catch (Exception e){e.printStackTrace();}
+                        refreshList(FolderSelectorActivity.this.fileItem);
                         dialog.cancel();
                     }
                 });
             }
             break;
             case R.id.action_name_ascend:{
-                FileItem.config=0;
-                refreshList(file);
+                FileItem.setSort_config(0);
+                refreshList(fileItem);
             }
             break;
             case R.id.action_name_descend:{
-                FileItem.config=1;
-                refreshList(file);
+                FileItem.setSort_config(1);
+                refreshList(fileItem);
             }
         }
         return super.onOptionsItemSelected(item);
+    }
+
+    @Override
+    @TargetApi(19)
+    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if(requestCode==1&&resultCode==RESULT_OK){
+            if(data==null)return;
+            Uri uri=data.getData();
+            if(uri==null)return;
+            String uri_value=uri.getPath();
+            if(uri_value==null)return;
+            if(!uri_value.endsWith(":")||uri_value.contains("primary")){
+               // ToastManager.showToast(this,"Please select an available external storage",Toast.LENGTH_SHORT);
+                showSelectingErrorDialog();
+                return;
+            }
+            getContentResolver().takePersistableUriPermission(uri,Intent.FLAG_GRANT_WRITE_URI_PERMISSION|Intent.FLAG_GRANT_READ_URI_PERMISSION);
+            SPUtil.getGlobalSharedPreferences(this).edit().putString(Constants.PREFERENCE_SAVE_PATH_URI,uri.toString()).apply();
+            item_others.setVisibility(View.VISIBLE);
+            try{
+                refreshList(new FileItem(this,uri,null));
+            }catch (Exception e){e.printStackTrace();}
+        }
     }
 
     @Override
@@ -222,28 +376,24 @@ public class FolderSelectorActivity extends BaseActivity {
 
     private void backToParentOrExit(){
         try{
-            File parentFile=file.getParentFile();
-            if(file==null||file.getAbsolutePath().length()<current_storage_path.length()){
+            if(group_storages.getVisibility()==View.VISIBLE){
                 finish();
                 return;
+            }
+            FileItem parentFile=fileItem.getParent();
+            if(parentFile!=null&&!parentFile.isDocumentFile()&&parentFile.getPath().length()<current_storage_path.length()){
+                refreshList(null);
+                segments.clear();
+                return;
+            }
+            if(fileItem!=null&&fileItem.isDocumentFile()){
+                if(segments.size()>0)segments.removeLast();
             }
             refreshList(parentFile);
         }catch (Exception e){
             e.printStackTrace();
             finish();
         }
-    }
-
-    private String getStoragePathOfFile(File file){
-        try{
-            for(String s:storages){
-                if(getFormateLowercaseString(file.getAbsolutePath()).startsWith(getFormateLowercaseString(s))){
-                    Log.e("StoragePath",s);
-                    return s;
-                }
-            }
-        }catch (Exception e){e.printStackTrace();}
-        return "";
     }
 
     private String getFormateLowercaseString(String s){
@@ -256,8 +406,6 @@ public class FolderSelectorActivity extends BaseActivity {
 
         private BasicListAdapter(@NonNull List<FileItem>list){
             this.list=list;
-            if(list.size()==0)attention.setVisibility(View.VISIBLE);
-            else attention.setVisibility(View.GONE);
         }
 
         @Override
@@ -290,115 +438,33 @@ public class FolderSelectorActivity extends BaseActivity {
 
             FileItem item=list.get(position);
 
-            if(FolderSelectorActivity.this.file==null)holder.imageView.setImageResource(R.drawable.icon_sd);
-            else holder.imageView.setImageResource(R.drawable.icon_folder);
+            holder.imageView.setImageResource(R.drawable.icon_folder);
 
-            holder.textView.setText(item.file.getName());
+            holder.textView.setText(item.getName());
             return convertView;
         }
 
         @Override
         public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-            FileItem item=list.get(position);
-            if(FolderSelectorActivity.this.file==null){
-                current_storage_path=item.file.getAbsolutePath();
+            FileItem item=this.list.get(position);
+            String key;
+            if(FolderSelectorActivity.this.fileItem==null){
+                key="??";
+                current_storage_path=item.getPath();
+            }else{
+                key=getFormateLowercaseString(FolderSelectorActivity.this.fileItem.getPath());
             }
-            else{
-                positions.putInt(getFormateLowercaseString(FolderSelectorActivity.this.file.getAbsolutePath()),listView.getFirstVisiblePosition());
+            positions.putInt(key,listView.getFirstVisiblePosition());
+            if(item.isDocumentFile()){
+                segments.addLast(item.getName());
             }
-            refreshList(item.file);
+            refreshList(item);
         }
     }
-
-
-    /*private class ListAdapter extends RecyclerView.Adapter<ViewHolderRV>{
-        private List<FileItem>list;
-
-        private ListAdapter(@NonNull List<FileItem> list){
-            this.list=list;
-            if(list.size()==0)attention.setVisibility(View.VISIBLE);
-            else attention.setVisibility(View.GONE);
-        }
-
-        @NonNull
-        @Override
-        public ViewHolderRV onCreateViewHolder(@NonNull ViewGroup viewGroup, int i) {
-            return new ViewHolderRV(LayoutInflater.from(FolderSelectorActivity.this).inflate(R.layout.item_folder,viewGroup,false));
-        }
-
-        @Override
-        public void onBindViewHolder(@NonNull ViewHolderRV viewHolder, int i) {
-
-            final File file=list.get(viewHolder.getAdapterPosition()).file;
-
-            if(FolderSelectorActivity.this.file==null)viewHolder.imageView.setImageResource(R.drawable.icon_sd);
-
-            viewHolder.textView.setText(file.getName());
-
-            viewHolder.itemView.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    if(FolderSelectorActivity.this.file==null){
-                        current_storage_path=file.getAbsolutePath();
-                    }
-                    else{
-                        //positions.putInt(getFormateLowercaseString(FolderSelectorActivity.this.file.getAbsolutePath()),recyclerView.getLayoutManager().);
-                    }
-                    refreshList(file);
-                }
-            });
-        }
-
-        @Override
-        public int getItemCount() {
-            return list.size();
-        }
-    }*/
-
-    /*private static class ViewHolderRV extends RecyclerView.ViewHolder{
-        private TextView textView;
-        private ImageView imageView;
-        private ViewHolderRV(@NonNull View itemView) {
-            super(itemView);
-            textView=itemView.findViewById(R.id.item_folder_name);
-            imageView=itemView.findViewById(R.id.item_folder_icon);
-        }
-    }*/
 
     private static class ViewHolder{
         TextView textView;
         ImageView imageView;
     }
 
-    private static class FileItem implements Comparable<FileItem>{
-        File file;
-        String name;
-        static int config=0;
-        private FileItem(@NonNull File file) {
-            this.file = file;
-            this.name = file.getName();
-        }
-
-        @Override
-        public int compareTo(@NonNull FileItem o) {
-            switch (config){
-                default:break;
-                case 0:{
-                    try{
-                        if(PinyinUtil.getFirstSpell(this.name).toLowerCase().compareTo(PinyinUtil.getFirstSpell(o.name).toLowerCase())>0)return 1;
-                        if(PinyinUtil.getFirstSpell(this.name).toLowerCase().compareTo(PinyinUtil.getFirstSpell(o.name).toLowerCase())<0)return -1;
-                    }catch (Exception e){e.printStackTrace();}
-                }
-                break;
-                case 1:{
-                    try{
-                        if(PinyinUtil.getFirstSpell(this.name).toLowerCase().compareTo(PinyinUtil.getFirstSpell(o.name).toLowerCase())>0)return -1;
-                        if(PinyinUtil.getFirstSpell(this.name).toLowerCase().compareTo(PinyinUtil.getFirstSpell(o.name).toLowerCase())<0)return 1;
-                    }catch (Exception e){e.printStackTrace();}
-                }
-                break;
-            }
-            return 0;
-        }
-    }
 }

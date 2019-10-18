@@ -12,9 +12,8 @@ import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 
-import com.github.ghmxr.apkextractor.Global;
 import com.github.ghmxr.apkextractor.R;
-import com.github.ghmxr.apkextractor.data.Constants;
+import com.github.ghmxr.apkextractor.Constants;
 
 import java.security.MessageDigest;
 import java.util.ArrayList;
@@ -122,7 +121,7 @@ public class EnvironmentUtil {
      */
     public static @NonNull Bundle getStaticRegisteredReceiversOfBundleTypeForPackageName(@NonNull Context context,@NonNull String package_name){
         Bundle bundle=new Bundle();
-        if(!Global.getGlobalSharedPreferences(context)
+        if(!SPUtil.getGlobalSharedPreferences(context)
                 .getBoolean(Constants.PREFERENCE_LOAD_STATIC_LOADERS,Constants.PREFERENCE_LOAD_STATIC_LOADERS_DEFAULT)){
             return bundle;
         }

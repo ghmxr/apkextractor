@@ -9,11 +9,11 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.CheckBox;
 
-import com.github.ghmxr.apkextractor.AppItem;
+import com.github.ghmxr.apkextractor.items.AppItem;
 import com.github.ghmxr.apkextractor.Global;
 import com.github.ghmxr.apkextractor.R;
 import com.github.ghmxr.apkextractor.utils.FileUtil;
-import com.github.ghmxr.apkextractor.utils.Storage;
+import com.github.ghmxr.apkextractor.utils.StorageUtil;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -63,8 +63,8 @@ public class DataObbDialog extends AlertDialog implements View.OnClickListener {
                 synchronized (DataObbDialog.this){
                     long data=0,obb=0;
                     for(AppItem item:list){
-                        long data_item= FileUtil.getFileOrFolderSize(new File(Storage.getMainExternalStoragePath()+"/android/data/"+item.getPackageName()));
-                        long obb_item=FileUtil.getFileOrFolderSize(new File(Storage.getMainExternalStoragePath()+"/android/obb/"+item.getPackageName()));
+                        long data_item= FileUtil.getFileOrFolderSize(new File(StorageUtil.getMainExternalStoragePath()+"/android/data/"+item.getPackageName()));
+                        long obb_item=FileUtil.getFileOrFolderSize(new File(StorageUtil.getMainExternalStoragePath()+"/android/obb/"+item.getPackageName()));
                         data+=data_item;
                         obb+=obb_item;
                         if(data>0) list_data_controllable.add(item);

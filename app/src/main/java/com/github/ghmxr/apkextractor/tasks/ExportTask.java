@@ -1,12 +1,18 @@
-package com.github.ghmxr.apkextractor.utils;
+package com.github.ghmxr.apkextractor.tasks;
 
 import android.content.Context;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.v4.provider.DocumentFile;
 
-import com.github.ghmxr.apkextractor.AppItem;
+import com.github.ghmxr.apkextractor.items.AppItem;
 import com.github.ghmxr.apkextractor.Global;
-import com.github.ghmxr.apkextractor.data.Constants;
+import com.github.ghmxr.apkextractor.Constants;
+import com.github.ghmxr.apkextractor.items.FileItem;
+import com.github.ghmxr.apkextractor.utils.FileUtil;
+import com.github.ghmxr.apkextractor.utils.OutputUtil;
+import com.github.ghmxr.apkextractor.utils.SPUtil;
+import com.github.ghmxr.apkextractor.utils.StorageUtil;
 
 import java.io.BufferedOutputStream;
 import java.io.File;
@@ -14,6 +20,7 @@ import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.zip.ZipEntry;
@@ -24,14 +31,17 @@ public class ExportTask extends Thread {
     private Context context;
     private final List<AppItem> list;
     private ExportProgressListener listener;
-
+    /**
+     * 本次导出任务的目的存储路径是否为外置存储
+     */
+    private final boolean isExternal;
     private boolean isInterrupted=false;
     private long progress=0,total=0;
     private long progress_check_zip =0;
     private long zipTime=0;
     private long zipWriteLength_second=0;
 
-    private String currentWritePath=null;
+    private FileItem currentWritingFile=null;
 
     private final ArrayList<String>write_paths=new ArrayList<>();
     private final StringBuilder error_message=new StringBuilder();
@@ -46,6 +56,7 @@ public class ExportTask extends Thread {
         this.context=context;
         this.list=list;
         this.listener=callback;
+        isExternal= SPUtil.getIsSaved2ExternalStorage(context);
     }
 
     public void setExportProgressListener(ExportProgressListener listener){
@@ -54,20 +65,22 @@ public class ExportTask extends Thread {
 
     @Override
     public void run() {
-        try{
+        /*try{
             //初始化导出路径
-            File export_path=new File(Global.getSavePath(context));
-            if(export_path.exists()&&!export_path.isDirectory()){
-                export_path.delete();
-            }
-            if(!export_path.exists()){
-                export_path.mkdirs();
+            if(!isExternal){
+                File export_path=new File(SPUtil.getInternalSavePath(context));
+                if(export_path.exists()&&!export_path.isDirectory()){
+                    export_path.delete();
+                }
+                if(!export_path.exists()){
+                    export_path.mkdirs();
+                }
             }
         }catch (Exception e){
             e.printStackTrace();
             if(listener!=null)listener.onExportTaskFinished(new ArrayList<String>(),e.toString());
             return;
-        }
+        }*/
 
         total= getTotalLength();
         long progress_check_apk=0;
@@ -82,17 +95,27 @@ public class ExportTask extends Thread {
 
                 if(!item.exportData&&!item.exportObb){
 
-                    this.currentWritePath=Global.getAbsoluteWritePath(context,item,"apk");
+                    OutputStream outputStream;
+                    if(isExternal) {
+                        DocumentFile documentFile = OutputUtil.getWritingDocumentFileForAppItem(context,item,"apk");
+                        this.currentWritingFile=new FileItem(context,documentFile);
+                        outputStream= OutputUtil.getOutputStreamForDocumentFile(context,documentFile);
+                    }
+                    else {
+                        this.currentWritingFile=new FileItem(OutputUtil.getAbsoluteWritePath(context,item,"apk"));
+                        outputStream=new FileOutputStream(new File(OutputUtil.getAbsoluteWritePath(context,item,"apk")));
+                    }
+
                     postCallback2Listener(new Runnable() {
                         @Override
                         public void run() {
-                            if(listener!=null)listener.onExportAppItemStarted(order_this_loop,item,list.size(),currentWritePath);
+                            if(listener!=null)listener.onExportAppItemStarted(order_this_loop,item,list.size(),currentWritingFile.getPath());
                         }
                     });
 
-
                     InputStream in = new FileInputStream(String.valueOf(item.getSourcePath())); //读入原文件
-                    BufferedOutputStream out= new BufferedOutputStream(new FileOutputStream(this.currentWritePath));
+
+                    BufferedOutputStream out= new BufferedOutputStream(outputStream);
 
                     int byteread;
                     byte[] buffer = new byte[1024*10];
@@ -130,7 +153,7 @@ public class ExportTask extends Thread {
                             postCallback2Listener(new Runnable() {
                                 @Override
                                 public void run() {
-                                    if(listener!=null)listener.onExportProgressUpdated(progress,total,currentWritePath);
+                                    if(listener!=null)listener.onExportProgressUpdated(progress,total,currentWritingFile.getPath());
                                 }
                             });
                         }
@@ -138,38 +161,48 @@ public class ExportTask extends Thread {
                     out.flush();
                     in.close();
                     out.close();
-                    write_paths.add(this.currentWritePath);
+                    write_paths.add(this.currentWritingFile.getPath());
                 }
 
                 else{
-                    this.currentWritePath=Global.getAbsoluteWritePath(context,item,"zip");
+                    OutputStream outputStream;
+                    if(isExternal){
+                        DocumentFile documentFile= OutputUtil.getWritingDocumentFileForAppItem(context,item,"zip");
+                        this.currentWritingFile=new FileItem(context,documentFile);
+                        outputStream= OutputUtil.getOutputStreamForDocumentFile(context,documentFile);
+                    }
+                    else {
+                        this.currentWritingFile= new FileItem(OutputUtil.getAbsoluteWritePath(context,item,"zip"));
+                        outputStream=new FileOutputStream(new File(OutputUtil.getAbsoluteWritePath(context,item,"zip")));
+                    }
                     postCallback2Listener(new Runnable() {
                         @Override
                         public void run() {
-                            if(listener!=null)listener.onExportAppItemStarted(order_this_loop,item,list.size(),currentWritePath);
+                            if(listener!=null)listener.onExportAppItemStarted(order_this_loop,item,list.size(),currentWritingFile.getPath());
                         }
                     });
 
-                    ZipOutputStream zos=new ZipOutputStream(new BufferedOutputStream(new FileOutputStream(new File(this.currentWritePath))));
+                    ZipOutputStream zos=new ZipOutputStream(new BufferedOutputStream(outputStream));
                     zos.setComment("Packaged by com.github.ghmxr.apkextractor \nhttps://github.com/ghmxr/apkextractor");
-                    int zip_level= Global.getGlobalSharedPreferences(context).getInt(Constants.PREFERENCE_ZIP_COMPRESS_LEVEL, Constants.PREFERENCE_ZIP_COMPRESS_LEVEL_DEFAULT);
+                    int zip_level= SPUtil.getGlobalSharedPreferences(context).getInt(Constants.PREFERENCE_ZIP_COMPRESS_LEVEL, Constants.PREFERENCE_ZIP_COMPRESS_LEVEL_DEFAULT);
 
                     if(zip_level>=0&&zip_level<=9) zos.setLevel(zip_level);
 
                     writeZip(new File(String.valueOf(item.getSourcePath())),"",zos,zip_level);
                     if(item.exportData){
-                        writeZip(new File(Storage.getMainExternalStoragePath()+"/android/data/"+item.getPackageName()),"Android/data/",zos,zip_level);
+                        writeZip(new File(StorageUtil.getMainExternalStoragePath()+"/android/data/"+item.getPackageName()),"Android/data/",zos,zip_level);
                     }
                     if(item.exportObb){
-                        writeZip(new File(Storage.getMainExternalStoragePath()+"/android/obb/"+item.getPackageName()),"Android/obb/",zos,zip_level);
+                        writeZip(new File(StorageUtil.getMainExternalStoragePath()+"/android/obb/"+item.getPackageName()),"Android/obb/",zos,zip_level);
                     }
                     zos.flush();
                     zos.close();
-                    write_paths.add(currentWritePath);
+                    write_paths.add(currentWritingFile.getPath());
                 }
 
 
             }catch (Exception e){
+                e.printStackTrace();
                 this.error_message.append(e.toString());
                 this.error_message.append("\n\n");
             }
@@ -178,7 +211,7 @@ public class ExportTask extends Thread {
 
         if(isInterrupted){
             try{
-                File file = new File(this.currentWritePath);
+                File file = new File(this.currentWritingFile.getPath());
                 if(file.exists()&&!file.isDirectory()){
                     file.delete();
                 }
@@ -212,10 +245,10 @@ public class ExportTask extends Thread {
         for(AppItem item:list){
             total+=item.getSize();
             if(item.exportData){
-                total+=FileUtil.getFileOrFolderSize(new File(Storage.getMainExternalStoragePath()+"/android/data/"+item.getPackageName()));
+                total+= FileUtil.getFileOrFolderSize(new File(StorageUtil.getMainExternalStoragePath()+"/android/data/"+item.getPackageName()));
             }
             if(item.exportObb){
-                total+=FileUtil.getFileOrFolderSize(new File(Storage.getMainExternalStoragePath()+"/android/obb/"+item.getPackageName()));
+                total+=FileUtil.getFileOrFolderSize(new File(StorageUtil.getMainExternalStoragePath()+"/android/obb/"+item.getPackageName()));
             }
         }
         return total;

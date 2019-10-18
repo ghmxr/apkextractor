@@ -1,8 +1,8 @@
-package com.github.ghmxr.apkextractor.data;
+package com.github.ghmxr.apkextractor;
 
 import android.support.v7.app.AppCompatDelegate;
 
-import com.github.ghmxr.apkextractor.utils.Storage;
+import com.github.ghmxr.apkextractor.utils.StorageUtil;
 
 public class Constants {
 
@@ -14,12 +14,22 @@ public class Constants {
      * this preference stands for a string value;
      */
     public static final String PREFERENCE_SAVE_PATH="savepath";
-    public static final String PREFERENCE_SAVE_PATH_DEFAULT= Storage.getMainExternalStoragePath()+"/Backup";
+    public static final String PREFERENCE_SAVE_PATH_DEFAULT= StorageUtil.getMainExternalStoragePath()+"/Backup";
     /**
-     * this preference stands for a string value;
+     * this preference stands for a boolean value;
      */
-    public static final String PREFERENCE_STORAGE_PATH="storage_path";
-    public static final String PREFERENCE_STORAGE_PATH_DEFAULT=Storage.getMainExternalStoragePath();
+    public static final String PREFERENCE_STORAGE_PATH_EXTERNAL="save_external";
+    public static final boolean PREFERENCE_STORAGE_PATH_EXTERNAL_DEFAULT=false;
+
+    /**
+     * this stands for a String value
+     */
+    public static final String PREFERENCE_SAVE_PATH_URI="savepath_uri";
+    /**
+     * this stands for a string value
+     */
+    public static final String PREFERENCE_SAVE_PATH_SEGMENT="savepath_segment";
+
     /**
      * this preference stands for a string value;
      */

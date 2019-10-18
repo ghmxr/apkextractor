@@ -4,7 +4,7 @@ import android.content.Context;
 import android.support.annotation.NonNull;
 import android.text.format.Formatter;
 
-import com.github.ghmxr.apkextractor.AppItem;
+import com.github.ghmxr.apkextractor.items.AppItem;
 import com.github.ghmxr.apkextractor.R;
 
 import java.text.DecimalFormat;
@@ -17,7 +17,7 @@ public class ExportingDialog extends ProgressDialog {
 
     public void setProgressOfApp(int current, int total, @NonNull AppItem item,@NonNull String write_path){
         setTitle(getContext().getResources().getString(R.string.dialog_export_title)+"("+current+"/"+total+")"+":"+item.getAppName());
-        setIcon(item.getIcon(getContext()));
+        setIcon(item.getIcon());
         att.setText(getContext().getResources().getString(R.string.dialog_export_msg_apk)+write_path);
     }
 

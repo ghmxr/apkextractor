@@ -17,6 +17,7 @@
     <color name="colorDividingLine">#dddddd</color>
     <color name="colorWarnText">#ee2c2c</color>
     <color name="colorFirstAttention">#0068ea</color>
+    <color name="colorTabIndicator">#ffffff</color>
 
     <color name="colorSelectedBackground">#90EE90</color>
     <color name="colorSystemAppTitleColor">#FF4500</color>

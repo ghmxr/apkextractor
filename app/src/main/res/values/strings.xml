@@ -17,10 +17,14 @@
 
     <string name="main_card_show_system_app">显示系统应用</string>
     <string name="main_card_remaining_storage">剩余存储空间</string>
-    <string name="main_card_multi_select_export">导出</string>
-    <string name="main_card_multi_select_select_all">全选</string>
-    <string name="main_card_multi_select_deselect_all">全不选</string>
-    <string name="main_card_multi_select_share">分享</string>
+    <string name="bottom_export">导出</string>
+    <string name="bottom_import">导入</string>
+    <string name="select_all">全选</string>
+    <string name="deselect_all">全不选</string>
+    <string name="bottom_share">分享</string>
+    <string name="bottom_delete">删除</string>
+    <string name="main_page_export">应用</string>
+    <string name="main_page_import">安装包</string>
 
     <string name="activity_detail_run">运行</string>
     <string name="activity_detail_export">导出</string>
@@ -52,7 +56,13 @@
 
     <string name="activity_folder_selector_title">选择路径</string>
     <string name="activity_folder_selector_select_storage">选择存储</string>
+    <string name="activity_folder_selector_item_internal">主存储</string>
+    <string name="activity_folder_selector_item_external">外置存储</string>
+    <string name="activity_folder_selector_item_others">选择其他外置存储</string>
     <string name="activity_folder_selector_blank_folder">没有文件夹</string>
+    <string name="activity_folder_selector_external_title">外置存储</string>
+    <string name="activity_folder_selector_external_message">请在左侧边栏中选择一个外置存储，然后点击“选择”来授权读取外置存储</string>
+    <string name="activity_folder_selector_external_error">没有选择到一个正确的外置存储根目录上，请确定是否选择了正确的外置存储后点击了“选择”</string>
     <string name="activity_attention_select_folder">请选择文件夹</string>
     <string name="activity_attention_path_set">已设置导出路径至</string>
 
@@ -128,6 +138,8 @@
 
     <string name="snack_bar_clipboard">已复制到剪贴板</string>
     <string name="toast_mkdirs_error">初始化导出路径失败，请检查文件路径</string>
+
+    <string name="external_storage">外置存储</string>
 
     <string name="hint_filename_apk">输入apk命名规则</string>
     <string name="hint_filename_zip">输入zip命名规则</string>
