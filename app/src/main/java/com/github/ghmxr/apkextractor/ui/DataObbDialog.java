@@ -8,6 +8,7 @@ import android.text.format.Formatter;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.CheckBox;
+import android.widget.TextView;
 
 import com.github.ghmxr.apkextractor.items.AppItem;
 import com.github.ghmxr.apkextractor.Global;
@@ -28,6 +29,7 @@ public class DataObbDialog extends AlertDialog implements View.OnClickListener {
     private final List<AppItem> list_obb_controllable=new ArrayList<>();
     private CheckBox cb_data;
     private CheckBox cb_obb;
+    private TextView tv_att;
     /**
      * @param export_list 传递进来的AppItem务必为使用wrapper构造的副本，初始Data和Obb导出值为false
      */
@@ -38,6 +40,8 @@ public class DataObbDialog extends AlertDialog implements View.OnClickListener {
         view=LayoutInflater.from(context).inflate(R.layout.dialog_data_obb,null);
         cb_data=view.findViewById(R.id.dialog_checkbox_data);
         cb_obb=view.findViewById(R.id.dialog_checkbox_obb);
+        tv_att=view.findViewById(R.id.data_obb_att);
+        tv_att.setText(context.getResources().getString(R.string.dialog_data_obb_message));
         setView(view);
         setTitle(context.getResources().getString(R.string.dialog_data_obb_title));
 

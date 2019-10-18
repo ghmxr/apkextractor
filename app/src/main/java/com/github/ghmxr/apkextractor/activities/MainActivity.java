@@ -51,6 +51,7 @@ import com.github.ghmxr.apkextractor.R;
 import com.github.ghmxr.apkextractor.Constants;
 import com.github.ghmxr.apkextractor.tasks.RefreshImportListTask;
 import com.github.ghmxr.apkextractor.tasks.RefreshInstalledListTask;
+import com.github.ghmxr.apkextractor.ui.ImportingDataObbDialog;
 import com.github.ghmxr.apkextractor.ui.ToastManager;
 import com.github.ghmxr.apkextractor.utils.SPUtil;
 import com.github.ghmxr.apkextractor.tasks.SearchTask;
@@ -262,7 +263,14 @@ public class MainActivity extends BaseActivity implements View.OnClickListener,V
         public void onItemClicked(DisplayItem displayItem,ViewHolder viewHolder) {
             if(!(displayItem instanceof ImportItem))return;
             ImportItem item=(ImportItem)displayItem;
-            //
+            ArrayList<ImportItem>arrayList=new ArrayList<>();
+            arrayList.add(item);
+            new ImportingDataObbDialog(MainActivity.this, arrayList, new ImportingDataObbDialog.ImportDialogDataObbConfirmedCallback() {
+                @Override
+                public void onImportingDataObbConfirmed(@NonNull List<ImportItem> importItems) {
+
+                }
+            }).show();
 
         }
 

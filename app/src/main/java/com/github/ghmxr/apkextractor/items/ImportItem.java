@@ -5,10 +5,12 @@ import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.graphics.drawable.Drawable;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 
 import com.github.ghmxr.apkextractor.DisplayItem;
 import com.github.ghmxr.apkextractor.R;
 
+import java.io.InputStream;
 import java.text.DateFormat;
 import java.util.Date;
 
@@ -113,6 +115,14 @@ public class ImportItem implements DisplayItem {
 
     public Drawable getItemIconDrawable(){
         return drawable;
+    }
+
+    /**
+     * 当本项目为zip包时的输入流
+     */
+    public @Nullable InputStream getZipInputStream() throws Exception{
+        if(importType==ImportType.ZIP) return fileItem.getInputStream();
+        return null;
     }
 
 }

@@ -93,6 +93,9 @@
     <string name="dialog_data_obb_title">附加选项</string>
     <string name="dialog_data_obb_message">发现部分应用包含外置存储Data和Obb数据，勾选下面的选项将打包成zip导出。</string>
 
+    <string name="dialog_import_data_obb_title">导入Data/Obb</string>
+    <string name="dialog_import_data_obb_att">发现zip压缩包中存在data或者obb数据，勾选将会解压至主存储/Android/data或者/Android/obb</string>
+
     <string name="dialog_button_confirm">确定</string>
     <string name="dialog_button_cancel">取消</string>
     <string name="dialog_button_yes">是</string>

@@ -11,7 +11,9 @@ import com.github.ghmxr.apkextractor.utils.DocumentFileUtil;
 import com.github.ghmxr.apkextractor.utils.PinyinUtil;
 
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileOutputStream;
+import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.List;
@@ -173,6 +175,12 @@ public class FileItem implements Comparable<FileItem>{
     public boolean isHidden(){
         if(file!=null)return file.isHidden();
         return false;
+    }
+
+    public InputStream getInputStream() throws Exception{
+        if(documentFile!=null) return context.getContentResolver().openInputStream(documentFile.getUri());
+        if(file!=null)return new FileInputStream(file);
+        return null;
     }
 
     public OutputStream getOutputStream() throws Exception{

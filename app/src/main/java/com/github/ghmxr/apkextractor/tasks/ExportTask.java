@@ -88,7 +88,7 @@ public class ExportTask extends Thread {
         long startTime=System.currentTimeMillis();
 
         for(int i=0;i<list.size();i++){
-            if(isInterrupted)return;
+            if(isInterrupted)break;
             try{
                 final AppItem item=list.get(i);
                 final int order_this_loop=i+1;
@@ -211,10 +211,11 @@ public class ExportTask extends Thread {
 
         if(isInterrupted){
             try{
-                File file = new File(this.currentWritingFile.getPath());
+                /*File file = new File(this.currentWritingFile.getPath());
                 if(file.exists()&&!file.isDirectory()){
                     file.delete();
-                }
+                }*/
+                currentWritingFile.delete();//没有写入完成的文件为破损文件，尝试删除
             }catch(Exception e){
                 e.printStackTrace();
             }
