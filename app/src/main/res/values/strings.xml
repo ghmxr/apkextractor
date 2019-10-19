@@ -81,6 +81,9 @@
     <string name="dialog_export_zip">正在压缩</string>
     <string name="dialog_export_stop">停止</string>
 
+    <string name="dialog_import_title">正在导入</string>
+    <string name="dialog_import_msg">正在解压到</string>
+
     <string name="toast_export_complete">应用已导出至</string>
 
     <string name="exception_title">提示</string>
@@ -168,6 +171,7 @@
     <string name="word_blank">空</string>
     <string name="word_yes">是</string>
     <string name="word_no">否</string>
+    <string name="word_stop">停止</string>
 
     <string name="dialog_about_title">APK Kit(Build 6)</string>
     <string name="dialog_about_message">\n这是一个快速查询、导出或者分享本地已安装APP的小工具，支持将对应APP外置存储中的Data，Obb数据一并打包成zip并分享

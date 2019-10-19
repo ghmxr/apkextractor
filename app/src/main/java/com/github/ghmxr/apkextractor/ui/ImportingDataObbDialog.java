@@ -2,7 +2,6 @@ package com.github.ghmxr.apkextractor.ui;
 
 import android.content.Context;
 import android.content.DialogInterface;
-import android.media.Image;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AlertDialog;
@@ -14,7 +13,6 @@ import android.widget.TextView;
 
 import com.github.ghmxr.apkextractor.Global;
 import com.github.ghmxr.apkextractor.R;
-import com.github.ghmxr.apkextractor.items.AppItem;
 import com.github.ghmxr.apkextractor.items.ImportItem;
 import com.github.ghmxr.apkextractor.utils.ZipFileUtil;
 
@@ -23,23 +21,33 @@ import java.util.List;
 
 public class ImportingDataObbDialog extends AlertDialog implements View.OnClickListener{
     private final View view;
-    private final List<ImportItem>list;
-    private final List<ImportItem> list_data_controlable=new ArrayList<>();
-    private final List<ImportItem> list_obb_controlable=new ArrayList<>();
+    private final List<ImportItem>list=new ArrayList<>();
+    private final List<ImportItem> list_data_controllable =new ArrayList<>();
+    private final List<ImportItem> list_obb_controllable =new ArrayList<>();
+    private final List<ImportItem> list_apk_controllable =new ArrayList<>();
     private CheckBox cb_data;
     private CheckBox cb_obb;
     private CheckBox cb_apk;
     private TextView tv_att;
     private ImportDialogDataObbConfirmedCallback callback;
 
+    private final ArrayList<ZipFileUtil.ZipFileInfo> zipFileInfos=new ArrayList<>();
+
+    /**
+     * 传入的importItems为原始数据
+     */
     public ImportingDataObbDialog(@NonNull Context context, @NonNull List<ImportItem>importItems,@Nullable ImportDialogDataObbConfirmedCallback callback) {
         super(context);
-        this.list=importItems;
         this.callback=callback;
+        for(ImportItem importItem:importItems){
+            list.add(new ImportItem(importItem,false,false,false));
+        }
         view= LayoutInflater.from(context).inflate(R.layout.dialog_data_obb,null);
         cb_data=view.findViewById(R.id.dialog_checkbox_data);
         cb_obb=view.findViewById(R.id.dialog_checkbox_obb);
         tv_att=view.findViewById(R.id.data_obb_att);
+        cb_apk=view.findViewById(R.id.dialog_checkbox_apk);
+        cb_apk.setVisibility(View.VISIBLE);
         setView(view);
         setTitle(context.getResources().getString(R.string.dialog_import_data_obb_title));
         tv_att.setText(context.getResources().getString(R.string.dialog_import_data_obb_att));
@@ -62,17 +70,25 @@ public class ImportingDataObbDialog extends AlertDialog implements View.OnClickL
             public void run() {
                 long import_data= 0;
                 long import_obb=0;
+                long import_apk=0;
                 for(ImportItem importItem:list){
                     try{
-                        long data=ZipFileUtil.getDataOrObbSizeOfZipInputStream(importItem.getZipInputStream(),"data");
-                        long obb=ZipFileUtil.getDataOrObbSizeOfZipInputStream(importItem.getZipInputStream(),"obb");
+                        ZipFileUtil.ZipFileInfo zipFileInfo=ZipFileUtil.getZipFileInfoOfImportItem(importItem);
+                        zipFileInfos.add(zipFileInfo);
+                        if(zipFileInfo==null)continue;
+                        long data=zipFileInfo.getDataSize();
+                        long obb=zipFileInfo.getObbSize();
+                        long apk=zipFileInfo.getApkSize();
                         import_data+=data;
                         import_obb+=obb;
-                        if(data>0)list_data_controlable.add(importItem);
-                        if(obb>0)list_obb_controlable.add(importItem);
+                        import_apk+=apk;
+                        if(data>0) list_data_controllable.add(importItem);
+                        if(obb>0) list_obb_controllable.add(importItem);
+                        if(apk>0) list_apk_controllable.add(importItem);
                     }catch (Exception e){e.printStackTrace();}
                     final long total_data=import_data;
                     final long total_obb=import_obb;
+                    final long total_apk=import_apk;
                     Global.handler.post(new Runnable() {
                         @Override
                         public void run() {
@@ -80,8 +96,10 @@ public class ImportingDataObbDialog extends AlertDialog implements View.OnClickL
                             view.findViewById(R.id.dialog_data_obb_show_area).setVisibility(View.VISIBLE);
                             cb_data.setEnabled(total_data>0);
                             cb_obb.setEnabled(total_obb>0);
+                            cb_apk.setEnabled(total_apk>0);
                             cb_data.setText("Data("+ Formatter.formatFileSize(getContext(),total_data)+")");
                             cb_obb.setText("Obb("+Formatter.formatFileSize(getContext(),total_obb)+")");
+                            cb_apk.setText("APK("+Formatter.formatFileSize(getContext(),total_apk)+")");
                             getButton(AlertDialog.BUTTON_POSITIVE).setOnClickListener(ImportingDataObbDialog.this);
                         }
                     });
@@ -93,14 +111,15 @@ public class ImportingDataObbDialog extends AlertDialog implements View.OnClickL
     @Override
     public void onClick(View v) {
         if(v.equals(getButton(AlertDialog.BUTTON_POSITIVE))){
-            if(cb_data.isChecked()) for(ImportItem item:list_data_controlable) item.importData=true;
-            if(cb_obb.isChecked()) for (ImportItem item:list_obb_controlable) item.importObb=true;
-            if(callback!=null)callback.onImportingDataObbConfirmed(list);
+            if(cb_data.isChecked()) for(ImportItem item: list_data_controllable) item.importData=true;
+            if(cb_obb.isChecked()) for (ImportItem item: list_obb_controllable) item.importObb=true;
+            if(cb_apk.isChecked()) for(ImportItem item:list_apk_controllable) item.importApk=true;
+            if(callback!=null)callback.onImportingDataObbConfirmed(list,zipFileInfos);
             cancel();
         }
     }
 
     public interface ImportDialogDataObbConfirmedCallback{
-        void onImportingDataObbConfirmed(@NonNull List<ImportItem>importItems);
+        void onImportingDataObbConfirmed(@NonNull List<ImportItem>importItems, @NonNull List<ZipFileUtil.ZipFileInfo>zipFileInfos);
     }
 }

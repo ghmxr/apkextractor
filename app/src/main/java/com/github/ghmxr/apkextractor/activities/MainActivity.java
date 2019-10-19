@@ -49,12 +49,15 @@ import com.github.ghmxr.apkextractor.Global;
 import com.github.ghmxr.apkextractor.items.ImportItem;
 import com.github.ghmxr.apkextractor.R;
 import com.github.ghmxr.apkextractor.Constants;
+import com.github.ghmxr.apkextractor.tasks.ImportTask;
 import com.github.ghmxr.apkextractor.tasks.RefreshImportListTask;
 import com.github.ghmxr.apkextractor.tasks.RefreshInstalledListTask;
 import com.github.ghmxr.apkextractor.ui.ImportingDataObbDialog;
+import com.github.ghmxr.apkextractor.ui.ImportingDialog;
 import com.github.ghmxr.apkextractor.ui.ToastManager;
 import com.github.ghmxr.apkextractor.utils.SPUtil;
 import com.github.ghmxr.apkextractor.tasks.SearchTask;
+import com.github.ghmxr.apkextractor.utils.ZipFileUtil;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -263,14 +266,119 @@ public class MainActivity extends BaseActivity implements View.OnClickListener,V
         public void onItemClicked(DisplayItem displayItem,ViewHolder viewHolder) {
             if(!(displayItem instanceof ImportItem))return;
             ImportItem item=(ImportItem)displayItem;
+            if(item.getImportType()== ImportItem.ImportType.APK){
+
+                return;
+            }
             ArrayList<ImportItem>arrayList=new ArrayList<>();
             arrayList.add(item);
+            if(item.getImportType()== ImportItem.ImportType.ZIP)
             new ImportingDataObbDialog(MainActivity.this, arrayList, new ImportingDataObbDialog.ImportDialogDataObbConfirmedCallback() {
                 @Override
-                public void onImportingDataObbConfirmed(@NonNull List<ImportItem> importItems) {
+                public void onImportingDataObbConfirmed(@NonNull final List<ImportItem> importItems, @NonNull List<ZipFileUtil.ZipFileInfo>zipFileInfos) {
+                    long total=0;
+                    StringBuilder stringBuilder=new StringBuilder();
+                    for(int i=0;i<importItems.size();i++){
+                        if(importItems.get(i).importData){
+                            total+=zipFileInfos.get(i).getDataSize();
+                            stringBuilder.append(zipFileInfos.get(i).getAlreadyExistingFilesInfoInMainStorage());
+                        }
+                        if(importItems.get(i).importObb){
+                            total+=zipFileInfos.get(i).getObbSize();
+                            stringBuilder.append(zipFileInfos.get(i).getAlreadyExistingFilesInfoInMainStorage());
+                        }
+                        if(importItems.get(i).importApk){
+                            total+=zipFileInfos.get(i).getApkSize();
+                            stringBuilder.append(zipFileInfos.get(i).getAlreadyExistingFilesInfoInMainStorage());
+                        }
 
+                    }
+                    final long total_1=total;
+                    if(stringBuilder.length()>0){
+                        new AlertDialog.Builder(MainActivity.this)
+                                .setTitle("已存在的内容")
+                                .setMessage("主存储和导出路径存在下列重复文件\n\n"+stringBuilder.toString())
+                                .setPositiveButton(getResources().getString(R.string.dialog_button_confirm), new DialogInterface.OnClickListener() {
+                                    @Override
+                                    public void onClick(DialogInterface dialog, int which) {
+                                        final ImportingDialog dialog1=new ImportingDialog(MainActivity.this,total_1);
+                                        final ImportTask importTask=new ImportTask(MainActivity.this, importItems, new ImportTask.ImportTaskCallback() {
+                                            @Override
+                                            public void onImportTaskStarted() {
+
+                                            }
+
+                                            @Override
+                                            public void onRefreshSpeed(long speed) {
+                                                dialog1.setSpeed(speed);
+                                            }
+
+                                            @Override
+                                            public void onImportTaskProgress(@NonNull String writePath, long progress) {
+                                                dialog1.setCurrentWritingName(writePath);
+                                                dialog1.setProgress(progress);
+                                            }
+
+                                            @Override
+                                            public void onImportTaskFinished(@NonNull String errorMessage) {
+                                                dialog1.cancel();
+                                                ToastManager.showToast(MainActivity.this,"导入完成",Toast.LENGTH_SHORT);
+                                            }
+                                        });
+                                        dialog1.setButton(AlertDialog.BUTTON_NEGATIVE, getResources().getString(R.string.word_stop), new DialogInterface.OnClickListener() {
+                                            @Override
+                                            public void onClick(DialogInterface dialog, int which) {
+                                                importTask.setInterrupted();
+                                            }
+                                        });
+                                        dialog1.show();
+                                        importTask.start();
+                                    }
+                                })
+                                .setNegativeButton(getResources().getString(R.string.dialog_button_cancel),new DialogInterface.OnClickListener() {
+                                    @Override
+                                    public void onClick(DialogInterface dialog, int which) {
+
+                                    }
+                                })
+                                .show();
+                    }else{
+                        final ImportingDialog dialog1=new ImportingDialog(MainActivity.this,total_1);
+                        final ImportTask importTask=new ImportTask(MainActivity.this, importItems, new ImportTask.ImportTaskCallback() {
+                            @Override
+                            public void onImportTaskStarted() {
+
+                            }
+
+                            @Override
+                            public void onRefreshSpeed(long speed) {
+                                dialog1.setSpeed(speed);
+                            }
+
+                            @Override
+                            public void onImportTaskProgress(@NonNull String writePath, long progress) {
+                                dialog1.setCurrentWritingName(writePath);
+                                dialog1.setProgress(progress);
+                            }
+
+                            @Override
+                            public void onImportTaskFinished(@NonNull String errorMessage) {
+                                dialog1.cancel();
+                                ToastManager.showToast(MainActivity.this,"导入完成",Toast.LENGTH_SHORT);
+                            }
+                        });
+                        dialog1.setButton(AlertDialog.BUTTON_NEGATIVE, getResources().getString(R.string.word_stop), new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                importTask.setInterrupted();
+                            }
+                        });
+                        dialog1.show();
+                        importTask.start();
+                    }
                 }
             }).show();
+            else ;
 
         }
 
@@ -290,6 +398,7 @@ public class MainActivity extends BaseActivity implements View.OnClickListener,V
 
         @Override
         public void onMultiSelectModeClosed() {
+            swipeRefreshLayout_import.setEnabled(true);
             card_import_multi_select.setVisibility(View.GONE);
         }
     };

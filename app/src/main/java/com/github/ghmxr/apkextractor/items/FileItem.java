@@ -193,6 +193,8 @@ public class FileItem implements Comparable<FileItem>{
         return documentFile;
     }
 
+    public File getFile(){return file;}
+
     public static synchronized void setSort_config(int value){
         sort_config=value;
     }

@@ -24,23 +24,25 @@ public class DataObbDialog extends AlertDialog implements View.OnClickListener {
 
     private final View view;
     private DialogDataObbConfirmedCallback callback;
-    private final List<AppItem>list;
+    private final List<AppItem>list=new ArrayList<>();
     private final List<AppItem> list_data_controllable =new ArrayList<>();
     private final List<AppItem> list_obb_controllable=new ArrayList<>();
     private CheckBox cb_data;
     private CheckBox cb_obb;
-    private TextView tv_att;
+
     /**
-     * @param export_list 传递进来的AppItem务必为使用wrapper构造的副本，初始Data和Obb导出值为false
+     * @param export_list 传递进来的AppItem可为源数据，初始Data和Obb导出值为false
      */
     public DataObbDialog(@NonNull Context context, @NonNull List<AppItem>export_list, final DialogDataObbConfirmedCallback callback) {
         super(context);
-        this.list=export_list;
         this.callback=callback;
+        for(AppItem appItem:export_list){
+            list.add(new AppItem(appItem,false,false));
+        }
         view=LayoutInflater.from(context).inflate(R.layout.dialog_data_obb,null);
         cb_data=view.findViewById(R.id.dialog_checkbox_data);
         cb_obb=view.findViewById(R.id.dialog_checkbox_obb);
-        tv_att=view.findViewById(R.id.data_obb_att);
+        TextView tv_att=view.findViewById(R.id.data_obb_att);
         tv_att.setText(context.getResources().getString(R.string.dialog_data_obb_message));
         setView(view);
         setTitle(context.getResources().getString(R.string.dialog_data_obb_title));

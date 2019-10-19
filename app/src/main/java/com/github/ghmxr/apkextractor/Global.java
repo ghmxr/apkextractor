@@ -277,6 +277,10 @@ public class Global {
         }
     }
 
+    public static void importItemsAndShowDialogs(@NonNull Activity activity,@NonNull List<ImportItem>importItems){
+
+    }
+
     /**
      * 执行分享应用操作
      */

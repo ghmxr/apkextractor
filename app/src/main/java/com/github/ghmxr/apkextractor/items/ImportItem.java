@@ -30,6 +30,7 @@ public class ImportItem implements DisplayItem {
 
     public transient boolean importData=false;
     public transient boolean importObb=false;
+    public transient boolean importApk=false;
 
     public ImportItem(@NonNull Context context,@NonNull FileItem fileItem){
         this.fileItem=fileItem;
@@ -56,7 +57,7 @@ public class ImportItem implements DisplayItem {
         lastModified =fileItem.lastModified();
     }
 
-    public ImportItem(@NonNull ImportItem wrapper,boolean importData,boolean importObb){
+    public ImportItem(@NonNull ImportItem wrapper,boolean importData,boolean importObb,boolean importApk){
         this.drawable=wrapper.drawable;
         this.version_name=wrapper.version_name;
         this.fileItem=wrapper.fileItem;
@@ -65,6 +66,7 @@ public class ImportItem implements DisplayItem {
         this.lastModified =wrapper.lastModified;
         this.importData=importData;
         this.importObb=importObb;
+        this.importApk=importApk;
     }
 
     @Override
@@ -117,6 +119,9 @@ public class ImportItem implements DisplayItem {
         return drawable;
     }
 
+    public FileItem getFileItem(){
+        return fileItem;
+    }
     /**
      * 当本项目为zip包时的输入流
      */
