@@ -39,11 +39,11 @@ public class ZipFileUtil {
                     zipFileInfo.addEntry(entryPath);
                     zipFileInfo.addDataSize(zipEntry.getSize());
                 }
-                if((entryPath.toLowerCase().startsWith("android/obb"))&&!zipEntry.isDirectory()){
+                else if((entryPath.toLowerCase().startsWith("android/obb"))&&!zipEntry.isDirectory()){
                     zipFileInfo.addEntry(entryPath);
                     zipFileInfo.addObbSize(zipEntry.getSize());
                 }
-                if((entryPath.toLowerCase().endsWith(".apk"))&&!zipEntry.isDirectory()){
+                else if((entryPath.toLowerCase().endsWith(".apk"))&&!entryPath.contains("/")&&!zipEntry.isDirectory()){
                     zipFileInfo.addEntry(entryPath);
                     zipFileInfo.addApkSize(zipEntry.getSize());
                 }
@@ -74,7 +74,7 @@ public class ZipFileUtil {
                     }
                     zipFileInfo.addDataSize(total_this_file);
                 }
-                if(entryPath.toLowerCase().startsWith("android/obb")&&!zipEntry.isDirectory()){
+                else if(entryPath.toLowerCase().startsWith("android/obb")&&!zipEntry.isDirectory()){
                     zipFileInfo.addEntry(entryPath);
                     long total_this_file=0;
                     int len;
@@ -84,7 +84,7 @@ public class ZipFileUtil {
                     }
                     zipFileInfo.addObbSize(total_this_file);
                 }
-                if(entryPath.toLowerCase().endsWith(".apk")&&!zipEntry.isDirectory()){
+                else if(entryPath.toLowerCase().endsWith(".apk")&&!zipEntry.isDirectory()&&!entryPath.contains("/")){
                     zipFileInfo.addEntry(entryPath);
                     long total_this_file=0;
                     int len;

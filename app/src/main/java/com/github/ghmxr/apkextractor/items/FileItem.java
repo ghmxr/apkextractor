@@ -45,7 +45,7 @@ public class FileItem implements Comparable<FileItem>{
         this.file=new File(path);
     }
 
-    public FileItem(Context context,DocumentFile documentFile){
+    public FileItem(@NonNull Context context,@NonNull DocumentFile documentFile){
         this.context=context;
         this.documentFile=documentFile;
     }

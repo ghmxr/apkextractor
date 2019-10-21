@@ -10,13 +10,14 @@ import android.support.annotation.NonNull;
 import android.os.Handler;
 import android.support.annotation.Nullable;
 import android.support.design.widget.Snackbar;
+import android.support.v4.content.FileProvider;
 import android.support.v4.provider.DocumentFile;
 import android.support.v7.app.AlertDialog;
+import android.util.Log;
 import android.view.View;
 import android.widget.Toast;
 
 import com.github.ghmxr.apkextractor.items.AppItem;
-import com.github.ghmxr.apkextractor.items.FileItem;
 import com.github.ghmxr.apkextractor.items.ImportItem;
 import com.github.ghmxr.apkextractor.ui.DataObbDialog;
 import com.github.ghmxr.apkextractor.ui.ExportingDialog;
@@ -163,7 +164,11 @@ public class Global {
             public void onExportTaskFinished(List<String> write_paths, String error_message) {
                 dialog.cancel();
                 if(listener!=null)listener.onFinished(error_message);
-                if(if_share) shareCertainApps(activity,write_paths,activity.getResources().getString(R.string.share_title));
+                ArrayList<Uri>uris=new ArrayList<>();
+                for(String s:write_paths){
+                    uris.add(getUriForFileByFileProvider(activity,new File(s)));
+                }
+                if(if_share) shareCertainFiles(activity,uris,activity.getResources().getString(R.string.share_title));
             }
         });
         task.start();
@@ -263,16 +268,16 @@ public class Global {
             });
             dialog.show();
         }else {
-            ArrayList<String>paths=new ArrayList<>();
+            ArrayList<Uri>uris=new ArrayList<>();
             if(items.size()==1){
                 AppItem item=items.get(0);
-                paths.add(item.getSourcePath());
-                shareCertainApps(activity,paths,activity.getResources().getString(R.string.share_title)+" "+item.getAppName());
+                uris.add(Uri.fromFile(new File(item.getSourcePath())));
+                shareCertainFiles(activity,uris,activity.getResources().getString(R.string.share_title)+" "+item.getAppName());
             }else{
                 for(AppItem item:items){
-                    paths.add(item.getSourcePath());
+                    uris.add(Uri.fromFile(new File(item.getSourcePath())));
                 }
-                shareCertainApps(activity,paths,activity.getResources().getString(R.string.share_title));
+                shareCertainFiles(activity,uris,activity.getResources().getString(R.string.share_title));
             }
         }
     }
@@ -282,25 +287,33 @@ public class Global {
     }
 
     /**
+     * 传入的file须为主存储下的文件，且对file有完整的读写权限
+     */
+    public static Uri getUriForFileByFileProvider(@NonNull Context context,@NonNull File file){
+        return FileProvider.getUriForFile(context,"com.github.ghmxr.apkextractor.FileProvider",file);
+    }
+
+    /**
      * 执行分享应用操作
      */
-    private static void shareCertainApps(@NonNull Activity activity, @NonNull List<String>paths, @NonNull String title){
-        if(paths.size()==0)return;
+    private static void shareCertainFiles(@NonNull Activity activity, @NonNull List<Uri>uris, @NonNull String title){
+        if(uris.size()==0)return;
         Intent intent=new Intent();
         //intent.setType("application/vnd.android.package-archive");
         intent.setType("application/x-zip-compressed");
-        if(paths.size()>1){
+        if(uris.size()>1){
             intent.setAction(Intent.ACTION_SEND_MULTIPLE);
-            ArrayList<Uri> uris=new ArrayList<>();
-            for(String path:paths) uris.add(Uri.fromFile(new File(path)));
-            intent.putExtra(Intent.EXTRA_STREAM, uris);
+            //ArrayList<Uri> uris=new ArrayList<>();
+            //for(String path:paths) uris.add(Uri.fromFile(new File(path)));
+            intent.putExtra(Intent.EXTRA_STREAM, new ArrayList<>(uris));
         }else{
             intent.setAction(Intent.ACTION_SEND);
-            intent.putExtra(Intent.EXTRA_STREAM,Uri.fromFile(new File(paths.get(0))));
+            intent.putExtra(Intent.EXTRA_STREAM,uris.get(0));
         }
         intent.putExtra(Intent.EXTRA_SUBJECT, title);
         intent.putExtra(Intent.EXTRA_TEXT, title);
         intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        intent.addFlags(Intent.FLAG_GRANT_WRITE_URI_PERMISSION|Intent.FLAG_GRANT_READ_URI_PERMISSION);
         activity.startActivity(Intent.createChooser(intent,title));
     }
 

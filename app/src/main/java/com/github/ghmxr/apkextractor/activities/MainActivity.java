@@ -267,7 +267,10 @@ public class MainActivity extends BaseActivity implements View.OnClickListener,V
             if(!(displayItem instanceof ImportItem))return;
             ImportItem item=(ImportItem)displayItem;
             if(item.getImportType()== ImportItem.ImportType.APK){
-
+                Intent intent =new Intent(Intent.ACTION_VIEW);
+                intent.setDataAndType(item.getUri(), "application/vnd.android.package-archive");
+                intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
+                startActivity(intent);
                 return;
             }
             ArrayList<ImportItem>arrayList=new ArrayList<>();

@@ -141,8 +141,8 @@ public class AppItem implements Comparable<AppItem>, DisplayItem {
     /**
      * 获取应用源路径
      */
-    public @Nullable String getSourcePath(){
-        return info.applicationInfo.sourceDir;
+    public @NonNull String getSourcePath(){
+        return String.valueOf(info.applicationInfo.sourceDir);
     }
 
     /**

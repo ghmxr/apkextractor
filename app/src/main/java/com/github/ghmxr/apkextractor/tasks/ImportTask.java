@@ -59,10 +59,10 @@ public class ImportTask extends Thread {
                     if((entryPath.toLowerCase().startsWith("android/data"))&&!zipEntry.isDirectory()&&importItem.importData){
                         unZipToFile(zipInputStream,entryPath);
                     }
-                    if((entryPath.toLowerCase().startsWith("android/obb"))&&!zipEntry.isDirectory()&&importItem.importObb){
+                    else if((entryPath.toLowerCase().startsWith("android/obb"))&&!zipEntry.isDirectory()&&importItem.importObb){
                         unZipToFile(zipInputStream,entryPath);
                     }
-                    if((entryPath.toLowerCase().endsWith(".apk"))&&!zipEntry.isDirectory()&&importItem.importApk){
+                    else if((entryPath.toLowerCase().endsWith(".apk"))&&!zipEntry.isDirectory()&&!entryPath.contains("/")&&importItem.importApk){
                         OutputStream outputStream;
                         String fileName=entryPath.substring(entryPath.lastIndexOf("/")+1);
                         if(isExternal){

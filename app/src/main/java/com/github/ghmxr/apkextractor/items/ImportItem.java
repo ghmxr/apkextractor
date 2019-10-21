@@ -4,10 +4,12 @@ import android.content.Context;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.graphics.drawable.Drawable;
+import android.net.Uri;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
 import com.github.ghmxr.apkextractor.DisplayItem;
+import com.github.ghmxr.apkextractor.Global;
 import com.github.ghmxr.apkextractor.R;
 
 import java.io.InputStream;
@@ -19,6 +21,8 @@ public class ImportItem implements DisplayItem {
     public enum ImportType{
         APK,ZIP
     }
+
+    private Context context;
 
     private FileItem fileItem;
     private long length;
@@ -34,6 +38,7 @@ public class ImportItem implements DisplayItem {
 
     public ImportItem(@NonNull Context context,@NonNull FileItem fileItem){
         this.fileItem=fileItem;
+        this.context=context;
         if(fileItem.getName().trim().toLowerCase().endsWith(".zip")){
             importType=ImportType.ZIP;
             drawable=context.getResources().getDrawable(R.drawable.icon_zip);
@@ -61,6 +66,7 @@ public class ImportItem implements DisplayItem {
         this.drawable=wrapper.drawable;
         this.version_name=wrapper.version_name;
         this.fileItem=wrapper.fileItem;
+        this.context=wrapper.context;
         this.importType=wrapper.importType;
         this.length=wrapper.length;
         this.lastModified =wrapper.lastModified;
@@ -127,6 +133,16 @@ public class ImportItem implements DisplayItem {
      */
     public @Nullable InputStream getZipInputStream() throws Exception{
         if(importType==ImportType.ZIP) return fileItem.getInputStream();
+        return null;
+    }
+
+    public @Nullable Uri getUri(){
+        if(fileItem.isDocumentFile()){
+            return fileItem.getDocumentFile().getUri();
+        }
+        if(fileItem.isFileInstance()){
+            return Global.getUriForFileByFileProvider(context,fileItem.getFile());
+        }
         return null;
     }
 
