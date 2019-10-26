@@ -3,12 +3,14 @@ package com.github.ghmxr.apkextractor.tasks;
 import android.content.Context;
 import android.net.Uri;
 
+import com.github.ghmxr.apkextractor.Constants;
 import com.github.ghmxr.apkextractor.Global;
 import com.github.ghmxr.apkextractor.items.FileItem;
 import com.github.ghmxr.apkextractor.items.ImportItem;
 import com.github.ghmxr.apkextractor.utils.SPUtil;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 public class RefreshImportListTask extends Thread{
@@ -33,6 +35,8 @@ public class RefreshImportListTask extends Thread{
         final ArrayList<ImportItem> arrayList=new ArrayList<>();
         try{
             arrayList.addAll(getAllImportItemsFromPath(fileItem));
+            ImportItem.sort_config=SPUtil.getGlobalSharedPreferences(context).getInt(Constants.PREFERENCE_SORT_CONFIG_IMPORT_ITEMS,0);
+            Collections.sort(arrayList);
         }catch (Exception e){e.printStackTrace();}
         synchronized (Global.item_list){
             Global.item_list.clear();

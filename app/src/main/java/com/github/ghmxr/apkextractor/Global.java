@@ -4,8 +4,11 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.database.Cursor;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Looper;
+import android.provider.MediaStore;
 import android.support.annotation.NonNull;
 import android.os.Handler;
 import android.support.annotation.Nullable;
@@ -18,14 +21,20 @@ import android.view.View;
 import android.widget.Toast;
 
 import com.github.ghmxr.apkextractor.items.AppItem;
+import com.github.ghmxr.apkextractor.items.FileItem;
 import com.github.ghmxr.apkextractor.items.ImportItem;
+import com.github.ghmxr.apkextractor.tasks.GetImportLengthAndDuplicateInfoTask;
+import com.github.ghmxr.apkextractor.tasks.ImportTask;
 import com.github.ghmxr.apkextractor.ui.DataObbDialog;
 import com.github.ghmxr.apkextractor.ui.ExportingDialog;
+import com.github.ghmxr.apkextractor.ui.ImportingDataObbDialog;
+import com.github.ghmxr.apkextractor.ui.ImportingDialog;
 import com.github.ghmxr.apkextractor.ui.ToastManager;
 import com.github.ghmxr.apkextractor.tasks.ExportTask;
 import com.github.ghmxr.apkextractor.utils.DocumentFileUtil;
 import com.github.ghmxr.apkextractor.utils.OutputUtil;
 import com.github.ghmxr.apkextractor.utils.SPUtil;
+import com.github.ghmxr.apkextractor.utils.ZipFileUtil;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -161,12 +170,13 @@ public class Global {
             }
 
             @Override
-            public void onExportTaskFinished(List<String> write_paths, String error_message) {
+            public void onExportTaskFinished(List<FileItem> write_paths, String error_message) {
                 dialog.cancel();
                 if(listener!=null)listener.onFinished(error_message);
                 ArrayList<Uri>uris=new ArrayList<>();
-                for(String s:write_paths){
-                    uris.add(getUriForFileByFileProvider(activity,new File(s)));
+                for(FileItem s:write_paths){
+                    if(s.isFileInstance())uris.add(getUriForFileByFileProvider(activity,s.getFile()));
+                    else uris.add(s.getDocumentFile().getUri());
                 }
                 if(if_share) shareCertainFiles(activity,uris,activity.getResources().getString(R.string.share_title));
             }
@@ -282,8 +292,88 @@ public class Global {
         }
     }
 
-    public static void importItemsAndShowDialogs(@NonNull Activity activity,@NonNull List<ImportItem>importItems){
+    public static void showImportingDataObbDialog(@NonNull final Activity activity, @NonNull List<ImportItem>importItems,@Nullable final ImportTaskFinishedCallback callback){
+        new ImportingDataObbDialog(activity, importItems, new ImportingDataObbDialog.ImportDialogDataObbConfirmedCallback() {
+            @Override
+            public void onImportingDataObbConfirmed(@NonNull final List<ImportItem> importItems, @NonNull List<ZipFileUtil.ZipFileInfo> zipFileInfos) {
+                new GetImportLengthAndDuplicateInfoTask(activity,importItems,zipFileInfos,new GetImportLengthAndDuplicateInfoTask.GetImportLengthAndDuplicateInfoCallback(){
+                    @Override
+                    public void onCheckingFinished(@NonNull String result, long total) {
+                        final ImportingDialog importingDialog=new ImportingDialog(activity,total);
+                        final ImportTask.ImportTaskCallback importTaskCallback=new ImportTask.ImportTaskCallback() {
+                            @Override
+                            public void onImportTaskStarted() {}
 
+                            @Override
+                            public void onRefreshSpeed(long speed) {
+                                importingDialog.setSpeed(speed);
+                            }
+
+                            @Override
+                            public void onImportTaskProgress(@NonNull String writePath, long progress) {
+                                importingDialog.setProgress(progress);
+                                importingDialog.setCurrentWritingName(writePath);
+                            }
+
+                            @Override
+                            public void onImportTaskFinished(@NonNull String errorMessage) {
+                                importingDialog.cancel();
+                                ToastManager.showToast(activity,"",Toast.LENGTH_SHORT);
+                                if(callback!=null)callback.onImportFinished(errorMessage);
+                            }
+                        };
+                        final ImportTask importTask=new ImportTask(activity, importItems,importTaskCallback);
+                        importingDialog.setButton(AlertDialog.BUTTON_NEGATIVE, activity.getResources().getString(R.string.word_stop), new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                importTask.setInterrupted();
+                                importingDialog.cancel();
+                            }
+                        });
+                        if(result.equals("")){
+                            importingDialog.show();
+                            importTask.start();
+                        }else{
+                            new AlertDialog.Builder(activity)
+                                    .setTitle(activity.getResources().getString(R.string.dialog_import_duplicate_title))
+                                    .setMessage(activity.getResources().getString(R.string.dialog_import_duplicate_message)+result)
+                                    .setPositiveButton(activity.getResources().getString(R.string.dialog_button_confirm), new DialogInterface.OnClickListener() {
+                                        @Override
+                                        public void onClick(DialogInterface dialog, int which) {
+                                            importingDialog.show();
+                                            importTask.start();
+                                        }
+                                    })
+                                    .setNegativeButton(activity.getResources().getString(R.string.dialog_button_cancel), new DialogInterface.OnClickListener() {
+                                        @Override
+                                        public void onClick(DialogInterface dialog, int which) {}
+                                    })
+                                    .show();
+                        }
+                    }
+                }).start();
+            }
+        }).show();
+    }
+
+    public interface ImportTaskFinishedCallback{
+        void onImportFinished(String error_message);
+    }
+
+    public static void shareImportItems(@NonNull Activity activity,@NonNull List<ImportItem>importItems){
+        ArrayList<Uri>uris=new ArrayList<>();
+        for(ImportItem importItem:importItems){
+            try{
+                FileItem fileItem=importItem.getFileItem();
+                if(fileItem.isFileInstance()){
+                    if(Build.VERSION.SDK_INT<=23)uris.add(Uri.fromFile(fileItem.getFile()));
+                    else uris.add(getUriForFileByFileProvider(activity,fileItem.getFile()));
+                }else{
+                    uris.add(fileItem.getDocumentFile().getUri());
+                }
+            }catch (Exception e){e.printStackTrace();}
+        }
+        shareCertainFiles(activity,uris,activity.getResources().getString(R.string.share_title));
     }
 
     /**
@@ -291,6 +381,27 @@ public class Global {
      */
     public static Uri getUriForFileByFileProvider(@NonNull Context context,@NonNull File file){
         return FileProvider.getUriForFile(context,"com.github.ghmxr.apkextractor.FileProvider",file);
+    }
+
+    /**
+     * @deprecated
+     */
+    public static String getFilePathForUri(Context context,Uri uri){
+        try{
+            String result;
+            Cursor cursor = context.getContentResolver().query(uri,
+                    new String[]{MediaStore.Files.FileColumns.DATA},//
+                    null, null, null);
+            if (cursor == null) return "";
+            else {
+                cursor.moveToFirst();
+                int index = cursor.getColumnIndex(MediaStore.Images.ImageColumns.DATA);
+                result = cursor.getString(index);
+                cursor.close();
+            }
+            return result;
+        }catch (Exception e){e.printStackTrace();}
+        return "";
     }
 
     /**
@@ -314,7 +425,12 @@ public class Global {
         intent.putExtra(Intent.EXTRA_TEXT, title);
         intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
         intent.addFlags(Intent.FLAG_GRANT_WRITE_URI_PERMISSION|Intent.FLAG_GRANT_READ_URI_PERMISSION);
-        activity.startActivity(Intent.createChooser(intent,title));
+        try{
+            activity.startActivity(Intent.createChooser(intent,title));
+        }catch (Exception e){
+            e.printStackTrace();
+            ToastManager.showToast(activity,e.toString(),Toast.LENGTH_SHORT);
+        }
     }
 
 

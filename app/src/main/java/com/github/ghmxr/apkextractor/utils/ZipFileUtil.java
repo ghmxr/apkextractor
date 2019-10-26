@@ -1,7 +1,9 @@
 package com.github.ghmxr.apkextractor.utils;
 
+import android.content.Context;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.v4.provider.DocumentFile;
 
 import com.github.ghmxr.apkextractor.items.FileItem;
 import com.github.ghmxr.apkextractor.items.ImportItem;
@@ -103,7 +105,7 @@ public class ZipFileUtil {
     }
 
     /**
-     * 包含此zip包中的data,obb大小信息以及获取主存储中已存在的重复文件信息
+     * 包含此zip包中的data,obb,apk信息
      */
     public static class ZipFileInfo{
         private final ArrayList<String>entryPaths=new ArrayList<>();
@@ -140,18 +142,41 @@ public class ZipFileUtil {
             return apkSize;
         }
 
-        public @NonNull String getAlreadyExistingFilesInfoInMainStorage(){
+        public @NonNull ArrayList<String> getEntryPaths() {
+            return entryPaths;
+        }
+
+        /*public @NonNull String getAlreadyExistingFilesInfoInMainStorage(@NonNull Context context){
             StringBuilder builder=new StringBuilder();
             try{
                 for(String s:entryPaths){
-                    File exportWritingTarget=new File(StorageUtil.getMainExternalStoragePath()+"/"+s);
-                    if(exportWritingTarget.exists()){
-                        builder.append(exportWritingTarget.getAbsolutePath());
-                        builder.append("\n\n");
+                    if(!s.contains("/")&&s.endsWith(".apk")){
+                        if(SPUtil.getIsSaved2ExternalStorage(context)){
+                            DocumentFile documentFile=OutputUtil.getExportPathDocumentFile(context);
+                            DocumentFile writeDocumentFile=documentFile.findFile(s);
+                            if(writeDocumentFile!=null){
+                                builder.append(SPUtil.getDisplayingExportPath(context));
+                                builder.append("/");
+                                builder.append(s);
+                                builder.append("\n\n");
+                            }
+                        }else{
+                            File target=new File(SPUtil.getInternalSavePath(context)+"/"+s);
+                            if(target.exists()){
+                                builder.append(target.getAbsolutePath());
+                                builder.append("\n\n");
+                            }
+                        }
+                    }else{
+                        File exportWritingTarget=new File(StorageUtil.getMainExternalStoragePath()+"/"+s);
+                        if(exportWritingTarget.exists()){
+                            builder.append(exportWritingTarget.getAbsolutePath());
+                            builder.append("\n\n");
+                        }
                     }
                 }
             }catch (Exception e){e.printStackTrace();}
             return builder.toString();
-        }
+        }*/
     }
 }

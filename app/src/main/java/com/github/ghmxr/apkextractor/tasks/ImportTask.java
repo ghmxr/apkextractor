@@ -1,10 +1,18 @@
 package com.github.ghmxr.apkextractor.tasks;
 
 import android.content.Context;
+import android.content.Intent;
+import android.net.Uri;
+import android.os.Build;
 import android.support.annotation.NonNull;
+import android.support.v4.provider.DocumentFile;
+import android.widget.Toast;
 
+import com.github.ghmxr.apkextractor.Constants;
 import com.github.ghmxr.apkextractor.Global;
+import com.github.ghmxr.apkextractor.items.FileItem;
 import com.github.ghmxr.apkextractor.items.ImportItem;
+import com.github.ghmxr.apkextractor.ui.ToastManager;
 import com.github.ghmxr.apkextractor.utils.DocumentFileUtil;
 import com.github.ghmxr.apkextractor.utils.OutputUtil;
 import com.github.ghmxr.apkextractor.utils.SPUtil;
@@ -28,6 +36,7 @@ public class ImportTask extends Thread {
     private boolean isInterrupted=false;
     //private ArrayList<String>write_paths=new ArrayList<>();
     private String currentWritePath;
+    private FileItem currentWrtingFileItem;
     private long progress=0;
     private long progress_check_length=0;
     private long speed_bytes=0;
@@ -37,6 +46,7 @@ public class ImportTask extends Thread {
     private final StringBuilder error_info=new StringBuilder();
 
     private ImportTaskCallback callback;
+    private Uri apkUri;
 
     public ImportTask(@NonNull Context context, @NonNull List<ImportItem>importItems,ImportTaskCallback callback) {
         super();
@@ -66,12 +76,23 @@ public class ImportTask extends Thread {
                         OutputStream outputStream;
                         String fileName=entryPath.substring(entryPath.lastIndexOf("/")+1);
                         if(isExternal){
+                            DocumentFile checkFile=OutputUtil.getExportPathDocumentFile(context).findFile(fileName);
+                            if(checkFile!=null&&checkFile.exists())checkFile.delete();
+                            DocumentFile writeDocumentFile=OutputUtil.getExportPathDocumentFile(context)
+                                    .createFile("application/vnd.android.package-archive",fileName);
                             outputStream=OutputUtil.getOutputStreamForDocumentFile(context
-                                    ,OutputUtil.getExportPathDocumentFile(context).createFile("application/vnd.android.package-archive",fileName));
+                                    ,writeDocumentFile);
+                            currentWritePath=SPUtil.getDisplayingExportPath(context)+"/"+fileName;
+                            currentWrtingFileItem=new FileItem(context,writeDocumentFile);
+                            apkUri=writeDocumentFile.getUri();
                         }else{
                             String writePath=SPUtil.getInternalSavePath(context)+"/"+fileName;
-                            outputStream=new FileOutputStream(new File(writePath));
+                            File writeFile=new File(writePath);
+                            outputStream=new FileOutputStream(writeFile);
                             currentWritePath=writePath;
+                            currentWrtingFileItem=new FileItem(writeFile);
+                            if(Build.VERSION.SDK_INT<=23)apkUri=Uri.fromFile(writeFile);
+                            else apkUri=Global.getUriForFileByFileProvider(context,writeFile);
                         }
                         BufferedOutputStream bufferedOutputStream=new BufferedOutputStream(outputStream);
                         byte [] buffer=new byte[1024];
@@ -90,6 +111,8 @@ public class ImportTask extends Thread {
                 zipInputStream.close();
             }catch (Exception e){
                 e.printStackTrace();
+                error_info.append(currentWritePath);
+                error_info.append(":");
                 error_info.append(e.toString());
                 error_info.append("\n\n");
             }
@@ -97,12 +120,28 @@ public class ImportTask extends Thread {
         }
         if(isInterrupted){
             try{
-                if(currentWritePath!=null)new File(currentWritePath).delete();
+                if(currentWrtingFileItem!=null){
+                    currentWrtingFileItem.delete();
+                }
             }catch (Exception e){e.printStackTrace();}
         }else if(callback!=null)Global.handler.post(new Runnable() {
             @Override
             public void run() {
                 callback.onImportTaskFinished(error_info.toString());
+                context.sendBroadcast(new Intent(Constants.ACTION_REFRESH_IMPORT_ITEMS_LIST));
+                context.sendBroadcast(new Intent(Constants.ACTION_REFRESH_AVAILIBLE_STORAGE));
+                try{
+                    if(importItemArrayList.size()==1&&apkUri!=null&&error_info.toString().trim().length()==0){
+                        Intent intent=new Intent(Intent.ACTION_VIEW);
+                        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                        intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
+                        intent.setDataAndType(apkUri,"application/vnd.android.package-archive");
+                        context.startActivity(intent);
+                    }
+                }catch (Exception e){
+                    e.printStackTrace();
+                    ToastManager.showToast(context,e.toString(), Toast.LENGTH_SHORT);
+                }
             }
         });
     }

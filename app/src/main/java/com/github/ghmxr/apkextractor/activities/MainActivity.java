@@ -1,10 +1,13 @@
 package com.github.ghmxr.apkextractor.activities;
 
 import android.Manifest;
+import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.content.SharedPreferences;
+import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -34,6 +37,7 @@ import android.view.ViewGroup;
 import android.view.animation.AnimationUtils;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.BaseAdapter;
+import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.ImageView;
@@ -46,19 +50,25 @@ import android.widget.Toast;
 import com.github.ghmxr.apkextractor.items.AppItem;
 import com.github.ghmxr.apkextractor.DisplayItem;
 import com.github.ghmxr.apkextractor.Global;
+import com.github.ghmxr.apkextractor.items.FileItem;
 import com.github.ghmxr.apkextractor.items.ImportItem;
 import com.github.ghmxr.apkextractor.R;
 import com.github.ghmxr.apkextractor.Constants;
 import com.github.ghmxr.apkextractor.tasks.ImportTask;
 import com.github.ghmxr.apkextractor.tasks.RefreshImportListTask;
 import com.github.ghmxr.apkextractor.tasks.RefreshInstalledListTask;
+import com.github.ghmxr.apkextractor.ui.AppItemSortConfigDialog;
+import com.github.ghmxr.apkextractor.ui.ImportItemSortConfigDialog;
 import com.github.ghmxr.apkextractor.ui.ImportingDataObbDialog;
 import com.github.ghmxr.apkextractor.ui.ImportingDialog;
+import com.github.ghmxr.apkextractor.ui.SortConfigDialogCallback;
 import com.github.ghmxr.apkextractor.ui.ToastManager;
 import com.github.ghmxr.apkextractor.utils.SPUtil;
 import com.github.ghmxr.apkextractor.tasks.SearchTask;
+import com.github.ghmxr.apkextractor.utils.StorageUtil;
 import com.github.ghmxr.apkextractor.utils.ZipFileUtil;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -75,8 +85,8 @@ public class MainActivity extends BaseActivity implements View.OnClickListener,V
 
     private SearchTask searchTask;
 
-    private final ArrayList<AppItem>applist=new ArrayList<>();
-    private final ArrayList<ImportItem>importList=new ArrayList<>();
+    //private final ArrayList<AppItem>applist=new ArrayList<>();
+    //private final ArrayList<ImportItem>importList=new ArrayList<>();
 
     private RecyclerView recyclerView_export;
     private RecyclerView recyclerView_import;
@@ -86,11 +96,14 @@ public class MainActivity extends BaseActivity implements View.OnClickListener,V
 
     private CardView card_export_normal,card_export_multi_select;
     private TextView tv_card_export_multi_select_title,tv_card_import_multi_select_title;
+    private TextView tv_storage;
     private CardView card_import_multi_select;
 
     private ViewGroup loading_area_export;
     private ProgressBar pg_export;
     private TextView tv_export_progress;
+
+    private Button btn_export_select_all,btn_export_deselect_all,btn_export_action,btn_export_share,btn_import_select_all,btn_import_delete,btn_import_action,btn_import_share;
 
     private CheckBox cb_show_sys_app;
 
@@ -168,6 +181,7 @@ public class MainActivity extends BaseActivity implements View.OnClickListener,V
             cb_show_sys_app.setEnabled(true);
             swipeRefreshLayout_export.setRefreshing(false);
             card_export_normal.setVisibility(View.VISIBLE);
+            refreshAvailableStorage();
         }
     };
 
@@ -197,13 +211,18 @@ public class MainActivity extends BaseActivity implements View.OnClickListener,V
         @Override
         public void onMultiSelectItemChanged(List<DisplayItem> selected_items,long length) {
             tv_card_export_multi_select_title.setText(selected_items.size()+getResources().getString(R.string.unit_item)+"/"+Formatter.formatFileSize(MainActivity.this,length));
+            btn_export_action.setEnabled(selected_items.size()>0);
+            btn_export_share.setEnabled(selected_items.size()>0);
         }
 
         @Override
         public void onMultiSelectModeClosed() {
             swipeRefreshLayout_export.setEnabled(true);
             card_export_multi_select.setVisibility(View.GONE);
-            if(!isSearchMode)setViewVisibilityWithAnimation(card_export_normal,View.VISIBLE);
+            if(!isSearchMode){
+                setBackButtonVisible(false);
+                setViewVisibilityWithAnimation(card_export_normal,View.VISIBLE);
+            }
         }
     };
 
@@ -267,122 +286,40 @@ public class MainActivity extends BaseActivity implements View.OnClickListener,V
             if(!(displayItem instanceof ImportItem))return;
             ImportItem item=(ImportItem)displayItem;
             if(item.getImportType()== ImportItem.ImportType.APK){
-                Intent intent =new Intent(Intent.ACTION_VIEW);
-                intent.setDataAndType(item.getUri(), "application/vnd.android.package-archive");
-                intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
-                startActivity(intent);
-                return;
-            }
-            ArrayList<ImportItem>arrayList=new ArrayList<>();
-            arrayList.add(item);
-            if(item.getImportType()== ImportItem.ImportType.ZIP)
-            new ImportingDataObbDialog(MainActivity.this, arrayList, new ImportingDataObbDialog.ImportDialogDataObbConfirmedCallback() {
-                @Override
-                public void onImportingDataObbConfirmed(@NonNull final List<ImportItem> importItems, @NonNull List<ZipFileUtil.ZipFileInfo>zipFileInfos) {
-                    long total=0;
-                    StringBuilder stringBuilder=new StringBuilder();
-                    for(int i=0;i<importItems.size();i++){
-                        if(importItems.get(i).importData){
-                            total+=zipFileInfos.get(i).getDataSize();
-                            stringBuilder.append(zipFileInfos.get(i).getAlreadyExistingFilesInfoInMainStorage());
-                        }
-                        if(importItems.get(i).importObb){
-                            total+=zipFileInfos.get(i).getObbSize();
-                            stringBuilder.append(zipFileInfos.get(i).getAlreadyExistingFilesInfoInMainStorage());
-                        }
-                        if(importItems.get(i).importApk){
-                            total+=zipFileInfos.get(i).getApkSize();
-                            stringBuilder.append(zipFileInfos.get(i).getAlreadyExistingFilesInfoInMainStorage());
-                        }
-
-                    }
-                    final long total_1=total;
-                    if(stringBuilder.length()>0){
-                        new AlertDialog.Builder(MainActivity.this)
-                                .setTitle("已存在的内容")
-                                .setMessage("主存储和导出路径存在下列重复文件\n\n"+stringBuilder.toString())
-                                .setPositiveButton(getResources().getString(R.string.dialog_button_confirm), new DialogInterface.OnClickListener() {
-                                    @Override
-                                    public void onClick(DialogInterface dialog, int which) {
-                                        final ImportingDialog dialog1=new ImportingDialog(MainActivity.this,total_1);
-                                        final ImportTask importTask=new ImportTask(MainActivity.this, importItems, new ImportTask.ImportTaskCallback() {
-                                            @Override
-                                            public void onImportTaskStarted() {
-
-                                            }
-
-                                            @Override
-                                            public void onRefreshSpeed(long speed) {
-                                                dialog1.setSpeed(speed);
-                                            }
-
-                                            @Override
-                                            public void onImportTaskProgress(@NonNull String writePath, long progress) {
-                                                dialog1.setCurrentWritingName(writePath);
-                                                dialog1.setProgress(progress);
-                                            }
-
-                                            @Override
-                                            public void onImportTaskFinished(@NonNull String errorMessage) {
-                                                dialog1.cancel();
-                                                ToastManager.showToast(MainActivity.this,"导入完成",Toast.LENGTH_SHORT);
-                                            }
-                                        });
-                                        dialog1.setButton(AlertDialog.BUTTON_NEGATIVE, getResources().getString(R.string.word_stop), new DialogInterface.OnClickListener() {
-                                            @Override
-                                            public void onClick(DialogInterface dialog, int which) {
-                                                importTask.setInterrupted();
-                                            }
-                                        });
-                                        dialog1.show();
-                                        importTask.start();
-                                    }
-                                })
-                                .setNegativeButton(getResources().getString(R.string.dialog_button_cancel),new DialogInterface.OnClickListener() {
-                                    @Override
-                                    public void onClick(DialogInterface dialog, int which) {
-
-                                    }
-                                })
-                                .show();
-                    }else{
-                        final ImportingDialog dialog1=new ImportingDialog(MainActivity.this,total_1);
-                        final ImportTask importTask=new ImportTask(MainActivity.this, importItems, new ImportTask.ImportTaskCallback() {
-                            @Override
-                            public void onImportTaskStarted() {
-
-                            }
-
-                            @Override
-                            public void onRefreshSpeed(long speed) {
-                                dialog1.setSpeed(speed);
-                            }
-
-                            @Override
-                            public void onImportTaskProgress(@NonNull String writePath, long progress) {
-                                dialog1.setCurrentWritingName(writePath);
-                                dialog1.setProgress(progress);
-                            }
-
-                            @Override
-                            public void onImportTaskFinished(@NonNull String errorMessage) {
-                                dialog1.cancel();
-                                ToastManager.showToast(MainActivity.this,"导入完成",Toast.LENGTH_SHORT);
-                            }
-                        });
-                        dialog1.setButton(AlertDialog.BUTTON_NEGATIVE, getResources().getString(R.string.word_stop), new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialog, int which) {
-                                importTask.setInterrupted();
-                            }
-                        });
-                        dialog1.show();
-                        importTask.start();
-                    }
+                try{
+                    Intent intent =new Intent(Intent.ACTION_VIEW);
+                    if(Build.VERSION.SDK_INT<=23){
+                        if(item.getFileItem().isFileInstance())intent.setDataAndType(item.getUriFromFile(),"application/vnd.android.package-archive");
+                        else intent.setDataAndType(item.getUri(),"application/vnd.android.package-archive");
+                    }else
+                        intent.setDataAndType(item.getUri(), "application/vnd.android.package-archive");
+                    intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
+                    startActivity(intent);
+                    //return;
+                }catch (Exception e){
+                    e.printStackTrace();
+                    ToastManager.showToast(MainActivity.this,e.toString(),Toast.LENGTH_SHORT);
                 }
-            }).show();
-            else ;
-
+            }
+            else if(item.getImportType()== ImportItem.ImportType.ZIP){
+                ArrayList<ImportItem>arrayList=new ArrayList<>();
+                arrayList.add(item);
+                Global.showImportingDataObbDialog(MainActivity.this, arrayList, new Global.ImportTaskFinishedCallback() {
+                    @Override
+                    public void onImportFinished(String error_message) {
+                        if(!error_message.trim().equals("")){
+                            new AlertDialog.Builder(MainActivity.this)
+                                    .setTitle(getResources().getString(R.string.dialog_import_finished_error_title))
+                                    .setMessage(getResources().getString(R.string.dialog_import_finished_error_message)+error_message)
+                                    .setPositiveButton(getResources().getString(R.string.dialog_button_confirm), new DialogInterface.OnClickListener() {
+                                        @Override
+                                        public void onClick(DialogInterface dialog, int which) {}
+                                    })
+                                    .show();
+                        }
+                    }
+                });
+            }
         }
 
         @Override
@@ -397,12 +334,32 @@ public class MainActivity extends BaseActivity implements View.OnClickListener,V
         @Override
         public void onMultiSelectItemChanged(List<DisplayItem> selected_items,long length) {
             tv_card_import_multi_select_title.setText(selected_items.size()+getResources().getString(R.string.unit_item)+"/"+Formatter.formatFileSize(MainActivity.this,length));
+            btn_import_action.setEnabled(selected_items.size()>0);
+            btn_import_delete.setEnabled(selected_items.size()>0);
+            btn_import_share.setEnabled(selected_items.size()>0);
         }
 
         @Override
         public void onMultiSelectModeClosed() {
             swipeRefreshLayout_import.setEnabled(true);
             card_import_multi_select.setVisibility(View.GONE);
+            if(!isSearchMode)setBackButtonVisible(false);
+        }
+    };
+
+    private final BroadcastReceiver refresh_status_receiver=new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            if(intent==null)return;
+            if(intent.getAction()==null)return;
+            if(intent.getAction().equals(Constants.ACTION_REFRESH_APP_LIST)){
+                new RefreshInstalledListTask(MainActivity.this,cb_show_sys_app.isChecked(),refreshInstalledListTaskCallback).start();
+            }else if(intent.getAction().equals(Constants.ACTION_REFRESH_IMPORT_ITEMS_LIST)){
+                recyclerView_import.setAdapter(null);
+                new RefreshImportListTask(MainActivity.this,refreshImportListTaskCallback).start();
+            }else if(intent.getAction().equals(Constants.ACTION_REFRESH_AVAILIBLE_STORAGE)){
+                refreshAvailableStorage();
+            }
         }
     };
 
@@ -500,6 +457,14 @@ public class MainActivity extends BaseActivity implements View.OnClickListener,V
         tabLayout.setupWithViewPager(viewPager,true);
         viewPager.addOnPageChangeListener(this);
 
+        try{
+            IntentFilter intentFilter=new IntentFilter();
+            intentFilter.addAction(Constants.ACTION_REFRESH_APP_LIST);
+            intentFilter.addAction(Constants.ACTION_REFRESH_IMPORT_ITEMS_LIST);
+            intentFilter.addAction(Constants.ACTION_REFRESH_AVAILIBLE_STORAGE);
+            registerReceiver(refresh_status_receiver,intentFilter);
+        }catch (Exception e){e.printStackTrace();}
+
         if(Build.VERSION.SDK_INT>=23&&PermissionChecker.checkSelfPermission(MainActivity.this, Manifest.permission.WRITE_EXTERNAL_STORAGE)!=PermissionChecker.PERMISSION_GRANTED){
             requestPermissions(new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE},0);
         }
@@ -508,7 +473,7 @@ public class MainActivity extends BaseActivity implements View.OnClickListener,V
     @Override
     protected void onResume(){
         super.onResume();
-        refreshAvailableStorage();
+        //refreshAvailableStorage();
     }
 
     private MyPagerAdapter getMyPagerAdapter(){
@@ -559,7 +524,9 @@ public class MainActivity extends BaseActivity implements View.OnClickListener,V
                 //bottom_card_multi_select.setVisibility(View.GONE);
                 final ArrayList<AppItem>arrayList=new ArrayList<>();
                 try{
-                    arrayList.addAll(((ListAdapter)recyclerView_export.getAdapter()).getSelectedItems());
+                    ListAdapter adapter=(ListAdapter)recyclerView_export.getAdapter();
+                    arrayList.addAll(adapter.getSelectedItems());
+                    adapter.closeMultiSelectMode();
                 }catch (Exception e){e.printStackTrace();}
                 Global.checkAndExportCertainAppItemsToSetPathWithoutShare(this, arrayList, true,new Global.ExportTaskFinishedListener() {
                     @Override
@@ -582,7 +549,7 @@ public class MainActivity extends BaseActivity implements View.OnClickListener,V
                 try{
                     //((ListAdapter)recyclerView.getAdapter()).closeMultiSelectMode();
                 }catch (Exception e){e.printStackTrace();}
-                closeMultiSelectModeForExternalVariables(true);
+                //closeMultiSelectModeForExternalVariables(true);
             }
             break;
             case R.id.main_share:{
@@ -595,13 +562,104 @@ public class MainActivity extends BaseActivity implements View.OnClickListener,V
                 //bottom_card_multi_select.setVisibility(View.GONE);
                 final ArrayList<AppItem>arrayList=new ArrayList<>();
                 try{
+                    ListAdapter adapter=(ListAdapter)recyclerView_export.getAdapter();
                     //arrayList.addAll(((ListAdapter)recyclerView.getAdapter()).getSelectedAppItems());
+                    arrayList.addAll(adapter.getSelectedItems());
+                    adapter.closeMultiSelectMode();
                 }catch (Exception e){e.printStackTrace();}
                 Global.shareCertainAppsByItems(this,arrayList);
                 try{
                     //((ListAdapter)recyclerView.getAdapter()).closeMultiSelectMode();
                 }catch (Exception e){e.printStackTrace();}
-                closeMultiSelectModeForExternalVariables(true);
+                //closeMultiSelectModeForExternalVariables(true);
+            }
+            break;
+            case R.id.import_select_all:{
+                try{
+                    getMyPagerAdapter().getRecyclerViewListAdapter(1).setSelectOrDeselectAll();
+                }catch (Exception e){e.printStackTrace();}
+            }
+            break;
+            case R.id.import_delete:{
+                new AlertDialog.Builder(this)
+                        .setTitle(getResources().getString(R.string.dialog_import_delete_title))
+                        .setMessage(getResources().getString(R.string.dialog_import_delete_message))
+                        .setPositiveButton(getResources().getString(R.string.dialog_button_confirm), new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                try{
+                                    ListAdapter adapter=getMyPagerAdapter().getRecyclerViewListAdapter(1);
+                                    List<ImportItem>importItems=adapter.getSelectedItems();
+                                    for(ImportItem importItem:importItems){
+                                        FileItem fileItem=importItem.getFileItem();
+                                        try{
+                                            fileItem.delete();
+                                        }catch (Exception e){e.printStackTrace();}
+                                    }
+                                    adapter.closeMultiSelectMode();
+                                    sendBroadcast(new Intent(Constants.ACTION_REFRESH_IMPORT_ITEMS_LIST));
+                                }catch (Exception e){
+                                    e.printStackTrace();
+                                    ToastManager.showToast(MainActivity.this,e.toString(),Toast.LENGTH_SHORT);
+                                }
+                            }
+                        })
+                        .setNegativeButton(getResources().getString(R.string.dialog_button_cancel), new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+
+                            }
+                        })
+                        .show();
+
+            }
+            break;
+            case R.id.import_action:{
+                ArrayList<ImportItem>arrayList=new ArrayList<>();
+                try{
+                    ListAdapter adapter=getMyPagerAdapter().getRecyclerViewListAdapter(1);
+                    arrayList.addAll(adapter.getSelectedItems());
+                    for(ImportItem importItem:arrayList){
+                        if(importItem.getImportType()== ImportItem.ImportType.APK){
+                            new AlertDialog.Builder(this)
+                                    .setTitle(getResources().getString(R.string.dialog_import_contains_apk_title))
+                                    .setMessage(getResources().getString(R.string.dialog_import_contains_apk_message))
+                                    .setPositiveButton(getResources().getString(R.string.dialog_button_confirm), new DialogInterface.OnClickListener() {
+                                        @Override
+                                        public void onClick(DialogInterface dialog, int which) {}
+                                    })
+                                    .show();
+                            return;
+                        }
+                    }
+
+                    Global.showImportingDataObbDialog(this, arrayList, new Global.ImportTaskFinishedCallback() {
+                        @Override
+                        public void onImportFinished(String error_message) {
+                            if(!error_message.trim().equals("")){
+                                new AlertDialog.Builder(MainActivity.this)
+                                        .setTitle(getResources().getString(R.string.dialog_import_finished_error_title))
+                                        .setMessage(getResources().getString(R.string.dialog_import_finished_error_message)+error_message)
+                                        .setPositiveButton(getResources().getString(R.string.dialog_button_confirm), new DialogInterface.OnClickListener() {
+                                            @Override
+                                            public void onClick(DialogInterface dialog, int which) {}
+                                        })
+                                        .show();
+                            }
+                        }
+                    });
+                    adapter.closeMultiSelectMode();
+                }catch (Exception e){e.printStackTrace();}
+            }
+            break;
+            case R.id.import_share:{
+                ArrayList<ImportItem>arrayList=new ArrayList<>();
+                try{
+                    ListAdapter adapter=getMyPagerAdapter().getRecyclerViewListAdapter(1);
+                    arrayList.addAll(adapter.getSelectedItems());
+                    Global.shareImportItems(this,arrayList);
+                    adapter.closeMultiSelectMode();
+                }catch (Exception e){e.printStackTrace();}
             }
             break;
         }
@@ -671,116 +729,140 @@ public class MainActivity extends BaseActivity implements View.OnClickListener,V
         }
 
         if(id==R.id.action_sort){
-            final SharedPreferences settings= SPUtil.getGlobalSharedPreferences(this);
+            if(currentSelection==0){
+                AppItemSortConfigDialog appItemSortConfigDialog=new AppItemSortConfigDialog(this, new SortConfigDialogCallback() {
+                    @Override
+                    public void onOptionSelected(int value) {
+                        recyclerView_export.setAdapter(null);
+                        new RefreshInstalledListTask(MainActivity.this,cb_show_sys_app.isChecked(),refreshInstalledListTaskCallback).start();
+                    }
+                });
+                appItemSortConfigDialog.show();
+            }else if(currentSelection==1){
+                ImportItemSortConfigDialog importItemSortConfigDialog=new ImportItemSortConfigDialog(this, new SortConfigDialogCallback() {
+                    @Override
+                    public void onOptionSelected(int value) {
+                        recyclerView_import.setAdapter(null);
+                        new RefreshImportListTask(MainActivity.this,refreshImportListTaskCallback).start();
+                    }
+                });
+                importItemSortConfigDialog.show();
+            }
+            /*final SharedPreferences settings= SPUtil.getGlobalSharedPreferences(this);
             final SharedPreferences.Editor editor=settings.edit();
-            int sort=settings.getInt(Constants.PREFERENCE_SORT_CONFIG,0);
-            View dialogView=LayoutInflater.from(this).inflate(R.layout.dialog_sort,null);
-            RadioButton ra_default=dialogView.findViewById(R.id.sort_ra_default);
-            RadioButton ra_name_ascend=dialogView.findViewById(R.id.sort_ra_ascending_appname);
-            RadioButton ra_name_descend=dialogView.findViewById(R.id.sort_ra_descending_appname);
-            RadioButton ra_size_ascend=dialogView.findViewById(R.id.sort_ra_ascending_appsize);
-            RadioButton ra_size_descend=dialogView.findViewById(R.id.sort_ra_descending_appsize);
-            RadioButton ra_update_time_ascend=dialogView.findViewById(R.id.sort_ra_ascending_date);
-            RadioButton ra_update_time_descend=dialogView.findViewById(R.id.sort_ra_descending_date);
-            RadioButton ra_install_time_ascend=dialogView.findViewById(R.id.sort_ra_ascending_install_date);
-            RadioButton ra_install_time_descend=dialogView.findViewById(R.id.sort_ra_descending_install_date);
-            ra_default.setChecked(sort==0);
-            ra_name_ascend.setChecked(sort==1);
-            ra_name_descend.setChecked(sort==2);
-            ra_size_ascend.setChecked(sort==3);
-            ra_size_descend.setChecked(sort==4);
-            ra_update_time_ascend.setChecked(sort==5);
-            ra_update_time_descend.setChecked(sort==6);
-            ra_install_time_ascend.setChecked(sort==7);
-            ra_install_time_descend.setChecked(sort==8);
-            final AlertDialog dialog=new AlertDialog.Builder(this)
-                    .setTitle(getResources().getString(R.string.action_sort))
-                    .setView(dialogView)
-                    .setNegativeButton(getResources().getString(R.string.dialog_button_cancel), new DialogInterface.OnClickListener() {
-                        @Override public void onClick(DialogInterface dialog, int which) {}
-                    })
-                    .show();
-            ra_default.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    editor.putInt(Constants.PREFERENCE_SORT_CONFIG,0);
-                    editor.apply();
-                    dialog.cancel();
-                    refreshList();
-                }
-            });
-            ra_name_ascend.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    editor.putInt(Constants.PREFERENCE_SORT_CONFIG,1);
-                    editor.apply();
-                    dialog.cancel();
-                    refreshList();
-                }
-            });
-            ra_name_descend.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    editor.putInt(Constants.PREFERENCE_SORT_CONFIG,2);
-                    editor.apply();
-                    dialog.cancel();
-                    refreshList();
-                }
-            });
-            ra_size_ascend.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    editor.putInt(Constants.PREFERENCE_SORT_CONFIG,3);
-                    editor.apply();
-                    dialog.cancel();
-                    refreshList();
-                }
-            });
-            ra_size_descend.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    editor.putInt(Constants.PREFERENCE_SORT_CONFIG,4);
-                    editor.apply();
-                    dialog.cancel();
-                    refreshList();
-                }
-            });
-            ra_update_time_ascend.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    editor.putInt(Constants.PREFERENCE_SORT_CONFIG,5);
-                    editor.apply();
-                    dialog.cancel();
-                    refreshList();
-                }
-            });
-            ra_update_time_descend.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    editor.putInt(Constants.PREFERENCE_SORT_CONFIG,6);
-                    editor.apply();
-                    dialog.cancel();
-                    refreshList();
-                }
-            });
-            ra_install_time_ascend.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    editor.putInt(Constants.PREFERENCE_SORT_CONFIG,7);
-                    editor.apply();
-                    dialog.cancel();
-                    refreshList();
-                }
-            });
-            ra_install_time_descend.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    editor.putInt(Constants.PREFERENCE_SORT_CONFIG,8);
-                    editor.apply();
-                    dialog.cancel();
-                    refreshList();
-                }
-            });
+            if(currentSelection==0){
+                int sort=settings.getInt(Constants.PREFERENCE_SORT_CONFIG,0);
+                View dialogView=LayoutInflater.from(this).inflate(R.layout.dialog_sort,null);
+                RadioButton ra_default=dialogView.findViewById(R.id.sort_ra_default);
+                RadioButton ra_name_ascend=dialogView.findViewById(R.id.sort_ra_ascending_appname);
+                RadioButton ra_name_descend=dialogView.findViewById(R.id.sort_ra_descending_appname);
+                RadioButton ra_size_ascend=dialogView.findViewById(R.id.sort_ra_ascending_appsize);
+                RadioButton ra_size_descend=dialogView.findViewById(R.id.sort_ra_descending_appsize);
+                RadioButton ra_update_time_ascend=dialogView.findViewById(R.id.sort_ra_ascending_date);
+                RadioButton ra_update_time_descend=dialogView.findViewById(R.id.sort_ra_descending_date);
+                RadioButton ra_install_time_ascend=dialogView.findViewById(R.id.sort_ra_ascending_install_date);
+                RadioButton ra_install_time_descend=dialogView.findViewById(R.id.sort_ra_descending_install_date);
+                ra_default.setChecked(sort==0);
+                ra_name_ascend.setChecked(sort==1);
+                ra_name_descend.setChecked(sort==2);
+                ra_size_ascend.setChecked(sort==3);
+                ra_size_descend.setChecked(sort==4);
+                ra_update_time_ascend.setChecked(sort==5);
+                ra_update_time_descend.setChecked(sort==6);
+                ra_install_time_ascend.setChecked(sort==7);
+                ra_install_time_descend.setChecked(sort==8);
+                final AlertDialog dialog=new AlertDialog.Builder(this)
+                        .setTitle(getResources().getString(R.string.action_sort))
+                        .setView(dialogView)
+                        .setNegativeButton(getResources().getString(R.string.dialog_button_cancel), new DialogInterface.OnClickListener() {
+                            @Override public void onClick(DialogInterface dialog, int which) {}
+                        })
+                        .show();
+                ra_default.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        editor.putInt(Constants.PREFERENCE_SORT_CONFIG,0);
+                        editor.apply();
+                        dialog.cancel();
+                        refreshList();
+                    }
+                });
+                ra_name_ascend.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        editor.putInt(Constants.PREFERENCE_SORT_CONFIG,1);
+                        editor.apply();
+                        dialog.cancel();
+                        refreshList();
+                    }
+                });
+                ra_name_descend.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        editor.putInt(Constants.PREFERENCE_SORT_CONFIG,2);
+                        editor.apply();
+                        dialog.cancel();
+                        refreshList();
+                    }
+                });
+                ra_size_ascend.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        editor.putInt(Constants.PREFERENCE_SORT_CONFIG,3);
+                        editor.apply();
+                        dialog.cancel();
+                        refreshList();
+                    }
+                });
+                ra_size_descend.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        editor.putInt(Constants.PREFERENCE_SORT_CONFIG,4);
+                        editor.apply();
+                        dialog.cancel();
+                        refreshList();
+                    }
+                });
+                ra_update_time_ascend.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        editor.putInt(Constants.PREFERENCE_SORT_CONFIG,5);
+                        editor.apply();
+                        dialog.cancel();
+                        refreshList();
+                    }
+                });
+                ra_update_time_descend.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        editor.putInt(Constants.PREFERENCE_SORT_CONFIG,6);
+                        editor.apply();
+                        dialog.cancel();
+                        refreshList();
+                    }
+                });
+                ra_install_time_ascend.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        editor.putInt(Constants.PREFERENCE_SORT_CONFIG,7);
+                        editor.apply();
+                        dialog.cancel();
+                        refreshList();
+                    }
+                });
+                ra_install_time_descend.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        editor.putInt(Constants.PREFERENCE_SORT_CONFIG,8);
+                        editor.apply();
+                        dialog.cancel();
+                        refreshList();
+                    }
+                });
+            }else{
+
+            }*/
+
 
         }
 
@@ -810,6 +892,14 @@ public class MainActivity extends BaseActivity implements View.OnClickListener,V
             }
             break;
         }
+    }
+
+    @Override
+    public void finish() {
+        super.finish();
+        try{
+            unregisterReceiver(refresh_status_receiver);
+        }catch (Exception e){e.printStackTrace();}
     }
 
     void refreshList(){}
@@ -868,6 +958,25 @@ public class MainActivity extends BaseActivity implements View.OnClickListener,V
     private void refreshAvailableStorage(){
         /*((TextView)findViewById(R.id.main_storage_remain)).setText(getResources().getString(R.string.main_card_remaining_storage)+":"+
                 Formatter.formatFileSize(this, Storage.getAvaliableSizeOfPath(Global.getInternalSavePath(this))));*/
+        try{
+            String head=getResources().getString(R.string.main_card_remaining_storage)+":";
+            boolean isExternal=SPUtil.getIsSaved2ExternalStorage(this);
+            if(isExternal){
+                long availible=0;
+                if(Build.VERSION.SDK_INT>=19){
+                    File[]files=getExternalFilesDirs(null);
+                    for(File file:files){
+                        if (file.getAbsolutePath().toLowerCase().startsWith(StorageUtil.getMainExternalStoragePath()))continue;
+                        availible=StorageUtil.getAvaliableSizeOfPath(file.getAbsolutePath());
+                    }
+                }
+                head+=Formatter.formatFileSize(this,availible);
+            }else {
+                head+=Formatter.formatFileSize(this, StorageUtil.getAvaliableSizeOfPath(StorageUtil.getMainExternalStoragePath()));
+            }
+
+            tv_storage.setText(head);
+        }catch (Exception e){e.printStackTrace();}
     }
 
     private void setBackButtonVisible(boolean b){
@@ -930,7 +1039,7 @@ public class MainActivity extends BaseActivity implements View.OnClickListener,V
             try{
                 getMyPagerAdapter().getRecyclerViewListAdapter(currentSelection).closeMultiSelectMode();
             }catch (Exception e){e.printStackTrace();}
-            setBackButtonVisible(false);
+            //setBackButtonVisible(false);
             isCurrentPageMultiSelectMode=false;
             return;
         }
@@ -976,13 +1085,20 @@ public class MainActivity extends BaseActivity implements View.OnClickListener,V
                         cb_show_sys_app =view.findViewById(R.id.main_show_system_app);
                         cb_show_sys_app.setChecked(is_show_sys);
                         cb_show_sys_app.setOnCheckedChangeListener(MainActivity.this);
-                        view.findViewById(R.id.main_select_all).setOnClickListener(MainActivity.this);
-                        view.findViewById(R.id.main_deselect_all).setOnClickListener(MainActivity.this);
-                        view.findViewById(R.id.main_export).setOnClickListener(MainActivity.this);
-                        view.findViewById(R.id.main_share).setOnClickListener(MainActivity.this);
+                        tv_storage=view.findViewById(R.id.main_storage_remain);
+                        btn_export_select_all=view.findViewById(R.id.main_select_all);
+                        btn_export_deselect_all=view.findViewById(R.id.main_deselect_all);
+                        btn_export_action=view.findViewById(R.id.main_export);
+                        btn_export_share=view.findViewById(R.id.main_share);
+
                         card_export_normal=view.findViewById(R.id.export_card);
                         card_export_multi_select=view.findViewById(R.id.export_card_multi_select);
                         tv_card_export_multi_select_title=view.findViewById(R.id.main_select_num_size);
+
+                        btn_export_select_all.setOnClickListener(MainActivity.this);
+                        btn_export_deselect_all.setOnClickListener(MainActivity.this);
+                        btn_export_action.setOnClickListener(MainActivity.this);
+                        btn_export_share.setOnClickListener(MainActivity.this);
 
                         swipeRefreshLayout_export.setColorSchemeColors(getResources().getColor(R.color.colorTitle));
                         swipeRefreshLayout_export.setRefreshing(true);
@@ -1017,10 +1133,17 @@ public class MainActivity extends BaseActivity implements View.OnClickListener,V
                         //final TextView progress_att=view.findViewById(R.id.loading_text);
                         card_import_multi_select=view.findViewById(R.id.import_card_multi_select);
                         tv_card_import_multi_select_title=view.findViewById(R.id.import_card_att);
-                        view.findViewById(R.id.import_select_all).setOnClickListener(MainActivity.this);
-                        view.findViewById(R.id.import_deselect_all).setOnClickListener(MainActivity.this);
-                        view.findViewById(R.id.import_delete).setOnClickListener(MainActivity.this);
-                        view.findViewById(R.id.import_action).setOnClickListener(MainActivity.this);
+                        btn_import_select_all=view.findViewById(R.id.import_select_all);
+                        //view.findViewById(R.id.import_deselect_all).setOnClickListener(MainActivity.this);
+                        btn_import_delete=view.findViewById(R.id.import_delete);
+                        btn_import_action=view.findViewById(R.id.import_action);
+                        btn_import_share=view.findViewById(R.id.import_share);
+
+                        btn_import_select_all.setOnClickListener(MainActivity.this);
+                        btn_import_action.setOnClickListener(MainActivity.this);
+                        btn_import_delete.setOnClickListener(MainActivity.this);
+                        btn_import_share.setOnClickListener(MainActivity.this);
+
                         swipeRefreshLayout_import.setColorSchemeColors(getResources().getColor(R.color.colorTitle));
                         swipeRefreshLayout_import.setRefreshing(true);
                         //recyclerView.removeOnScrollListener(onScrollListener);
@@ -1229,6 +1352,20 @@ public class MainActivity extends BaseActivity implements View.OnClickListener,V
             for(int i=0;i<isSelected.length;i++)isSelected[i]=selected;
             //main_export.setEnabled(selected);
            // main_share.setEnabled(selected);
+            refreshButtonStatus();
+            notifyDataSetChanged();
+        }
+
+        void setSelectOrDeselectAll(){
+            if(!isMultiSelectMode||isSelected==null)return;
+            boolean flag=false;
+            for(int i=0;i<isSelected.length;i++){
+                if(!isSelected[i]){
+                    flag=true;
+                    break;
+                }
+            }
+            for(int i=0;i<isSelected.length;i++)isSelected[i]=flag;
             refreshButtonStatus();
             notifyDataSetChanged();
         }

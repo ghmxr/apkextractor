@@ -50,7 +50,7 @@ public class FileItem implements Comparable<FileItem>{
         this.documentFile=documentFile;
     }
 
-    private FileItem(File file){
+    public FileItem(File file){
         //this.context=context;
         this.file=file;
     }

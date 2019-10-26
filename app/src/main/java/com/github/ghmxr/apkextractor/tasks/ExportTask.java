@@ -1,6 +1,7 @@
 package com.github.ghmxr.apkextractor.tasks;
 
 import android.content.Context;
+import android.content.Intent;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.provider.DocumentFile;
@@ -43,7 +44,7 @@ public class ExportTask extends Thread {
 
     private FileItem currentWritingFile=null;
 
-    private final ArrayList<String>write_paths=new ArrayList<>();
+    private final ArrayList<FileItem>write_paths=new ArrayList<>();
     private final StringBuilder error_message=new StringBuilder();
 
     /**
@@ -161,7 +162,7 @@ public class ExportTask extends Thread {
                     out.flush();
                     in.close();
                     out.close();
-                    write_paths.add(this.currentWritingFile.getPath());
+                    write_paths.add(currentWritingFile);
                 }
 
                 else{
@@ -197,7 +198,7 @@ public class ExportTask extends Thread {
                     }
                     zos.flush();
                     zos.close();
-                    write_paths.add(currentWritingFile.getPath());
+                    write_paths.add(currentWritingFile);
                 }
 
 
@@ -225,6 +226,8 @@ public class ExportTask extends Thread {
             @Override
             public void run() {
                 if(listener!=null&&!isInterrupted)listener.onExportTaskFinished(write_paths,error_message.toString());
+                context.sendBroadcast(new Intent(Constants.ACTION_REFRESH_IMPORT_ITEMS_LIST));
+                context.sendBroadcast(new Intent(Constants.ACTION_REFRESH_AVAILIBLE_STORAGE));
             }
         });
 
@@ -232,7 +235,7 @@ public class ExportTask extends Thread {
 
 
     private void postCallback2Listener(Runnable runnable){
-        if(listener==null)return;
+        if(listener==null||runnable==null)return;
         Global.handler.post(runnable);
     }
 
@@ -361,6 +364,6 @@ public class ExportTask extends Thread {
         void onExportZipProgressUpdated(String write_path);
         void onExportSpeedUpdated(long speed);
         //void onAppItemFinished(int order,AppItem item,int total);
-        void onExportTaskFinished(List<String>write_paths, String error_message);
+        void onExportTaskFinished(List<FileItem>write_paths, String error_message);
     }
 }

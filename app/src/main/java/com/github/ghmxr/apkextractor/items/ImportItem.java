@@ -5,22 +5,26 @@ import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
+import android.os.Build;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
 import com.github.ghmxr.apkextractor.DisplayItem;
 import com.github.ghmxr.apkextractor.Global;
 import com.github.ghmxr.apkextractor.R;
+import com.github.ghmxr.apkextractor.utils.PinyinUtil;
 
 import java.io.InputStream;
 import java.text.DateFormat;
 import java.util.Date;
 
-public class ImportItem implements DisplayItem {
+public class ImportItem implements DisplayItem,Comparable<ImportItem> {
 
     public enum ImportType{
         APK,ZIP
     }
+
+    public static int sort_config=0;
 
     private Context context;
 
@@ -54,7 +58,7 @@ public class ImportItem implements DisplayItem {
                 version_name=packageInfo.versionName;
             }else{
                 drawable=context.getResources().getDrawable(R.mipmap.ic_launcher);
-                version_name="";
+                version_name=context.getResources().getString(R.string.word_unknown);
             }
 
         }
@@ -146,4 +150,55 @@ public class ImportItem implements DisplayItem {
         return null;
     }
 
+    /**
+     * 如果此导入项为存储到内置存储的Uri.fromFile()
+     * @return uri
+     */
+    public @Nullable Uri getUriFromFile(){
+        if(fileItem.isFileInstance())return Uri.fromFile(fileItem.getFile());
+        return null;
+    }
+
+    @Override
+    public int compareTo(@NonNull ImportItem o) {
+        switch (sort_config){
+            default:break;
+            case 0:break;
+            case 1:{
+                try{
+                    if(PinyinUtil.getFirstSpell(getTitle()).toLowerCase().compareTo(PinyinUtil.getFirstSpell(o.getTitle()).toLowerCase())>0)return 1;
+                    if(PinyinUtil.getFirstSpell(getTitle()).toLowerCase().compareTo(PinyinUtil.getFirstSpell(o.getTitle()).toLowerCase())<0) return -1;
+                }catch (Exception e){e.printStackTrace();}
+            }
+            break;
+            case 2:{
+                try{
+                    if(PinyinUtil.getFirstSpell(getTitle()).toLowerCase().compareTo(PinyinUtil.getFirstSpell(o.getTitle()).toLowerCase())<0)return 1;
+                    if(PinyinUtil.getFirstSpell(getTitle()).toLowerCase().compareTo(PinyinUtil.getFirstSpell(o.getTitle()).toLowerCase())>0)return -1;
+                }catch (Exception e){e.printStackTrace();}
+            }
+            break;
+            case 3:{
+                if(getSize()-o.getSize()>0)return 1;
+                if(getSize()-o.getSize()<0)return -1;
+            }
+            break;
+            case 4:{
+                if(getSize()-o.getSize()<0)return 1;
+                if(getSize()-o.getSize()>0)return -1;
+            }
+            break;
+            case 5:{
+                if(getLastModified()-o.getLastModified()>0)return 1;
+                if(getLastModified()-o.getLastModified()<0)return -1;
+            }
+            break;
+            case 6:{
+                if(getLastModified()-o.getLastModified()<0)return 1;
+                if(getLastModified()-o.getLastModified()>0)return -1;
+            }
+            break;
+        }
+        return 0;
+    }
 }

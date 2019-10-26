@@ -49,7 +49,7 @@
                     style="@style/Widget.AppCompat.Button.ButtonBar.AlertDialog"
                     android:textSize="13sp"
                     android:singleLine="true"
-                    android:text="@string/select_all"
+                    android:text="@string/select_all_change"
                     android:clickable="true"
                     android:focusable="true"/>
                 <Button
@@ -62,7 +62,8 @@
                     android:singleLine="true"
                     android:text="@string/deselect_all"
                     android:clickable="true"
-                    android:focusable="true"/>
+                    android:focusable="true"
+                    android:visibility="gone"/>
                 <Button
                     android:id="@+id/import_action"
                     android:layout_width="wrap_content"
@@ -84,6 +85,18 @@
                     android:textSize="13sp"
                     android:singleLine="true"
                     android:text="@string/bottom_delete"
+                    android:clickable="true"
+                    android:focusable="true"
+                    android:ellipsize="end" />
+                <Button
+                    android:id="@+id/import_share"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    style="@style/Widget.AppCompat.Button.ButtonBar.AlertDialog"
+                    android:layout_centerVertical="true"
+                    android:textSize="13sp"
+                    android:singleLine="true"
+                    android:text="@string/bottom_share"
                     android:clickable="true"
                     android:focusable="true"
                     android:ellipsize="end" />

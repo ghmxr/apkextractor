@@ -52,6 +52,10 @@ public class Constants {
      */
     public static final String PREFERENCE_SORT_CONFIG="sort_config";
     /**
+     * 安装包项目的排序方式，int值
+     */
+    public static final String PREFERENCE_SORT_CONFIG_IMPORT_ITEMS="sort_config_import";
+    /**
      * this preference stands for a int value
      */
     public static final String PREFERENCE_MAIN_PAGE_VIEW_MODE="main_view_mode";
@@ -110,5 +114,8 @@ public class Constants {
 
     public static final String PREFERENCE_FILENAME_FONT_DEFAULT=FONT_APP_PACKAGE_NAME+"-"+FONT_APP_VERSIONCODE;
 
+    public static final String ACTION_REFRESH_APP_LIST="com.github.ghmxr.apkextractor.refresh_applist";
+    public static final String ACTION_REFRESH_IMPORT_ITEMS_LIST="com.github.ghmxr.apkextractor.refresh_import_items_list";
+    public static final String ACTION_REFRESH_AVAILIBLE_STORAGE="com.github.ghmxr.apkextractor.refresh_storage";
 
 }

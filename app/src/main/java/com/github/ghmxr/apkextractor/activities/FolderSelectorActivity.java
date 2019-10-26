@@ -281,7 +281,9 @@ public class FolderSelectorActivity extends BaseActivity {
                 //editor.putBoolean(Constants.PREFERENCE_SAVE_PATH_EXTERNAL,fileItem.isDocumentFile());
                 editor.apply();
                 setResult(RESULT_OK);
-                ToastManager.showToast(this,getResources().getString(R.string.activity_attention_path_set)+fileItem.getPath(),Toast.LENGTH_SHORT);
+                //ToastManager.showToast(this,getResources().getString(R.string.activity_attention_path_set)+fileItem.getPath(),Toast.LENGTH_SHORT);
+                sendBroadcast(new Intent(Constants.ACTION_REFRESH_IMPORT_ITEMS_LIST));
+                sendBroadcast(new Intent(Constants.ACTION_REFRESH_AVAILIBLE_STORAGE));
                 finish();
             }
             break;

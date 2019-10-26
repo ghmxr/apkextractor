@@ -86,24 +86,35 @@ public class ImportingDataObbDialog extends AlertDialog implements View.OnClickL
                         if(obb>0) list_obb_controllable.add(importItem);
                         if(apk>0) list_apk_controllable.add(importItem);
                     }catch (Exception e){e.printStackTrace();}
-                    final long total_data=import_data;
-                    final long total_obb=import_obb;
-                    final long total_apk=import_apk;
-                    Global.handler.post(new Runnable() {
-                        @Override
-                        public void run() {
-                            view.findViewById(R.id.dialog_data_obb_wait_area).setVisibility(View.GONE);
-                            view.findViewById(R.id.dialog_data_obb_show_area).setVisibility(View.VISIBLE);
-                            cb_data.setEnabled(total_data>0);
-                            cb_obb.setEnabled(total_obb>0);
-                            cb_apk.setEnabled(total_apk>0);
-                            cb_data.setText("Data("+ Formatter.formatFileSize(getContext(),total_data)+")");
-                            cb_obb.setText("Obb("+Formatter.formatFileSize(getContext(),total_obb)+")");
-                            cb_apk.setText("APK("+Formatter.formatFileSize(getContext(),total_apk)+")");
-                            getButton(AlertDialog.BUTTON_POSITIVE).setOnClickListener(ImportingDataObbDialog.this);
-                        }
-                    });
                 }
+                final long total_data=import_data;
+                final long total_obb=import_obb;
+                final long total_apk=import_apk;
+                Global.handler.post(new Runnable() {
+                    @Override
+                    public void run() {
+                        if(total_data==0&&total_obb==0&&total_apk==0){
+                            cancel();
+                            new AlertDialog.Builder(getContext())
+                                    .setTitle(getContext().getResources().getString(R.string.dialog_import_invalid_zip_title))
+                                    .setMessage(getContext().getResources().getString(R.string.dialog_import_invalid_zip_message))
+                                    .setPositiveButton(getContext().getResources().getString(R.string.dialog_button_confirm), new OnClickListener() {
+                                        @Override
+                                        public void onClick(DialogInterface dialog, int which) {}
+                                    }).show();
+                            return;
+                        }
+                        view.findViewById(R.id.dialog_data_obb_wait_area).setVisibility(View.GONE);
+                        view.findViewById(R.id.dialog_data_obb_show_area).setVisibility(View.VISIBLE);
+                        cb_data.setEnabled(total_data>0);
+                        cb_obb.setEnabled(total_obb>0);
+                        cb_apk.setEnabled(total_apk>0);
+                        cb_data.setText("Data("+ Formatter.formatFileSize(getContext(),total_data)+")");
+                        cb_obb.setText("Obb("+Formatter.formatFileSize(getContext(),total_obb)+")");
+                        cb_apk.setText("APK("+Formatter.formatFileSize(getContext(),total_apk)+")");
+                        getButton(AlertDialog.BUTTON_POSITIVE).setOnClickListener(ImportingDataObbDialog.this);
+                    }
+                });
             }
         }).start();
     }
