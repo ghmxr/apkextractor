@@ -318,7 +318,6 @@ public class Global {
                             @Override
                             public void onImportTaskFinished(@NonNull String errorMessage) {
                                 importingDialog.cancel();
-                                ToastManager.showToast(activity,"",Toast.LENGTH_SHORT);
                                 if(callback!=null)callback.onImportFinished(errorMessage);
                             }
                         };

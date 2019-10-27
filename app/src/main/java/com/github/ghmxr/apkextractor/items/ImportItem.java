@@ -51,13 +51,19 @@ public class ImportItem implements DisplayItem,Comparable<ImportItem> {
             importType=ImportType.APK;
             PackageManager packageManager=context.getApplicationContext().getPackageManager();
             if(fileItem.isFileInstance()){
-                PackageInfo packageInfo=packageManager.getPackageArchiveInfo(fileItem.getPath(),0);
-                packageInfo.applicationInfo.sourceDir=fileItem.getPath();
-                packageInfo.applicationInfo.publicSourceDir=fileItem.getPath();
-                drawable=packageInfo.applicationInfo.loadIcon(packageManager);
-                version_name=packageInfo.versionName;
+                PackageInfo packageInfo=null;
+                try{
+                    packageInfo=packageManager.getPackageArchiveInfo(fileItem.getPath(),0);
+                }catch (Exception e){e.printStackTrace();}
+                if(packageInfo!=null){
+                    drawable=packageInfo.applicationInfo.loadIcon(packageManager);
+                    version_name=packageInfo.versionName;
+                }else{
+                    drawable=context.getResources().getDrawable(R.drawable.icon_apk);
+                    version_name=context.getResources().getString(R.string.word_unknown);
+                }
             }else{
-                drawable=context.getResources().getDrawable(R.mipmap.ic_launcher);
+                drawable=context.getResources().getDrawable(R.drawable.icon_apk);
                 version_name=context.getResources().getString(R.string.word_unknown);
             }
 

@@ -33,6 +33,12 @@ public class RefreshImportListTask extends Thread{
     @Override
     public void run(){
         final ArrayList<ImportItem> arrayList=new ArrayList<>();
+        if(callback!=null)Global.handler.post(new Runnable() {
+            @Override
+            public void run() {
+                if(callback!=null)callback.onRefreshStarted();
+            }
+        });
         try{
             arrayList.addAll(getAllImportItemsFromPath(fileItem));
             ImportItem.sort_config=SPUtil.getGlobalSharedPreferences(context).getInt(Constants.PREFERENCE_SORT_CONFIG_IMPORT_ITEMS,0);
@@ -66,7 +72,9 @@ public class RefreshImportListTask extends Thread{
                 if(fileItem1.isDirectory())arrayList.addAll(getAllImportItemsFromPath(fileItem1));
                 else {
                     if(fileItem1.getPath().trim().toLowerCase().endsWith(".apk")||fileItem1.getPath().trim().toLowerCase().endsWith(".zip")){
-                        arrayList.add(new ImportItem(context,fileItem1));
+                        try{
+                            arrayList.add(new ImportItem(context,fileItem1));
+                        }catch (Exception e){e.printStackTrace();}
                     }
                 }
             }
@@ -75,6 +83,7 @@ public class RefreshImportListTask extends Thread{
     }
 
     public interface RefreshImportListTaskCallback{
+        void onRefreshStarted();
         void onRefreshCompleted(List<ImportItem> list);
     }
 }

@@ -43,6 +43,7 @@ public class ExportTask extends Thread {
     private long zipWriteLength_second=0;
 
     private FileItem currentWritingFile=null;
+    private String currentWritingPath=null;
 
     private final ArrayList<FileItem>write_paths=new ArrayList<>();
     private final StringBuilder error_message=new StringBuilder();
@@ -100,17 +101,20 @@ public class ExportTask extends Thread {
                     if(isExternal) {
                         DocumentFile documentFile = OutputUtil.getWritingDocumentFileForAppItem(context,item,"apk");
                         this.currentWritingFile=new FileItem(context,documentFile);
+                        this.currentWritingPath=SPUtil.getDisplayingExportPath(context)+documentFile.getName();
                         outputStream= OutputUtil.getOutputStreamForDocumentFile(context,documentFile);
                     }
                     else {
-                        this.currentWritingFile=new FileItem(OutputUtil.getAbsoluteWritePath(context,item,"apk"));
+                        String writePath=OutputUtil.getAbsoluteWritePath(context,item,"apk");
+                        this.currentWritingFile=new FileItem(writePath);
+                        this.currentWritingPath=writePath;
                         outputStream=new FileOutputStream(new File(OutputUtil.getAbsoluteWritePath(context,item,"apk")));
                     }
 
                     postCallback2Listener(new Runnable() {
                         @Override
                         public void run() {
-                            if(listener!=null)listener.onExportAppItemStarted(order_this_loop,item,list.size(),currentWritingFile.getPath());
+                            if(listener!=null)listener.onExportAppItemStarted(order_this_loop,item,list.size(),String.valueOf(currentWritingPath));
                         }
                     });
 
@@ -154,7 +158,7 @@ public class ExportTask extends Thread {
                             postCallback2Listener(new Runnable() {
                                 @Override
                                 public void run() {
-                                    if(listener!=null)listener.onExportProgressUpdated(progress,total,currentWritingFile.getPath());
+                                    if(listener!=null)listener.onExportProgressUpdated(progress,total,String.valueOf(currentWritingPath));
                                 }
                             });
                         }
@@ -163,6 +167,7 @@ public class ExportTask extends Thread {
                     in.close();
                     out.close();
                     write_paths.add(currentWritingFile);
+                    currentWritingFile=null;
                 }
 
                 else{
@@ -170,10 +175,13 @@ public class ExportTask extends Thread {
                     if(isExternal){
                         DocumentFile documentFile= OutputUtil.getWritingDocumentFileForAppItem(context,item,"zip");
                         this.currentWritingFile=new FileItem(context,documentFile);
+                        this.currentWritingPath=SPUtil.getDisplayingExportPath(context)+documentFile.getName();
                         outputStream= OutputUtil.getOutputStreamForDocumentFile(context,documentFile);
                     }
                     else {
-                        this.currentWritingFile= new FileItem(OutputUtil.getAbsoluteWritePath(context,item,"zip"));
+                        String writePath=OutputUtil.getAbsoluteWritePath(context,item,"zip");
+                        this.currentWritingFile= new FileItem(writePath);
+                        this.currentWritingPath=writePath;
                         outputStream=new FileOutputStream(new File(OutputUtil.getAbsoluteWritePath(context,item,"zip")));
                     }
                     postCallback2Listener(new Runnable() {
@@ -199,27 +207,27 @@ public class ExportTask extends Thread {
                     zos.flush();
                     zos.close();
                     write_paths.add(currentWritingFile);
+                    currentWritingFile=null;
                 }
 
 
             }catch (Exception e){
                 e.printStackTrace();
+                this.error_message.append(currentWritingPath);
+                this.error_message.append(":");
                 this.error_message.append(e.toString());
                 this.error_message.append("\n\n");
+                try{
+                    currentWritingFile.delete();//在写入中如果有异常就尝试删除这个文件，有可能是破损的
+                }catch (Exception ee){}
             }
 
         }
 
         if(isInterrupted){
             try{
-                /*File file = new File(this.currentWritingFile.getPath());
-                if(file.exists()&&!file.isDirectory()){
-                    file.delete();
-                }*/
                 currentWritingFile.delete();//没有写入完成的文件为破损文件，尝试删除
-            }catch(Exception e){
-                e.printStackTrace();
-            }
+            }catch(Exception e){}
         }
 
         postCallback2Listener(new Runnable() {

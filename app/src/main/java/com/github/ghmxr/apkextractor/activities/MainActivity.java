@@ -103,6 +103,8 @@ public class MainActivity extends BaseActivity implements View.OnClickListener,V
     private ProgressBar pg_export;
     private TextView tv_export_progress;
 
+    private ViewGroup no_content_att_export,no_content_att_import;
+
     private Button btn_export_select_all,btn_export_deselect_all,btn_export_action,btn_export_share,btn_import_select_all,btn_import_delete,btn_import_action,btn_import_share;
 
     private CheckBox cb_show_sys_app;
@@ -156,6 +158,7 @@ public class MainActivity extends BaseActivity implements View.OnClickListener,V
             isScrollable_export=false;
             loading_area_export.setVisibility(View.VISIBLE);
             recyclerView_export.setAdapter(null);
+            no_content_att_export.setVisibility(View.GONE);
             pg_export.setMax(total);
             pg_export.setProgress(0);
             swipeRefreshLayout_export.setRefreshing(true);
@@ -170,6 +173,7 @@ public class MainActivity extends BaseActivity implements View.OnClickListener,V
         @Override
         public void onRefreshCompleted(List<AppItem> appList) {
             loading_area_export.setVisibility(View.GONE);
+            no_content_att_export.setVisibility(appList.size()==0?View.VISIBLE:View.GONE);
             swipeRefreshLayout_export.setRefreshing(false);
             int mode= SPUtil.getGlobalSharedPreferences(MainActivity.this).getInt(Constants.PREFERENCE_MAIN_PAGE_VIEW_MODE
                     ,Constants.PREFERENCE_MAIN_PAGE_VIEW_MODE_DEFAULT);
@@ -266,6 +270,13 @@ public class MainActivity extends BaseActivity implements View.OnClickListener,V
      */
     final RefreshImportListTask.RefreshImportListTaskCallback refreshImportListTaskCallback=new RefreshImportListTask.RefreshImportListTaskCallback() {
         @Override
+        public void onRefreshStarted() {
+            recyclerView_import.setAdapter(null);
+            swipeRefreshLayout_import.setRefreshing(true);
+            no_content_att_import.setVisibility(View.GONE);
+        }
+
+        @Override
         public void onRefreshCompleted(List<ImportItem> list) {
             swipeRefreshLayout_import.setRefreshing(false);
             isScrollable_import=false;
@@ -274,6 +285,7 @@ public class MainActivity extends BaseActivity implements View.OnClickListener,V
             ListAdapter adapter=new ListAdapter<>(list,mode,listAdapterOperationListener_import);
             setRecyclerViewLayoutManagers(recyclerView_import,mode);
             recyclerView_import.setAdapter(adapter);
+            no_content_att_import.setVisibility(list.size()==0?View.VISIBLE:View.GONE);
         }
     };
 
@@ -316,7 +328,7 @@ public class MainActivity extends BaseActivity implements View.OnClickListener,V
                                         public void onClick(DialogInterface dialog, int which) {}
                                     })
                                     .show();
-                        }
+                        }else ToastManager.showToast(MainActivity.this,getResources().getString(R.string.toast_import_complete),Toast.LENGTH_SHORT);
                     }
                 });
             }
@@ -355,7 +367,6 @@ public class MainActivity extends BaseActivity implements View.OnClickListener,V
             if(intent.getAction().equals(Constants.ACTION_REFRESH_APP_LIST)){
                 new RefreshInstalledListTask(MainActivity.this,cb_show_sys_app.isChecked(),refreshInstalledListTaskCallback).start();
             }else if(intent.getAction().equals(Constants.ACTION_REFRESH_IMPORT_ITEMS_LIST)){
-                recyclerView_import.setAdapter(null);
                 new RefreshImportListTask(MainActivity.this,refreshImportListTaskCallback).start();
             }else if(intent.getAction().equals(Constants.ACTION_REFRESH_AVAILIBLE_STORAGE)){
                 refreshAvailableStorage();
@@ -490,6 +501,7 @@ public class MainActivity extends BaseActivity implements View.OnClickListener,V
         try{
             ListAdapter adapter=getMyPagerAdapter().getRecyclerViewListAdapter(i);
             if(adapter!=null)isCurrentPageMultiSelectMode=adapter.isMultiSelectMode();
+            else isCurrentPageMultiSelectMode=false;
         }catch (Exception e){e.printStackTrace();}
         if(isSearchMode)return;
         setBackButtonVisible(isCurrentPageMultiSelectMode);
@@ -587,6 +599,11 @@ public class MainActivity extends BaseActivity implements View.OnClickListener,V
                         .setPositiveButton(getResources().getString(R.string.dialog_button_confirm), new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialog, int which) {
+                                if(Build.VERSION.SDK_INT>=23&&PermissionChecker.checkSelfPermission(MainActivity.this,Manifest.permission.WRITE_EXTERNAL_STORAGE)!=PermissionChecker.PERMISSION_GRANTED){
+                                    Global.showRequestingWritePermissionSnackBar(MainActivity.this);
+                                    requestPermissions(new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE},0);
+                                    return;
+                                }
                                 try{
                                     ListAdapter adapter=getMyPagerAdapter().getRecyclerViewListAdapter(1);
                                     List<ImportItem>importItems=adapter.getSelectedItems();
@@ -598,6 +615,7 @@ public class MainActivity extends BaseActivity implements View.OnClickListener,V
                                     }
                                     adapter.closeMultiSelectMode();
                                     sendBroadcast(new Intent(Constants.ACTION_REFRESH_IMPORT_ITEMS_LIST));
+                                    sendBroadcast(new Intent(Constants.ACTION_REFRESH_AVAILIBLE_STORAGE));
                                 }catch (Exception e){
                                     e.printStackTrace();
                                     ToastManager.showToast(MainActivity.this,e.toString(),Toast.LENGTH_SHORT);
@@ -615,6 +633,11 @@ public class MainActivity extends BaseActivity implements View.OnClickListener,V
             }
             break;
             case R.id.import_action:{
+                if(Build.VERSION.SDK_INT>=23&&PermissionChecker.checkSelfPermission(this,Manifest.permission.WRITE_EXTERNAL_STORAGE)!=PermissionChecker.PERMISSION_GRANTED){
+                    Global.showRequestingWritePermissionSnackBar(this);
+                    requestPermissions(new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE},0);
+                    return;
+                }
                 ArrayList<ImportItem>arrayList=new ArrayList<>();
                 try{
                     ListAdapter adapter=getMyPagerAdapter().getRecyclerViewListAdapter(1);
@@ -645,6 +668,8 @@ public class MainActivity extends BaseActivity implements View.OnClickListener,V
                                             public void onClick(DialogInterface dialog, int which) {}
                                         })
                                         .show();
+                            }else{
+                                ToastManager.showToast(MainActivity.this,getResources().getString(R.string.toast_import_complete),Toast.LENGTH_SHORT);
                             }
                         }
                     });
@@ -653,6 +678,11 @@ public class MainActivity extends BaseActivity implements View.OnClickListener,V
             }
             break;
             case R.id.import_share:{
+                if(Build.VERSION.SDK_INT>=23&&PermissionChecker.checkSelfPermission(this,Manifest.permission.WRITE_EXTERNAL_STORAGE)!=PermissionChecker.PERMISSION_GRANTED){
+                    Global.showRequestingWritePermissionSnackBar(this);
+                    requestPermissions(new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE},0);
+                    return;
+                }
                 ArrayList<ImportItem>arrayList=new ArrayList<>();
                 try{
                     ListAdapter adapter=getMyPagerAdapter().getRecyclerViewListAdapter(1);
@@ -682,8 +712,9 @@ public class MainActivity extends BaseActivity implements View.OnClickListener,V
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
         if(requestCode==0){
             if(grantResults.length==0)return;
-            if(grantResults[0]!=PermissionChecker.PERMISSION_GRANTED){
-                ToastManager.showToast(this,getResources().getString(R.string.permission_denied_att),Toast.LENGTH_SHORT);
+            if(grantResults[0]==PermissionChecker.PERMISSION_GRANTED){
+                //ToastManager.showToast(this,getResources().getString(R.string.permission_denied_att),Toast.LENGTH_SHORT);
+                sendBroadcast(new Intent(Constants.ACTION_REFRESH_IMPORT_ITEMS_LIST));
             }
         }
     }
@@ -742,7 +773,8 @@ public class MainActivity extends BaseActivity implements View.OnClickListener,V
                 ImportItemSortConfigDialog importItemSortConfigDialog=new ImportItemSortConfigDialog(this, new SortConfigDialogCallback() {
                     @Override
                     public void onOptionSelected(int value) {
-                        recyclerView_import.setAdapter(null);
+                        //recyclerView_import.setAdapter(null);
+                        //swipeRefreshLayout_import.setRefreshing(true);
                         new RefreshImportListTask(MainActivity.this,refreshImportListTaskCallback).start();
                     }
                 });
@@ -1094,6 +1126,7 @@ public class MainActivity extends BaseActivity implements View.OnClickListener,V
                         card_export_normal=view.findViewById(R.id.export_card);
                         card_export_multi_select=view.findViewById(R.id.export_card_multi_select);
                         tv_card_export_multi_select_title=view.findViewById(R.id.main_select_num_size);
+                        no_content_att_export=view.findViewById(R.id.no_content_att);
 
                         btn_export_select_all.setOnClickListener(MainActivity.this);
                         btn_export_deselect_all.setOnClickListener(MainActivity.this);
@@ -1138,6 +1171,7 @@ public class MainActivity extends BaseActivity implements View.OnClickListener,V
                         btn_import_delete=view.findViewById(R.id.import_delete);
                         btn_import_action=view.findViewById(R.id.import_action);
                         btn_import_share=view.findViewById(R.id.import_share);
+                        no_content_att_import=view.findViewById(R.id.no_content_att);
 
                         btn_import_select_all.setOnClickListener(MainActivity.this);
                         btn_import_action.setOnClickListener(MainActivity.this);
@@ -1145,10 +1179,9 @@ public class MainActivity extends BaseActivity implements View.OnClickListener,V
                         btn_import_share.setOnClickListener(MainActivity.this);
 
                         swipeRefreshLayout_import.setColorSchemeColors(getResources().getColor(R.color.colorTitle));
-                        swipeRefreshLayout_import.setRefreshing(true);
+                        //swipeRefreshLayout_import.setRefreshing(true);
                         //recyclerView.removeOnScrollListener(onScrollListener);
                         recyclerView_import.addOnScrollListener(onScrollListener_import);
-                        swipeRefreshLayout_import.setRefreshing(false);
 
                         new RefreshImportListTask(MainActivity.this, refreshImportListTaskCallback).start();
 
@@ -1159,7 +1192,6 @@ public class MainActivity extends BaseActivity implements View.OnClickListener,V
                                     ListAdapter adapter=(ListAdapter)recyclerView_import.getAdapter();
                                     if(adapter.isMultiSelectMode()||isSearchMode)return;
                                 }catch (Exception e){e.printStackTrace();}
-                                recyclerView_import.setAdapter(null);
                                 new RefreshImportListTask(MainActivity.this,refreshImportListTaskCallback).start();
                             }
                         });

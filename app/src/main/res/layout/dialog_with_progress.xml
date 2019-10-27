@@ -13,6 +13,7 @@
         android:layout_marginLeft="15dp"
         android:layout_marginRight="15dp"
         android:ellipsize="start"
+        android:text="@string/dialog_wait"
         tools:text="提示\n提示\n提示"/>
     <ProgressBar
         android:id="@+id/dialog_progress_bar"

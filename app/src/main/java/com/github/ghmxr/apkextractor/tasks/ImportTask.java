@@ -65,53 +65,65 @@ public class ImportTask extends Thread {
                 ZipInputStream zipInputStream=new ZipInputStream(importItem.getZipInputStream());
                 ZipEntry zipEntry=zipInputStream.getNextEntry();
                 while (zipEntry!=null&&!isInterrupted){
-                    String entryPath=zipEntry.getName().replaceAll("\\*", "/");
-                    if((entryPath.toLowerCase().startsWith("android/data"))&&!zipEntry.isDirectory()&&importItem.importData){
-                        unZipToFile(zipInputStream,entryPath);
-                    }
-                    else if((entryPath.toLowerCase().startsWith("android/obb"))&&!zipEntry.isDirectory()&&importItem.importObb){
-                        unZipToFile(zipInputStream,entryPath);
-                    }
-                    else if((entryPath.toLowerCase().endsWith(".apk"))&&!zipEntry.isDirectory()&&!entryPath.contains("/")&&importItem.importApk){
-                        OutputStream outputStream;
-                        String fileName=entryPath.substring(entryPath.lastIndexOf("/")+1);
-                        if(isExternal){
-                            DocumentFile checkFile=OutputUtil.getExportPathDocumentFile(context).findFile(fileName);
-                            if(checkFile!=null&&checkFile.exists())checkFile.delete();
-                            DocumentFile writeDocumentFile=OutputUtil.getExportPathDocumentFile(context)
-                                    .createFile("application/vnd.android.package-archive",fileName);
-                            outputStream=OutputUtil.getOutputStreamForDocumentFile(context
-                                    ,writeDocumentFile);
-                            currentWritePath=SPUtil.getDisplayingExportPath(context)+"/"+fileName;
-                            currentWrtingFileItem=new FileItem(context,writeDocumentFile);
-                            apkUri=writeDocumentFile.getUri();
-                        }else{
-                            String writePath=SPUtil.getInternalSavePath(context)+"/"+fileName;
-                            File writeFile=new File(writePath);
-                            outputStream=new FileOutputStream(writeFile);
-                            currentWritePath=writePath;
-                            currentWrtingFileItem=new FileItem(writeFile);
-                            if(Build.VERSION.SDK_INT<=23)apkUri=Uri.fromFile(writeFile);
-                            else apkUri=Global.getUriForFileByFileProvider(context,writeFile);
+                    try{
+                        String entryPath=zipEntry.getName().replaceAll("\\*", "/");
+                        if((entryPath.toLowerCase().startsWith("android/data"))&&!zipEntry.isDirectory()&&importItem.importData){
+                            unZipToFile(zipInputStream,entryPath);
                         }
-                        BufferedOutputStream bufferedOutputStream=new BufferedOutputStream(outputStream);
-                        byte [] buffer=new byte[1024];
-                        int len;
-                        while ((len=zipInputStream.read(buffer))!=-1&&!isInterrupted){
-                            bufferedOutputStream.write(buffer,0,len);
-                            progress+=len;
-                            checkSpeedAndPostToCallback(len);
-                            checkProgressAndPostToCallback();
+                        else if((entryPath.toLowerCase().startsWith("android/obb"))&&!zipEntry.isDirectory()&&importItem.importObb){
+                            unZipToFile(zipInputStream,entryPath);
                         }
-                        bufferedOutputStream.flush();
-                        bufferedOutputStream.close();
+                        else if((entryPath.toLowerCase().endsWith(".apk"))&&!zipEntry.isDirectory()&&!entryPath.contains("/")&&importItem.importApk){
+                            OutputStream outputStream;
+                            String fileName=entryPath.substring(entryPath.lastIndexOf("/")+1);
+                            if(isExternal){
+                                DocumentFile checkFile=OutputUtil.getExportPathDocumentFile(context).findFile(fileName);
+                                if(checkFile!=null&&checkFile.exists())checkFile.delete();
+                                DocumentFile writeDocumentFile=OutputUtil.getExportPathDocumentFile(context)
+                                        .createFile("application/vnd.android.package-archive",fileName);
+                                outputStream=OutputUtil.getOutputStreamForDocumentFile(context
+                                        ,writeDocumentFile);
+                                currentWritePath=SPUtil.getDisplayingExportPath(context)+"/"+fileName;
+                                currentWrtingFileItem=new FileItem(context,writeDocumentFile);
+                                apkUri=writeDocumentFile.getUri();
+                            }else{
+                                String writePath=SPUtil.getInternalSavePath(context)+"/"+fileName;
+                                File writeFile=new File(writePath);
+                                outputStream=new FileOutputStream(writeFile);
+                                currentWritePath=writePath;
+                                currentWrtingFileItem=new FileItem(writeFile);
+                                if(Build.VERSION.SDK_INT<=23)apkUri=Uri.fromFile(writeFile);
+                                else apkUri=Global.getUriForFileByFileProvider(context,writeFile);
+                            }
+                            BufferedOutputStream bufferedOutputStream=new BufferedOutputStream(outputStream);
+                            byte [] buffer=new byte[1024];
+                            int len;
+                            while ((len=zipInputStream.read(buffer))!=-1&&!isInterrupted){
+                                bufferedOutputStream.write(buffer,0,len);
+                                progress+=len;
+                                checkSpeedAndPostToCallback(len);
+                                checkProgressAndPostToCallback();
+                            }
+                            bufferedOutputStream.flush();
+                            bufferedOutputStream.close();
+                            currentWrtingFileItem=null;
+                        }
+                        zipEntry=zipInputStream.getNextEntry();
+                    }catch (Exception e){
+                        e.printStackTrace();
+                        error_info.append(currentWritePath);
+                        error_info.append(":");
+                        error_info.append(e.toString());
+                        error_info.append("\n\n");
+                        try{
+                            currentWrtingFileItem.delete();
+                        }catch (Exception ee){}
                     }
-                    zipEntry=zipInputStream.getNextEntry();
                 }
                 zipInputStream.close();
             }catch (Exception e){
                 e.printStackTrace();
-                error_info.append(currentWritePath);
+                error_info.append(String.valueOf(importItem.getFileItem().getPath()));
                 error_info.append(":");
                 error_info.append(e.toString());
                 error_info.append("\n\n");
@@ -150,8 +162,10 @@ public class ImportTask extends Thread {
         File folder=new File(StorageUtil.getMainExternalStoragePath()+"/"+entryPath.substring(0,entryPath.lastIndexOf("/")));
         if(!folder.exists())folder.mkdirs();
         String writePath=StorageUtil.getMainExternalStoragePath()+"/"+entryPath;
-        OutputStream outputStream=new BufferedOutputStream(new FileOutputStream(new File(writePath)));
+        File writeFile=new File(writePath);
+        OutputStream outputStream=new BufferedOutputStream(new FileOutputStream(writeFile));
         currentWritePath=writePath;
+        currentWrtingFileItem=new FileItem(writeFile);
         byte [] buffer=new byte[1024];
         int len;
         while ((len=zipInputStream.read(buffer))!=-1&&!isInterrupted){
@@ -162,6 +176,7 @@ public class ImportTask extends Thread {
         }
         outputStream.flush();
         outputStream.close();
+        currentWrtingFileItem=null;
     }
 
     private void checkProgressAndPostToCallback(){

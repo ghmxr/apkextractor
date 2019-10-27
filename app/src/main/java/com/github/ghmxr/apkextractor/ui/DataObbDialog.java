@@ -73,8 +73,8 @@ public class DataObbDialog extends AlertDialog implements View.OnClickListener {
                         long obb_item=FileUtil.getFileOrFolderSize(new File(StorageUtil.getMainExternalStoragePath()+"/android/obb/"+item.getPackageName()));
                         data+=data_item;
                         obb+=obb_item;
-                        if(data>0) list_data_controllable.add(item);
-                        if(obb>0) list_obb_controllable.add(item);
+                        if(data_item>0) list_data_controllable.add(item);
+                        if(obb_item>0) list_obb_controllable.add(item);
                     }
                     final long data_total=data;
                     final long obb_total=obb;

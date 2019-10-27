@@ -30,6 +30,7 @@
             android:layout_margin="10dp"
             android:singleLine="true"
             android:ellipsize="start"
+            android:textColor="@color/colorHighLightText"
             tools:text="/storage/emulated/0/Backup"/>
         <RelativeLayout
             android:layout_width="match_parent"
@@ -59,7 +60,7 @@
                         android:layout_height="35dp"
                         android:layout_gravity="center_vertical|start"
                         android:layout_margin="10dp"
-                        android:src="@drawable/icon_sd"/>
+                        android:src="@drawable/icon_phone"/>
                     <TextView
                         android:id="@+id/item_internal_name"
                         android:layout_width="wrap_content"
@@ -69,7 +70,8 @@
                         android:textSize="13sp"
                         android:singleLine="true"
                         android:layout_marginRight="10dp"
-                        android:text="@string/activity_folder_selector_item_internal"/>
+                        android:text="@string/activity_folder_selector_item_internal"
+                        android:textColor="@color/colorHighLightText"/>
                     <ImageView
                         android:layout_width="match_parent"
                         android:layout_height="1px"
@@ -101,7 +103,8 @@
                         android:textSize="13sp"
                         android:singleLine="true"
                         android:layout_marginRight="10dp"
-                        android:text="@string/activity_folder_selector_item_external"/>
+                        android:text="@string/activity_folder_selector_item_external"
+                        android:textColor="@color/colorHighLightText"/>
                 </RelativeLayout>
                 <RelativeLayout
                     android:id="@+id/item_other"
@@ -114,11 +117,11 @@
                     tools:visibility="visible">
                     <ImageView
                         android:id="@+id/item_other_icon"
-                        android:layout_width="35dp"
-                        android:layout_height="35dp"
+                        android:layout_width="30dp"
+                        android:layout_height="30dp"
                         android:layout_gravity="center_vertical|start"
-                        android:layout_margin="10dp"
-                        android:src="@drawable/icon_sd"/>
+                        android:layout_margin="12dp"
+                        android:src="@drawable/icon_usb"/>
                     <TextView
                         android:id="@+id/item_other_name"
                         android:layout_width="wrap_content"
@@ -128,7 +131,8 @@
                         android:textSize="13sp"
                         android:singleLine="true"
                         android:layout_marginRight="10dp"
-                        android:text="@string/activity_folder_selector_item_others"/>
+                        android:text="@string/activity_folder_selector_item_others"
+                        android:textColor="@color/colorHighLightText"/>
                     <ImageView
                         android:layout_width="match_parent"
                         android:layout_height="1px"

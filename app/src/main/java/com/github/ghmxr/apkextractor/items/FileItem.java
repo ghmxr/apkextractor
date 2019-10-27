@@ -132,7 +132,7 @@ public class FileItem implements Comparable<FileItem>{
                 DocumentFile[]documentFiles=documentFile.listFiles();
                 for(DocumentFile documentFile:documentFiles){
                     arrayList.add(new FileItem(context,documentFile));
-                    Log.e("DFile",documentFile.getClass().getName());
+                    //Log.e("DFile",documentFile.getClass().getName());
                 }
             }catch (Exception e){e.printStackTrace();}
             return arrayList;
@@ -156,8 +156,10 @@ public class FileItem implements Comparable<FileItem>{
     }
 
     public long lastModified(){
-        if(documentFile!=null)return documentFile.lastModified();
-        if(file!=null)return file.lastModified();
+        try{
+            if(documentFile!=null)return documentFile.lastModified();
+            if(file!=null)return file.lastModified();
+        }catch (Exception e){e.printStackTrace();}
         return 0;
     }
 
