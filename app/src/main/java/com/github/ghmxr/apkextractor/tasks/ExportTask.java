@@ -67,22 +67,19 @@ public class ExportTask extends Thread {
 
     @Override
     public void run() {
-        /*try{
-            //初始化导出路径
+        try{
+            //初始化File导出路径
             if(!isExternal){
                 File export_path=new File(SPUtil.getInternalSavePath(context));
-                if(export_path.exists()&&!export_path.isDirectory()){
-                    export_path.delete();
-                }
                 if(!export_path.exists()){
                     export_path.mkdirs();
                 }
             }
         }catch (Exception e){
             e.printStackTrace();
-            if(listener!=null)listener.onExportTaskFinished(new ArrayList<String>(),e.toString());
+            if(listener!=null)listener.onExportTaskFinished(new ArrayList<FileItem>(),e.toString());
             return;
-        }*/
+        }
 
         total= getTotalLength();
         long progress_check_apk=0;
@@ -167,7 +164,7 @@ public class ExportTask extends Thread {
                     in.close();
                     out.close();
                     write_paths.add(currentWritingFile);
-                    currentWritingFile=null;
+                    if(!isInterrupted)currentWritingFile=null;
                 }
 
                 else{
@@ -207,7 +204,7 @@ public class ExportTask extends Thread {
                     zos.flush();
                     zos.close();
                     write_paths.add(currentWritingFile);
-                    currentWritingFile=null;
+                    if(!isInterrupted)currentWritingFile=null;
                 }
 
 

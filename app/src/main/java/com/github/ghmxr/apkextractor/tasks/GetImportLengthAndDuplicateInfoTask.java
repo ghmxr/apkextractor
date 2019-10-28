@@ -55,10 +55,10 @@ public class GetImportLengthAndDuplicateInfoTask extends Thread {
                     //stringBuilder.append(zipFileInfos.get(i).getAlreadyExistingFilesInfoInMainStorage(context));
                 }
                 for(String s:entryPaths){
-                    if(!importItem.importApk&&!s.contains("/")&&s.endsWith(".apk"))continue;
+                    if(!s.contains("/")&&s.endsWith(".apk"))continue;
                     if(!importItem.importObb&&s.toLowerCase().startsWith("android/obb"))continue;
                     if(!importItem.importData&&s.toLowerCase().startsWith("android/data"))continue;
-                    if(!s.contains("/")&&s.endsWith(".apk")){
+                    /*if(!s.contains("/")&&s.endsWith(".apk")){
                         if(SPUtil.getIsSaved2ExternalStorage(context)){
                             DocumentFile documentFile= OutputUtil.getExportPathDocumentFile(context);
                             DocumentFile writeDocumentFile=documentFile.findFile(s);
@@ -81,6 +81,11 @@ public class GetImportLengthAndDuplicateInfoTask extends Thread {
                             stringBuilder.append(exportWritingTarget.getAbsolutePath());
                             stringBuilder.append("\n\n");
                         }
+                    }*/
+                    File exportWritingTarget=new File(StorageUtil.getMainExternalStoragePath()+"/"+s);
+                    if(exportWritingTarget.exists()){
+                        stringBuilder.append(exportWritingTarget.getAbsolutePath());
+                        stringBuilder.append("\n\n");
                     }
                 }
             }catch (Exception e){e.printStackTrace();}

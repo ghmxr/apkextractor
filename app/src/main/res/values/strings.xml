@@ -47,9 +47,9 @@
     <string name="activity_detail_signature">签名MD5</string>
 
     <string name="activity_settings_title">设置</string>
-    <string name="activity_settings_path">导出/安装包路径</string>
+    <string name="activity_settings_path">导出路径</string>
     <string name="activity_settings_rules">导出规则</string>
-    <string name="activity_settings_share_mode">应用分享模式</string>
+    <string name="activity_settings_share_mode">分享模式</string>
     <string name="activity_settings_night_mode">夜间模式</string>
     <string name="activity_settings_loading_options">读取项</string>
     <string name="loading_activity">Activity(活动组件)</string>
@@ -88,7 +88,7 @@
     <string name="dialog_import_invalid_zip_message">未在此zip包下发现有效的导入信息。</string>
 
     <string name="dialog_import_contains_apk_title">提示</string>
-    <string name="dialog_import_contains_apk_message">APK文件不可以直接导入，请取消选择APK文件然后重试。</string>
+    <string name="dialog_import_contains_apk_message">只有ZIP文件可多选导入，请取消选择APK文件然后重试。</string>
 
     <string name="dialog_import_duplicate_title">存在重复文件</string>
     <string name="dialog_import_duplicate_message">主存储路径或者导出路径下存在下列重复文件，是否覆盖？\n\n</string>
@@ -115,8 +115,8 @@
     <string name="dialog_data_obb_title">附加选项</string>
     <string name="dialog_data_obb_message">发现部分应用包含外置存储Data和Obb数据，勾选下面的选项将打包成zip导出。</string>
 
-    <string name="dialog_import_data_obb_title">导入Data/Obb</string>
-    <string name="dialog_import_data_obb_att">发现zip压缩包中存在data或者obb数据，勾选将会解压至主存储/Android/data或者/Android/obb</string>
+    <string name="dialog_import_data_obb_title">导入ZIP</string>
+    <string name="dialog_import_data_obb_att">发现zip压缩包中存在下列数据，勾选Data或Obb将会解压至主存储/Android/data或者/Android/obb，APK将会解压至导出路径</string>
 
     <string name="dialog_button_confirm">确定</string>
     <string name="dialog_button_cancel">取消</string>
@@ -203,8 +203,10 @@
 
     勾选导出Data或者Obb选项后，会将应用APK和Data或Obb数据打包成zip导出。\n\n
    <b>Build 7 更新日志：</b> \n
-	<b>新增：扫描展示已导出的安装包以及已导出的ZIP包的导入功能(Data、Obb导入功能)；</b>\n
-    <b>新增：Android 5.0及以上版本的外置存储适配；</b>\n\n
+	<b>新增：已导出的安装包标签页，并兼容多选操作、排序、模糊搜索、视图模式适配；</b>\n
+    <b>新增：已导出的ZIP包的导入功能（Data、Obb）；</b>\n
+    <b>新增：Android 5.0及以上版本的外置存储适配；</b>\n
+    <b>修复：多选导出操作勾选Data或Obb时没有Data和Obb数据的应用仍然会打包成ZIP的问题；</b>\n\n
 
         开源地址:\n
          https://github.com/ghmxr/apkextractor \n\n
