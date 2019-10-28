@@ -165,6 +165,7 @@
 
     <string name="snack_bar_clipboard">已复制到剪贴板</string>
     <string name="toast_mkdirs_error">初始化导出路径失败，请检查文件路径</string>
+    <string name="toast_wait_list_loading">请等待列表加载完成</string>
 
     <string name="external_storage">外置存储</string>
 

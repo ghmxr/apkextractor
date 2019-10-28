@@ -746,10 +746,22 @@ public class MainActivity extends BaseActivity implements View.OnClickListener,V
         }
 
         if(id==R.id.action_search){
+            try{
+                if(recyclerView_export.getAdapter()==null||recyclerView_import.getAdapter()==null){
+                    ToastManager.showToast(this,getResources().getString(R.string.toast_wait_list_loading),Toast.LENGTH_SHORT);
+                    return false;
+                }
+            }catch (Exception e){e.printStackTrace();}
             openSearchMode();
         }
 
         if(id==R.id.action_view){
+            try{
+                if(recyclerView_export.getAdapter()==null||recyclerView_import.getAdapter()==null){
+                    ToastManager.showToast(this,getResources().getString(R.string.toast_wait_list_loading),Toast.LENGTH_SHORT);
+                    return false;
+                }
+            }catch (Exception e){e.printStackTrace();}
             SharedPreferences settings= SPUtil.getGlobalSharedPreferences(this);
             int mode=settings.getInt(Constants.PREFERENCE_MAIN_PAGE_VIEW_MODE,Constants.PREFERENCE_MAIN_PAGE_VIEW_MODE_DEFAULT);
             SharedPreferences.Editor editor=settings.edit();
@@ -761,6 +773,12 @@ public class MainActivity extends BaseActivity implements View.OnClickListener,V
 
         if(id==R.id.action_sort){
             if(currentSelection==0){
+                try{
+                    if(recyclerView_export.getAdapter()==null){
+                        ToastManager.showToast(this,getResources().getString(R.string.toast_wait_list_loading),Toast.LENGTH_SHORT);
+                        return false;
+                    }
+                }catch (Exception e){e.printStackTrace();}
                 AppItemSortConfigDialog appItemSortConfigDialog=new AppItemSortConfigDialog(this, new SortConfigDialogCallback() {
                     @Override
                     public void onOptionSelected(int value) {
@@ -770,6 +788,12 @@ public class MainActivity extends BaseActivity implements View.OnClickListener,V
                 });
                 appItemSortConfigDialog.show();
             }else if(currentSelection==1){
+                try{
+                    if(recyclerView_import.getAdapter()==null){
+                        ToastManager.showToast(this,getResources().getString(R.string.toast_wait_list_loading),Toast.LENGTH_SHORT);
+                        return false;
+                    }
+                }catch (Exception e){e.printStackTrace();}
                 ImportItemSortConfigDialog importItemSortConfigDialog=new ImportItemSortConfigDialog(this, new SortConfigDialogCallback() {
                     @Override
                     public void onOptionSelected(int value) {
