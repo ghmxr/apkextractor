@@ -13,6 +13,7 @@ public class ExportingDialog extends ProgressDialog {
 
     public ExportingDialog(@NonNull Context context){
         super(context,context.getResources().getString(R.string.dialog_export_title));
+        att.setText(context.getResources().getString(R.string.dialog_wait));
     }
 
     public void setProgressOfApp(int current, int total, @NonNull AppItem item,@NonNull String write_path){

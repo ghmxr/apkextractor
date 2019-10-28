@@ -30,7 +30,7 @@
             android:orientation="vertical"
             android:layout_centerVertical="true"
             android:layout_toRightOf="@+id/item_app_icon"
-            android:layout_toLeftOf="@+id/item_app_right"
+            android:layout_toLeftOf="@+id/item_app_right_area"
             android:gravity="start"
             android:layout_marginLeft="5dp"
             android:layout_marginRight="10dp">
@@ -52,24 +52,26 @@
                 android:singleLine="true"
                 tools:text="com.example"/>
         </LinearLayout>
-        <TextView
-            android:id="@+id/item_app_right"
+        <RelativeLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentRight="true"
             android:layout_centerVertical="true"
             android:layout_marginRight="10dp"
-            android:textSize="12sp"
-            android:textColor="@color/color_text_normal"
-            android:text="10.9MB"/>
-        <CheckBox
-            android:id="@+id/item_app_cb"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignParentRight="true"
-            android:layout_centerVertical="true"
-            android:layout_marginRight="10dp"
-            android:clickable="false"
-            android:visibility="gone"/>
+            android:id="@+id/item_app_right_area">
+            <TextView
+                android:id="@+id/item_app_right"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textSize="12sp"
+                android:textColor="@color/color_text_normal"
+                tools:text="10.9MB"/>
+            <CheckBox
+                android:id="@+id/item_app_cb"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:clickable="false"
+                android:visibility="gone"/>
+        </RelativeLayout>
     </RelativeLayout>
 </android.support.v7.widget.CardView>

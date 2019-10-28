@@ -196,8 +196,11 @@
     <string name="word_content_blank">没有内容</string>
 
     <string name="dialog_about_title">APK Kit(Build 7)</string>
-    <string name="dialog_about_message">\n这是一个快速查询、导出或者分享本地已安装APP的小工具，支持将对应APP外置存储中的Data，Obb数据一并打包成zip并分享
+    <string name="dialog_about_message">\n这是一个快速查询、导出或者分享本地已安装APP的小工具，支持将对应APP外置存储中的Data，Obb数据一并打包成zip并分享给对方
         (主要针对部分含有Data，Obb数据的游戏应用)\n\n
+
+        支持将已导出的zip包导入本机，当导入单个zip包并且zip包的根路径存在apk文件时，导入完成后会自动弹出安装界面。Data、Obb数据会依照原路径解压至主存储/Android/Data或者
+        Android/Obb，APK文件将会解压至导出路径并以原始文件名命名（如有重复会加入数字后缀来命名）。\n\n
 
         点击“分享”，可以使用支持分享的应用例如蓝牙、QQ面对面快传等来分享已选择的应用。\n\n
 

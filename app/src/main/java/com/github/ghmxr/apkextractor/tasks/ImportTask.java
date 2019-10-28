@@ -115,7 +115,8 @@ public class ImportTask extends Thread {
                             bufferedOutputStream.close();
                             if(!isInterrupted)currentWrtingFileItem=null;
                         }
-                        zipEntry=zipInputStream.getNextEntry();
+                        if(!isInterrupted)zipEntry=zipInputStream.getNextEntry();
+                        else break;
                     }catch (Exception e){
                         e.printStackTrace();
                         error_info.append(currentWritePath);
