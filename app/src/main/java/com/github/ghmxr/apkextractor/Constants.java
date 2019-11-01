@@ -88,6 +88,14 @@ public class Constants {
      * stands for a int value
      */
     public static final String PREFERENCE_NIGHT_MODE="night_mode";
+    /**
+     * int value
+     */
+    public static final String PREFERENCE_LANGUAGE="language";
+    public static final int LANGUAGE_FOLLOW_SYSTEM=0;
+    public static final int LANGUAGE_CHINESE=1;
+    public static final int LANGUAGE_ENGLISH=2;
+    public static final int PREFERENCE_LANGUAGE_DEFAULT=LANGUAGE_FOLLOW_SYSTEM;
 
     public static final int PREFERENCE_NIGHT_MODE_DEFAULT= AppCompatDelegate.MODE_NIGHT_NO;
 

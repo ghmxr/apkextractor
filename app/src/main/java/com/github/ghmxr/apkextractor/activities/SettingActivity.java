@@ -42,13 +42,16 @@ public class SettingActivity extends BaseActivity implements View.OnClickListene
         try{
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         }catch (Exception e){e.printStackTrace();}
+        try{
+            getSupportActionBar().setTitle(getResources().getString(R.string.action_settings));
+        }catch (Exception e){e.printStackTrace();}
         findViewById(R.id.settings_share_mode_area).setOnClickListener(this);
         findViewById(R.id.settings_night_mode_area).setOnClickListener(this);
         findViewById(R.id.settings_loading_options_area).setOnClickListener(this);
         findViewById(R.id.settings_rules_area).setOnClickListener(this);
         findViewById(R.id.settings_path_area).setOnClickListener(this);
         findViewById(R.id.settings_about_area).setOnClickListener(this);
-
+        findViewById(R.id.settings_language_area).setOnClickListener(this);
         refreshSettingValues();
 
         if(bundle!=null){
@@ -211,12 +214,60 @@ public class SettingActivity extends BaseActivity implements View.OnClickListene
 
             }
             break;
+            case R.id.settings_language_area:{
+                View dialogView= LayoutInflater.from(this).inflate(R.layout.dialog_language,null);
+                int value=SPUtil.getGlobalSharedPreferences(this).getInt(Constants.PREFERENCE_LANGUAGE,Constants.PREFERENCE_LANGUAGE_DEFAULT);
+                ((RadioButton)dialogView.findViewById(R.id.language_follow_system_ra)).setChecked(value==Constants.LANGUAGE_FOLLOW_SYSTEM);
+                ((RadioButton)dialogView.findViewById(R.id.language_chinese_ra)).setChecked(value==Constants.LANGUAGE_CHINESE);
+                ((RadioButton)dialogView.findViewById(R.id.language_english_ra)).setChecked(value==Constants.LANGUAGE_ENGLISH);
+                final AlertDialog dialog=new AlertDialog.Builder(this)
+                        .setTitle(getResources().getString(R.string.activity_settings_language))
+                        .setView(dialogView)
+                        .show();
+                dialogView.findViewById(R.id.language_follow_system).setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        SPUtil.getGlobalSharedPreferences(SettingActivity.this).edit()
+                                .putInt(Constants.PREFERENCE_LANGUAGE,Constants.LANGUAGE_FOLLOW_SYSTEM)
+                                .apply();
+                        dialog.cancel();
+                        refreshLanguageValue();
+                    }
+                });
+                dialogView.findViewById(R.id.language_chinese).setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        SPUtil.getGlobalSharedPreferences(SettingActivity.this).edit()
+                                .putInt(Constants.PREFERENCE_LANGUAGE,Constants.LANGUAGE_CHINESE)
+                                .apply();
+                        dialog.cancel();
+                        refreshLanguageValue();
+                    }
+                });
+                dialogView.findViewById(R.id.language_english).setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        SPUtil.getGlobalSharedPreferences(SettingActivity.this).edit()
+                                .putInt(Constants.PREFERENCE_LANGUAGE,Constants.LANGUAGE_ENGLISH)
+                                .apply();
+                        dialog.cancel();
+                        refreshLanguageValue();
+                    }
+                });
+            }
+            break;
         }
     }
 
     private void refreshNightMode(int value){
         result_code=RESULT_OK;
         AppCompatDelegate.setDefaultNightMode(value);
+        recreate();
+    }
+
+    private void refreshLanguageValue(){
+        result_code=RESULT_OK;
+        setAndRefreshLanguage();
         recreate();
     }
 
@@ -255,6 +306,14 @@ public class SettingActivity extends BaseActivity implements View.OnClickListene
         }
         if(read_options.trim().equals(""))read_options=getResources().getString(R.string.word_blank);
         ((TextView)findViewById(R.id.settings_loading_options_value)).setText(read_options);
+        String language_value="";
+        switch (SPUtil.getGlobalSharedPreferences(this).getInt(Constants.PREFERENCE_LANGUAGE,Constants.PREFERENCE_LANGUAGE_DEFAULT)){
+            default:break;
+            case Constants.LANGUAGE_FOLLOW_SYSTEM:language_value=getResources().getString(R.string.language_follow_system);break;
+            case Constants.LANGUAGE_CHINESE:language_value=getResources().getString(R.string.language_chinese);break;
+            case Constants.LANGUAGE_ENGLISH:language_value=getResources().getString(R.string.language_english);break;
+        }
+        ((TextView)findViewById(R.id.settings_language_value)).setText(language_value);
 
     }
 

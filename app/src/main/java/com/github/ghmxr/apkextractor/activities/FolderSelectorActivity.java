@@ -76,6 +76,10 @@ public class FolderSelectorActivity extends BaseActivity {
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         }catch (Exception e){}
 
+        try{
+            getSupportActionBar().setTitle(getResources().getString(R.string.activity_folder_selector_title));
+        }catch (Exception e){e.printStackTrace();}
+
         if(DocumentFileUtil.canWrite2ExternalStorage(this)&&Build.VERSION.SDK_INT>=21){
             item_others.setVisibility(View.VISIBLE);
         }else item_others.setVisibility(View.GONE);

@@ -19,4 +19,8 @@
 
     <style name="AppThemeBack" parent="Theme.AppCompat.Light.DarkActionBar"/>
 
+    <style name="MyTabTextAppearance" parent="TextAppearance.Design.Tab">
+        <item name="textAllCaps">false</item>
+    </style>
+
 </resources>

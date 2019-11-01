@@ -1,0 +1,226 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="action_settings">Settings</string>
+    <string name="action_search">Search</string>
+    <string name="action_sort">Sort</string>
+    <string name="action_view">View mode</string>
+    <string name="action_confirm">Confirm</string>
+    <string name="action_cancel">@android:string/cancel</string>
+    <string name="action_new_folder">New folder</string>
+    <string name="action_name_ascend">Ascending by name(A→Z)</string>
+    <string name="action_name_descend">Descending by name(Z→A)</string>
+    <string name="dialog_loading_title">Loading</string>
+    <string name="dialog_sort_appitem_title">Sort by(APP)</string>
+    <string name="dialog_sort_import_item_title">Sort by(Packages)</string>
+
+    <string name="permission_write">Need to grant the permission of reading/writing external storage</string>
+    <string name="permission_grant">Grant</string>
+
+    <string name="main_card_show_system_app">Show system apps</string>
+    <string name="main_card_remaining_storage">Remaining space</string>
+    <string name="bottom_export">export</string>
+    <string name="bottom_import">import</string>
+    <string name="select_all">select all</string>
+    <string name="deselect_all">deselect all</string>
+    <string name="select_all_change">select/deselect</string>
+    <string name="bottom_share">share</string>
+    <string name="bottom_delete">delete</string>
+    <string name="main_page_export">Applications</string>
+    <string name="main_page_import">Packages</string>
+
+    <string name="activity_detail_run">Run</string>
+    <string name="activity_detail_export">Export</string>
+    <string name="activity_detail_share">Share</string>
+    <string name="activity_detail_system_detail">Details</string>
+    <string name="activity_detail_market">View on market</string>
+    <string name="activity_detail_uninstall">Uninstall</string>
+    <string name="activity_detail_package_name">Package name</string>
+    <string name="activity_detail_version_name">Version name</string>
+    <string name="activity_detail_version_code">Version code</string>
+    <string name="activity_detail_package_size">Package size</string>
+    <string name="activity_detail_first_install_time">First installed</string>
+    <string name="activity_detail_last_update_time">Last updated</string>
+    <string name="activity_detail_minimum_api">Minimum API</string>
+    <string name="activity_detail_target_api">Target API</string>
+    <string name="activity_detail_is_system_app">Is system app</string>
+    <string name="activity_detail_signature">Signature MD5</string>
+
+    <string name="activity_settings_title">Settings</string>
+    <string name="activity_settings_path">Exporting path</string>
+    <string name="activity_settings_rules">Exporting rules</string>
+    <string name="activity_settings_share_mode">Sharing mode</string>
+    <string name="activity_settings_night_mode">Night mode</string>
+    <string name="activity_settings_loading_options">Loading options</string>
+    <string name="activity_settings_language">Language</string>
+    <string name="loading_activity">Activity</string>
+    <string name="loading_receiver">Receiver</string>
+    <string name="loading_boot_receivers">Static receivers(will slow down the loading speed)</string>
+    <string name="activity_settings_about">About</string>
+
+    <string name="activity_folder_selector_title">Selecting path</string>
+    <string name="activity_folder_selector_select_storage">Selecting storage</string>
+    <string name="activity_folder_selector_item_internal">Main storage</string>
+    <string name="activity_folder_selector_item_external">External storage</string>
+    <string name="activity_folder_selector_item_others">Choosing another storage</string>
+    <string name="activity_folder_selector_blank_folder">No folders to show</string>
+    <string name="activity_folder_selector_external_title">External storage</string>
+    <string name="activity_folder_selector_external_message">Select an external storage at the left side, then directly click \"select\".</string>
+    <string name="activity_folder_selector_external_error">It is not selected to a root path of an external storage, ensure you have selected an external
+     storage at the left side then directly clicked "select"</string>
+    <string name="activity_attention_select_folder">Please select a folder</string>
+    <string name="activity_attention_path_set">Exporting path has been set </string>
+
+    <string name="share_mode_direct">Share directly</string>
+    <string name="share_mode_direct_att">Sharing the source apk file directly without exporting, but can not rename the file, or share zip packages with data or obb</string>
+    <string name="share_mode_export">Share after exporting</string>
+    <string name="share_mode_export_att">Exporting the files to the set path by the naming rules and then share them, but will spend more storage space</string>
+
+    <string name="night_mode_enabled">enabled</string>
+    <string name="night_mode_disabled">disabled</string>
+    <string name="night_mode_auto">auto</string>
+    <string name="night_mode_follow_system">follow system</string>
+
+    <string name="dialog_export_title">Exporting</string>
+    <string name="dialog_export_msg_apk">Copying to </string>
+    <string name="dialog_export_zip">Compressing </string>
+    <string name="dialog_export_stop">stop</string>
+
+    <string name="dialog_import_invalid_zip_title">No valid files found</string>
+    <string name="dialog_import_invalid_zip_message">There is no valid files found in this zip file.</string>
+
+    <string name="dialog_import_contains_apk_title">Attention</string>
+    <string name="dialog_import_contains_apk_message">Only zip files can be selected, please deselect all apk files then retry</string>
+
+    <string name="dialog_import_duplicate_title">Files already exist</string>
+    <string name="dialog_import_duplicate_message">File(s) listed below are already existed in the main storage, confirm to overwrite it(them)?\n\n</string>
+
+    <string name="dialog_import_title">Importing</string>
+    <string name="dialog_import_msg">Decompressing to </string>
+
+    <string name="dialog_import_delete_title">Deleting files</string>
+    <string name="dialog_import_delete_message">Confirm to delete the files selected ?</string>
+
+    <string name="toast_export_complete">The app(s) are exported to </string>
+    <string name="toast_import_complete">Importing completed, if there is any apk packages, try to install them manually</string>
+
+    <string name="dialog_import_finished_error_title">Attention</string>
+    <string name="dialog_import_finished_error_message">The following file(s) occur errors while importing, the infos are listed bellow\n\n</string>
+
+    <string name="exception_title">Attention</string>
+    <string name="exception_message">The file(s) listed bellow occur errors while exporting,
+        the errors may include not enough storage space, source file was deleted, invalid writing path, or has no writing permission\nThe error infos are bellow\n\n</string>
+
+    <string name="dialog_duplicate_title">Files already exist</string>
+    <string name="dialog_duplicate_msg">The file(s) below is(are) already exist, overwrite them ? \n\n</string>
+
+    <string name="dialog_wait">Please wait&#8230;</string>
+    <string name="dialog_data_obb_title">Additional options</string>
+    <string name="dialog_data_obb_message">The app(s) selected contain(s) data or obb in the external storage, check the following options
+        will package them to a zip file or files </string>
+
+    <string name="dialog_import_data_obb_title">Importing ZIP</string>
+    <string name="dialog_import_data_obb_att">The listed bellow are found in this(those) zip file(s), check data or obb and then will decompress them
+    to the main storage with the path of /android/data or /android/obb, check apk will decompress it to the export path</string>
+
+    <string name="dialog_button_confirm">Confirm</string>
+    <string name="dialog_button_cancel">Cancel</string>
+    <string name="dialog_button_yes">yes</string>
+    <string name="dialog_button_continue">continue</string>
+
+    <string name="share_title">Share</string>
+
+    <string name="activity_detail_permissions">Permissions</string>
+    <string name="activity_detail_activities">Activities</string>
+    <string name="activity_detail_receivers">Broadcast receivers</string>
+    <string name="activity_detail_static_loaders">Auto start receivers</string>
+
+    <string name="dialog_loading_selection_att">The more checked, the more slow will be while loading -_-</string>
+    <string name="dialog_loading_selection_permissions">uses-permissions</string>
+    <string name="dialog_loading_selection_activities">activity</string>
+    <string name="dialog_loading_selection_receivers">receiver</string>
+    <string name="dialog_loading_selection_static_loaders">Auto start receivers(will take more time while loading)</string>
+
+    <string name="dialog_sort_default">Default</string>
+    <string name="dialog_sort_ascending_name">Ascending by name(A→Z)</string>
+    <string name="dialog_sort_descending_name">Descending by name(Z→A)</string>
+    <string name="dialog_sort_ascending_size">Ascending by size(smaller→larger)</string>
+    <string name="dialog_sort_descending_size">Descending by size(larger→smaller)</string>
+    <string name="dialog_sort_ascending_date">Ascending by updating time(older→newer)</string>
+    <string name="dialog_sort_descending_date">Descending by updating time(newer→older)</string>
+    <string name="dialog_sort_ascending_install_date">Ascending by installing time(older→newer)</string>
+    <string name="dialog_sort_descending_install_date">Descending by installing time(newer→older)</string>
+    <string name="dialog_sort_ascending_modified_time">Ascending by last modified time(older→newer)</string>
+    <string name="dialog_sort_descending_modified_time">Descending by last modified time(newer→older)</string>
+
+    <string name="dialog_filename_title">Exporting rules</string>
+    <string name="dialog_filename_apk_att">APK naming rules</string>
+    <string name="dialog_filename_zip_att">ZIP naming rules</string>
+    <string name="dialog_filename_variables">insert variables</string>
+    <string name="dialog_filename_button_appname">app name(?N)</string>
+    <string name="dialog_filename_button_packagename">package name(?P)</string>
+    <string name="dialog_filename_button_version">version name(?V)</string>
+    <string name="dialog_filename_button_versioncode">version code(?C)</string>
+    <string name="dialog_filename_preview_appname">exampleApp</string>
+    <string name="dialog_filename_preview_packagename">com.example</string>
+    <string name="dialog_filename_preview_version">1.0</string>
+    <string name="dialog_filename_preview_versioncode">1</string>
+    <string name="dialog_filename_toast_blank">Naming rule(s) can not be empty</string>
+    <string name="dialog_filename_warn_no_variables">waring: no variables typed, this will cause errors while exporting multi-files</string>
+
+    <string name="snack_bar_clipboard">has been copied to clipboard</string>
+    <string name="toast_mkdirs_error">Initializing exporting path failed, please check</string>
+    <string name="toast_wait_list_loading">please wait while the list is loading</string>
+
+    <string name="external_storage">External storage</string>
+
+    <string name="hint_filename_apk">type in APK naming rule</string>
+    <string name="hint_filename_zip">type in ZIP naming rule</string>
+
+    <string name="text_hint_searchview">searching info</string>
+    <string name="text_hint_edittext">type in something</string>
+
+    <string name="zip_level_att">ZIP compressing level</string>
+    <string name="zip_level_default">default</string>
+    <string name="zip_level_stored">stored</string>
+    <string name="zip_level_low">low</string>
+    <string name="zip_level_normal">normal</string>
+    <string name="zip_level_high">high</string>
+
+    <string name="file_invalid_name">the file name contains illegal character(s)</string>
+    <string name="file_blank_name">the file name can not be empty</string>
+    <string name="file_blank_attention">the file name / path can not be empty</string>
+
+
+    <string name="unit_item">item(s)</string>
+    <string name="word_unknown">unknown</string>
+    <string name="word_preview">preview</string>
+    <string name="word_blank">blank</string>
+    <string name="word_yes">yes</string>
+    <string name="word_no">no</string>
+    <string name="word_stop">stop</string>
+    <string name="word_content_blank">No contents</string>
+
+    <string name="language_follow_system">follow system</string>
+    <string name="language_chinese">简体中文</string>
+    <string name="language_english">English</string>
+
+    <string name="dialog_about_message">\nThis is an android app using to look up, export, or share the apps installed on the device,
+        supporting to package data or obb of the app in the external storage to a zip file and share it to another one.
+        (it is mainly aimed to some game apps that contains data or obb)\n\n
+
+        This app supports to import the zip files exported from itself, and will automatically popup the installing interface after importing completed when you
+         are importing a single zip file.The data or obb files will be decompressed to the main external storage with the path \"/Android/Data\" or \"/Android/obb\"
+         ended, the apk file will be decompressed to the exporting path and named by its initial name, or will add number suffix to its file name if already exists
+        \n\n
+
+        Click \"Share\" will share the file(s) selected through other sharing apps such as bluetooth, wifi direct, and more on. \n\n
+
+    It will package the data or obb files with the apk itself to a zip file as you checked the data or obb options.\n\n
+
+        Open source:\n
+         https://github.com/ghmxr/apkextractor \n\n
+        MailBox: \n
+        mxremail@qq.com \n\n
+        Donate:
+        </string>
+</resources>

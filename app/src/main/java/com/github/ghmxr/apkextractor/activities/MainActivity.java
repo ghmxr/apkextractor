@@ -381,6 +381,10 @@ public class MainActivity extends BaseActivity implements View.OnClickListener,V
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
+        try{
+            getSupportActionBar().setTitle(getResources().getString(R.string.app_name));
+        }catch (Exception e){e.printStackTrace();}
+
         tabLayout=findViewById(R.id.main_tablayout);
         viewPager=findViewById(R.id.main_viewpager);
         inputMethodManager=(InputMethodManager)getSystemService(Context.INPUT_METHOD_SERVICE);
@@ -554,7 +558,8 @@ public class MainActivity extends BaseActivity implements View.OnClickListener,V
                                     .show();
                             return;
                         }
-                        ToastManager.showToast(MainActivity.this,getResources().getString(R.string.toast_export_complete)+ SPUtil.getInternalSavePath(MainActivity.this),Toast.LENGTH_SHORT);
+                        ToastManager.showToast(MainActivity.this,getResources().getString(R.string.toast_export_complete)+ " "
+                                +SPUtil.getDisplayingExportPath(MainActivity.this),Toast.LENGTH_SHORT);
                         refreshAvailableStorage();
                     }
                 });
@@ -957,9 +962,6 @@ public class MainActivity extends BaseActivity implements View.OnClickListener,V
             unregisterReceiver(refresh_status_receiver);
         }catch (Exception e){e.printStackTrace();}
     }
-
-    void refreshList(){}
-    void closeMultiSelectModeForExternalVariables(boolean b){}
 
     private void openSearchMode(){
         isCurrentPageMultiSelectMode=false;

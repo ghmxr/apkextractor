@@ -303,8 +303,9 @@ public class AppDetailActivity extends BaseActivity implements View.OnClickListe
                                     .show();
                             return;
                         }
-                        ToastManager.showToast(AppDetailActivity.this,getResources().getString(R.string.toast_export_complete)
-                                + OutputUtil.getAbsoluteWritePath(AppDetailActivity.this,single_list.get(0),(item.exportData||item.exportObb)?"zip":"apk"),Toast.LENGTH_SHORT);
+                        ToastManager.showToast(AppDetailActivity.this,getResources().getString(R.string.toast_export_complete)+" "
+                                +SPUtil.getDisplayingExportPath(AppDetailActivity.this)
+                                +OutputUtil.getWriteFileNameForAppItem(AppDetailActivity.this,single_list.get(0),(item.exportData||item.exportObb)?"zip":"apk"),Toast.LENGTH_SHORT);
                     }
                 });
             }

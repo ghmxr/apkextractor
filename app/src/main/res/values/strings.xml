@@ -52,6 +52,7 @@
     <string name="activity_settings_share_mode">分享模式</string>
     <string name="activity_settings_night_mode">夜间模式</string>
     <string name="activity_settings_loading_options">读取项</string>
+    <string name="activity_settings_language">语言</string>
     <string name="loading_activity">Activity(活动组件)</string>
     <string name="loading_receiver">Receiver(广播接收器)</string>
     <string name="loading_boot_receivers">自启接收器(会拖慢加载速度)</string>
@@ -195,6 +196,10 @@
     <string name="word_no">否</string>
     <string name="word_stop">停止</string>
     <string name="word_content_blank">没有内容</string>
+
+    <string name="language_follow_system">跟随系统</string>
+    <string name="language_chinese">简体中文</string>
+    <string name="language_english">English</string>
 
     <string name="dialog_about_title">APK Kit(Build 7)</string>
     <string name="dialog_about_message">\n这是一个快速查询、导出或者分享本地已安装APP的小工具，支持将对应APP外置存储中的Data，Obb数据一并打包成zip并分享给对方
