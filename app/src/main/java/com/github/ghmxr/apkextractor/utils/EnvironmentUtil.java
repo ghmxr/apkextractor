@@ -9,12 +9,17 @@ import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.PixelFormat;
 import android.graphics.drawable.Drawable;
+import android.net.DhcpInfo;
+import android.net.wifi.WifiManager;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.text.format.Formatter;
 
 import com.github.ghmxr.apkextractor.R;
 import com.github.ghmxr.apkextractor.Constants;
 
+import java.lang.reflect.Field;
+import java.lang.reflect.Method;
 import java.security.MessageDigest;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -162,5 +167,50 @@ public class EnvironmentUtil {
         return true;
     }
 
+    /**
+     * 截取文件扩展名，例如Test.apk 则返回 apk
+     */
+    public static @NonNull String getFileExtensionName(@NonNull String fileName){
+        try{
+            return fileName.substring(fileName.lastIndexOf(".")+1);
+        }catch (Exception e){e.printStackTrace();}
+        return "";
+    }
+
+    /**
+     * 获取系统热点是否开启
+     */
+    public static boolean isAPEnabled(Context context){
+        try{
+            WifiManager wifiManager=(WifiManager)context.getApplicationContext().getSystemService(Context.WIFI_SERVICE);
+            Method method=wifiManager.getClass().getDeclaredMethod("getWifiApState");
+            Field field=wifiManager.getClass().getDeclaredField("WIFI_AP_STATE_ENABLED");
+            int value_wifi_enabled=(int)field.get(wifiManager);
+            return ((int)method.invoke(wifiManager))==value_wifi_enabled;
+        }catch (Exception e){e.printStackTrace();}
+        return false;
+    }
+
+    public static String getRouterIpAddress(@NonNull Context context){
+        try{
+            WifiManager wifiManager=(WifiManager)context.getApplicationContext().getSystemService(Context.WIFI_SERVICE);
+            DhcpInfo dhcpInfo=wifiManager.getDhcpInfo();
+            return Formatter.formatIpAddress(dhcpInfo.gateway);
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+        return "192.168.1.1";
+    }
+
+    public static String getBroadCastIpAddress(@NonNull Context context){
+        try{
+            if(isAPEnabled(context)){
+                return getRouterIpAddress(context);
+            }else return "255.255.255.255";
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+        return "255.255.255.255";
+    }
 
 }

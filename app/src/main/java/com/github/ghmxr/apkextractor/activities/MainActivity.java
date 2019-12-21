@@ -61,6 +61,7 @@ import com.github.ghmxr.apkextractor.ui.AppItemSortConfigDialog;
 import com.github.ghmxr.apkextractor.ui.ImportItemSortConfigDialog;
 import com.github.ghmxr.apkextractor.ui.ImportingDataObbDialog;
 import com.github.ghmxr.apkextractor.ui.ImportingDialog;
+import com.github.ghmxr.apkextractor.ui.ShareSelectionDialog;
 import com.github.ghmxr.apkextractor.ui.SortConfigDialogCallback;
 import com.github.ghmxr.apkextractor.ui.ToastManager;
 import com.github.ghmxr.apkextractor.utils.SPUtil;
@@ -927,6 +928,13 @@ public class MainActivity extends BaseActivity implements View.OnClickListener,V
 
         }
 
+        if(id==R.id.action_file_receive){
+            startActivity(new Intent(this,FileReceiveActivity.class));
+        }
+        if(id==R.id.action_file_send){
+            startActivity(new Intent(this,FileSendActivity.class));
+            //new ShareSelectionDialog(this,new ArrayList<FileItem>()).show();
+        }
 
         return super.onOptionsItemSelected(item);
     }

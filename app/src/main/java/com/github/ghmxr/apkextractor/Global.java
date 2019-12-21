@@ -29,6 +29,7 @@ import com.github.ghmxr.apkextractor.ui.DataObbDialog;
 import com.github.ghmxr.apkextractor.ui.ExportingDialog;
 import com.github.ghmxr.apkextractor.ui.ImportingDataObbDialog;
 import com.github.ghmxr.apkextractor.ui.ImportingDialog;
+import com.github.ghmxr.apkextractor.ui.ShareSelectionDialog;
 import com.github.ghmxr.apkextractor.ui.ToastManager;
 import com.github.ghmxr.apkextractor.tasks.ExportTask;
 import com.github.ghmxr.apkextractor.utils.DocumentFileUtil;
@@ -173,12 +174,15 @@ public class Global {
             public void onExportTaskFinished(List<FileItem> write_paths, String error_message) {
                 dialog.cancel();
                 if(listener!=null)listener.onFinished(error_message);
-                ArrayList<Uri>uris=new ArrayList<>();
+                /*ArrayList<Uri>uris=new ArrayList<>();
                 for(FileItem s:write_paths){
                     if(s.isFileInstance())uris.add(getUriForFileByFileProvider(activity,s.getFile()));
                     else uris.add(s.getDocumentFile().getUri());
                 }
-                if(if_share) shareCertainFiles(activity,uris,activity.getResources().getString(R.string.share_title));
+                if(if_share) shareCertainFiles(activity,uris,activity.getResources().getString(R.string.share_title));*/
+                if(if_share){
+                    new ShareSelectionDialog(activity,write_paths).show();
+                }
             }
         });
         task.start();
@@ -278,7 +282,7 @@ public class Global {
             });
             dialog.show();
         }else {
-            ArrayList<Uri>uris=new ArrayList<>();
+            /*ArrayList<Uri>uris=new ArrayList<>();
             if(items.size()==1){
                 AppItem item=items.get(0);
                 uris.add(Uri.fromFile(new File(item.getSourcePath())));
@@ -288,7 +292,12 @@ public class Global {
                     uris.add(Uri.fromFile(new File(item.getSourcePath())));
                 }
                 shareCertainFiles(activity,uris,activity.getResources().getString(R.string.share_title));
+            }*/
+            ArrayList<FileItem>arrayList=new ArrayList<>();
+            for(AppItem item:items){
+                arrayList.add(new FileItem(new File(item.getSourcePath())));
             }
+            new ShareSelectionDialog(activity,arrayList).show();
         }
     }
 
@@ -360,7 +369,7 @@ public class Global {
     }
 
     public static void shareImportItems(@NonNull Activity activity,@NonNull List<ImportItem>importItems){
-        ArrayList<Uri>uris=new ArrayList<>();
+        /*ArrayList<Uri>uris=new ArrayList<>();
         for(ImportItem importItem:importItems){
             try{
                 FileItem fileItem=importItem.getFileItem();
@@ -372,7 +381,12 @@ public class Global {
                 }
             }catch (Exception e){e.printStackTrace();}
         }
-        shareCertainFiles(activity,uris,activity.getResources().getString(R.string.share_title));
+        shareCertainFiles(activity,uris,activity.getResources().getString(R.string.share_title));*/
+        ArrayList<FileItem>arrayList=new ArrayList<>();
+        for(ImportItem importItem:importItems){
+            arrayList.add(importItem.getFileItem());
+        }
+        new ShareSelectionDialog(activity,arrayList).show();
     }
 
     /**
@@ -406,7 +420,7 @@ public class Global {
     /**
      * 执行分享应用操作
      */
-    private static void shareCertainFiles(@NonNull Activity activity, @NonNull List<Uri>uris, @NonNull String title){
+    public static void shareCertainFiles(@NonNull Context context, @NonNull List<Uri>uris, @NonNull String title){
         if(uris.size()==0)return;
         Intent intent=new Intent();
         //intent.setType("application/vnd.android.package-archive");
@@ -425,10 +439,10 @@ public class Global {
         intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
         intent.addFlags(Intent.FLAG_GRANT_WRITE_URI_PERMISSION|Intent.FLAG_GRANT_READ_URI_PERMISSION);
         try{
-            activity.startActivity(Intent.createChooser(intent,title));
+            context.startActivity(Intent.createChooser(intent,title));
         }catch (Exception e){
             e.printStackTrace();
-            ToastManager.showToast(activity,e.toString(),Toast.LENGTH_SHORT);
+            ToastManager.showToast(context,e.toString(),Toast.LENGTH_SHORT);
         }
     }
 

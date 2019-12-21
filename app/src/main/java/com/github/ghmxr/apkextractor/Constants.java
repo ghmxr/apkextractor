@@ -126,4 +126,14 @@ public class Constants {
     public static final String ACTION_REFRESH_IMPORT_ITEMS_LIST="com.github.ghmxr.apkextractor.refresh_import_items_list";
     public static final String ACTION_REFRESH_AVAILIBLE_STORAGE="com.github.ghmxr.apkextractor.refresh_storage";
 
+    /**
+     * 绑定的端口号，1024~65535之间，int值
+     */
+    public static final String PREFERENCE_NET_PORT="port_number";
+    public static final int PREFERENCE_NET_PORT_DEFAULT=6565;
+    /**
+     * 设备名称
+     */
+    public static final String PREFERENCE_DEVICE_NAME="device_name";
+    public static final String PREFERENCE_DEVICE_NAME_DEFAULT="MyDevice";
 }

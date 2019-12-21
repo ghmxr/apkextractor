@@ -24,4 +24,15 @@
         android:orderInCategory="3"
         android:title="@string/action_settings"
         app:showAsAction="never" />
+    <item
+        android:id="@+id/action_file_receive"
+        android:orderInCategory="4"
+        android:title="接收文件测试"
+        app:showAsAction="never"/>
+    <item
+        android:id="@+id/action_file_send"
+        android:orderInCategory="5"
+        android:title="发送文件测试"
+        app:showAsAction="never"/>
+
 </menu>

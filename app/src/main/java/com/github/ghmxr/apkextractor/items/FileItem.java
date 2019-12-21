@@ -227,6 +227,6 @@ public class FileItem implements Comparable<FileItem>{
     public @NonNull String toString() {
         if(documentFile!=null)return documentFile.getUri().toString();
         if(file!=null)return file.getAbsolutePath();
-        return "";
+        return super.toString();
     }
 }

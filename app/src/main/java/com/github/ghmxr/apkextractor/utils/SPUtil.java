@@ -1,7 +1,9 @@
 package com.github.ghmxr.apkextractor.utils;
 
+import android.bluetooth.BluetoothAdapter;
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.os.Build;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
@@ -59,5 +61,25 @@ public class SPUtil {
         String value=getGlobalSharedPreferences(context).getString(Constants.PREFERENCE_SAVE_PATH_SEGMENT,"");
         if(value.equals(""))return null;
         return value;
+    }
+
+    /**
+     * 发送/接收 端口号，默认6565
+     */
+    public static int getPortNumber(@NonNull Context context){
+        return getGlobalSharedPreferences(context).getInt(Constants.PREFERENCE_NET_PORT,Constants.PREFERENCE_NET_PORT_DEFAULT);
+    }
+
+    /**
+     * 获取设备名称
+     */
+    public static @NonNull String getDeviceName(@NonNull Context context){
+        try{
+            return getGlobalSharedPreferences(context)
+                    .getString(Constants.PREFERENCE_DEVICE_NAME, Build.BRAND);
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+        return Constants.PREFERENCE_DEVICE_NAME_DEFAULT;
     }
 }

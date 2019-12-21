@@ -23,4 +23,9 @@
         <item name="textAllCaps">false</item>
     </style>
 
+    <style name="DialogAnimStyle" parent="android:Animation">
+        <item name="@android:windowEnterAnimation">@anim/entry_200</item>
+        <item name="@android:windowExitAnimation">@anim/exit_200</item>
+    </style>
+
 </resources>
