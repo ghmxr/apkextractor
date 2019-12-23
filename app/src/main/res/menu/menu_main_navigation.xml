@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+    <item
+        android:id="@+id/nav_receive"
+        android:orderInCategory="1"
+        android:icon="@drawable/icon_download"
+        android:title="@string/nav_file_receive"/>
+    <item
+        android:id="@+id/nav_settings"
+        android:orderInCategory="2"
+        android:title="@string/action_settings"
+        android:icon="@drawable/icon_settings"/>
+    <item
+        android:id="@+id/nav_about"
+        android:orderInCategory="3"
+        android:icon="@android:drawable/ic_dialog_info"
+        android:title="@string/nav_about"/>
+</menu>

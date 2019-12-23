@@ -8,6 +8,7 @@ import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
@@ -39,6 +40,11 @@ public class FileSendActivity extends BaseActivity implements NetSendTask.NetSen
     protected void onCreate(Bundle bundle) {
         super.onCreate(bundle);
         setContentView(R.layout.activity_file_send);
+        try {
+            getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
         swipeRefreshLayout=findViewById(R.id.activity_file_send_root);
         recyclerView=findViewById(R.id.activity_file_send_recyclerview);
         recyclerView.setLayoutManager(new LinearLayoutManager(this,LinearLayoutManager.VERTICAL,false));
@@ -85,11 +91,11 @@ public class FileSendActivity extends BaseActivity implements NetSendTask.NetSen
             wait_resp_diag=null;
         }
         if(sendingDiag==null||!sendingDiag.isShowing()){
-            sendingDiag=new FileTransferringDialog(this,"发送文件");
-            sendingDiag.setButton(AlertDialog.BUTTON_NEGATIVE, "停止", new DialogInterface.OnClickListener() {
+            sendingDiag=new FileTransferringDialog(this,getResources().getString(R.string.dialog_send_title));
+            sendingDiag.setButton(AlertDialog.BUTTON_NEGATIVE, getResources().getString(R.string.word_stop), new DialogInterface.OnClickListener() {
                 @Override
                 public void onClick(DialogInterface dialog, int which) {
-                    //netSendTask.
+                    netSendTask.sendStoppingSendingFilesCommand();
                 }
             });
             sendingDiag.show();
@@ -99,7 +105,7 @@ public class FileSendActivity extends BaseActivity implements NetSendTask.NetSen
     @Override
     public void onProgress(long progress, long total, String currentFile) {
         sendingDiag.setProgressOfSending(progress,total);
-        sendingDiag.setCurrentFileInfo("正在发送"+currentFile);
+        sendingDiag.setCurrentFileInfo(getResources().getString(R.string.dialog_send_att_head)+currentFile);
     }
 
     @Override
@@ -111,12 +117,24 @@ public class FileSendActivity extends BaseActivity implements NetSendTask.NetSen
     public void onFileSendCompleted() {
         sendingDiag.cancel();
         sendingDiag=null;
-        ToastManager.showToast(this,"发送完成",Toast.LENGTH_SHORT);
+        ToastManager.showToast(this,getResources().getString(R.string.toast_sending_complete),Toast.LENGTH_SHORT);
     }
 
     public static void setSendingFiles(@NonNull List<FileItem>fileItems){
         sendingFiles.clear();
         sendingFiles.addAll(fileItems);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()){
+            default:break;
+            case android.R.id.home:{
+                finish();
+            }
+            break;
+        }
+        return super.onOptionsItemSelected(item);
     }
 
     @Override
@@ -147,8 +165,9 @@ public class FileSendActivity extends BaseActivity implements NetSendTask.NetSen
                 public void onClick(View v) {
                     netSendTask.sendFileRequestIpMessage(sendingFiles,deviceItem.getIp());
                     wait_resp_diag=new AlertDialog.Builder(FileSendActivity.this)
-                            .setTitle("等待对方回复")
-                            .setMessage("等待"+deviceItem.getIp()+"的回复")
+                            .setTitle(getResources().getString(R.string.dialog_send_title))
+                            .setMessage(getResources().getString(R.string.dialog_send_request_head1)+deviceItem.getIp()+
+                                    getResources().getString(R.string.dialog_send_request_head2))
                             .setNegativeButton(getResources().getString(R.string.dialog_button_cancel), new DialogInterface.OnClickListener() {
                                 @Override
                                 public void onClick(DialogInterface dialog, int which) {

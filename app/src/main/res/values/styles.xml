@@ -13,6 +13,17 @@
         <item name="windowNoTitle">true</item>
     </style>
 
+    <style name="CommonTheme" parent="Theme.AppCompat.DayNight.DarkActionBar">
+        <item name="colorPrimary">@color/colorTitle</item>
+        <item name="colorPrimaryDark">@color/colorTitleDark</item>
+        <item name="colorAccent">@color/colorAccent</item>
+        <item name="android:titleTextStyle">@style/TitleTextStyle</item>
+    </style>
+
+    <style name="TitleTextStyle">
+        <item name="android:textColor">@android:color/white</item>
+    </style>
+
     <style name="AppTheme.AppBarOverlay" parent="ThemeOverlay.AppCompat.Dark.ActionBar" />
 
     <style name="AppTheme.PopupOverlay" parent="ThemeOverlay.AppCompat.Light" />

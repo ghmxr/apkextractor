@@ -5,6 +5,7 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AlertDialog;
 import android.text.format.Formatter;
+import android.view.MenuItem;
 import android.widget.Toast;
 
 import com.github.ghmxr.apkextractor.R;
@@ -23,6 +24,11 @@ public class FileReceiveActivity extends BaseActivity implements NetReceiveTask.
     @Override
     protected void onCreate(Bundle bundle) {
         super.onCreate(bundle);
+        try {
+            getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
         try{
             netReceiveTask=new NetReceiveTask(this,this);
         }catch (Exception e){
@@ -35,8 +41,10 @@ public class FileReceiveActivity extends BaseActivity implements NetReceiveTask.
     public void onFileReceiveRequest(@NonNull NetReceiveTask task, @NonNull String ip, @NonNull String deviceName, @NonNull List<NetReceiveTask.ReceiveFileItem> fileItems) {
 
         request_diag=new AlertDialog.Builder(this)
-                .setTitle("文件接收请求")
-                .setMessage(deviceName+"\n"+ip+"\n"+getFileInfoMessage(fileItems))
+                .setTitle(getResources().getString(R.string.dialog_file_receive_title))
+                .setMessage(getResources().getString(R.string.dialog_file_receive_device_name)+deviceName+"\n"
+                        +getResources().getString(R.string.dialog_file_receive_ip)+ip+"\n"
+                        +getResources().getString(R.string.dialog_file_receive_files_info)+"\n\n"+getFileInfoMessage(fileItems))
                 .setPositiveButton(getResources().getString(R.string.dialog_button_confirm), new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
@@ -76,11 +84,11 @@ public class FileReceiveActivity extends BaseActivity implements NetReceiveTask.
             request_diag=null;
         }
         if(receiving_diag==null||!receiving_diag.isShowing()){
-            receiving_diag=new FileTransferringDialog(this,"文件接收");
-            receiving_diag.setButton(AlertDialog.BUTTON_NEGATIVE,"停止",new DialogInterface.OnClickListener(){
+            receiving_diag=new FileTransferringDialog(this,getResources().getString(R.string.dialog_file_receiving_title));
+            receiving_diag.setButton(AlertDialog.BUTTON_NEGATIVE,getResources().getString(R.string.word_stop),new DialogInterface.OnClickListener(){
                 @Override
                 public void onClick(DialogInterface dialog, int which) {
-
+                    netReceiveTask.sendStopReceivingFilesCommand();
                 }
             });
             receiving_diag.show();
@@ -90,7 +98,7 @@ public class FileReceiveActivity extends BaseActivity implements NetReceiveTask.
     @Override
     public void onFileReceiveProgress(long progress, long total, @NonNull String currentWritePath) {
         receiving_diag.setProgressOfSending(progress,total);
-        receiving_diag.setCurrentFileInfo("正在接收"+currentWritePath);
+        receiving_diag.setCurrentFileInfo(getResources().getString(R.string.dialog_file_receiving_att)+currentWritePath);
     }
 
     @Override
@@ -108,11 +116,24 @@ public class FileReceiveActivity extends BaseActivity implements NetReceiveTask.
         StringBuilder stringBuilder=new StringBuilder();
         for(NetReceiveTask.ReceiveFileItem receiveFileItem:receiveFileItems){
             stringBuilder.append(receiveFileItem.getFileName());
-            stringBuilder.append(",");
+            stringBuilder.append("(");
             stringBuilder.append(Formatter.formatFileSize(this,receiveFileItem.getLength()));
-            stringBuilder.append("\n");
+            stringBuilder.append(")");
+            stringBuilder.append("\n\n");
         }
         return stringBuilder.toString();
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()){
+            default:break;
+            case android.R.id.home:{
+                finish();
+            }
+            break;
+        }
+        return super.onOptionsItemSelected(item);
     }
 
     @Override

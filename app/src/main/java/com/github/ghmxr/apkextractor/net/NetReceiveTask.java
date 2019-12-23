@@ -91,7 +91,6 @@ public class NetReceiveTask implements UdpThread.UdpThreadCallback{
         if(netTcpFileReceiveTask!=null)netTcpFileReceiveTask.setInterrupted();
         netTcpFileReceiveTask=new NetTcpFileReceiveTask(senderIp,receiveFileItems);
         netTcpFileReceiveTask.start();
-        senderIp=null;
     }
 
     public void stopTask(){
@@ -296,6 +295,7 @@ public class NetReceiveTask implements UdpThread.UdpThreadCallback{
                     }
                 });
             }
+            senderIp=null;
         }
 
         void setInterrupted(){
@@ -304,6 +304,7 @@ public class NetReceiveTask implements UdpThread.UdpThreadCallback{
             try{
                 if(socket!=null)socket.close();
             }catch (Exception e){e.printStackTrace();}
+            senderIp=null;
         }
     }
 

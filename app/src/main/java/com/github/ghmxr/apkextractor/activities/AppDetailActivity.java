@@ -1,6 +1,8 @@
 package com.github.ghmxr.apkextractor.activities;
 
 import android.Manifest;
+import android.content.BroadcastReceiver;
+import android.content.IntentFilter;
 import android.content.pm.ApplicationInfo;
 import android.support.v7.app.AlertDialog;
 import android.content.ClipData;
@@ -57,6 +59,17 @@ public class AppDetailActivity extends BaseActivity implements View.OnClickListe
     private ViewGroup static_loader_views;
 
     //private int item_permission=0,item_activity=0,item_receiver=0,item_loader=0;
+    private final BroadcastReceiver uninstall_receiver=new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            try{
+                if(intent.getAction().equals(Intent.ACTION_PACKAGE_REMOVED)){
+                    String package_name=intent.getDataString().substring(8);
+                    if(package_name.equalsIgnoreCase(appItem.getPackageName()))finish();
+                }
+            }catch (Exception e){e.printStackTrace();}
+        }
+    };
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -267,6 +280,12 @@ public class AppDetailActivity extends BaseActivity implements View.OnClickListe
 
             }
         }).start();
+        try{
+            IntentFilter intentFilter=new IntentFilter();
+            intentFilter.addAction(Intent.ACTION_PACKAGE_REMOVED);
+            intentFilter.addDataScheme("package");
+            registerReceiver(uninstall_receiver,intentFilter);
+        }catch (Exception e){e.printStackTrace();}
     }
 
     @Override
@@ -494,6 +513,14 @@ public class AppDetailActivity extends BaseActivity implements View.OnClickListe
             if(normal_finish)finish();
             else ActivityCompat.finishAfterTransition(this);
         }
+    }
+
+    @Override
+    public void finish() {
+        super.finish();
+        try{
+            unregisterReceiver(uninstall_receiver);
+        }catch (Exception e){e.printStackTrace();}
     }
 
     @Override

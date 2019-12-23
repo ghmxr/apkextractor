@@ -27,7 +27,7 @@
                 android:layout_height="wrap_content"
                 android:textColor="@color/colorHighLightText"
                 android:textSize="14sp"
-                android:text="局域网分享"/>
+                android:text="@string/dialog_share_selection_self"/>
         </LinearLayout>
         <LinearLayout
             android:id="@+id/dialog_share_system"
@@ -49,7 +49,7 @@
                 android:layout_height="wrap_content"
                 android:textColor="@color/colorHighLightText"
                 android:textSize="14sp"
-                android:text="系统分享"/>
+                android:text="@string/dialog_share_selection_system"/>
         </LinearLayout>
     </LinearLayout>
     <TextView
@@ -63,5 +63,5 @@
         android:focusable="true"
         android:textColor="@color/colorFirstAttention"
         android:background="?attr/selectableItemBackground"
-        android:text="取消"/>
+        android:text="@string/dialog_button_cancel"/>
 </LinearLayout>

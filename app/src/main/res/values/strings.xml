@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">APK Kit</string>
+    <string name="app_name" translatable="false">APK Kit</string>
     <string name="action_settings">设置</string>
     <string name="action_search">搜索</string>
     <string name="action_sort">排序</string>
@@ -9,13 +9,14 @@
     <string name="action_new_folder">新建文件夹</string>
     <string name="action_name_ascend">名称升序(A→Z)</string>
     <string name="action_name_descend">名称降序(Z→A)</string>
+    <string name="nav_file_receive">接收文件</string>
+    <string name="nav_about">关于</string>
     <string name="dialog_loading_title">正在载入</string>
     <string name="dialog_sort_appitem_title">排序(应用)</string>
     <string name="dialog_sort_import_item_title">排序(安装包)</string>
 
     <string name="permission_write">需要授权读取/写入存储权限</string>
     <string name="permission_grant">立即授权</string>
-    <string name="permission_denied_att">未获得读取/写入权限，可能无法获取外置存储Data/Obb大小</string>
 
     <string name="main_card_show_system_app">显示系统应用</string>
     <string name="main_card_remaining_storage">剩余存储空间</string>
@@ -121,6 +122,8 @@
 
     <string name="dialog_button_confirm">确定</string>
     <string name="dialog_button_cancel">取消</string>
+    <string name="dialog_button_accept">接受</string>
+    <string name="dialog_button_deny">拒绝</string>
     <string name="dialog_button_yes">是</string>
     <string name="dialog_button_continue">继续</string>
 
@@ -164,6 +167,24 @@
     <string name="dialog_filename_toast_blank">命名规则不能为空</string>
     <string name="dialog_filename_warn_no_variables">注意:没有输入变量，这会导致多选导出无法正常导出文件！</string>
 
+    <string name="activity_send_title">发送文件</string>
+    <string name="dialog_send_title">发送文件</string>
+    <string name="dialog_send_att_head">正在发送:</string>
+    <string name="toast_sending_complete">发送完成</string>
+    <string name="dialog_send_request_head1">等待</string>
+    <string name="dialog_send_request_head2">的回复</string>
+
+    <string name="activity_receive_title">接收文件</string>
+    <string name="dialog_file_receive_title">文件接收请求</string>
+    <string name="dialog_file_receive_device_name">对方名称:</string>
+    <string name="dialog_file_receive_ip">IP地址:</string>
+    <string name="dialog_file_receive_files_info">文件信息如下:</string>
+    <string name="dialog_file_receiving_title">接收文件</string>
+    <string name="dialog_file_receiving_att">正在接收:</string>
+
+    <string name="dialog_share_selection_self">局域网分享</string>
+    <string name="dialog_share_selection_system">系统分享</string>
+
     <string name="snack_bar_clipboard">已复制到剪贴板</string>
     <string name="toast_mkdirs_error">初始化导出路径失败，请检查文件路径</string>
     <string name="toast_wait_list_loading">请等待列表加载完成</string>
@@ -201,7 +222,7 @@
     <string name="language_chinese">简体中文</string>
     <string name="language_english">English</string>
 
-    <string name="dialog_about_title">APK Kit(Build 7)</string>
+    <string name="dialog_about_title" translatable="false">APK Kit(Build 7)</string>
     <string name="dialog_about_message">\n这是一个快速查询、导出或者分享本地已安装APP的小工具，支持将对应APP外置存储中的Data，Obb数据一并打包成zip并分享给对方
         (主要针对部分含有Data，Obb数据的游戏应用)\n\n
 
