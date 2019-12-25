@@ -2,18 +2,21 @@ package com.github.ghmxr.apkextractor.activities;
 
 import android.content.DialogInterface;
 import android.os.Bundle;
+import android.os.SystemClock;
 import android.support.annotation.NonNull;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
+import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.github.ghmxr.apkextractor.Global;
 import com.github.ghmxr.apkextractor.R;
 import com.github.ghmxr.apkextractor.items.DeviceItem;
 import com.github.ghmxr.apkextractor.items.FileItem;
@@ -40,24 +43,55 @@ public class FileSendActivity extends BaseActivity implements NetSendTask.NetSen
     protected void onCreate(Bundle bundle) {
         super.onCreate(bundle);
         setContentView(R.layout.activity_file_send);
+        setTitle(getResources().getString(R.string.activity_send_title));
         try {
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         } catch (Exception e) {
             e.printStackTrace();
         }
-        swipeRefreshLayout=findViewById(R.id.activity_file_send_root);
+        swipeRefreshLayout=findViewById(R.id.activity_file_send_swr);
         recyclerView=findViewById(R.id.activity_file_send_recyclerview);
         recyclerView.setLayoutManager(new LinearLayoutManager(this,LinearLayoutManager.VERTICAL,false));
+        swipeRefreshLayout.setColorSchemeColors(getResources().getColor(R.color.colorTitle));
         try{
             netSendTask=new NetSendTask(this,this);
         }catch (Exception e){
             e.printStackTrace();
-            Toast.makeText(this,e.toString(),Toast.LENGTH_SHORT).show();
+            new AlertDialog.Builder(this)
+                    .setTitle(getResources().getString(R.string.word_error))
+                    .setMessage(getResources().getString(R.string.info_bind_port_error)+e.toString())
+                    .setCancelable(false)
+                    .setPositiveButton(getResources().getString(R.string.dialog_button_confirm), new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            finish();
+                        }
+                    })
+                    .show();
+            //Toast.makeText(this,e.toString(),Toast.LENGTH_SHORT).show();
         }
         swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
                 netSendTask.sendRequestOnlineDevicesBroadcast();
+                new Thread(new Runnable() {
+                    @Override
+                    public void run() {
+                        SystemClock.sleep(5000);
+                        Global.handler.post(new Runnable() {
+                            @Override
+                            public void run() {
+                                swipeRefreshLayout.setRefreshing(false);
+                            }
+                        });
+                    }
+                }).start();
+            }
+        });
+        findViewById(R.id.activity_file_send_help).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                showHelpDialog();
             }
         });
     }
@@ -66,6 +100,7 @@ public class FileSendActivity extends BaseActivity implements NetSendTask.NetSen
     public void onOnlineDevicesChanged(@NonNull List<DeviceItem> devices) {
         swipeRefreshLayout.setRefreshing(false);
         recyclerView.setAdapter(new ListAdapter(devices));
+        findViewById(R.id.activity_file_send_no_device_att).setVisibility(devices.size()>0?View.GONE:View.VISIBLE);
     }
 
     @Override
@@ -115,7 +150,7 @@ public class FileSendActivity extends BaseActivity implements NetSendTask.NetSen
 
     @Override
     public void onFileSendCompleted() {
-        sendingDiag.cancel();
+        if(sendingDiag!=null)sendingDiag.cancel();
         sendingDiag=null;
         ToastManager.showToast(this,getResources().getString(R.string.toast_sending_complete),Toast.LENGTH_SHORT);
     }
@@ -126,6 +161,12 @@ public class FileSendActivity extends BaseActivity implements NetSendTask.NetSen
     }
 
     @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.menu_help,menu);
+        return super.onCreateOptionsMenu(menu);
+    }
+
+    @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()){
             default:break;
@@ -133,15 +174,34 @@ public class FileSendActivity extends BaseActivity implements NetSendTask.NetSen
                 finish();
             }
             break;
+            case R.id.action_help:{
+                showHelpDialog();
+            }
+            break;
         }
         return super.onOptionsItemSelected(item);
+    }
+
+    private void showHelpDialog(){
+        new AlertDialog.Builder(this)
+                .setTitle(getResources().getString(R.string.action_help))
+                .setMessage(getResources().getString(R.string.help_receive))
+                .setPositiveButton(getResources().getString(R.string.dialog_button_confirm), new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {}
+                })
+                .show();
     }
 
     @Override
     public void finish(){
         super.finish();
         sendingFiles.clear();
-        netSendTask.stopTask();
+        try {
+            if(netSendTask!=null)netSendTask.stopTask();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     private class ListAdapter extends RecyclerView.Adapter<ViewHolder>{

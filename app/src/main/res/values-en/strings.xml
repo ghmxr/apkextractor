@@ -9,6 +9,7 @@
     <string name="action_new_folder">New folder</string>
     <string name="action_name_ascend">Ascending by name(A→Z)</string>
     <string name="action_name_descend">Descending by name(Z→A)</string>
+    <string name="action_help">help</string>
     <string name="nav_file_receive">Receive Files</string>
     <string name="nav_about">About</string>
     <string name="dialog_loading_title">Loading</string>
@@ -179,12 +180,32 @@
     <string name="dialog_send_request_head2"> \'s reply&#8230;</string>
 
     <string name="activity_receive_title">Receive Files</string>
+    <string name="activity_receive_att">Running logs</string>
     <string name="dialog_file_receive_title">File receiving request</string>
     <string name="dialog_file_receive_device_name">Device name:</string>
     <string name="dialog_file_receive_ip">IP address:</string>
     <string name="dialog_file_receive_files_info">Info of the files are bellow:</string>
     <string name="dialog_file_receiving_title">Receiving files</string>
     <string name="dialog_file_receiving_att">receiving:</string>
+
+    <string name="activity_send_no_device_att1">No device found</string>
+    <string name="activity_send_no_device_att2"><u>look for help?</u></string>
+    <string name="receive_log_ip">IP Address:</string>
+    <string name="receive_log_port">port number:</string>
+    <string name="receive_log_send_online_broadcast">sending online message to:</string>
+    <string name="receive_log_send_refuse_broadcast">sending refuse receiving file message to:</string>
+    <string name="receive_log_send_stop_broadcast">sending stop receiving files message to:</string>
+    <string name="receive_log_send_offline_broadcast">sending offline message to:</string>
+    <string name="receive_log_received_answer_request">received online answering request message:</string>
+    <string name="receive_log_received_file_request">received receiving file request message:</string>
+    <string name="receive_log_received_send_cancel">received sending files canceled message:</string>
+    <string name="receive_log_received_transfer_interrupt">received sending files interrupted message:</string>
+
+    <string name="help_receive">
+        Let the other side install APK Kit, then connect to a same WiFi network , or connect to this devices\'s AP ,then run APK Kit with selecting the "Receive File"
+         item on the left side of the main panel.\n\n
+        Specially attention, if you have set the port number manually, the port number must be same to the other side or it can not detect the devices.
+    </string>
 
     <string name="dialog_share_selection_self">by local net</string>
     <string name="dialog_share_selection_system">by system interface</string>
@@ -221,6 +242,7 @@
     <string name="word_no">no</string>
     <string name="word_stop">stop</string>
     <string name="word_content_blank">No contents</string>
+    <string name="word_ap_mode">AP Mode</string>
 
     <string name="language_follow_system">follow system</string>
     <string name="language_chinese">简体中文</string>

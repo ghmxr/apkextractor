@@ -32,14 +32,14 @@ public class OutputUtil {
         return parent.createFile(extension.toLowerCase().equals("apk")?"application/vnd.android.package-archive":"application/x-zip-compressed",writingFileName);
     }
 
-    public static @Nullable DocumentFile getWritingDocumentFileForFileName(@NonNull Context context,@NonNull String fileName) throws Exception{
+    /*public static @Nullable DocumentFile getWritingDocumentFileForFileName(@NonNull Context context,@NonNull String fileName) throws Exception{
         DocumentFile parent=getExportPathDocumentFile(context);
         DocumentFile documentFile=parent.findFile(fileName);
         if(documentFile!=null&&documentFile.exists())documentFile.delete();
         return parent.createFile(EnvironmentUtil.getFileExtensionName(fileName).equalsIgnoreCase("apk")?
                 "application/vnd.android.package-archive":"application/x-zip-compressed",
                 fileName);
-    }
+    }*/
 
     /**
      * 创建一个按照命名规则命名的写入documentFile的输出流

@@ -12,17 +12,21 @@ import android.support.v4.content.PermissionChecker;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatDelegate;
 import android.support.v7.widget.Toolbar;
+import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.CheckBox;
+import android.widget.EditText;
 import android.widget.RadioButton;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.github.ghmxr.apkextractor.Global;
 import com.github.ghmxr.apkextractor.R;
 import com.github.ghmxr.apkextractor.Constants;
 import com.github.ghmxr.apkextractor.ui.ExportRuleDialog;
+import com.github.ghmxr.apkextractor.ui.ToastManager;
 import com.github.ghmxr.apkextractor.utils.SPUtil;
 
 public class SettingActivity extends BaseActivity implements View.OnClickListener{
@@ -52,6 +56,7 @@ public class SettingActivity extends BaseActivity implements View.OnClickListene
         findViewById(R.id.settings_path_area).setOnClickListener(this);
         findViewById(R.id.settings_about_area).setOnClickListener(this);
         findViewById(R.id.settings_language_area).setOnClickListener(this);
+        findViewById(R.id.settings_port_number_area).setOnClickListener(this);
         refreshSettingValues();
 
         if(bundle!=null){
@@ -256,6 +261,47 @@ public class SettingActivity extends BaseActivity implements View.OnClickListene
                 });
             }
             break;
+            case R.id.settings_port_number_area:{
+                View dialogView=LayoutInflater.from(this).inflate(R.layout.dialog_port_number,null);
+                final AlertDialog dialog=new AlertDialog.Builder(this)
+                        .setTitle(getResources().getString(R.string.activity_settings_port_number))
+                        .setView(dialogView)
+                        .setPositiveButton(getResources().getString(R.string.dialog_button_confirm),null)
+                        .setNegativeButton(getResources().getString(R.string.dialog_button_cancel), new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {}
+                        })
+                        .create();
+                final EditText editText=dialogView.findViewById(R.id.dialog_port_edit);
+                editText.setText(String.valueOf(SPUtil.getPortNumber(this)));
+                dialog.show();
+                dialog.getButton(AlertDialog.BUTTON_POSITIVE).setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        String value=editText.getText().toString().trim();
+                        try{
+                            if(TextUtils.isEmpty(value)){
+                                ToastManager.showToast(SettingActivity.this,getResources().getString(R.string.activity_settings_port_unknown),Toast.LENGTH_SHORT);
+                                return;
+                            }
+                            final int port=Integer.parseInt(value);
+                            if(port<1024||port>65535){
+                                ToastManager.showToast(SettingActivity.this,getResources().getString(R.string.activity_settings_port_invalid),Toast.LENGTH_SHORT);
+                                return;
+                            }
+                            editor.putInt(Constants.PREFERENCE_NET_PORT,port);
+                            editor.apply();
+                            dialog.cancel();
+                            refreshSettingValues();
+                        }catch (Exception e){
+                            e.printStackTrace();
+                            ToastManager.showToast(SettingActivity.this,e.toString(), Toast.LENGTH_SHORT);
+                            return;
+                        }
+                    }
+                });
+            }
+            break;
         }
     }
 
@@ -314,7 +360,7 @@ public class SettingActivity extends BaseActivity implements View.OnClickListene
             case Constants.LANGUAGE_ENGLISH:language_value=getResources().getString(R.string.language_english);break;
         }
         ((TextView)findViewById(R.id.settings_language_value)).setText(language_value);
-
+        ((TextView)findViewById(R.id.settings_port_number_value)).setText(String.valueOf(SPUtil.getPortNumber(this)));
     }
 
     @Override

@@ -32,9 +32,11 @@
             android:label="@string/activity_folder_selector_title"
             android:theme="@style/AppTheme.NoActionBar"/>
         <activity android:name=".activities.FileSendActivity"
-            android:theme="@style/CommonTheme"/>
+            android:theme="@style/CommonTheme"
+            android:label="@string/activity_send_title"/>
         <activity android:name=".activities.FileReceiveActivity"
-            android:theme="@style/CommonTheme"/>
+            android:theme="@style/CommonTheme"
+            android:label="@string/activity_receive_title"/>
         <provider
             android:authorities="com.github.ghmxr.apkextractor.FileProvider"
             android:name="android.support.v4.content.FileProvider"

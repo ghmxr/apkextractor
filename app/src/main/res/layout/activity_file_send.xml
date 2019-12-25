@@ -1,9 +1,43 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.v4.widget.SwipeRefreshLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent" android:layout_height="match_parent"
-    android:id="@+id/activity_file_send_root">
-    <android.support.v7.widget.RecyclerView
-        android:id="@+id/activity_file_send_recyclerview"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"/>
-</android.support.v4.widget.SwipeRefreshLayout>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent" android:layout_height="match_parent">
+    <android.support.v4.widget.SwipeRefreshLayout
+        android:layout_width="match_parent" android:layout_height="match_parent"
+        android:id="@+id/activity_file_send_swr">
+        <android.support.v7.widget.RecyclerView
+            android:id="@+id/activity_file_send_recyclerview"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"/>
+    </android.support.v4.widget.SwipeRefreshLayout>
+    <LinearLayout
+        android:id="@+id/activity_file_send_no_device_att"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerInParent="true"
+        android:orientation="vertical"
+        android:gravity="center_horizontal">
+        <ImageView
+            android:layout_width="55dp"
+            android:layout_height="55dp"
+            android:src="@drawable/face_wonder"/>
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:layout_marginTop="25dp">
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/activity_send_no_device_att1"/>
+            <TextView
+                android:id="@+id/activity_file_send_help"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textColor="@color/colorFirstAttention"
+                android:clickable="true"
+                android:focusable="true"
+                android:layout_marginLeft="3dp"
+                android:text="@string/activity_send_no_device_att2"/>
+        </LinearLayout>
+    </LinearLayout>
+</RelativeLayout>

@@ -9,6 +9,7 @@
     <string name="action_new_folder">新建文件夹</string>
     <string name="action_name_ascend">名称升序(A→Z)</string>
     <string name="action_name_descend">名称降序(Z→A)</string>
+    <string name="action_help">帮助</string>
     <string name="nav_file_receive">接收文件</string>
     <string name="nav_about">关于</string>
     <string name="dialog_loading_title">正在载入</string>
@@ -53,6 +54,12 @@
     <string name="activity_settings_share_mode">分享模式</string>
     <string name="activity_settings_night_mode">夜间模式</string>
     <string name="activity_settings_loading_options">读取项</string>
+    <string name="activity_settings_port_number">端口号</string>
+    <string name="activity_settings_port_number_hint">输入端口号(默认6565)</string>
+    <string name="activity_settings_port_unknown">无效的数字</string>
+    <string name="activity_settings_port_invalid">请输入1024~65535之间的数字</string>
+    <string name="activity_settings_port_number_attention">大多数情况下，不需要手动修改本设置去更改端口号。只有当其他程序占用端口号6565
+        导致本程序绑定端口失败时才需要手动调整端口号。\n\n局域网共享文件时，双方设置的端口号必须相同，否则将检测不到设备。\n</string>
     <string name="activity_settings_language">语言</string>
     <string name="loading_activity">Activity(活动组件)</string>
     <string name="loading_receiver">Receiver(广播接收器)</string>
@@ -175,12 +182,31 @@
     <string name="dialog_send_request_head2">的回复</string>
 
     <string name="activity_receive_title">接收文件</string>
+    <string name="activity_receive_att">运行日志</string>
     <string name="dialog_file_receive_title">文件接收请求</string>
     <string name="dialog_file_receive_device_name">对方名称:</string>
     <string name="dialog_file_receive_ip">IP地址:</string>
     <string name="dialog_file_receive_files_info">文件信息如下:</string>
     <string name="dialog_file_receiving_title">接收文件</string>
     <string name="dialog_file_receiving_att">正在接收:</string>
+
+    <string name="activity_send_no_device_att1">没有发现设备</string>
+    <string name="activity_send_no_device_att2"><u>查看帮助？</u></string>
+    <string name="receive_log_ip">IP地址:</string>
+    <string name="receive_log_port">端口号:</string>
+    <string name="receive_log_send_online_broadcast">发送在线广播报文到:</string>
+    <string name="receive_log_send_refuse_broadcast">发送拒绝接收文件报文到:</string>
+    <string name="receive_log_send_stop_broadcast">发送停止接收文件报文到:</string>
+    <string name="receive_log_send_offline_broadcast">发送下线报文到:</string>
+    <string name="receive_log_received_answer_request">收到在线回复请求报文:</string>
+    <string name="receive_log_received_file_request">收到接收文件请求报文:</string>
+    <string name="receive_log_received_send_cancel">收到发送端取消发送文件报文:</string>
+    <string name="receive_log_received_transfer_interrupt">收到发送端终止发送文件报文:</string>
+
+    <string name="help_receive">
+        请对方设备安装APK Kit，并和当前设备接入同一个WiFi网络，或者接入本设备的热点后，打开APK Kit，在左侧边栏选择“接收文件”。\n\n
+        务必注意，如果手动设置过端口号，双方设备须设置相同的端口号后才可以检测到设备。
+    </string>
 
     <string name="dialog_share_selection_self">局域网分享</string>
     <string name="dialog_share_selection_system">系统分享</string>
@@ -217,6 +243,10 @@
     <string name="word_no">否</string>
     <string name="word_stop">停止</string>
     <string name="word_content_blank">没有内容</string>
+    <string name="word_ap_mode">热点模式</string>
+    <string name="word_error">错误</string>
+
+    <string name="info_bind_port_error">绑定到指定端口出现错误，请结束掉其他运行的应用或者手动更改本应用端口号然后重试。\n\n错误信息如下：\n\n</string>
 
     <string name="language_follow_system">跟随系统</string>
     <string name="language_chinese">简体中文</string>

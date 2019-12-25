@@ -178,6 +178,16 @@ public class EnvironmentUtil {
     }
 
     /**
+     * 返回文件主体的文件名，例如 Test.File.java 则返回Test.File
+     */
+    public static @NonNull String getFileMainName(@NonNull String fileName){
+        try{
+            return fileName.substring(0,fileName.lastIndexOf("."));
+        }catch (Exception e){e.printStackTrace();}
+        return "";
+    }
+
+    /**
      * 获取系统热点是否开启
      */
     public static boolean isAPEnabled(Context context){

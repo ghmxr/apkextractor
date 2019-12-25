@@ -4,14 +4,27 @@ import android.content.DialogInterface;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AlertDialog;
+import android.support.v7.widget.AppCompatCheckBox;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.text.format.Formatter;
+import android.view.LayoutInflater;
+import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
+import android.view.ViewGroup;
+import android.widget.CheckBox;
+import android.widget.CompoundButton;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.github.ghmxr.apkextractor.R;
 import com.github.ghmxr.apkextractor.net.NetReceiveTask;
 import com.github.ghmxr.apkextractor.ui.FileTransferringDialog;
 
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 public class FileReceiveActivity extends BaseActivity implements NetReceiveTask.NetReceiveTaskCallback{
@@ -20,10 +33,20 @@ public class FileReceiveActivity extends BaseActivity implements NetReceiveTask.
 
     private FileTransferringDialog receiving_diag;
     private AlertDialog request_diag;
+    private RecyclerView recyclerView;
+    private ListAdapter listAdapter;
+
+    private final ArrayList<MessageBean>logMessages=new ArrayList<>();
 
     @Override
     protected void onCreate(Bundle bundle) {
         super.onCreate(bundle);
+        setContentView(R.layout.activity_file_receive);
+        setTitle(getResources().getString(R.string.activity_receive_title));
+        recyclerView=findViewById(R.id.activity_file_receive_recyclerview);
+        recyclerView.setLayoutManager(new LinearLayoutManager(this,LinearLayoutManager.VERTICAL,false));
+        listAdapter=new ListAdapter();
+        recyclerView.setAdapter(listAdapter);
         try {
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         } catch (Exception e) {
@@ -33,8 +56,26 @@ public class FileReceiveActivity extends BaseActivity implements NetReceiveTask.
             netReceiveTask=new NetReceiveTask(this,this);
         }catch (Exception e){
             e.printStackTrace();
-            Toast.makeText(this,e.toString(),Toast.LENGTH_SHORT).show();
+            new AlertDialog.Builder(this)
+                    .setTitle(getResources().getString(R.string.word_error))
+                    .setMessage(getResources().getString(R.string.info_bind_port_error)+e.toString())
+                    .setCancelable(false)
+                    .setPositiveButton(getResources().getString(R.string.dialog_button_confirm), new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                           finish();
+                        }
+                    })
+                    .show();
+            //Toast.makeText(this,e.toString(),Toast.LENGTH_SHORT).show();
         }
+        ((AppCompatCheckBox)findViewById(R.id.activity_file_receive_apmode)).setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                if(netReceiveTask==null)return;
+                netReceiveTask.switchApMode(isChecked);
+            }
+        });
     }
 
     @Override
@@ -45,13 +86,13 @@ public class FileReceiveActivity extends BaseActivity implements NetReceiveTask.
                 .setMessage(getResources().getString(R.string.dialog_file_receive_device_name)+deviceName+"\n"
                         +getResources().getString(R.string.dialog_file_receive_ip)+ip+"\n"
                         +getResources().getString(R.string.dialog_file_receive_files_info)+"\n\n"+getFileInfoMessage(fileItems))
-                .setPositiveButton(getResources().getString(R.string.dialog_button_confirm), new DialogInterface.OnClickListener() {
+                .setPositiveButton(getResources().getString(R.string.dialog_button_accept), new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
                         netReceiveTask.startReceiveTask();
                     }
                 })
-                .setNegativeButton(getResources().getString(R.string.dialog_button_cancel), new DialogInterface.OnClickListener() {
+                .setNegativeButton(getResources().getString(R.string.dialog_button_deny), new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
                         netReceiveTask.sendRefuseReceivingFilesUdp();
@@ -59,6 +100,13 @@ public class FileReceiveActivity extends BaseActivity implements NetReceiveTask.
                 })
                 .setCancelable(false)
                 .show();
+    }
+
+    @Override
+    public void onLog(String logInfo) {
+        MessageBean messageBean=new MessageBean(System.currentTimeMillis(),logInfo);
+        logMessages.add(messageBean);
+        if(listAdapter!=null)listAdapter.notifyDataSetChanged();
     }
 
     @Override
@@ -93,6 +141,7 @@ public class FileReceiveActivity extends BaseActivity implements NetReceiveTask.
             });
             receiving_diag.show();
         }
+        setResult(RESULT_OK);
     }
 
     @Override
@@ -108,8 +157,10 @@ public class FileReceiveActivity extends BaseActivity implements NetReceiveTask.
 
     @Override
     public void onFileReceivedCompleted() {
-        receiving_diag.cancel();
-        receiving_diag=null;
+        if(receiving_diag!=null){
+            receiving_diag.cancel();
+            receiving_diag=null;
+        }
     }
 
     private String getFileInfoMessage(List<NetReceiveTask.ReceiveFileItem>receiveFileItems){
@@ -125,11 +176,21 @@ public class FileReceiveActivity extends BaseActivity implements NetReceiveTask.
     }
 
     @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.menu_help,menu);
+        return super.onCreateOptionsMenu(menu);
+    }
+
+    @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()){
             default:break;
             case android.R.id.home:{
                 finish();
+            }
+            break;
+            case R.id.action_help:{
+
             }
             break;
         }
@@ -139,6 +200,54 @@ public class FileReceiveActivity extends BaseActivity implements NetReceiveTask.
     @Override
     public void finish(){
         super.finish();
-        netReceiveTask.stopTask();
+        try {
+            if(netReceiveTask!=null)netReceiveTask.stopTask();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    private class ListAdapter extends RecyclerView.Adapter<ViewHolder>{
+        ListAdapter(){}
+
+        @NonNull
+        @Override
+        public ViewHolder onCreateViewHolder(@NonNull ViewGroup viewGroup, int i) {
+            return new ViewHolder(LayoutInflater.from(FileReceiveActivity.this).inflate(R.layout.item_receive_log,viewGroup,false));
+        }
+
+        @Override
+        public void onBindViewHolder(@NonNull ViewHolder viewHolder, int i) {
+            MessageBean messageBean=logMessages.get(viewHolder.getAdapterPosition());
+            viewHolder.time.setText(messageBean.getFormattedTime());
+            viewHolder.message.setText(messageBean.message);
+        }
+
+        @Override
+        public int getItemCount() {
+            return logMessages.size();
+        }
+    }
+
+    private static class ViewHolder extends RecyclerView.ViewHolder{
+        TextView time,message;
+        public ViewHolder(@NonNull View itemView) {
+            super(itemView);
+            time=itemView.findViewById(R.id.item_receive_log_time);
+            message=itemView.findViewById(R.id.item_receive_log_content);
+        }
+    }
+
+    private static class MessageBean{
+        long time;
+        String message;
+        private MessageBean(long time,String message){
+            this.time=time;
+            this.message=String.valueOf(message);
+        }
+        String getFormattedTime(){
+            SimpleDateFormat simpleDateFormat=new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+            return simpleDateFormat.format(new Date(time));
+        }
     }
 }

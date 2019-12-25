@@ -1,5 +1,30 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent" android:layout_height="match_parent">
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent" android:layout_height="match_parent"
+    android:orientation="vertical">
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:layout_marginLeft="10dp"
+            android:layout_alignParentLeft="true"
+            android:text="@string/activity_receive_att"/>
+        <android.support.v7.widget.AppCompatCheckBox
+            android:id="@+id/activity_file_receive_apmode"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:layout_marginRight="20dp"
+            android:layout_centerVertical="true"
+            android:text="@string/word_ap_mode"/>
+    </RelativeLayout>
 
-</RelativeLayout>
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/activity_file_receive_recyclerview"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_marginTop="5dp"/>
+</LinearLayout>

@@ -2,11 +2,13 @@ package com.github.ghmxr.apkextractor.net;
 
 import android.content.Context;
 import android.support.annotation.NonNull;
+import android.support.v4.provider.DocumentFile;
 
 import com.github.ghmxr.apkextractor.Global;
+import com.github.ghmxr.apkextractor.R;
 import com.github.ghmxr.apkextractor.items.FileItem;
 import com.github.ghmxr.apkextractor.items.IpMessage;
-import com.github.ghmxr.apkextractor.utils.DocumentFileUtil;
+import com.github.ghmxr.apkextractor.utils.EnvironmentUtil;
 import com.github.ghmxr.apkextractor.utils.OutputUtil;
 import com.github.ghmxr.apkextractor.utils.SPUtil;
 
@@ -34,6 +36,8 @@ public class NetReceiveTask implements UdpThread.UdpThreadCallback{
 
     private NetTcpFileReceiveTask netTcpFileReceiveTask;
 
+    private String broadcastAddress="255.255.255.255";
+
     public NetReceiveTask(@NonNull Context context,NetReceiveTaskCallback callback) throws Exception{
         this.context=context;
         this.callback=callback;
@@ -48,11 +52,21 @@ public class NetReceiveTask implements UdpThread.UdpThreadCallback{
         ipMessage.setDeviceName(deviceName);
         ipMessage.setCommand(IpMessageConstants.MSG_ONLINE_ANSWER);
         try {
-            new UdpThread.UdpSendTask(ipMessage.toProtocolString(), InetAddress.getByName("255.255.255.255"),
+            new UdpThread.UdpSendTask(ipMessage.toProtocolString(), InetAddress.getByName(broadcastAddress),
                     SPUtil.getPortNumber(context),null).start();
+            postLogInfoToCallback(context.getResources().getString(R.string.receive_log_send_online_broadcast)+broadcastAddress);
         } catch (UnknownHostException e) {
             e.printStackTrace();
         }
+    }
+
+    /**
+     * 热点模式，如果连接的是对方手机热点，则尝试将上线报文发送至routerIp(对方手机地址)
+     * @param isApMode true 将发送上线报文至router地址
+     */
+    public void switchApMode(boolean isApMode){
+        this.broadcastAddress=isApMode? EnvironmentUtil.getRouterIpAddress(context):"255.255.255.255";
+        sendOnlineBroadcastUdp();
     }
 
     public void sendRefuseReceivingFilesUdp(){
@@ -60,6 +74,8 @@ public class NetReceiveTask implements UdpThread.UdpThreadCallback{
         ipMessage.setCommand(IpMessageConstants.MSG_RECEIVE_FILE_REFUSE);
         try{
             new UdpThread.UdpSendTask(ipMessage.toProtocolString(),InetAddress.getByName(this.senderIp),port,null).start();
+            postLogInfoToCallback(context.getResources().getString(R.string.receive_log_send_refuse_broadcast)+this.senderIp+","
+            +context.getResources().getString(R.string.receive_log_port)+port);
         }catch (Exception e){
             e.printStackTrace();
         }
@@ -71,19 +87,25 @@ public class NetReceiveTask implements UdpThread.UdpThreadCallback{
         ipMessage.setCommand(IpMessageConstants.MSG_FILE_TRANSFERRING_INTERRUPT);
         try{
             new UdpThread.UdpSendTask(ipMessage.toProtocolString(),InetAddress.getByName(this.senderIp),port,null).start();
+            postLogInfoToCallback(context.getResources().getString(R.string.receive_log_send_stop_broadcast)+this.senderIp+","
+                    +context.getResources().getString(R.string.receive_log_port)+port);
         }catch (Exception e){
             e.printStackTrace();
         }
         try{
-            if(netTcpFileReceiveTask!=null)netTcpFileReceiveTask.setInterrupted();
+            if(netTcpFileReceiveTask!=null){
+                netTcpFileReceiveTask.setInterrupted();
+            }
         }catch (Exception e){e.printStackTrace();}
+        senderIp=null;
     }
 
     public void sendOfflineBroadcastUdp(UdpThread.UdpSendTask.UdpSendTaskCallback callback){
         IpMessage ipMessage=new IpMessage();
         ipMessage.setCommand(IpMessageConstants.MSG_OFFLINE);
         try{
-            new UdpThread.UdpSendTask(ipMessage.toProtocolString(),InetAddress.getByName("255.255.255.255"),SPUtil.getPortNumber(context),callback).start();
+            new UdpThread.UdpSendTask(ipMessage.toProtocolString(),InetAddress.getByName(broadcastAddress),SPUtil.getPortNumber(context),callback).start();
+            postLogInfoToCallback(context.getResources().getString(R.string.receive_log_send_offline_broadcast)+broadcastAddress);
         }catch (Exception e){e.printStackTrace();}
     }
 
@@ -107,17 +129,25 @@ public class NetReceiveTask implements UdpThread.UdpThreadCallback{
         switch (ipMessage.getCommand()){
             default:break;
             case IpMessageConstants.MSG_REQUEST_ONLINE_DEVICES:{
+                postLogInfoToCallback(context.getResources().getString(R.string.receive_log_received_answer_request)
+                +context.getResources().getString(R.string.receive_log_ip)+senderIp+","+context.getResources().getString(R.string.receive_log_port)
+                +port);
                 IpMessage ipMessage_answer=new IpMessage();
                 ipMessage_answer.setDeviceName(deviceName);
                 ipMessage_answer.setCommand(IpMessageConstants.MSG_ONLINE_ANSWER);
                 try {
                     new UdpThread.UdpSendTask(ipMessage_answer.toProtocolString(), InetAddress.getByName(senderIp),port,null).start();
+                    postLogInfoToCallback(context.getResources().getString(R.string.receive_log_send_online_broadcast)+senderIp
+                    +","+context.getResources().getString(R.string.receive_log_port)+port);
                 } catch (UnknownHostException e) {
                     e.printStackTrace();
                 }
             }
             break;
             case IpMessageConstants.MSG_SEND_FILE_REQUEST:{
+                postLogInfoToCallback(context.getResources().getString(R.string.receive_log_received_file_request)
+                +context.getResources().getString(R.string.receive_log_ip)+senderIp+","
+                +context.getResources().getString(R.string.receive_log_port)+port);
                 if(this.senderIp!=null)return;
                 final List<ReceiveFileItem>receiveFileItems=new ArrayList<>();
                 final String deviceName=String.valueOf(ipMessage.getDeviceName());
@@ -156,18 +186,36 @@ public class NetReceiveTask implements UdpThread.UdpThreadCallback{
                         callback.onSendSiteCanceled(senderIp);
                     }
                 });
+                postLogInfoToCallback(context.getResources().getString(R.string.receive_log_received_send_cancel)
+                        +context.getResources().getString(R.string.receive_log_ip)+senderIp+","
+                        +context.getResources().getString(R.string.receive_log_port)+port);
             }
             break;
             case IpMessageConstants.MSG_FILE_TRANSFERRING_INTERRUPT:{
                 if(netTcpFileReceiveTask!=null)netTcpFileReceiveTask.setInterrupted();
+                this.senderIp=null;
                 if(callback!=null)Global.handler.post(new Runnable() {
                     @Override
                     public void run() {
                         callback.onFileReceiveInterrupted();
                     }
                 });
+                postLogInfoToCallback(context.getResources().getString(R.string.receive_log_received_transfer_interrupt)
+                        +context.getResources().getString(R.string.receive_log_ip)+senderIp+","
+                        +context.getResources().getString(R.string.receive_log_port)+port);
             }
             break;
+        }
+    }
+
+    private void postLogInfoToCallback(final String logInfo){
+        if(callback!=null){
+            Global.handler.post(new Runnable() {
+                @Override
+                public void run() {
+                    callback.onLog(logInfo);
+                }
+            });
         }
     }
 
@@ -179,6 +227,7 @@ public class NetReceiveTask implements UdpThread.UdpThreadCallback{
         void onFileReceiveProgress(long progress,long total,@NonNull String currentWritePath);
         void onSpeed(long speedOfBytes);
         void onFileReceivedCompleted();
+        void onLog(String logInfo);
     }
 
     public static class ReceiveFileItem{
@@ -212,6 +261,8 @@ public class NetReceiveTask implements UdpThread.UdpThreadCallback{
         private long speedOfBytes=0;
         private long checkTime=0;
 
+        private FileItem currentWritingFileItem=null;
+
         private NetTcpFileReceiveTask(@NonNull String targetIp, List<ReceiveFileItem>receiveFileItems){
             this.targetIp=targetIp;
             this.receiveFileItems.addAll(receiveFileItems);
@@ -237,17 +288,37 @@ public class NetReceiveTask implements UdpThread.UdpThreadCallback{
                     });
                     InputStream inputStream=socket.getInputStream();
                     OutputStream outputStream;
+
+                    final String initialFileName=receiveFileItem.getFileName();
+                    String fileName=initialFileName;
+
                     if(SPUtil.getIsSaved2ExternalStorage(context)){
+                        /*DocumentFile documentFile=OutputUtil.getExportPathDocumentFile(context).findFile(fileName);
+                        int count=1;
+                        while (documentFile!=null&&documentFile.exists()){
+                            fileName=EnvironmentUtil.getFileMainName(initialFileName)+(count++)+"."+EnvironmentUtil.getFileExtensionName(initialFileName);
+                            documentFile=OutputUtil.getExportPathDocumentFile(context).findFile(fileName);
+                        }*/
+                        DocumentFile writingDocumentFile=OutputUtil.getExportPathDocumentFile(context).createFile("application/x-zip-compressed",fileName);
                         outputStream= OutputUtil.getOutputStreamForDocumentFile(context,
-                                OutputUtil.getWritingDocumentFileForFileName(context,receiveFileItem.getFileName()));
+                                writingDocumentFile);//documentFile接口在根据文件名创建文件时，如果文件名已存在会自动加后缀
+                        currentWritingFileItem=new FileItem(context,writingDocumentFile);
                     }else{
-                        outputStream=new FileOutputStream(new File(SPUtil.getInternalSavePath(context)+"/"+receiveFileItem.getFileName()));
+                        File destinationFile=new File(SPUtil.getInternalSavePath(context)+"/"+fileName);
+                        int count=1;
+                        while (destinationFile.exists()){
+                            fileName=EnvironmentUtil.getFileMainName(initialFileName)+(count++)+"."+EnvironmentUtil.getFileExtensionName(initialFileName);
+                            destinationFile=new File(SPUtil.getInternalSavePath(context)+"/"+fileName);
+                        }
+                        outputStream=new FileOutputStream(destinationFile);
+                        currentWritingFileItem=new FileItem(destinationFile);
                     }
+                    final String fileNameOfMessage=fileName;
                     if(callback!=null)Global.handler.post(new Runnable() {
                         @Override
                         public void run() {
                             callback.onFileReceiveProgress(progress,total,SPUtil.getDisplayingExportPath(context)
-                                    +"/"+receiveFileItem.getFileName());
+                                    +"/"+fileNameOfMessage);
                         }
                     });
                     byte [] buffer=new byte[1024];
@@ -262,7 +333,7 @@ public class NetReceiveTask implements UdpThread.UdpThreadCallback{
                                 @Override
                                 public void run() {
                                     callback.onFileReceiveProgress(progress,total,SPUtil.getDisplayingExportPath(context)
-                                            +"/"+receiveFileItem.getFileName());
+                                            +"/"+fileNameOfMessage);
                                 }
                             });
                         }
@@ -281,6 +352,7 @@ public class NetReceiveTask implements UdpThread.UdpThreadCallback{
                     }
                     outputStream.flush();
                     outputStream.close();
+                    if(!isInterrupted)currentWritingFileItem=null;
                     inputStream.close();
                     socket.close();
                 }catch (Exception e){
@@ -304,7 +376,9 @@ public class NetReceiveTask implements UdpThread.UdpThreadCallback{
             try{
                 if(socket!=null)socket.close();
             }catch (Exception e){e.printStackTrace();}
-            senderIp=null;
+            try{
+                if(currentWritingFileItem!=null)currentWritingFileItem.delete();
+            }catch (Exception e){e.printStackTrace();}
         }
     }
 

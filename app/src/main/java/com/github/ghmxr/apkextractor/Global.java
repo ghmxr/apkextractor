@@ -241,8 +241,8 @@ public class Global {
         if(ifNeedExport){
             DataObbDialog dialog=new DataObbDialog(activity, items, new DataObbDialog.DialogDataObbConfirmedCallback() {
                 @Override
-                public void onDialogDataObbConfirmed(@NonNull List<AppItem> export_list) {
-                    String dulplicated_info=getDuplicatedFileInfo(activity,items);
+                public void onDialogDataObbConfirmed(@NonNull final List<AppItem> export_list) {
+                    String dulplicated_info=getDuplicatedFileInfo(activity,export_list);
                     final ExportTaskFinishedListener exportTaskFinishedListener=new ExportTaskFinishedListener() {
                         @Override
                         public void onFinished(@NonNull String error_message) {
@@ -267,7 +267,7 @@ public class Global {
                                 .setPositiveButton(activity.getResources().getString(R.string.dialog_button_confirm), new DialogInterface.OnClickListener() {
                                     @Override
                                     public void onClick(DialogInterface dialog, int which) {
-                                        exportCertainAppItemsToSetPathAndShare(activity, items, true,exportTaskFinishedListener);
+                                        exportCertainAppItemsToSetPathAndShare(activity, export_list, true,exportTaskFinishedListener);
                                     }
                                 })
                                 .setNegativeButton(activity.getResources().getString(R.string.dialog_button_cancel), new DialogInterface.OnClickListener() {
@@ -277,7 +277,7 @@ public class Global {
                                 .show();
                         return;
                     }
-                    exportCertainAppItemsToSetPathAndShare(activity, items, true,exportTaskFinishedListener);
+                    exportCertainAppItemsToSetPathAndShare(activity, export_list, true,exportTaskFinishedListener);
                 }
             });
             dialog.show();

@@ -793,13 +793,6 @@ public class MainActivity extends BaseActivity implements View.OnClickListener,V
 
         }
 
-        if(id==R.id.nav_receive){
-            startActivity(new Intent(this,FileReceiveActivity.class));
-        }
-        if(id==R.id.nav_about){
-            startActivity(new Intent(this,FileSendActivity.class));
-        }
-
         return super.onOptionsItemSelected(item);
     }
 
@@ -809,7 +802,7 @@ public class MainActivity extends BaseActivity implements View.OnClickListener,V
         switch (menuItem.getItemId()){
             default:break;
             case R.id.nav_receive:{
-                startActivity(new Intent(this,FileReceiveActivity.class));
+                startActivityForResult(new Intent(this,FileReceiveActivity.class),REQUEST_CODE_RECEIVING_FILES);
             }
             break;
             case R.id.nav_settings:{
@@ -855,6 +848,7 @@ public class MainActivity extends BaseActivity implements View.OnClickListener,V
     }
 
     private static final int REQUEST_CODE_SETTINGS=0;
+    private static final int REQUEST_CODE_RECEIVING_FILES=1;
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
@@ -863,6 +857,12 @@ public class MainActivity extends BaseActivity implements View.OnClickListener,V
             case REQUEST_CODE_SETTINGS:{
                 if(resultCode==RESULT_OK){
                     recreate();
+                }
+            }
+            break;
+            case REQUEST_CODE_RECEIVING_FILES:{
+                if(resultCode==RESULT_OK){
+                    new RefreshImportListTask(MainActivity.this,refreshImportListTaskCallback).start();
                 }
             }
             break;
