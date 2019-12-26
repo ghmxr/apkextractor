@@ -13,7 +13,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.CheckBox;
+import android.view.WindowManager;
 import android.widget.CompoundButton;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -21,6 +21,7 @@ import android.widget.Toast;
 import com.github.ghmxr.apkextractor.R;
 import com.github.ghmxr.apkextractor.net.NetReceiveTask;
 import com.github.ghmxr.apkextractor.ui.FileTransferringDialog;
+import com.github.ghmxr.apkextractor.ui.ToastManager;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -33,17 +34,28 @@ public class FileReceiveActivity extends BaseActivity implements NetReceiveTask.
 
     private FileTransferringDialog receiving_diag;
     private AlertDialog request_diag;
-    private RecyclerView recyclerView;
     private ListAdapter listAdapter;
 
     private final ArrayList<MessageBean>logMessages=new ArrayList<>();
+
+    /*private final BroadcastReceiver netStatusReceiver=new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            if(intent.getAction().equals(WifiManager.NETWORK_STATE_CHANGED_ACTION)){
+                NetworkInfo networkInfo =intent.getParcelableExtra(WifiManager.EXTRA_NETWORK_INFO);
+                if(networkInfo.getDetailedState()== NetworkInfo.DetailedState.CONNECTED&&netReceiveTask!=null){
+                    netReceiveTask.sendOnlineBroadcastUdp();
+                }
+            }
+        }
+    };*/
 
     @Override
     protected void onCreate(Bundle bundle) {
         super.onCreate(bundle);
         setContentView(R.layout.activity_file_receive);
         setTitle(getResources().getString(R.string.activity_receive_title));
-        recyclerView=findViewById(R.id.activity_file_receive_recyclerview);
+        RecyclerView recyclerView=findViewById(R.id.activity_file_receive_recyclerview);
         recyclerView.setLayoutManager(new LinearLayoutManager(this,LinearLayoutManager.VERTICAL,false));
         listAdapter=new ListAdapter();
         recyclerView.setAdapter(listAdapter);
@@ -69,6 +81,9 @@ public class FileReceiveActivity extends BaseActivity implements NetReceiveTask.
                     .show();
             //Toast.makeText(this,e.toString(),Toast.LENGTH_SHORT).show();
         }
+        /*try{
+            registerReceiver(netStatusReceiver,new IntentFilter(WifiManager.NETWORK_STATE_CHANGED_ACTION));
+        }catch (Exception e){e.printStackTrace();}*/
         ((AppCompatCheckBox)findViewById(R.id.activity_file_receive_apmode)).setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
@@ -76,15 +91,33 @@ public class FileReceiveActivity extends BaseActivity implements NetReceiveTask.
                 netReceiveTask.switchApMode(isChecked);
             }
         });
+        ((AppCompatCheckBox)findViewById(R.id.activity_file_receive_screen_on)).setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                try{
+                    if(isChecked)getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
+                    else getWindow().clearFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
+                }catch (Exception e){e.printStackTrace();}
+            }
+        });
+        findViewById(R.id.activity_file_receive_refresh).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if(netReceiveTask!=null)netReceiveTask.sendOnlineBroadcastUdp();
+            }
+        });
+        try{
+            getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
+        }catch (Exception e){e.printStackTrace();}
+
     }
 
     @Override
     public void onFileReceiveRequest(@NonNull NetReceiveTask task, @NonNull String ip, @NonNull String deviceName, @NonNull List<NetReceiveTask.ReceiveFileItem> fileItems) {
-
         request_diag=new AlertDialog.Builder(this)
                 .setTitle(getResources().getString(R.string.dialog_file_receive_title))
-                .setMessage(getResources().getString(R.string.dialog_file_receive_device_name)+deviceName+"\n"
-                        +getResources().getString(R.string.dialog_file_receive_ip)+ip+"\n"
+                .setMessage(getResources().getString(R.string.dialog_file_receive_device_name)+deviceName+"\n\n"
+                        +getResources().getString(R.string.dialog_file_receive_ip)+ip+"\n\n"
                         +getResources().getString(R.string.dialog_file_receive_files_info)+"\n\n"+getFileInfoMessage(fileItems))
                 .setPositiveButton(getResources().getString(R.string.dialog_button_accept), new DialogInterface.OnClickListener() {
                     @Override
@@ -115,6 +148,7 @@ public class FileReceiveActivity extends BaseActivity implements NetReceiveTask.
             receiving_diag.cancel();
             receiving_diag=null;
         }
+        ToastManager.showToast(this,getResources().getString(R.string.toast_send_interrupt),Toast.LENGTH_SHORT);
     }
 
     @Override
@@ -123,6 +157,7 @@ public class FileReceiveActivity extends BaseActivity implements NetReceiveTask.
             request_diag.cancel();
             request_diag=null;
         }
+        ToastManager.showToast(this,getResources().getString(R.string.toast_send_canceled),Toast.LENGTH_SHORT);
     }
 
     @Override
@@ -161,6 +196,7 @@ public class FileReceiveActivity extends BaseActivity implements NetReceiveTask.
             receiving_diag.cancel();
             receiving_diag=null;
         }
+        ToastManager.showToast(this,getResources().getString(R.string.toast_receiving_complete),Toast.LENGTH_SHORT);
     }
 
     private String getFileInfoMessage(List<NetReceiveTask.ReceiveFileItem>receiveFileItems){
@@ -177,7 +213,7 @@ public class FileReceiveActivity extends BaseActivity implements NetReceiveTask.
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.menu_help,menu);
+        getMenuInflater().inflate(R.menu.menu_receive,menu);
         return super.onCreateOptionsMenu(menu);
     }
 
@@ -190,7 +226,14 @@ public class FileReceiveActivity extends BaseActivity implements NetReceiveTask.
             }
             break;
             case R.id.action_help:{
-
+                new AlertDialog.Builder(this)
+                        .setTitle(getResources().getString(R.string.action_help))
+                        .setMessage(getResources().getString(R.string.help_receive))
+                        .setPositiveButton(getResources().getString(R.string.dialog_button_confirm), new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {}
+                        })
+                        .show();
             }
             break;
         }
@@ -205,6 +248,9 @@ public class FileReceiveActivity extends BaseActivity implements NetReceiveTask.
         } catch (Exception e) {
             e.printStackTrace();
         }
+        /*try{
+            unregisterReceiver(netStatusReceiver);
+        }catch (Exception e){e.printStackTrace();}*/
     }
 
     private class ListAdapter extends RecyclerView.Adapter<ViewHolder>{

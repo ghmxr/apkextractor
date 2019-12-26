@@ -44,17 +44,19 @@ public class NetReceiveTask implements UdpThread.UdpThreadCallback{
         deviceName= SPUtil.getDeviceName(context);
         udpThread=new UdpThread(context,this);
         udpThread.start();
+        postLogInfoToCallback(context.getResources().getString(R.string.receive_log_self_ip)+EnvironmentUtil.getSelfIp(context));
         sendOnlineBroadcastUdp();
     }
 
-    private void sendOnlineBroadcastUdp(){
+    public void sendOnlineBroadcastUdp(){
         IpMessage ipMessage=new IpMessage();
         ipMessage.setDeviceName(deviceName);
         ipMessage.setCommand(IpMessageConstants.MSG_ONLINE_ANSWER);
         try {
+            final int portNumber=SPUtil.getPortNumber(context);
             new UdpThread.UdpSendTask(ipMessage.toProtocolString(), InetAddress.getByName(broadcastAddress),
-                    SPUtil.getPortNumber(context),null).start();
-            postLogInfoToCallback(context.getResources().getString(R.string.receive_log_send_online_broadcast)+broadcastAddress);
+                    portNumber,null).start();
+            postLogInfoToCallback(context.getResources().getString(R.string.receive_log_send_online_broadcast)+broadcastAddress+","+context.getResources().getString(R.string.receive_log_port)+portNumber);
         } catch (UnknownHostException e) {
             e.printStackTrace();
         }

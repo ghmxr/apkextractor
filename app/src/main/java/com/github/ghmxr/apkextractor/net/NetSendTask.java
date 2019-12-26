@@ -27,7 +27,7 @@ public class NetSendTask implements UdpThread.UdpThreadCallback{
     private static ServerSocket serverSocket;
     private Context context;
     private UdpThread udpThread;
-    private final String deviceName;
+    //private final String deviceName;
     private final HashMap<String, DeviceItem> onlineDevices =new HashMap<>();
     //private final ArrayList<FileItem>sendFiles=new ArrayList<>();
     private NetTcpFileSendTask sendTask;
@@ -35,12 +35,14 @@ public class NetSendTask implements UdpThread.UdpThreadCallback{
     private final NetSendTaskCallback callback;
     private String targetIp=null;
 
+    private boolean isApMode=false;
+
 
     public NetSendTask(@NonNull Context context, @Nullable NetSendTaskCallback callback) throws Exception{
         super();
         this.context=context;
         this.callback=callback;
-        deviceName= SPUtil.getDeviceName(context);
+        //deviceName= SPUtil.getDeviceName(context);
         udpThread=new UdpThread(context,this);
         serverSocket=new ServerSocket(SPUtil.getPortNumber(context));
         udpThread.start();
@@ -52,17 +54,26 @@ public class NetSendTask implements UdpThread.UdpThreadCallback{
         IpMessage ipMessage=new IpMessage();
         ipMessage.setCommand(IpMessageConstants.MSG_REQUEST_ONLINE_DEVICES);
         try {
-            new UdpThread.UdpSendTask(ipMessage.toProtocolString(), InetAddress.getByName("255.255.255.255"),SPUtil.getPortNumber(context),null).start();
+            new UdpThread.UdpSendTask(ipMessage.toProtocolString(), InetAddress.getByName(getBroadcastIp()),SPUtil.getPortNumber(context),null).start();
         } catch (UnknownHostException e) {
             e.printStackTrace();
         }
+    }
+
+    public void setApMode(boolean isApMode){
+        this.isApMode=isApMode;
+        sendRequestOnlineDevicesBroadcast();
+    }
+
+    private String getBroadcastIp(){
+        return isApMode?"192.168.43.255":"255.255.255.255";
     }
 
     public void sendFileRequestIpMessage(@NonNull List<FileItem>sendFiles,@NonNull String targetIp){
         //this.sendFiles.clear();
         //this.sendFiles.addAll(sendFiles);
         try{
-            StringBuilder ipMsg_addtional=new StringBuilder();
+            /*StringBuilder ipMsg_addtional=new StringBuilder();
             for(int i=0;i<sendFiles.size();i++){
                 StringBuilder ipMsg_fileInfo=new StringBuilder();
                 FileItem fileItem=sendFiles.get(i);
@@ -76,7 +87,8 @@ public class NetSendTask implements UdpThread.UdpThreadCallback{
             IpMessage ipMessage=new IpMessage();
             ipMessage.setCommand(IpMessageConstants.MSG_SEND_FILE_REQUEST);
             ipMessage.setDeviceName(SPUtil.getDeviceName(context));
-            ipMessage.setAdditionalMessage(ipMsg_addtional.toString());
+            ipMessage.setAdditionalMessage(ipMsg_addtional.toString());*/
+            IpMessage ipMessage= IpMessage.getSendingFileRequestIpMessgae(context,sendFiles);
 
             new UdpThread.UdpSendTask(ipMessage.toProtocolString(),InetAddress.getByName(targetIp),SPUtil.getPortNumber(context),null).start();
             if(sendTask!=null)sendTask.setInterrupted();

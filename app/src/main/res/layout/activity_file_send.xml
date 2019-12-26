@@ -1,9 +1,30 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent" android:layout_height="match_parent">
+    <LinearLayout
+        android:id="@+id/activity_file_send_head_area"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:gravity="end|center_vertical">
+        <android.support.v7.widget.AppCompatCheckBox
+            android:id="@+id/activity_file_send_screen_on"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:checked="true"
+            android:text="@string/word_keep_screen_on"/>
+        <android.support.v7.widget.AppCompatCheckBox
+            android:id="@+id/activity_file_send_ap_mode"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="5dp"
+            android:layout_marginRight="15dp"
+            android:text="@string/word_ap_mode"/>
+    </LinearLayout>
     <android.support.v4.widget.SwipeRefreshLayout
         android:layout_width="match_parent" android:layout_height="match_parent"
-        android:id="@+id/activity_file_send_swr">
+        android:id="@+id/activity_file_send_swr"
+        android:layout_below="@+id/activity_file_send_head_area">
         <android.support.v7.widget.RecyclerView
             android:id="@+id/activity_file_send_recyclerview"
             android:layout_width="match_parent"
@@ -35,7 +56,6 @@
                 android:layout_height="wrap_content"
                 android:textColor="@color/colorFirstAttention"
                 android:clickable="true"
-                android:focusable="true"
                 android:layout_marginLeft="3dp"
                 android:text="@string/activity_send_no_device_att2"/>
         </LinearLayout>

@@ -1,9 +1,14 @@
 package com.github.ghmxr.apkextractor.items;
 
+import android.content.Context;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 
 import com.github.ghmxr.apkextractor.Constants;
 import com.github.ghmxr.apkextractor.net.IpMessageConstants;
+import com.github.ghmxr.apkextractor.utils.SPUtil;
+
+import java.util.List;
 
 public class IpMessage {
     private String version;
@@ -92,5 +97,32 @@ public class IpMessage {
      */
     public static String fileInfoSplit(){
         return new String(new byte[]{0x07});
+    }
+
+    /**
+     * 通过FileItem的list集合获取一个发送文件请求的IpMessage
+     * @param sendFiles 要发送的文件
+     */
+    public static @Nullable
+    IpMessage getSendingFileRequestIpMessgae(@NonNull Context context, @NonNull List<FileItem> sendFiles){
+        try{
+            StringBuilder ipMsg_addtional=new StringBuilder();
+            for(int i=0;i<sendFiles.size();i++){
+                StringBuilder ipMsg_fileInfo=new StringBuilder();
+                FileItem fileItem=sendFiles.get(i);
+                ipMsg_fileInfo.append(fileItem.getName());
+                ipMsg_fileInfo.append(fileInfoSplit());
+                ipMsg_fileInfo.append(fileItem.length());
+                ipMsg_addtional.append(ipMsg_fileInfo.toString());
+                if(i<sendFiles.size()-1)ipMsg_addtional.append(":");
+            }
+
+            IpMessage ipMessage=new IpMessage();
+            ipMessage.setCommand(IpMessageConstants.MSG_SEND_FILE_REQUEST);
+            ipMessage.setDeviceName(SPUtil.getDeviceName(context));
+            ipMessage.setAdditionalMessage(ipMsg_addtional.toString());
+            return ipMessage;
+        }catch (Exception e){e.printStackTrace();}
+        return null;
     }
 }

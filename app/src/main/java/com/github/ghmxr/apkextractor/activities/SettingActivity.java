@@ -27,6 +27,7 @@ import com.github.ghmxr.apkextractor.R;
 import com.github.ghmxr.apkextractor.Constants;
 import com.github.ghmxr.apkextractor.ui.ExportRuleDialog;
 import com.github.ghmxr.apkextractor.ui.ToastManager;
+import com.github.ghmxr.apkextractor.utils.EnvironmentUtil;
 import com.github.ghmxr.apkextractor.utils.SPUtil;
 
 public class SettingActivity extends BaseActivity implements View.OnClickListener{
@@ -57,6 +58,7 @@ public class SettingActivity extends BaseActivity implements View.OnClickListene
         findViewById(R.id.settings_about_area).setOnClickListener(this);
         findViewById(R.id.settings_language_area).setOnClickListener(this);
         findViewById(R.id.settings_port_number_area).setOnClickListener(this);
+        findViewById(R.id.settings_device_name_area).setOnClickListener(this);
         refreshSettingValues();
 
         if(bundle!=null){
@@ -209,7 +211,7 @@ public class SettingActivity extends BaseActivity implements View.OnClickListene
                     }
                 });
                 new AlertDialog.Builder(this)
-                        .setTitle(this.getResources().getString(R.string.dialog_about_title))
+                        .setTitle(EnvironmentUtil.getAppName(this)+"("+EnvironmentUtil.getAppVersionName(this)+")")
                         .setIcon(R.drawable.icon_launcher)
                         .setCancelable(true)
                         .setView(dialogView)
@@ -302,6 +304,35 @@ public class SettingActivity extends BaseActivity implements View.OnClickListene
                 });
             }
             break;
+            case R.id.settings_device_name_area:{
+                View dialogView=LayoutInflater.from(this).inflate(R.layout.dialog_device_name,null);
+                final EditText editText=dialogView.findViewById(R.id.dialog_device_name_edit);
+                editText.setText(SPUtil.getDeviceName(SettingActivity.this));
+                final AlertDialog dialog=new AlertDialog.Builder(this)
+                        .setTitle(getResources().getString(R.string.activity_settings_device_name))
+                        .setView(dialogView)
+                        .setPositiveButton(getResources().getString(R.string.dialog_button_confirm),null)
+                        .setNegativeButton(getResources().getString(R.string.dialog_button_cancel), new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {}
+                        })
+                        .create();
+                dialog.show();
+                dialog.getButton(AlertDialog.BUTTON_POSITIVE).setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        String value=editText.getText().toString().trim();
+                        if(TextUtils.isEmpty(value)){
+                            ToastManager.showToast(SettingActivity.this,getResources().getString(R.string.dialog_settings_device_name_invalid),Toast.LENGTH_SHORT);
+                            return;
+                        }
+                        editor.putString(Constants.PREFERENCE_DEVICE_NAME,value);
+                        editor.apply();
+                        dialog.cancel();
+                    }
+                });
+            }
+            break;
         }
     }
 
@@ -361,6 +392,7 @@ public class SettingActivity extends BaseActivity implements View.OnClickListene
         }
         ((TextView)findViewById(R.id.settings_language_value)).setText(language_value);
         ((TextView)findViewById(R.id.settings_port_number_value)).setText(String.valueOf(SPUtil.getPortNumber(this)));
+        ((TextView)findViewById(R.id.settings_device_name_value)).setText(SPUtil.getDeviceName(this));
     }
 
     @Override

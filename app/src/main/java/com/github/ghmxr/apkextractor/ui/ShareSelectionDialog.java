@@ -10,11 +10,13 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
+import android.widget.Toast;
 
 import com.github.ghmxr.apkextractor.Global;
 import com.github.ghmxr.apkextractor.R;
 import com.github.ghmxr.apkextractor.activities.FileSendActivity;
 import com.github.ghmxr.apkextractor.items.FileItem;
+import com.github.ghmxr.apkextractor.items.IpMessage;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -48,6 +50,15 @@ public class ShareSelectionDialog extends Dialog implements View.OnClickListener
         switch (v.getId()){
             default:break;
             case R.id.dialog_share_direct:{
+                try{
+                    IpMessage testIpMessage= IpMessage.getSendingFileRequestIpMessgae(getContext(),this.fileItems);
+                    if(testIpMessage.toProtocolString().length()>65530){
+                        ToastManager.showToast(getContext(),getContext().getResources().getString(R.string.info_udp_too_long),Toast.LENGTH_SHORT);
+                        return;
+                    }
+                }catch (Exception e){
+                    e.printStackTrace();
+                }
                 Intent intent=new Intent(getContext(), FileSendActivity.class);
                 FileSendActivity.setSendingFiles(this.fileItems);
                 getContext().startActivity(intent);

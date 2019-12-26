@@ -2,6 +2,7 @@ package com.github.ghmxr.apkextractor.utils;
 
 import android.content.Context;
 import android.content.Intent;
+import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.content.pm.ResolveInfo;
@@ -13,11 +14,17 @@ import android.net.DhcpInfo;
 import android.net.wifi.WifiManager;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.text.format.Formatter;
 
 import com.github.ghmxr.apkextractor.R;
 import com.github.ghmxr.apkextractor.Constants;
+import com.github.ghmxr.apkextractor.items.FileItem;
+import com.github.ghmxr.apkextractor.items.IpMessage;
+import com.github.ghmxr.apkextractor.net.IpMessageConstants;
 
+import java.io.BufferedReader;
+import java.io.FileReader;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.security.MessageDigest;
@@ -212,7 +219,41 @@ public class EnvironmentUtil {
         return "192.168.1.1";
     }
 
-    public static String getBroadCastIpAddress(@NonNull Context context){
+    /**
+     * 获取本机连接WiFi网络的IP地址
+     */
+    public static String getSelfIp(@NonNull Context context){
+        try{
+            WifiManager wifiManager=(WifiManager)context.getApplicationContext().getSystemService(Context.WIFI_SERVICE);
+            return Formatter.formatIpAddress(wifiManager.getDhcpInfo().ipAddress);
+        }catch (Exception e){e.printStackTrace();}
+        return "0.0.0.0";
+    }
+
+    /**
+     * 获取本应用名称
+     */
+    public static @NonNull String getAppName(@NonNull Context context){
+        try{
+            PackageManager packageManager=context.getPackageManager();
+            ApplicationInfo applicationInfo=packageManager.getApplicationInfo(context.getPackageName(),0);
+            return String.valueOf(packageManager.getApplicationLabel(applicationInfo));
+        }catch (Exception e){e.printStackTrace();}
+        return "";
+    }
+
+    /**
+     * 获取本应用版本名
+     */
+    public static @NonNull String getAppVersionName(@NonNull Context context){
+        try{
+            PackageManager packageManager=context.getPackageManager();
+            return String.valueOf(packageManager.getPackageInfo(context.getPackageName(),0).versionName);
+        }catch (Exception e){e.printStackTrace();}
+        return "";
+    }
+
+    /*public static String getBroadCastIpAddress(@NonNull Context context){
         try{
             if(isAPEnabled(context)){
                 return getRouterIpAddress(context);
@@ -221,6 +262,42 @@ public class EnvironmentUtil {
             e.printStackTrace();
         }
         return "255.255.255.255";
-    }
+    }*/
+
+    /*
+     * 当本机热点作为路由时发送广播包请求在线设备的ip地址
+     */
+    /*public static String getApHostBroadcastAddress(){
+        try{
+            String ip=getApConnectedDeviceIp();
+            return ip.substring(0,ip.lastIndexOf("."))+".255";
+        }catch (Exception e){e.printStackTrace();}
+        return "";
+    }*/
+
+    /*
+     * 获取连接本机热点设备的其中一个ip地址
+     */
+    /*private static String getApConnectedDeviceIp(){
+        try{
+            //String anIP="";
+            BufferedReader reader = new BufferedReader(new FileReader("/proc/net/arp"));
+            String line;
+            //读取第一行信息，就是IP address HW type Flags HW address Mask Device
+            while ((line = reader.readLine()) != null) {
+                String[] tokens = line.split("[ ]+");
+                if (tokens.length < 6) {
+                    continue;
+                }
+                //String ip = tokens[0]; //ip
+                return tokens[0];
+                //    String mac = tokens[3];  //mac 地址
+                //  String flag = tokens[2];//表示连接状态
+            }
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+        return "";
+    }*/
 
 }

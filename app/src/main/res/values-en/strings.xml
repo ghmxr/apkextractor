@@ -201,7 +201,7 @@
     <string name="receive_log_received_send_cancel">received sending files canceled message:</string>
     <string name="receive_log_received_transfer_interrupt">received sending files interrupted message:</string>
 
-    <string name="help_receive">
+    <string name="help_send">
         Let the other side install APK Kit, then connect to a same WiFi network , or connect to this devices\'s AP ,then run APK Kit with selecting the "Receive File"
          item on the left side of the main panel.\n\n
         Specially attention, if you have set the port number manually, the port number must be same to the other side or it can not detect the devices.

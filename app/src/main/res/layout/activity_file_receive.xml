@@ -1,8 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent" android:layout_height="match_parent"
     android:orientation="vertical">
     <RelativeLayout
+        android:id="@+id/activity_file_receive_header_area"
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
         <TextView
@@ -12,19 +13,47 @@
             android:layout_marginLeft="10dp"
             android:layout_alignParentLeft="true"
             android:text="@string/activity_receive_att"/>
-        <android.support.v7.widget.AppCompatCheckBox
-            android:id="@+id/activity_file_receive_apmode"
+        <LinearLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:orientation="horizontal"
             android:layout_alignParentRight="true"
-            android:layout_marginRight="20dp"
-            android:layout_centerVertical="true"
-            android:text="@string/word_ap_mode"/>
+            android:layout_marginRight="15dp"
+            android:layout_centerVertical="true">
+            <android.support.v7.widget.AppCompatCheckBox
+                android:id="@+id/activity_file_receive_screen_on"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginRight="10dp"
+                android:checked="true"
+                android:text="@string/word_keep_screen_on"/>
+            <android.support.v7.widget.AppCompatCheckBox
+                android:id="@+id/activity_file_receive_apmode"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/word_ap_mode"/>
+        </LinearLayout>
     </RelativeLayout>
 
     <android.support.v7.widget.RecyclerView
         android:id="@+id/activity_file_receive_recyclerview"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:layout_below="@+id/activity_file_receive_header_area"
+        android:layout_above="@+id/activity_file_receive_refresh"
         android:layout_marginTop="5dp"/>
-</LinearLayout>
+    <TextView
+        android:id="@+id/activity_file_receive_refresh"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textColor="@color/colorFirstAttention"
+        android:textSize="13sp"
+        android:singleLine="true"
+        android:clickable="true"
+        android:focusable="true"
+        android:layout_alignParentBottom="true"
+        android:layout_centerHorizontal="true"
+        android:layout_marginBottom="20dp"
+        android:layout_marginTop="10dp"
+        android:text="@string/activity_receive_refresh"/>
+</RelativeLayout>

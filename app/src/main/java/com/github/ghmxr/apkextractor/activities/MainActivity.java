@@ -62,6 +62,7 @@ import com.github.ghmxr.apkextractor.ui.AppItemSortConfigDialog;
 import com.github.ghmxr.apkextractor.ui.ImportItemSortConfigDialog;
 import com.github.ghmxr.apkextractor.ui.SortConfigDialogCallback;
 import com.github.ghmxr.apkextractor.ui.ToastManager;
+import com.github.ghmxr.apkextractor.utils.EnvironmentUtil;
 import com.github.ghmxr.apkextractor.utils.SPUtil;
 import com.github.ghmxr.apkextractor.utils.StorageUtil;
 
@@ -825,7 +826,7 @@ public class MainActivity extends BaseActivity implements View.OnClickListener,V
                     }
                 });
                 new AlertDialog.Builder(this)
-                        .setTitle(this.getResources().getString(R.string.dialog_about_title))
+                        .setTitle(EnvironmentUtil.getAppName(this)+"("+EnvironmentUtil.getAppVersionName(this)+")")
                         .setIcon(R.drawable.icon_launcher)
                         .setCancelable(true)
                         .setView(dialogView)
