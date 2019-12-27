@@ -188,6 +188,8 @@
     <string name="dialog_send_request_head2">的回复</string>
     <string name="toast_receive_refuse">对方拒绝了接收文件</string>
     <string name="toast_receive_interrupt">对方终止了接收文件</string>
+    <string name="dialog_send_error_title">错误信息</string>
+    <string name="dialog_send_error_message">文件发送时发生错误，错误信息如下：\n\n</string>
 
     <string name="activity_receive_title">接收文件</string>
     <string name="activity_receive_att">运行日志</string>
@@ -202,6 +204,11 @@
     <string name="toast_send_canceled">对方取消了发送文件</string>
     <string name="toast_send_interrupt">对方终止了发送文件</string>
     <string name="activity_send_file_info_head">发送的文件信息</string>
+    <string name="dialog_receive_error_title">错误信息</string>
+    <string name="dialog_receive_error_message">文件在接收时发生错误，错误信息如下:\n\n</string>
+
+    <string name="dialog_no_network_title">无网络</string>
+    <string name="dialog_no_network_message">当前没有网络连接，请检查。</string>
 
     <string name="activity_send_no_device_att1">没有发现设备</string>
     <string name="activity_send_no_device_att2"><u>查看帮助？</u></string>
@@ -224,11 +231,13 @@
         务必注意，如果手动设置过端口号，双方设备须设置相同的端口号后才可以检测到设备。
     </string>
     <string name="help_receive">
-        请发送端设备安装APK Kit（Build 8及以上版本），并和当前设备接入同一个网络，或者让本设备连接至发送端的热点，让发送端选择要分享的应用或安装包后
+        请发送端设备安装APK Kit（Build 8及以上版本），并和当前设备接入同一个WiFi网络，或者让本设备连接至发送端的热点，让发送端选择要分享的应用或安装包后
         选择“局域网分享”，发送端即可看到本机设备。\n\n
         如果本设备连接的是发送端的热点，可以尝试勾选“热点模式”。\n\n
+        如果对方没有检测到你，试试重发上线数据报。\n\n
         发送端选中要发送的设备后，接收端即可看到文件接收请求提示。接收的文件将会保存至导出路径，如果有重名文件将会自动加入数字后缀进行重命名。
         可通过“安装包”标签或者其他文件管理器查看。\n\n
+        务必注意，如果手动设置过端口号，双方设备须设置相同的端口号后才可以检测到设备。
     </string>
 
     <string name="dialog_share_selection_self">局域网分享</string>
@@ -274,8 +283,8 @@
     <string name="info_udp_too_long">文件请求数据报过长，请尝试减少要发送的文件数量，然后重试</string>
 
     <string name="language_follow_system">跟随系统</string>
-    <string name="language_chinese">简体中文</string>
-    <string name="language_english">English</string>
+    <string name="language_chinese" translatable="false">简体中文</string>
+    <string name="language_english" translatable="false">English</string>
 
     <string name="dialog_about_title" translatable="false">APK Kit</string>
     <string name="dialog_about_message">\n这是一个快速查询、导出或者分享本地已安装APP的小工具，支持将对应APP外置存储中的Data，Obb数据一并打包成zip并分享给对方
@@ -284,7 +293,7 @@
         支持将已导出的zip包导入本机，当导入单个zip包并且zip包的根路径存在apk文件时，导入完成后会自动弹出安装界面。Data、Obb数据会依照原路径解压至主存储/Android/Data或者
         Android/Obb，APK文件将会解压至导出路径并以原始文件名命名（如有重复会加入数字后缀来命名）。\n\n
 
-        点击“分享”，可以使用支持分享的应用例如蓝牙、QQ面对面快传等来分享已选择的应用。\n\n
+        点击“分享”，可以使用局域网或支持分享的应用例如蓝牙、QQ面对面快传等来分享已选择的应用。\n\n
 
     勾选导出Data或者Obb选项后，会将应用APK和Data或Obb数据打包成zip导出。\n\n
    <b>Build 8 更新日志：</b> \n

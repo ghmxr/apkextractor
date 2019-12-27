@@ -119,7 +119,7 @@
     <string name="dialog_wait">Please wait&#8230;</string>
     <string name="dialog_data_obb_title">Additional options</string>
     <string name="dialog_data_obb_message">The app(s) selected contain(s) data or obb in the external storage, check the following options
-        will package them to a zip file or files </string>
+        will package them to a zip file</string>
 
     <string name="dialog_import_data_obb_title">Importing ZIP</string>
     <string name="dialog_import_data_obb_att">The listed bellow are found in this(those) zip file(s), check data or obb and then will decompress them
@@ -245,8 +245,6 @@
     <string name="word_ap_mode">AP Mode</string>
 
     <string name="language_follow_system">follow system</string>
-    <string name="language_chinese">简体中文</string>
-    <string name="language_english">English</string>
 
     <string name="dialog_about_message">\nThis is an android app using to look up, export, or share the apps installed on the device,
         supporting to package data or obb of the app in the external storage to a zip file and share it to another one.
@@ -257,7 +255,7 @@
          ended, the apk file will be decompressed to the exporting path and named by its initial name, or will add number suffix to its file name if already exists
         \n\n
 
-        Click \"Share\" will share the file(s) selected through other sharing apps such as bluetooth, wifi direct, and more on. \n\n
+        Click \"Share\" will share the file(s) selected through local network or other sharing apps such as bluetooth, wifi direct, and more on. \n\n
 
     It will package the data or obb files with the apk itself to a zip file as you checked the data or obb options.\n\n
 
@@ -267,4 +265,42 @@
         mxremail@qq.com \n\n
         Donate:
         </string>
+    <string name="activity_receive_refresh"><u>Has not been detected by the other side?(send online message again)</u></string>
+    <string name="activity_send_file_info_head">sending file info</string>
+    <string name="activity_settings_device_name">Device name</string>
+    <string name="activity_settings_port_invalid">Please type in a number between 1024 to 65535</string>
+    <string name="activity_settings_port_number">port number</string>
+    <string name="activity_settings_port_number_attention">At most circumstances, it is no need to edit the port number manually unless the port number of 65535 is in use by other  apps.\n\n
+        The port number must be same as the other side while sharing files through local network or it can not detect the devices.</string>
+    <string name="activity_settings_port_number_hint">type in the port number(default 6565)</string>
+    <string name="dialog_no_network_message">No network connection, please check</string>
+    <string name="dialog_no_network_title">No network</string>
+    <string name="dialog_receive_error_message">There are some errors occurred while receiving files.Error infos are listed bellow.\n\n</string>
+    <string name="dialog_receive_error_title">Error</string>
+    <string name="dialog_send_error_message">There are some errors occurred while sending files.The error infos are listed bellow.\n\n</string>
+    <string name="dialog_send_error_title">Error</string>
+    <string name="dialog_settings_device_name_head">Type a name to show to the sending site while sharing files through local network.</string>
+    <string name="dialog_settings_device_name_hint">type in a name</string>
+    <string name="dialog_settings_device_name_invalid">type in a name</string>
+    <string name="help_receive">
+        Let the sending side device to install APK Kit(Build 8 or higher version) and connect to the same wifi network, or let yourself connect to the ap wireless of the sending side, then let the sending side
+        select the app(s) or package(s) to send ,click through local net, and the sending side will see the device of your side.\n\n
+        If this device is connected to the sending side\'s ap, try to check \"ap mode\"\n\n
+        After the sending site selected the device to send, the receiving side will see the file receiving request message.The files will be saved to the exporting path.If there is a same named file, the file will
+        automatically be renamed itself by adding number suffix.You can see the received files by package panel or other file explorers.
+
+    </string>
+    <string name="info_bind_port_error">error to bind to the port number, please check if other apps are in use and retry, or change to another port number.</string>
+    <string name="info_udp_too_long">The file info message is too long, try to select less files and retry.</string>
+    <string name="receive_log_self_ip">Native IP:</string>
+    <string name="toast_receive_interrupt">Receiving file terminated by the other side</string>
+    <string name="toast_receive_refuse">The other side refused to receive the file</string>
+    <string name="toast_receiving_complete">File receiving completed, please turn to the package panel or exporting path to check.</string>
+    <string name="toast_send_canceled">The other side canceled sending the file</string>
+    <string name="toast_send_interrupt">The other side terminated sending the file</string>
+    <string name="word_error">error</string>
+    <string name="word_keep_screen_on">keep screen on</string>
+    <string name="activity_settings_port_unknown">invalid number</string>
+    <string name="action_ap">AP settings</string>
+    <string name="action_file_info">File info</string>
 </resources>

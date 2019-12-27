@@ -1,5 +1,6 @@
 package com.github.ghmxr.apkextractor.utils;
 
+import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.ApplicationInfo;
@@ -11,20 +12,17 @@ import android.graphics.Canvas;
 import android.graphics.PixelFormat;
 import android.graphics.drawable.Drawable;
 import android.net.DhcpInfo;
+import android.net.wifi.WifiInfo;
 import android.net.wifi.WifiManager;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
 import android.text.format.Formatter;
+import android.widget.Toast;
 
-import com.github.ghmxr.apkextractor.R;
 import com.github.ghmxr.apkextractor.Constants;
-import com.github.ghmxr.apkextractor.items.FileItem;
-import com.github.ghmxr.apkextractor.items.IpMessage;
-import com.github.ghmxr.apkextractor.net.IpMessageConstants;
+import com.github.ghmxr.apkextractor.R;
+import com.github.ghmxr.apkextractor.ui.ToastManager;
 
-import java.io.BufferedReader;
-import java.io.FileReader;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.security.MessageDigest;
@@ -195,6 +193,18 @@ public class EnvironmentUtil {
     }
 
     /**
+     * 判断当前是否连接了WiFi网络
+     * @return true-连接了WiFi网络
+     */
+    public static boolean isWifiConnected(@NonNull Context context){
+        try{
+            WifiInfo wifiInfo=((WifiManager)context.getApplicationContext().getSystemService(Context.WIFI_SERVICE)).getConnectionInfo();
+            return wifiInfo!=null&&wifiInfo.getIpAddress()!=0;
+        }catch (Exception e){e.printStackTrace();}
+        return false;
+    }
+
+    /**
      * 获取系统热点是否开启
      */
     public static boolean isAPEnabled(Context context){
@@ -206,6 +216,23 @@ public class EnvironmentUtil {
             return ((int)method.invoke(wifiManager))==value_wifi_enabled;
         }catch (Exception e){e.printStackTrace();}
         return false;
+    }
+
+    /**
+     * 跳转到系统热点配置页
+     */
+    public static void goToApPageActivity(@NonNull Context context){
+        try{
+            Intent intent = new Intent();
+            ComponentName cm = new ComponentName("com.android.settings",
+                    "com.android.settings.TetherSettings");
+            intent.setComponent(cm);
+            intent.setAction("android.intent.action.VIEW");
+            context.startActivity(intent);
+        }catch (Exception e){
+            e.printStackTrace();
+            ToastManager.showToast(context,e.toString(), Toast.LENGTH_SHORT);
+        }
     }
 
     public static String getRouterIpAddress(@NonNull Context context){

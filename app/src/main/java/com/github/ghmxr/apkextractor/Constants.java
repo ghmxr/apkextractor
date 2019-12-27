@@ -59,7 +59,7 @@ public class Constants {
      * this preference stands for a int value
      */
     public static final String PREFERENCE_MAIN_PAGE_VIEW_MODE="main_view_mode";
-    public static final int PREFERENCE_MAIN_PAGE_VIEW_MODE_DEFAULT=0;
+    public static final int PREFERENCE_MAIN_PAGE_VIEW_MODE_DEFAULT=1;
     /**
      * this preference stands for a boolean value;
      */

@@ -191,7 +191,7 @@ public class NetSendTask implements UdpThread.UdpThreadCallback{
         void onFileSendingInterrupted();
         void onProgress(long progress,long total,String currentFile);
         void onSendingSpeed(long bytesOfSpeed);
-        void onFileSendCompleted();
+        void onFileSendCompleted(@NonNull String error_info);
     }
 
 
@@ -203,6 +203,7 @@ public class NetSendTask implements UdpThread.UdpThreadCallback{
         private long progress=0,progressCheck=0;
         private long checkTime=0;
         private long speedOfBytes=0;
+        private final StringBuilder error_info=new StringBuilder();
 
         private final ArrayList<FileItem>fileItems=new ArrayList<>();
 
@@ -218,6 +219,7 @@ public class NetSendTask implements UdpThread.UdpThreadCallback{
             }
             for(int i=0;i<fileItems.size();i++){
                 if(isInterrupted)return;
+                final FileItem fileItem=fileItems.get(i);
                 try{
                     socket=serverSocket.accept();
                     if(callback!=null)Global.handler.post(new Runnable() {
@@ -226,7 +228,6 @@ public class NetSendTask implements UdpThread.UdpThreadCallback{
                             callback.onFileSendingStarted(NetSendTask.this);
                         }
                     });
-                    final FileItem fileItem=fileItems.get(i);
                     OutputStream outputStream=new BufferedOutputStream(socket.getOutputStream());
                     InputStream inputStream;
                     if(fileItem.isDocumentFile()){
@@ -277,12 +278,16 @@ public class NetSendTask implements UdpThread.UdpThreadCallback{
                     socket.close();
                 }catch (Exception e){
                     e.printStackTrace();
+                    error_info.append(fileItem.getName());
+                    error_info.append(" : ");
+                    error_info.append(e.toString());
+                    error_info.append("\n\n");
                 }
             }
             if(callback!=null&&!isInterrupted)Global.handler.post(new Runnable() {
                 @Override
                 public void run() {
-                    callback.onFileSendCompleted();
+                    callback.onFileSendCompleted(error_info.toString());
                 }
             });
         }

@@ -1,8 +1,6 @@
 package com.github.ghmxr.apkextractor.activities;
 
-import android.content.ComponentName;
 import android.content.DialogInterface;
-import android.content.Intent;
 import android.os.Bundle;
 import android.os.SystemClock;
 import android.support.annotation.NonNull;
@@ -11,6 +9,7 @@ import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.AppCompatCheckBox;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.text.TextUtils;
 import android.text.format.Formatter;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -30,6 +29,7 @@ import com.github.ghmxr.apkextractor.net.IpMessageConstants;
 import com.github.ghmxr.apkextractor.net.NetSendTask;
 import com.github.ghmxr.apkextractor.ui.FileTransferringDialog;
 import com.github.ghmxr.apkextractor.ui.ToastManager;
+import com.github.ghmxr.apkextractor.utils.EnvironmentUtil;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -122,6 +122,21 @@ public class FileSendActivity extends BaseActivity implements NetSendTask.NetSen
     }
 
     @Override
+    protected void onResume() {
+        super.onResume();
+        if(!EnvironmentUtil.isWifiConnected(this)&&!EnvironmentUtil.isAPEnabled(this)){
+            new AlertDialog.Builder(this)
+                    .setTitle(getResources().getString(R.string.dialog_no_network_title))
+                    .setMessage(getResources().getString(R.string.dialog_no_network_message))
+                    .setPositiveButton(getResources().getString(R.string.dialog_button_confirm), new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {}
+                    })
+                    .show();
+        }
+    }
+
+    @Override
     public void onOnlineDevicesChanged(@NonNull List<DeviceItem> devices) {
         swipeRefreshLayout.setRefreshing(false);
         recyclerView.setAdapter(new ListAdapter(devices));
@@ -176,10 +191,22 @@ public class FileSendActivity extends BaseActivity implements NetSendTask.NetSen
     }
 
     @Override
-    public void onFileSendCompleted() {
+    public void onFileSendCompleted(@NonNull String error_info) {
         if(sendingDiag!=null)sendingDiag.cancel();
         sendingDiag=null;
-        ToastManager.showToast(this,getResources().getString(R.string.toast_sending_complete),Toast.LENGTH_SHORT);
+        if(TextUtils.isEmpty(error_info)){
+            ToastManager.showToast(this,getResources().getString(R.string.toast_sending_complete),Toast.LENGTH_SHORT);
+        }
+        else {
+            new AlertDialog.Builder(this)
+                    .setTitle(getResources().getString(R.string.dialog_send_error_title))
+                    .setMessage(getResources().getString(R.string.dialog_send_error_message)+error_info)
+                    .setPositiveButton(getResources().getString(R.string.dialog_button_confirm), new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {}
+                    })
+                    .show();
+        }
     }
 
     public static void setSendingFiles(@NonNull List<FileItem>fileItems){
@@ -206,17 +233,7 @@ public class FileSendActivity extends BaseActivity implements NetSendTask.NetSen
             }
             break;
             case R.id.action_ap:{
-                try{
-                    Intent intent = new Intent();
-                    ComponentName cm = new ComponentName("com.android.settings",
-                            "com.android.settings.TetherSettings");
-                    intent.setComponent(cm);
-                    intent.setAction("android.intent.action.VIEW");
-                    startActivity(intent);
-                }catch (Exception e){
-                    e.printStackTrace();
-                    ToastManager.showToast(this,e.toString(),Toast.LENGTH_SHORT);
-                }
+                EnvironmentUtil.goToApPageActivity(this);
             }
             break;
             case R.id.action_files_info:{

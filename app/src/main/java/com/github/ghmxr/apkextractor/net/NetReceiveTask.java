@@ -228,7 +228,7 @@ public class NetReceiveTask implements UdpThread.UdpThreadCallback{
         void onFileReceiveInterrupted();
         void onFileReceiveProgress(long progress,long total,@NonNull String currentWritePath);
         void onSpeed(long speedOfBytes);
-        void onFileReceivedCompleted();
+        void onFileReceivedCompleted(@NonNull String error_info);
         void onLog(String logInfo);
     }
 
@@ -264,6 +264,7 @@ public class NetReceiveTask implements UdpThread.UdpThreadCallback{
         private long checkTime=0;
 
         private FileItem currentWritingFileItem=null;
+        private final StringBuilder error_info=new StringBuilder();
 
         private NetTcpFileReceiveTask(@NonNull String targetIp, List<ReceiveFileItem>receiveFileItems){
             this.targetIp=targetIp;
@@ -280,6 +281,7 @@ public class NetReceiveTask implements UdpThread.UdpThreadCallback{
             for(int i=0;i<receiveFileItems.size();i++){
                 if(isInterrupted)return;
                 final ReceiveFileItem receiveFileItem=receiveFileItems.get(i);
+                FileItem writingFileItemThisLoop=null;
                 try{
                     socket=new Socket(targetIp,SPUtil.getPortNumber(context));
                     if(callback!=null)Global.handler.post(new Runnable() {
@@ -304,16 +306,18 @@ public class NetReceiveTask implements UdpThread.UdpThreadCallback{
                         DocumentFile writingDocumentFile=OutputUtil.getExportPathDocumentFile(context).createFile("application/x-zip-compressed",fileName);
                         outputStream= OutputUtil.getOutputStreamForDocumentFile(context,
                                 writingDocumentFile);//documentFile接口在根据文件名创建文件时，如果文件名已存在会自动加后缀
-                        currentWritingFileItem=new FileItem(context,writingDocumentFile);
+                        writingFileItemThisLoop=new FileItem(context,writingDocumentFile);
+                        currentWritingFileItem=writingFileItemThisLoop;
                     }else{
                         File destinationFile=new File(SPUtil.getInternalSavePath(context)+"/"+fileName);
                         int count=1;
                         while (destinationFile.exists()){
-                            fileName=EnvironmentUtil.getFileMainName(initialFileName)+(count++)+"."+EnvironmentUtil.getFileExtensionName(initialFileName);
+                            fileName=EnvironmentUtil.getFileMainName(initialFileName)+"("+(count++)+")"+"."+EnvironmentUtil.getFileExtensionName(initialFileName);
                             destinationFile=new File(SPUtil.getInternalSavePath(context)+"/"+fileName);
                         }
                         outputStream=new FileOutputStream(destinationFile);
-                        currentWritingFileItem=new FileItem(destinationFile);
+                        writingFileItemThisLoop=new FileItem(destinationFile);
+                        currentWritingFileItem=writingFileItemThisLoop;
                     }
                     final String fileNameOfMessage=fileName;
                     if(callback!=null)Global.handler.post(new Runnable() {
@@ -358,6 +362,11 @@ public class NetReceiveTask implements UdpThread.UdpThreadCallback{
                     inputStream.close();
                     socket.close();
                 }catch (Exception e){
+                    if(writingFileItemThisLoop!=null)error_info.append(writingFileItemThisLoop.getPath());
+                    else error_info.append(receiveFileItem.getFileName());
+                    error_info.append(" : ");
+                    error_info.append(e.toString());
+                    error_info.append("\n\n");
                     e.printStackTrace();
                 }
             }
@@ -365,7 +374,7 @@ public class NetReceiveTask implements UdpThread.UdpThreadCallback{
                 Global.handler.post(new Runnable() {
                     @Override
                     public void run() {
-                        callback.onFileReceivedCompleted();
+                        callback.onFileReceivedCompleted(error_info.toString());
                     }
                 });
             }

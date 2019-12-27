@@ -7,6 +7,7 @@ import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.AppCompatCheckBox;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.text.TextUtils;
 import android.text.format.Formatter;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -22,6 +23,7 @@ import com.github.ghmxr.apkextractor.R;
 import com.github.ghmxr.apkextractor.net.NetReceiveTask;
 import com.github.ghmxr.apkextractor.ui.FileTransferringDialog;
 import com.github.ghmxr.apkextractor.ui.ToastManager;
+import com.github.ghmxr.apkextractor.utils.EnvironmentUtil;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -113,6 +115,21 @@ public class FileReceiveActivity extends BaseActivity implements NetReceiveTask.
     }
 
     @Override
+    protected void onResume() {
+        super.onResume();
+        if(!EnvironmentUtil.isWifiConnected(this)){
+            new AlertDialog.Builder(this)
+                    .setTitle(getResources().getString(R.string.dialog_no_network_title))
+                    .setMessage(getResources().getString(R.string.dialog_no_network_message))
+                    .setPositiveButton(getResources().getString(R.string.dialog_button_confirm), new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {}
+                    })
+                    .show();
+        }
+    }
+
+    @Override
     public void onFileReceiveRequest(@NonNull NetReceiveTask task, @NonNull String ip, @NonNull String deviceName, @NonNull List<NetReceiveTask.ReceiveFileItem> fileItems) {
         request_diag=new AlertDialog.Builder(this)
                 .setTitle(getResources().getString(R.string.dialog_file_receive_title))
@@ -191,12 +208,23 @@ public class FileReceiveActivity extends BaseActivity implements NetReceiveTask.
     }
 
     @Override
-    public void onFileReceivedCompleted() {
+    public void onFileReceivedCompleted(@NonNull String error_info) {
         if(receiving_diag!=null){
             receiving_diag.cancel();
             receiving_diag=null;
         }
-        ToastManager.showToast(this,getResources().getString(R.string.toast_receiving_complete),Toast.LENGTH_SHORT);
+        if(TextUtils.isEmpty(error_info)){
+            ToastManager.showToast(this,getResources().getString(R.string.toast_receiving_complete),Toast.LENGTH_SHORT);
+        }else{
+            new AlertDialog.Builder(this)
+                    .setTitle(getResources().getString(R.string.dialog_receive_error_title))
+                    .setMessage(getResources().getString(R.string.dialog_receive_error_message)+error_info)
+                    .setPositiveButton(getResources().getString(R.string.dialog_button_confirm), new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {}
+                    })
+                    .show();
+        }
     }
 
     private String getFileInfoMessage(List<NetReceiveTask.ReceiveFileItem>receiveFileItems){
