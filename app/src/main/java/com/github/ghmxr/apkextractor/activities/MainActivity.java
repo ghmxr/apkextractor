@@ -370,7 +370,7 @@ public class MainActivity extends BaseActivity implements View.OnClickListener,V
         @Override
         public void onReceive(Context context, Intent intent) {
             if(intent==null||intent.getAction()==null)return;
-            if(intent.getAction().equals(Intent.ACTION_PACKAGE_ADDED)||intent.getAction().equals(Intent.ACTION_PACKAGE_REMOVED)){
+            if(intent.getAction().equals(Intent.ACTION_PACKAGE_ADDED)||intent.getAction().equals(Intent.ACTION_PACKAGE_REMOVED)||intent.getAction().equals(Intent.ACTION_PACKAGE_REPLACED)){
                 new RefreshInstalledListTask(MainActivity.this,cb_show_sys_app.isChecked(),refreshInstalledListTaskCallback).start();
             }
         }
@@ -476,6 +476,7 @@ public class MainActivity extends BaseActivity implements View.OnClickListener,V
             IntentFilter intentFilter=new IntentFilter();
             intentFilter.addAction(Intent.ACTION_PACKAGE_ADDED);
             intentFilter.addAction(Intent.ACTION_PACKAGE_REMOVED);
+            intentFilter.addAction(Intent.ACTION_PACKAGE_REPLACED);
             intentFilter.addDataScheme("package");
             registerReceiver(package_status_changed_receiver,intentFilter);
         }catch (Exception e){e.printStackTrace();}
@@ -803,6 +804,11 @@ public class MainActivity extends BaseActivity implements View.OnClickListener,V
         switch (menuItem.getItemId()){
             default:break;
             case R.id.nav_receive:{
+                if(Build.VERSION.SDK_INT>=23&&PermissionChecker.checkSelfPermission(this,Manifest.permission.WRITE_EXTERNAL_STORAGE)!=PermissionChecker.PERMISSION_GRANTED){
+                    Global.showRequestingWritePermissionSnackBar(this);
+                    requestPermissions(new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE},0);
+                    return false;
+                }
                 startActivityForResult(new Intent(this,FileReceiveActivity.class),REQUEST_CODE_RECEIVING_FILES);
             }
             break;

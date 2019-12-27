@@ -77,9 +77,9 @@ public class FileSendActivity extends BaseActivity implements NetSendTask.NetSen
                     .show();
             //Toast.makeText(this,e.toString(),Toast.LENGTH_SHORT).show();
         }
-        try{
+        /*try{
             getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
-        }catch (Exception e){e.printStackTrace();}
+        }catch (Exception e){e.printStackTrace();}*/
         swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
@@ -110,7 +110,7 @@ public class FileSendActivity extends BaseActivity implements NetSendTask.NetSen
                 if(netSendTask!=null)netSendTask.setApMode(isChecked);
             }
         });
-        ((AppCompatCheckBox)findViewById(R.id.activity_file_send_screen_on)).setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+        /*((AppCompatCheckBox)findViewById(R.id.activity_file_send_screen_on)).setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
                 try{
@@ -118,7 +118,7 @@ public class FileSendActivity extends BaseActivity implements NetSendTask.NetSen
                     else getWindow().clearFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
                 }catch (Exception e){e.printStackTrace();}
             }
-        });
+        });*/
     }
 
     @Override

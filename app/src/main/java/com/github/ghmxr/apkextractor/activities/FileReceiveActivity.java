@@ -93,7 +93,7 @@ public class FileReceiveActivity extends BaseActivity implements NetReceiveTask.
                 netReceiveTask.switchApMode(isChecked);
             }
         });
-        ((AppCompatCheckBox)findViewById(R.id.activity_file_receive_screen_on)).setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+        /*((AppCompatCheckBox)findViewById(R.id.activity_file_receive_screen_on)).setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
                 try{
@@ -101,16 +101,16 @@ public class FileReceiveActivity extends BaseActivity implements NetReceiveTask.
                     else getWindow().clearFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
                 }catch (Exception e){e.printStackTrace();}
             }
-        });
+        });*/
         findViewById(R.id.activity_file_receive_refresh).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 if(netReceiveTask!=null)netReceiveTask.sendOnlineBroadcastUdp();
             }
         });
-        try{
+        /*try{
             getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
-        }catch (Exception e){e.printStackTrace();}
+        }catch (Exception e){e.printStackTrace();}*/
 
     }
 

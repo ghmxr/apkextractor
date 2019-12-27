@@ -63,8 +63,9 @@ public class AppDetailActivity extends BaseActivity implements View.OnClickListe
         @Override
         public void onReceive(Context context, Intent intent) {
             try{
-                if(intent.getAction().equals(Intent.ACTION_PACKAGE_REMOVED)){
-                    String package_name=intent.getDataString().substring(8);
+                if(intent.getAction().equals(Intent.ACTION_PACKAGE_REMOVED)||intent.getAction().equals(Intent.ACTION_PACKAGE_REPLACED)){
+                    String data=intent.getDataString();
+                    String package_name=data.substring(data.indexOf(":")+1);
                     if(package_name.equalsIgnoreCase(appItem.getPackageName()))finish();
                 }
             }catch (Exception e){e.printStackTrace();}
@@ -283,6 +284,7 @@ public class AppDetailActivity extends BaseActivity implements View.OnClickListe
         try{
             IntentFilter intentFilter=new IntentFilter();
             intentFilter.addAction(Intent.ACTION_PACKAGE_REMOVED);
+            intentFilter.addAction(Intent.ACTION_PACKAGE_REPLACED);
             intentFilter.addDataScheme("package");
             registerReceiver(uninstall_receiver,intentFilter);
         }catch (Exception e){e.printStackTrace();}
