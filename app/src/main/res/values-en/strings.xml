@@ -54,7 +54,6 @@
     <string name="activity_settings_share_mode">Sharing mode</string>
     <string name="activity_settings_night_mode">Night mode</string>
     <string name="activity_settings_loading_options">Loading options</string>
-    <string name="activity_settings_language">Language</string>
     <string name="loading_activity">Activity</string>
     <string name="loading_receiver">Receiver</string>
     <string name="loading_boot_receivers">Static receivers(will slow down the loading speed)</string>
@@ -96,6 +95,7 @@
 
     <string name="dialog_import_duplicate_title">Files already exist</string>
     <string name="dialog_import_duplicate_message">File(s) listed below are already existed in the main storage, confirm to overwrite it(them)?\n\n</string>
+    <string name="dialog_import_duplicate_more"> more files</string>
 
     <string name="dialog_import_title">Importing</string>
     <string name="dialog_import_msg">Decompressing to </string>
@@ -131,6 +131,7 @@
     <string name="dialog_button_continue">continue</string>
     <string name="dialog_button_accept">accept</string>
     <string name="dialog_button_deny">deny</string>
+    <string name="dialog_button_share_this_app">share this app</string>
 
     <string name="share_title">Share</string>
 
@@ -243,6 +244,8 @@
     <string name="word_stop">stop</string>
     <string name="word_content_blank">No contents</string>
     <string name="word_ap_mode">AP Mode</string>
+    <string name="att_loading">Loading&#8230;</string>
+    <string name="att_checking_duplication">Checking duplication files&#8230;</string>
 
     <string name="language_follow_system">follow system</string>
 
@@ -265,12 +268,12 @@
         mxremail@qq.com \n\n
         Donate:
         </string>
-    <string name="activity_receive_refresh"><u>Has not been detected by the other side?(send online message again)</u></string>
+    <string name="activity_receive_refresh"><u>Hasn\'t been seen?(retry)</u></string>
     <string name="activity_send_file_info_head">sending file info</string>
     <string name="activity_settings_device_name">Device name</string>
     <string name="activity_settings_port_invalid">Please type in a number between 1024 to 65535</string>
     <string name="activity_settings_port_number">port number</string>
-    <string name="activity_settings_port_number_attention">At most circumstances, it is no need to edit the port number manually unless the port number of 65535 is in use by other  apps.\n\n
+    <string name="activity_settings_port_number_attention">At most circumstances, it is no need to edit the port number manually unless the port number of 6565 is in use by other apps.\n\n
         The port number must be same as the other side while sharing files through local network or it can not detect the devices.</string>
     <string name="activity_settings_port_number_hint">type in the port number(default 6565)</string>
     <string name="dialog_no_network_message">No network connection, please check</string>
@@ -279,12 +282,12 @@
     <string name="dialog_receive_error_title">Error</string>
     <string name="dialog_send_error_message">There are some errors occurred while sending files.The error infos are listed bellow.\n\n</string>
     <string name="dialog_send_error_title">Error</string>
-    <string name="dialog_settings_device_name_head">Type a name to show to the sending site while sharing files through local network.</string>
+    <string name="dialog_settings_device_name_head">Type a name to show to the sending side while sharing files through local network.</string>
     <string name="dialog_settings_device_name_hint">type in a name</string>
     <string name="dialog_settings_device_name_invalid">type in a name</string>
     <string name="help_receive">
-        Let the sending side device to install APK Kit(Build 8 or higher version) and connect to the same wifi network, or let yourself connect to the ap wireless of the sending side, then let the sending side
-        select the app(s) or package(s) to send ,click through local net, and the sending side will see the device of your side.\n\n
+        Let the sending side device install APK Kit(Build 8 or higher version) and connect to the same wifi network, or let yourself connect to the ap wireless of the sending side, then let the sending side
+        select the app(s) or package(s) to share ,click through local net, and the sending side will see the device of your side.\n\n
         If this device is connected to the sending side\'s ap, try to check \"ap mode\"\n\n
         After the sending site selected the device to send, the receiving side will see the file receiving request message.The files will be saved to the exporting path.If there is a same named file, the file will
         automatically be renamed itself by adding number suffix.You can see the received files by package panel or other file explorers.

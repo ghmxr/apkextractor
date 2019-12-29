@@ -4,25 +4,26 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.pm.ApplicationInfo;
 import android.database.Cursor;
 import android.net.Uri;
-import android.os.Build;
+import android.os.Handler;
 import android.os.Looper;
 import android.provider.MediaStore;
 import android.support.annotation.NonNull;
-import android.os.Handler;
 import android.support.annotation.Nullable;
 import android.support.design.widget.Snackbar;
 import android.support.v4.content.FileProvider;
 import android.support.v4.provider.DocumentFile;
 import android.support.v7.app.AlertDialog;
-import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.Toast;
 
 import com.github.ghmxr.apkextractor.items.AppItem;
 import com.github.ghmxr.apkextractor.items.FileItem;
 import com.github.ghmxr.apkextractor.items.ImportItem;
+import com.github.ghmxr.apkextractor.tasks.ExportTask;
 import com.github.ghmxr.apkextractor.tasks.GetImportLengthAndDuplicateInfoTask;
 import com.github.ghmxr.apkextractor.tasks.ImportTask;
 import com.github.ghmxr.apkextractor.ui.DataObbDialog;
@@ -31,7 +32,6 @@ import com.github.ghmxr.apkextractor.ui.ImportingDataObbDialog;
 import com.github.ghmxr.apkextractor.ui.ImportingDialog;
 import com.github.ghmxr.apkextractor.ui.ShareSelectionDialog;
 import com.github.ghmxr.apkextractor.ui.ToastManager;
-import com.github.ghmxr.apkextractor.tasks.ExportTask;
 import com.github.ghmxr.apkextractor.utils.DocumentFileUtil;
 import com.github.ghmxr.apkextractor.utils.OutputUtil;
 import com.github.ghmxr.apkextractor.utils.SPUtil;
@@ -304,10 +304,17 @@ public class Global {
     public static void showImportingDataObbDialog(@NonNull final Activity activity, @NonNull List<ImportItem>importItems,@Nullable final ImportTaskFinishedCallback callback){
         new ImportingDataObbDialog(activity, importItems, new ImportingDataObbDialog.ImportDialogDataObbConfirmedCallback() {
             @Override
-            public void onImportingDataObbConfirmed(@NonNull final List<ImportItem> importItems, @NonNull List<ZipFileUtil.ZipFileInfo> zipFileInfos) {
-                new GetImportLengthAndDuplicateInfoTask(activity,importItems,zipFileInfos,new GetImportLengthAndDuplicateInfoTask.GetImportLengthAndDuplicateInfoCallback(){
+            public void onImportingDataObbConfirmed(@NonNull final List<ImportItem> importItems2, @NonNull List<ZipFileUtil.ZipFileInfo> zipFileInfos) {
+                final AlertDialog dialog_duplication_wait=new AlertDialog.Builder(activity)
+                        .setTitle(activity.getResources().getString(R.string.dialog_wait))
+                        .setView(LayoutInflater.from(activity).inflate(R.layout.dialog_duplication_file,null))
+                        .setNegativeButton(activity.getResources().getString(R.string.dialog_button_cancel), null)
+                        .setCancelable(false)
+                        .show();
+                final GetImportLengthAndDuplicateInfoTask infoTask=new GetImportLengthAndDuplicateInfoTask(importItems2,zipFileInfos,new GetImportLengthAndDuplicateInfoTask.GetImportLengthAndDuplicateInfoCallback(){
                     @Override
-                    public void onCheckingFinished(@NonNull String result, long total) {
+                    public void onCheckingFinished(@NonNull List<String>duplication_infos, long total) {
+                        dialog_duplication_wait.cancel();
                         final ImportingDialog importingDialog=new ImportingDialog(activity,total);
                         final ImportTask.ImportTaskCallback importTaskCallback=new ImportTask.ImportTaskCallback() {
                             @Override
@@ -330,7 +337,7 @@ public class Global {
                                 if(callback!=null)callback.onImportFinished(errorMessage);
                             }
                         };
-                        final ImportTask importTask=new ImportTask(activity, importItems,importTaskCallback);
+                        final ImportTask importTask=new ImportTask(activity, importItems2,importTaskCallback);
                         importingDialog.setButton(AlertDialog.BUTTON_NEGATIVE, activity.getResources().getString(R.string.word_stop), new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialog, int which) {
@@ -338,13 +345,29 @@ public class Global {
                                 importingDialog.cancel();
                             }
                         });
-                        if(result.equals("")){
+                        if(duplication_infos.size()==0){
                             importingDialog.show();
                             importTask.start();
                         }else{
+                            StringBuilder stringBuilder=new StringBuilder();
+                            int checkingIndex=duplication_infos.size();
+                            int unListed=0;
+                            if(checkingIndex>100){
+                                unListed=checkingIndex-100;
+                                checkingIndex=100;
+                            }
+                            for(int i=0;i<checkingIndex;i++){
+                                stringBuilder.append(duplication_infos.get(i));
+                                stringBuilder.append("\n\n");
+                            }
+                            if(unListed>0){
+                                stringBuilder.append("+");
+                                stringBuilder.append(unListed);
+                                stringBuilder.append(activity.getResources().getString(R.string.dialog_import_duplicate_more));
+                            }
                             new AlertDialog.Builder(activity)
                                     .setTitle(activity.getResources().getString(R.string.dialog_import_duplicate_title))
-                                    .setMessage(activity.getResources().getString(R.string.dialog_import_duplicate_message)+result)
+                                    .setMessage(activity.getResources().getString(R.string.dialog_import_duplicate_message)+stringBuilder.toString())
                                     .setPositiveButton(activity.getResources().getString(R.string.dialog_button_confirm), new DialogInterface.OnClickListener() {
                                         @Override
                                         public void onClick(DialogInterface dialog, int which) {
@@ -359,7 +382,15 @@ public class Global {
                                     .show();
                         }
                     }
-                }).start();
+                });
+                infoTask.start();
+                dialog_duplication_wait.getButton(AlertDialog.BUTTON_NEGATIVE).setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        dialog_duplication_wait.cancel();
+                        infoTask.setInterrupted();
+                    }
+                });
             }
         }).show();
     }
@@ -439,6 +470,27 @@ public class Global {
         intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
         intent.addFlags(Intent.FLAG_GRANT_WRITE_URI_PERMISSION|Intent.FLAG_GRANT_READ_URI_PERMISSION);
         try{
+            context.startActivity(Intent.createChooser(intent,title));
+        }catch (Exception e){
+            e.printStackTrace();
+            ToastManager.showToast(context,e.toString(),Toast.LENGTH_SHORT);
+        }
+    }
+
+    /**
+     * 通过系统分享接口分享本应用
+     */
+    public static void shareThisApp(@NonNull Context context){
+        try{
+            ApplicationInfo applicationInfo=context.getPackageManager().getApplicationInfo(context.getPackageName(),0);
+            final String title=context.getResources().getString(R.string.share_title);
+            Intent intent=new Intent(Intent.ACTION_SEND);
+            intent.setType("application/vnd.android.package-archive");
+            intent.putExtra(Intent.EXTRA_STREAM,Uri.fromFile(new File(applicationInfo.sourceDir)));
+            intent.putExtra(Intent.EXTRA_SUBJECT,title);
+            intent.putExtra(Intent.EXTRA_TEXT,title);
+            intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+            intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION|Intent.FLAG_GRANT_WRITE_URI_PERMISSION);
             context.startActivity(Intent.createChooser(intent,title));
         }catch (Exception e){
             e.printStackTrace();

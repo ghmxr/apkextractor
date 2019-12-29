@@ -14,11 +14,11 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.WindowManager;
 import android.widget.CompoundButton;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.github.ghmxr.apkextractor.Global;
 import com.github.ghmxr.apkextractor.R;
 import com.github.ghmxr.apkextractor.net.NetReceiveTask;
 import com.github.ghmxr.apkextractor.ui.FileTransferringDialog;
@@ -260,6 +260,12 @@ public class FileReceiveActivity extends BaseActivity implements NetReceiveTask.
                         .setPositiveButton(getResources().getString(R.string.dialog_button_confirm), new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialog, int which) {}
+                        })
+                        .setNeutralButton(getResources().getString(R.string.dialog_button_share_this_app), new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                Global.shareThisApp(FileReceiveActivity.this);
+                            }
                         })
                         .show();
             }

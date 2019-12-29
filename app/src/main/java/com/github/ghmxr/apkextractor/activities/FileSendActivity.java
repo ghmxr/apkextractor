@@ -16,7 +16,6 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.WindowManager;
 import android.widget.CompoundButton;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -258,6 +257,12 @@ public class FileSendActivity extends BaseActivity implements NetSendTask.NetSen
                 .setPositiveButton(getResources().getString(R.string.dialog_button_confirm), new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {}
+                })
+                .setNeutralButton(getResources().getString(R.string.dialog_button_share_this_app), new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        Global.shareThisApp(FileSendActivity.this);
+                    }
                 })
                 .show();
     }

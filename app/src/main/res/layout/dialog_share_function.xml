@@ -21,12 +21,13 @@
             <ImageView
                 android:layout_width="50dp"
                 android:layout_height="50dp"
-                android:src="@mipmap/ic_launcher"/>
+                android:src="@drawable/icon_local_net"/>
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:textColor="@color/colorHighLightText"
                 android:textSize="14sp"
+                android:layout_marginTop="10dp"
                 android:text="@string/dialog_share_selection_self"/>
         </LinearLayout>
         <LinearLayout
@@ -49,6 +50,7 @@
                 android:layout_height="wrap_content"
                 android:textColor="@color/colorHighLightText"
                 android:textSize="14sp"
+                android:layout_marginTop="10dp"
                 android:text="@string/dialog_share_selection_system"/>
         </LinearLayout>
     </LinearLayout>

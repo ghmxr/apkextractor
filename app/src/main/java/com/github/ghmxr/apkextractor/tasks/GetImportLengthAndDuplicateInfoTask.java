@@ -1,32 +1,30 @@
 package com.github.ghmxr.apkextractor.tasks;
 
-import android.content.Context;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import android.support.v4.provider.DocumentFile;
 
 import com.github.ghmxr.apkextractor.Global;
 import com.github.ghmxr.apkextractor.items.ImportItem;
-import com.github.ghmxr.apkextractor.utils.OutputUtil;
-import com.github.ghmxr.apkextractor.utils.SPUtil;
 import com.github.ghmxr.apkextractor.utils.StorageUtil;
 import com.github.ghmxr.apkextractor.utils.ZipFileUtil;
 
 import java.io.File;
+import java.util.ArrayList;
 import java.util.List;
 
 public class GetImportLengthAndDuplicateInfoTask extends Thread {
 
-    private Context context;
+    //private Context context;
     private List<ZipFileUtil.ZipFileInfo>zipFileInfos;
     private List<ImportItem>importItems;
     private GetImportLengthAndDuplicateInfoCallback callback;
+    private boolean isInterrupted=false;
 
-    public GetImportLengthAndDuplicateInfoTask(@NonNull Context context, @NonNull List<ImportItem>importItems
+    public GetImportLengthAndDuplicateInfoTask(@NonNull List<ImportItem>importItems
             , @NonNull List<ZipFileUtil.ZipFileInfo>zipFileInfos
             , @Nullable GetImportLengthAndDuplicateInfoCallback callback) {
         super();
-        this.context=context;
+        //this.context=context;
         this.zipFileInfos=zipFileInfos;
         this.importItems=importItems;
         this.callback=callback;
@@ -35,9 +33,11 @@ public class GetImportLengthAndDuplicateInfoTask extends Thread {
     @Override
     public void run() {
         super.run();
-        final StringBuilder stringBuilder=new StringBuilder();
+        //final StringBuilder stringBuilder=new StringBuilder();
+        final ArrayList<String>duplication_infos=new ArrayList<>();
         long total=0;
         for(int i=0;i<importItems.size();i++){
+            if(isInterrupted)return;
             try{
                 ImportItem importItem=importItems.get(i);
                 ZipFileUtil.ZipFileInfo zipFileInfo=zipFileInfos.get(i);
@@ -84,22 +84,27 @@ public class GetImportLengthAndDuplicateInfoTask extends Thread {
                     }*/
                     File exportWritingTarget=new File(StorageUtil.getMainExternalStoragePath()+"/"+s);
                     if(exportWritingTarget.exists()){
-                        stringBuilder.append(exportWritingTarget.getAbsolutePath());
-                        stringBuilder.append("\n\n");
+                        //stringBuilder.append(exportWritingTarget.getAbsolutePath());
+                        //stringBuilder.append("\n\n");
+                        duplication_infos.add(exportWritingTarget.getAbsolutePath());
                     }
                 }
             }catch (Exception e){e.printStackTrace();}
         }
         final long total_length=total;
-        if(callback!=null) Global.handler.post(new Runnable() {
+        if(callback!=null&&!isInterrupted) Global.handler.post(new Runnable() {
             @Override
             public void run() {
-                if(callback!=null)callback.onCheckingFinished(stringBuilder.toString(),total_length);
+                if(callback!=null)callback.onCheckingFinished(duplication_infos,total_length);
             }
         });
     }
 
+    public void setInterrupted(){
+        this.isInterrupted=true;
+    }
+
     public interface GetImportLengthAndDuplicateInfoCallback{
-        void onCheckingFinished(@NonNull String result,long total);
+        void onCheckingFinished(@NonNull List<String> results,long total);
     }
 }
