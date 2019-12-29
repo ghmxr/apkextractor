@@ -181,16 +181,19 @@ public class NetReceiveTask implements UdpThread.UdpThreadCallback{
             }
             break;
             case IpMessageConstants.MSG_SEND_FILE_CANCELED:{
-                this.senderIp=null;
-                if(callback!=null)Global.handler.post(new Runnable() {
-                    @Override
-                    public void run() {
-                        callback.onSendSiteCanceled(senderIp);
-                    }
-                });
                 postLogInfoToCallback(context.getResources().getString(R.string.receive_log_received_send_cancel)
                         +context.getResources().getString(R.string.receive_log_ip)+senderIp+","
                         +context.getResources().getString(R.string.receive_log_port)+port);
+                if(senderIp.equals(this.senderIp)){
+                    if(callback!=null)Global.handler.post(new Runnable() {
+                        @Override
+                        public void run() {
+                            callback.onSendSiteCanceled(senderIp);
+                        }
+                    });
+                    this.senderIp=null;
+                }
+
             }
             break;
             case IpMessageConstants.MSG_FILE_TRANSFERRING_INTERRUPT:{

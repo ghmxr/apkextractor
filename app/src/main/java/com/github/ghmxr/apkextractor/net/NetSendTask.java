@@ -238,7 +238,7 @@ public class NetSendTask implements UdpThread.UdpThreadCallback{
                     if(callback!=null)Global.handler.post(new Runnable() {
                         @Override
                         public void run() {
-                            callback.onProgress(progress,total,SPUtil.getDisplayingExportPath(context)+"/"+fileItem.getName());
+                            callback.onProgress(progress,total,fileItem.getPath());
                         }
                     });
                     byte[]buffer=new byte[1024];
@@ -254,7 +254,7 @@ public class NetSendTask implements UdpThread.UdpThreadCallback{
                             if(callback!=null)Global.handler.post(new Runnable() {
                                 @Override
                                 public void run() {
-                                    callback.onProgress(progress,total,SPUtil.getDisplayingExportPath(context)+"/"+fileItem.getName());
+                                    callback.onProgress(progress,total,fileItem.getPath());
                                 }
                             });
                         }
