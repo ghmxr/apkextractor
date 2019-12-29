@@ -23,9 +23,9 @@
     <string name="main_card_remaining_storage">Remaining space</string>
     <string name="bottom_export">export</string>
     <string name="bottom_import">import</string>
-    <string name="select_all">select all</string>
-    <string name="deselect_all">deselect all</string>
-    <string name="select_all_change">select/deselect</string>
+    <string name="select_all">selall</string>
+    <string name="deselect_all">desall</string>
+    <string name="select_all_change">sel/des</string>
     <string name="bottom_share">share</string>
     <string name="bottom_delete">delete</string>
     <string name="main_page_export">Applications</string>
@@ -254,7 +254,7 @@
         (it is mainly aimed to some game apps that contains data or obb)\n\n
 
         This app supports to import the zip files exported from itself, and will automatically popup the installing interface after importing completed when you
-         are importing a single zip file.The data or obb files will be decompressed to the main external storage with the path \"/Android/Data\" or \"/Android/obb\"
+         are importing a single zip file. The data or obb files will be decompressed to the main external storage with the path \"/Android/Data\" or \"/Android/obb\"
          ended, the apk file will be decompressed to the exporting path and named by its initial name, or will add number suffix to its file name if already exists
         \n\n
 
