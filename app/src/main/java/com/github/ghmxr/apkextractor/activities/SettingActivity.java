@@ -329,6 +329,7 @@ public class SettingActivity extends BaseActivity implements View.OnClickListene
                         editor.putString(Constants.PREFERENCE_DEVICE_NAME,value);
                         editor.apply();
                         dialog.cancel();
+                        refreshSettingValues();
                     }
                 });
             }
