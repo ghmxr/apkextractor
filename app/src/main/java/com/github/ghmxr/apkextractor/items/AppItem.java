@@ -51,6 +51,8 @@ public class AppItem implements Comparable<AppItem>, DisplayItem {
      */
     private long size;
 
+    private String[]signatureInfos;
+
     //private HashMap<String, List<String>> static_receivers;
 
     private Bundle static_receivers_bundle;
@@ -72,6 +74,10 @@ public class AppItem implements Comparable<AppItem>, DisplayItem {
         this.drawable=packageManager.getApplicationIcon(info.applicationInfo);
         //this.static_receivers= EnvironmentUtil.getStaticRegisteredReceiversForPackageName(context,info.packageName);
         this.static_receivers_bundle=EnvironmentUtil.getStaticRegisteredReceiversOfBundleTypeForPackageName(context,info.packageName);
+        String[]sign_infos=EnvironmentUtil.getAPKSigInfo(info.applicationInfo.sourceDir);
+
+        signatureInfos=new String[]{sign_infos[0],sign_infos[1],sign_infos[2],sign_infos[3],sign_infos[4],EnvironmentUtil.getSignatureMD5StringOfPackageInfo(info)
+        ,EnvironmentUtil.getSignatureSHA1OfPackageInfo(info),EnvironmentUtil.getSignatureSHA256OfPackageInfo(info)};
     }
 
     /**
@@ -87,6 +93,7 @@ public class AppItem implements Comparable<AppItem>, DisplayItem {
         this.drawable=wrapper.drawable;
         this.exportData=flag_data;
         this.exportObb=flag_obb;
+        this.signatureInfos=wrapper.signatureInfos;
     }
 
     /*private AppItem(Parcel in){
@@ -172,6 +179,13 @@ public class AppItem implements Comparable<AppItem>, DisplayItem {
      */
     public @NonNull PackageInfo getPackageInfo(){
         return info;
+    }
+
+    /**
+     * 长度为8
+     */
+    public String[] getSignatureInfos() {
+        return signatureInfos;
     }
 
     /*@Override

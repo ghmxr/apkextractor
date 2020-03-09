@@ -70,6 +70,13 @@ public class SPUtil {
     }
 
     /**
+     * 获取导出压缩包的扩展名
+     */
+    public static @NonNull String getCompressingExtensionName(@NonNull Context context){
+        return getGlobalSharedPreferences(context).getString(Constants.PREFERENCE_COMPRESSING_EXTENSION,Constants.PREFERENCE_COMPRESSING_EXTENSION_DEFAULT);
+    }
+
+    /**
      * 获取设备名称
      */
     public static @NonNull String getDeviceName(@NonNull Context context){

@@ -136,4 +136,10 @@ public class Constants {
      */
     public static final String PREFERENCE_DEVICE_NAME="device_name";
     public static final String PREFERENCE_DEVICE_NAME_DEFAULT="MyDevice";
+
+    /**
+     * 导出压缩包的扩展名
+     */
+    public static final String PREFERENCE_COMPRESSING_EXTENSION="compressing_extension";
+    public static final String PREFERENCE_COMPRESSING_EXTENSION_DEFAULT="zip";
 }

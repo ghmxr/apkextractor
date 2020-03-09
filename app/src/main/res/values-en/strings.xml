@@ -121,8 +121,8 @@
     <string name="dialog_data_obb_message">The app(s) selected contain(s) data or obb in the external storage, check the following options
         will package them to a zip file</string>
 
-    <string name="dialog_import_data_obb_title">Importing ZIP</string>
-    <string name="dialog_import_data_obb_att">The listed bellow are found in this(those) zip file(s), check data or obb and then will decompress them
+    <string name="dialog_import_data_obb_title">Importing compressed  file</string>
+    <string name="dialog_import_data_obb_att">The listed bellow are found in this(those) compressed file(s), check data or obb and then will decompress them
     to the main storage with the path of /android/data or /android/obb, check apk will decompress it to the export path</string>
 
     <string name="dialog_button_confirm">Confirm</string>
@@ -160,7 +160,7 @@
 
     <string name="dialog_filename_title">Exporting rules</string>
     <string name="dialog_filename_apk_att">APK naming rules</string>
-    <string name="dialog_filename_zip_att">ZIP naming rules</string>
+    <string name="dialog_filename_zip_att">compressed file naming rules</string>
     <string name="dialog_filename_variables">insert variables</string>
     <string name="dialog_filename_button_appname">app name(?N)</string>
     <string name="dialog_filename_button_packagename">package name(?P)</string>
@@ -218,12 +218,13 @@
     <string name="external_storage">External storage</string>
 
     <string name="hint_filename_apk">type in APK naming rule</string>
-    <string name="hint_filename_zip">type in ZIP naming rule</string>
+    <string name="hint_filename_zip">type in compressed file naming rule</string>
+    <string name="hint_compress_custom">type in custom extension name</string>
 
     <string name="text_hint_searchview">searching info</string>
     <string name="text_hint_edittext">type in something</string>
 
-    <string name="zip_level_att">ZIP compressing level</string>
+    <string name="zip_level_att">compressing level</string>
     <string name="zip_level_default">default</string>
     <string name="zip_level_stored">stored</string>
     <string name="zip_level_low">low</string>
@@ -236,6 +237,10 @@
 
 
     <string name="unit_item">item(s)</string>
+    <string name="word_zip">zip</string>
+    <string name="word_apk">apk</string>
+    <string name="word_xapk">xapk</string>
+    <string name="word_compressed">compressed</string>
     <string name="word_unknown">unknown</string>
     <string name="word_preview">preview</string>
     <string name="word_blank">blank</string>
@@ -244,6 +249,7 @@
     <string name="word_stop">stop</string>
     <string name="word_content_blank">No contents</string>
     <string name="word_ap_mode">AP Mode</string>
+    <string name="word_custom">custom</string>
     <string name="att_loading">Loading&#8230;</string>
     <string name="att_checking_duplication">Checking duplication files&#8230;</string>
 
@@ -306,4 +312,7 @@
     <string name="activity_settings_port_unknown">invalid number</string>
     <string name="action_ap">AP settings</string>
     <string name="action_file_info">File info</string>
+    <string name="dialog_compress_extension_empty">type in a valid extension name</string>
+    <string name="activity_settings_extension">Compressed ExtName</string>
+    <string name="dialog_compress_extension_att">*this option only changes the extension of the compressed exporting files, but will not change the content of zip itself</string>
 </resources>

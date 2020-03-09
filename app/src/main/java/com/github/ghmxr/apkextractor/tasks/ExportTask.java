@@ -170,16 +170,16 @@ public class ExportTask extends Thread {
                 else{
                     OutputStream outputStream;
                     if(isExternal){
-                        DocumentFile documentFile= OutputUtil.getWritingDocumentFileForAppItem(context,item,"zip");
+                        DocumentFile documentFile= OutputUtil.getWritingDocumentFileForAppItem(context,item,SPUtil.getCompressingExtensionName(context));
                         this.currentWritingFile=new FileItem(context,documentFile);
                         this.currentWritingPath=SPUtil.getDisplayingExportPath(context)+documentFile.getName();
                         outputStream= OutputUtil.getOutputStreamForDocumentFile(context,documentFile);
                     }
                     else {
-                        String writePath=OutputUtil.getAbsoluteWritePath(context,item,"zip");
+                        String writePath=OutputUtil.getAbsoluteWritePath(context,item,SPUtil.getCompressingExtensionName(context));
                         this.currentWritingFile= new FileItem(writePath);
                         this.currentWritingPath=writePath;
-                        outputStream=new FileOutputStream(new File(OutputUtil.getAbsoluteWritePath(context,item,"zip")));
+                        outputStream=new FileOutputStream(new File(OutputUtil.getAbsoluteWritePath(context,item,SPUtil.getCompressingExtensionName(context))));
                     }
                     postCallback2Listener(new Runnable() {
                         @Override

@@ -17,19 +17,26 @@ import android.net.wifi.WifiManager;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.text.format.Formatter;
+import android.util.Log;
 import android.widget.Toast;
 
 import com.github.ghmxr.apkextractor.Constants;
 import com.github.ghmxr.apkextractor.R;
 import com.github.ghmxr.apkextractor.ui.ToastManager;
 
+import java.io.BufferedInputStream;
+import java.io.InputStream;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.security.MessageDigest;
+import java.security.cert.Certificate;
+import java.security.cert.X509Certificate;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.HashMap;
 import java.util.List;
+import java.util.jar.JarEntry;
+import java.util.jar.JarFile;
 
 public class EnvironmentUtil {
 
@@ -63,11 +70,68 @@ public class EnvironmentUtil {
         return String.valueOf(value);
     }
 
+    /**
+     * 获取apk包签名基本信息
+     * @return string[0]证书发行者,string[1]证书所有者,string[2]序列号
+     * string[3]证书起始时间 string[4]证书结束时间
+     */
+    public static @NonNull String[] getAPKSigInfo(String filePath) {
+        String subjectDN = "";
+        String issuerDN = "";
+        String serial = "";
+        String notBefore="";
+        String notAfter="";
+        try {
+            JarFile JarFile = new JarFile(filePath);
+            JarEntry JarEntry = JarFile.getJarEntry("AndroidManifest.xml");
+            if (JarEntry != null) {
+                byte[] readBuffer = new byte[8192];
+                InputStream is = new BufferedInputStream(JarFile.getInputStream(JarEntry));
+                while (is.read(readBuffer, 0, readBuffer.length) != -1) {
+                    //notusing
+                }
+                Certificate[] certs = JarEntry.getCertificates();
+                if (certs != null && certs.length > 0) {
+                    //获取证书
+                    X509Certificate x509cert = (X509Certificate) certs[0];
+                    //获取证书发行者
+                    issuerDN = x509cert.getIssuerDN().toString();
+                    //System.out.println("发行者：" + issuerDN);
+                    //获取证书所有者
+                    subjectDN = x509cert.getSubjectDN().toString();
+                    //System.out.println("所有者：" + subjectDN);
+                    //证书序列号
+                    serial = x509cert.getSerialNumber().toString();
+                    //System.out.println("publicKey：" + publicKey);
+                    //证书起始有效期
+                    notBefore=x509cert.getNotBefore().toString();
+                    //证书结束有效期
+                    notAfter=x509cert.getNotAfter().toString();
+                }
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return new String[]{subjectDN,issuerDN,serial,notBefore,notAfter};
+    }
 
-    public static @NonNull String getSignatureStringOfPackageInfo(@NonNull PackageInfo info){
+
+    public static @NonNull String getSignatureMD5StringOfPackageInfo(@NonNull PackageInfo info){
+        return getSignatureStringOfPackageInfo(info,"MD5");
+    }
+
+    public static @NonNull String getSignatureSHA1OfPackageInfo(@NonNull PackageInfo info){
+        return getSignatureStringOfPackageInfo(info,"SHA1");
+    }
+
+    public static @NonNull String getSignatureSHA256OfPackageInfo(@NonNull PackageInfo info){
+        return getSignatureStringOfPackageInfo(info,"SHA256");
+    }
+
+    private static @NonNull String getSignatureStringOfPackageInfo(@NonNull PackageInfo packageInfo,@NonNull String type){
         try{
-            MessageDigest localMessageDigest = MessageDigest.getInstance("MD5");
-            localMessageDigest.update(info.signatures[0].toByteArray());
+            MessageDigest localMessageDigest = MessageDigest.getInstance(type);
+            localMessageDigest.update(packageInfo.signatures[0].toByteArray());
             return getHexString(localMessageDigest.digest());
         }catch (Exception e){
             e.printStackTrace();

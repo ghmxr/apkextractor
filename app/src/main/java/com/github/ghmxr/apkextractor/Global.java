@@ -203,14 +203,15 @@ public class Global {
         return null;
     }
 
-    public static String getDuplicatedFileInfo(@NonNull Context context,@NonNull List<AppItem>items){
+    private static String getDuplicatedFileInfo(@NonNull Context context,@NonNull List<AppItem>items){
         if(items.size()==0)return "";
         StringBuilder builder=new StringBuilder();
         boolean external=SPUtil.getIsSaved2ExternalStorage(context);
         if(external){
             for(AppItem item:items){
                 try{
-                    DocumentFile searchFile=OutputUtil.getExportPathDocumentFile(context).findFile(OutputUtil.getWriteFileNameForAppItem(context,item,(item.exportData||item.exportObb)?"zip":"apk"));
+                    DocumentFile searchFile=OutputUtil.getExportPathDocumentFile(context).findFile(OutputUtil.getWriteFileNameForAppItem(context,item,(item.exportData||item.exportObb)?
+                            SPUtil.getCompressingExtensionName(context):"apk"));
                     if(searchFile!=null){
                         builder.append(DocumentFileUtil.getDisplayPathForDocumentFile(context,searchFile));
                         builder.append("\n\n");
@@ -219,7 +220,7 @@ public class Global {
             }
         }else {
             for(AppItem item:items){
-                File file=new File(OutputUtil.getAbsoluteWritePath(context,item,(item.exportData||item.exportObb)?"zip":"apk"));
+                File file=new File(OutputUtil.getAbsoluteWritePath(context,item,(item.exportData||item.exportObb)?SPUtil.getCompressingExtensionName(context):"apk"));
                 if(file.exists()){
                     builder.append(file.getAbsolutePath());
                     builder.append("\n\n");

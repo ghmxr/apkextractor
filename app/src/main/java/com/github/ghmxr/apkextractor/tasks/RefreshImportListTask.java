@@ -64,14 +64,20 @@ public class RefreshImportListTask extends Thread{
             if (fileItem==null)return arrayList;
             //File file=new File(fileItem.getPath());
             if(!fileItem.isDirectory()){
-                if(fileItem.getPath().trim().toLowerCase().endsWith(".apk")||fileItem.getPath().trim().toLowerCase().endsWith(".zip"))arrayList.add(new ImportItem(context,fileItem));
+                if(fileItem.getPath().trim().toLowerCase().endsWith(".apk")||fileItem.getPath().trim().toLowerCase().endsWith(".zip")
+                ||fileItem.getPath().trim().toLowerCase().endsWith(".xapk")
+                        ||fileItem.getPath().trim().toLowerCase().endsWith(SPUtil.getCompressingExtensionName(context).toLowerCase())){
+                    arrayList.add(new ImportItem(context,fileItem));
+                }
                 return arrayList;
             }
             List<FileItem>fileItems=fileItem.listFileItems();
             for(FileItem fileItem1:fileItems){
                 if(fileItem1.isDirectory())arrayList.addAll(getAllImportItemsFromPath(fileItem1));
                 else {
-                    if(fileItem1.getPath().trim().toLowerCase().endsWith(".apk")||fileItem1.getPath().trim().toLowerCase().endsWith(".zip")){
+                    if(fileItem1.getPath().trim().toLowerCase().endsWith(".apk")||fileItem1.getPath().trim().toLowerCase().endsWith(".zip")
+                            ||fileItem1.getPath().trim().toLowerCase().endsWith(".xapk")
+                            ||fileItem1.getPath().trim().toLowerCase().endsWith(SPUtil.getCompressingExtensionName(context).toLowerCase())){
                         try{
                             arrayList.add(new ImportItem(context,fileItem1));
                         }catch (Exception e){e.printStackTrace();}

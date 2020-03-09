@@ -12,6 +12,7 @@ import com.github.ghmxr.apkextractor.DisplayItem;
 import com.github.ghmxr.apkextractor.Global;
 import com.github.ghmxr.apkextractor.R;
 import com.github.ghmxr.apkextractor.utils.PinyinUtil;
+import com.github.ghmxr.apkextractor.utils.SPUtil;
 
 import java.io.InputStream;
 import java.text.SimpleDateFormat;
@@ -42,9 +43,14 @@ public class ImportItem implements DisplayItem,Comparable<ImportItem> {
     public ImportItem(@NonNull Context context,@NonNull FileItem fileItem){
         this.fileItem=fileItem;
         this.context=context;
-        if(fileItem.getName().trim().toLowerCase().endsWith(".zip")){
+        if(fileItem.getName().trim().toLowerCase().endsWith(".zip")
+                ||fileItem.getName().trim().toLowerCase().endsWith(SPUtil.getCompressingExtensionName(context).toLowerCase())){
             importType=ImportType.ZIP;
             drawable=context.getResources().getDrawable(R.drawable.icon_zip);
+        }
+        if(fileItem.getName().trim().toLowerCase().endsWith(".xapk")){
+            importType=ImportType.ZIP;
+            drawable=context.getResources().getDrawable(R.drawable.icon_xapk);
         }
         if(fileItem.getName().trim().toLowerCase().endsWith(".apk")){
             importType=ImportType.APK;

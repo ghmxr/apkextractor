@@ -42,6 +42,7 @@ public class ExportRuleDialog extends AlertDialog implements View.OnClickListene
         preview=((TextView)dialogView.findViewById(R.id.filename_preview));
         spinner=((Spinner)dialogView.findViewById(R.id.spinner_zip_level));
 
+        ((TextView)dialogView.findViewById(R.id.filename_zip_end)).setText("."+SPUtil.getCompressingExtensionName(context));
         edit_apk.setText(settings.getString(Constants.PREFERENCE_FILENAME_FONT_APK, Constants.PREFERENCE_FILENAME_FONT_DEFAULT));
         edit_zip.setText(settings.getString(Constants.PREFERENCE_FILENAME_FONT_ZIP, Constants.PREFERENCE_FILENAME_FONT_DEFAULT));
         preview.setText(getFormatedExportFileName(edit_apk.getText().toString(),edit_zip.getText().toString()));
@@ -248,7 +249,8 @@ public class ExportRuleDialog extends AlertDialog implements View.OnClickListene
         final String PREVIEW_VERSIONCODE=getContext().getResources().getString(R.string.dialog_filename_preview_versioncode);
         return getContext().getResources().getString(R.string.word_preview)+":\n\nAPK:  "+apk.replace(Constants.FONT_APP_NAME, PREVIEW_APPNAME)
                 .replace(Constants.FONT_APP_PACKAGE_NAME, PREVIEW_PACKAGENAME).replace(Constants.FONT_APP_VERSIONCODE, PREVIEW_VERSIONCODE).replace(Constants.FONT_APP_VERSIONNAME, PREVIEW_VERSION)+".apk\n\n"
-                +"ZIP:  "+zip.replace(Constants.FONT_APP_NAME, PREVIEW_APPNAME)
-                .replace(Constants.FONT_APP_PACKAGE_NAME, PREVIEW_PACKAGENAME).replace(Constants.FONT_APP_VERSIONCODE, PREVIEW_VERSIONCODE).replace(Constants.FONT_APP_VERSIONNAME, PREVIEW_VERSION)+".zip";
+                +getContext().getResources().getString(R.string.word_compressed)+":  "+zip.replace(Constants.FONT_APP_NAME, PREVIEW_APPNAME)
+                .replace(Constants.FONT_APP_PACKAGE_NAME, PREVIEW_PACKAGENAME).replace(Constants.FONT_APP_VERSIONCODE, PREVIEW_VERSIONCODE).replace(Constants.FONT_APP_VERSIONNAME, PREVIEW_VERSION)+"."
+                +SPUtil.getCompressingExtensionName(getContext());
     }
 }

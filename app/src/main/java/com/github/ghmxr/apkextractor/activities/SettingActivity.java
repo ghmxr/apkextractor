@@ -7,6 +7,7 @@ import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.content.PermissionChecker;
 import android.support.v7.app.AlertDialog;
@@ -25,6 +26,7 @@ import android.widget.Toast;
 import com.github.ghmxr.apkextractor.Global;
 import com.github.ghmxr.apkextractor.R;
 import com.github.ghmxr.apkextractor.Constants;
+import com.github.ghmxr.apkextractor.ui.CompressExtensionDialog;
 import com.github.ghmxr.apkextractor.ui.ExportRuleDialog;
 import com.github.ghmxr.apkextractor.ui.ToastManager;
 import com.github.ghmxr.apkextractor.utils.EnvironmentUtil;
@@ -59,6 +61,7 @@ public class SettingActivity extends BaseActivity implements View.OnClickListene
         findViewById(R.id.settings_language_area).setOnClickListener(this);
         findViewById(R.id.settings_port_number_area).setOnClickListener(this);
         findViewById(R.id.settings_device_name_area).setOnClickListener(this);
+        findViewById(R.id.settings_extension_area).setOnClickListener(this);
         refreshSettingValues();
 
         if(bundle!=null){
@@ -334,6 +337,17 @@ public class SettingActivity extends BaseActivity implements View.OnClickListene
                 });
             }
             break;
+            case R.id.settings_extension_area:{
+                new CompressExtensionDialog(this, SPUtil.getCompressingExtensionName(this),
+                        new CompressExtensionDialog.OnConfirmedCallback() {
+                            @Override
+                            public void onExtensionConfirmed(@NonNull String extension) {
+                                editor.putString(Constants.PREFERENCE_COMPRESSING_EXTENSION, extension).apply();
+                                refreshSettingValues();
+                            }
+                        }).show();
+            }
+            break;
         }
     }
 
@@ -394,6 +408,7 @@ public class SettingActivity extends BaseActivity implements View.OnClickListene
         ((TextView)findViewById(R.id.settings_language_value)).setText(language_value);
         ((TextView)findViewById(R.id.settings_port_number_value)).setText(String.valueOf(SPUtil.getPortNumber(this)));
         ((TextView)findViewById(R.id.settings_device_name_value)).setText(SPUtil.getDeviceName(this));
+        ((TextView)findViewById(R.id.settings_extension_value)).setText(SPUtil.getCompressingExtensionName(this));
     }
 
     @Override

@@ -113,7 +113,14 @@ public class AppDetailActivity extends BaseActivity implements View.OnClickListe
         ((TextView)findViewById(R.id.app_detail_minimum_api)).setText(Build.VERSION.SDK_INT>=24?String.valueOf(packageInfo.applicationInfo.minSdkVersion):getResources().getString(R.string.word_unknown));
         ((TextView)findViewById(R.id.app_detail_target_api)).setText(String.valueOf(packageInfo.applicationInfo.targetSdkVersion));
         ((TextView)findViewById(R.id.app_detail_is_system_app)).setText(getResources().getString((appItem.getPackageInfo().applicationInfo.flags& ApplicationInfo.FLAG_SYSTEM)>0?R.string.word_yes:R.string.word_no));
-        ((TextView)findViewById(R.id.app_detail_signature)).setText(EnvironmentUtil.getSignatureStringOfPackageInfo(packageInfo));
+        ((TextView)findViewById(R.id.app_detail_signature_sub_value)).setText(appItem.getSignatureInfos()[0]);
+        ((TextView)findViewById(R.id.app_detail_signature_iss_value)).setText(appItem.getSignatureInfos()[1]);
+        ((TextView)findViewById(R.id.app_detail_signature_serial_value)).setText(appItem.getSignatureInfos()[2]);
+        ((TextView)findViewById(R.id.app_detail_signature_start_value)).setText(appItem.getSignatureInfos()[3]);
+        ((TextView)findViewById(R.id.app_detail_signature_end_value)).setText(appItem.getSignatureInfos()[4]);
+        ((TextView)findViewById(R.id.app_detail_signature_md5_value)).setText(appItem.getSignatureInfos()[5]);
+        ((TextView)findViewById(R.id.app_detail_signature_sha1_value)).setText(appItem.getSignatureInfos()[6]);
+        ((TextView)findViewById(R.id.app_detail_signature_sha256_value)).setText(appItem.getSignatureInfos()[7]);
 
         findViewById(R.id.app_detail_run_area).setOnClickListener(this);
         findViewById(R.id.app_detail_export_area).setOnClickListener(this);
@@ -326,7 +333,8 @@ public class AppDetailActivity extends BaseActivity implements View.OnClickListe
                         }
                         ToastManager.showToast(AppDetailActivity.this,getResources().getString(R.string.toast_export_complete)+" "
                                 +SPUtil.getDisplayingExportPath(AppDetailActivity.this)
-                                +OutputUtil.getWriteFileNameForAppItem(AppDetailActivity.this,single_list.get(0),(item.exportData||item.exportObb)?"zip":"apk"),Toast.LENGTH_SHORT);
+                                +OutputUtil.getWriteFileNameForAppItem(AppDetailActivity.this,single_list.get(0),(item.exportData||item.exportObb)?
+                                SPUtil.getCompressingExtensionName(AppDetailActivity.this):"apk"),Toast.LENGTH_SHORT);
                     }
                 });
             }
@@ -451,8 +459,8 @@ public class AppDetailActivity extends BaseActivity implements View.OnClickListe
                 clip2ClipboardAndShowSnackbar(((TextView)findViewById(R.id.app_detail_is_system_app)).getText().toString());
             }
             break;
-            case R.id.app_detail_signature_area:{
-                clip2ClipboardAndShowSnackbar(((TextView)findViewById(R.id.app_detail_signature)).getText().toString());
+            case R.id.app_detail_signature_sub:{
+                clip2ClipboardAndShowSnackbar(((TextView)findViewById(R.id.app_detail_signature_sub_value)).getText().toString());
             }
             break;
         }
