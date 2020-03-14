@@ -184,7 +184,7 @@ public class MainActivity extends BaseActivity implements View.OnClickListener,V
 
     private final ListAdapterOperationListener list_export_operation_callback=new ListAdapterOperationListener() {
         @Override
-        public void onItemClicked(DisplayItem displayItem,ViewHolder viewHolder) {
+        public void onItemClicked(DisplayItem displayItem,ViewHolder viewHolder,int position) {
             if(!(displayItem instanceof AppItem))return;
             AppItem appItem=(AppItem)displayItem;
             Intent intent=new Intent(MainActivity.this,AppDetailActivity.class);
@@ -287,10 +287,10 @@ public class MainActivity extends BaseActivity implements View.OnClickListener,V
      */
     ListAdapterOperationListener listAdapterOperationListener_import=new ListAdapterOperationListener() {
         @Override
-        public void onItemClicked(DisplayItem displayItem,ViewHolder viewHolder) {
+        public void onItemClicked(DisplayItem displayItem,ViewHolder viewHolder,int position) {
             if(!(displayItem instanceof ImportItem))return;
             ImportItem item=(ImportItem)displayItem;
-            if(item.getImportType()== ImportItem.ImportType.APK){
+            /*if(item.getImportType()== ImportItem.ImportType.APK){
                 try{
                     Intent intent =new Intent(Intent.ACTION_VIEW);
                     if(Build.VERSION.SDK_INT<=23){
@@ -323,7 +323,13 @@ public class MainActivity extends BaseActivity implements View.OnClickListener,V
                         }else ToastManager.showToast(MainActivity.this,getResources().getString(R.string.toast_import_complete),Toast.LENGTH_SHORT);
                     }
                 });
-            }
+            }*/
+            Intent intent =new Intent(MainActivity.this,PackageDetailActivity.class);
+            intent.putExtra(PackageDetailActivity.EXTRA_IMPORT_ITEM_POSITION,position);
+            ActivityOptionsCompat compat = ActivityOptionsCompat.makeSceneTransitionAnimation(MainActivity.this,new Pair<View, String>(viewHolder.icon,"icon"));
+            try{
+                ActivityCompat.startActivity(MainActivity.this, intent, compat.toBundle());
+            }catch (Exception e){e.printStackTrace();}
         }
 
         @Override
@@ -1167,7 +1173,7 @@ public class MainActivity extends BaseActivity implements View.OnClickListener,V
     }
 
     interface ListAdapterOperationListener{
-        void onItemClicked(DisplayItem displayItem,ViewHolder viewHolder);
+        void onItemClicked(DisplayItem displayItem,ViewHolder viewHolder,int position);
         void onMultiSelectItemChanged(List<DisplayItem>selected_items,long length);
         void onMultiSelectModeClosed();
         void onItemLongClicked();
@@ -1225,7 +1231,7 @@ public class MainActivity extends BaseActivity implements View.OnClickListener,V
                             refreshButtonStatus();
                             notifyItemChanged(viewHolder.getAdapterPosition());
                         }else{
-                            if(listener!=null)listener.onItemClicked(item,viewHolder);
+                            if(listener!=null)listener.onItemClicked(item,viewHolder,viewHolder.getAdapterPosition());
                         }
 
                     }

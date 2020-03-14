@@ -37,6 +37,10 @@
         <activity android:name=".activities.FileReceiveActivity"
             android:theme="@style/CommonTheme"
             android:label="@string/activity_receive_title"/>
+        <activity android:name=".activities.PackageDetailActivity"
+            android:label="Detail"
+            android:theme="@style/AppTheme.NoActionBar"/>
+
         <provider
             android:authorities="com.github.ghmxr.apkextractor.FileProvider"
             android:name="android.support.v4.content.FileProvider"

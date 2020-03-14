@@ -1,13 +1,16 @@
 package com.github.ghmxr.apkextractor.items;
 
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
+import android.os.Build;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
+import com.github.ghmxr.apkextractor.Constants;
 import com.github.ghmxr.apkextractor.DisplayItem;
 import com.github.ghmxr.apkextractor.Global;
 import com.github.ghmxr.apkextractor.R;
@@ -32,8 +35,12 @@ public class ImportItem implements DisplayItem,Comparable<ImportItem> {
     private long length;
     private ImportType importType=ImportType.ZIP;
 
+    private PackageInfo packageInfo;
     private Drawable drawable=null;
     private String version_name="";
+    private String version_code="";
+    private String minSdkVersion="";
+    private String targetSdkVersion="";
     private long lastModified;
 
     public transient boolean importData=false;
@@ -43,6 +50,11 @@ public class ImportItem implements DisplayItem,Comparable<ImportItem> {
     public ImportItem(@NonNull Context context,@NonNull FileItem fileItem){
         this.fileItem=fileItem;
         this.context=context;
+        version_name=context.getResources().getString(R.string.word_unknown);
+        version_code=context.getResources().getString(R.string.word_unknown);
+        minSdkVersion=context.getResources().getString(R.string.word_unknown);
+        targetSdkVersion=context.getResources().getString(R.string.word_unknown);
+
         if(fileItem.getName().trim().toLowerCase().endsWith(".zip")
                 ||fileItem.getName().trim().toLowerCase().endsWith(SPUtil.getCompressingExtensionName(context).toLowerCase())){
             importType=ImportType.ZIP;
@@ -56,20 +68,30 @@ public class ImportItem implements DisplayItem,Comparable<ImportItem> {
             importType=ImportType.APK;
             PackageManager packageManager=context.getApplicationContext().getPackageManager();
             if(fileItem.isFileInstance()){
-                PackageInfo packageInfo=null;
                 try{
-                    packageInfo=packageManager.getPackageArchiveInfo(fileItem.getPath(),0);
+                    int flag=PackageManager.GET_SIGNATURES;
+                    final SharedPreferences settings=SPUtil.getGlobalSharedPreferences(context);
+                    if(settings.getBoolean(Constants.PREFERENCE_LOAD_PERMISSIONS,Constants.PREFERENCE_LOAD_PERMISSIONS_DEFAULT))flag|=PackageManager.GET_PERMISSIONS;
+                    if(settings.getBoolean(Constants.PREFERENCE_LOAD_ACTIVITIES,Constants.PREFERENCE_LOAD_ACTIVITIES_DEFAULT))flag|=PackageManager.GET_ACTIVITIES;
+                    if(settings.getBoolean(Constants.PREFERENCE_LOAD_RECEIVERS,Constants.PREFERENCE_LOAD_RECEIVERS_DEFAULT))flag|=PackageManager.GET_RECEIVERS;
+                    packageInfo=packageManager.getPackageArchiveInfo(fileItem.getPath(),flag);
                 }catch (Exception e){e.printStackTrace();}
                 if(packageInfo!=null){
+                    packageInfo.applicationInfo.sourceDir=fileItem.getPath();
+                    packageInfo.applicationInfo.publicSourceDir=fileItem.getPath();
                     drawable=packageInfo.applicationInfo.loadIcon(packageManager);
                     version_name=packageInfo.versionName;
+                    version_code=String.valueOf(packageInfo.versionCode);
+                    if(Build.VERSION.SDK_INT>23){
+                        minSdkVersion=String.valueOf(packageInfo.applicationInfo.minSdkVersion);
+                    }
+                    targetSdkVersion=String.valueOf(packageInfo.applicationInfo.targetSdkVersion);
                 }else{
                     drawable=context.getResources().getDrawable(R.drawable.icon_apk);
-                    version_name=context.getResources().getString(R.string.word_unknown);
+
                 }
             }else{
                 drawable=context.getResources().getDrawable(R.drawable.icon_apk);
-                version_name=context.getResources().getString(R.string.word_unknown);
             }
 
         }
@@ -129,11 +151,27 @@ public class ImportItem implements DisplayItem,Comparable<ImportItem> {
         return importType;
     }
 
+    public PackageInfo getPackageInfo(){
+        return packageInfo;
+    }
+
     /**
      * 只针对apk的版本名
      */
     public String getVersionName(){
         return version_name;
+    }
+
+    public String getVersionCode(){
+        return version_code;
+    }
+
+    public String getMinSdkVersion(){
+        return minSdkVersion;
+    }
+
+    public String getTargetSdkVersion(){
+        return targetSdkVersion;
     }
 
     public Drawable getItemIconDrawable(){
@@ -174,7 +212,6 @@ public class ImportItem implements DisplayItem,Comparable<ImportItem> {
     public int compareTo(@NonNull ImportItem o) {
         switch (sort_config){
             default:break;
-            case 0:break;
             case 1:{
                 try{
                     if(PinyinUtil.getFirstSpell(getTitle()).toLowerCase().compareTo(PinyinUtil.getFirstSpell(o.getTitle()).toLowerCase())>0)return 1;

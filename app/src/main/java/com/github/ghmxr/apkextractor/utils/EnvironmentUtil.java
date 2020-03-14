@@ -75,7 +75,7 @@ public class EnvironmentUtil {
      * @return string[0]证书发行者,string[1]证书所有者,string[2]序列号
      * string[3]证书起始时间 string[4]证书结束时间
      */
-    public static @NonNull String[] getAPKSigInfo(String filePath) {
+    public static @NonNull String[] getAPKSignInfo(String filePath) {
         String subjectDN = "";
         String issuerDN = "";
         String serial = "";
@@ -115,6 +115,17 @@ public class EnvironmentUtil {
         return new String[]{subjectDN,issuerDN,serial,notBefore,notAfter};
     }
 
+    public static @NonNull String hashMD5Value(@NonNull InputStream inputStream){
+        return getHashValue(inputStream,"MD5");
+    }
+
+    public static @NonNull String hashSHA256Value(@NonNull InputStream inputStream){
+        return getHashValue(inputStream,"SHA256");
+    }
+
+    public static @NonNull String hashSHA1Value(@NonNull InputStream inputStream){
+        return getHashValue(inputStream,"SHA1");
+    }
 
     public static @NonNull String getSignatureMD5StringOfPackageInfo(@NonNull PackageInfo info){
         return getSignatureStringOfPackageInfo(info,"MD5");
@@ -136,6 +147,20 @@ public class EnvironmentUtil {
         }catch (Exception e){
             e.printStackTrace();
         }
+        return "";
+    }
+
+    private static @NonNull String getHashValue(@NonNull InputStream inputStream,@NonNull String type){
+        try{
+            MessageDigest messageDigest=MessageDigest.getInstance(type);
+            int length;
+            byte [] buffer=new byte[1024];
+            while ((length=inputStream.read(buffer))!=-1){
+                messageDigest.update(buffer,0,length);
+            }
+            inputStream.close();
+            return getHexString(messageDigest.digest());
+        }catch (Exception e){e.printStackTrace();}
         return "";
     }
 

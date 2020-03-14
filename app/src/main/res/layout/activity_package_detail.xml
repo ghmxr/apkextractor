@@ -4,7 +4,7 @@
     android:layout_height="match_parent"
     xmlns:tools="http://schemas.android.com/tools"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    tools:context=".activities.AppDetailActivity">
+    tools:context=".activities.PackageDetailActivity">
 
     <android.support.design.widget.AppBarLayout
         android:id="@+id/app_bar"
@@ -34,7 +34,7 @@
                 android:layout_marginTop="30dp"
                 android:orientation="vertical">
                 <ImageView
-                    android:id="@+id/app_detail_icon"
+                    android:id="@+id/package_icon"
                     android:layout_width="50dp"
                     android:layout_height="50dp"
                     android:layout_gravity="center"
@@ -44,7 +44,7 @@
                 <com.github.ghmxr.apkextractor.ui.AutoMarqueeTextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:id="@+id/app_detail_name"
+                    android:id="@+id/package_detail_name"
                     android:layout_marginTop="15dp"
                     android:layout_marginLeft="80dp"
                     android:layout_marginRight="80dp"
@@ -53,11 +53,11 @@
                     android:textColor="@color/colorHighLightTextDarkBackground"
                     android:singleLine="true"
                     android:ellipsize="marquee"
-                    tools:text="应用名称"/>
+                    tools:text="包名称"/>
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:id="@+id/app_detail_version_name_title"
+                    android:id="@+id/package_detail_version_name_title"
                     android:singleLine="true"
                     android:layout_gravity="center_horizontal"
                     android:textSize="14sp"
@@ -69,10 +69,10 @@
         </android.support.design.widget.CollapsingToolbarLayout>
     </android.support.design.widget.AppBarLayout>
 
-    <include layout="@layout/content_app_detail"/>
+    <include layout="@layout/content_package_detail"/>
 
     <android.support.v7.widget.Toolbar
-        android:id="@+id/toolbar_app_detail"
+        android:id="@+id/toolbar_package_detail"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         app:layout_anchor="@id/toolbar_background"

@@ -49,6 +49,10 @@
     <string name="activity_detail_target_api">目标API</string>
     <string name="activity_detail_is_system_app">系统应用</string>
     <string name="activity_detail_signature">签名MD5</string>
+    <string name="activity_detail_install">安装</string>
+    <string name="activity_detail_delete">删除</string>
+    <string name="activity_detail_file_name">文件名</string>
+    <string name="activity_detail_file_size">文件大小</string>
 
     <string name="activity_detail_signature_head">签名信息</string>
     <string name="activity_detail_signature_issuser">证书发行者</string>
@@ -59,6 +63,12 @@
     <string name="activity_detail_signature_md5">MD5</string>
     <string name="activity_detail_signature_sha1">SHA1</string>
     <string name="activity_detail_signature_sha256">SHA256</string>
+
+    <string name="activity_detail_hash_head">文件哈希值</string>
+    <string name="activity_detail_hash_md5">MD5</string>
+    <string name="activity_detail_hash_sha1">SHA1</string>
+    <string name="activity_detail_hash_sha256">SHA256</string>
+    <string name="activity_detail_hash_crc32">CRC32</string>
 
     <string name="activity_settings_title">设置</string>
     <string name="activity_settings_path">导出路径</string>

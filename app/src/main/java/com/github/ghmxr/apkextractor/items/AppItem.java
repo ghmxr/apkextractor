@@ -51,7 +51,7 @@ public class AppItem implements Comparable<AppItem>, DisplayItem {
      */
     private long size;
 
-    private String[]signatureInfos;
+    //private String[]signatureInfos;
 
     //private HashMap<String, List<String>> static_receivers;
 
@@ -74,10 +74,10 @@ public class AppItem implements Comparable<AppItem>, DisplayItem {
         this.drawable=packageManager.getApplicationIcon(info.applicationInfo);
         //this.static_receivers= EnvironmentUtil.getStaticRegisteredReceiversForPackageName(context,info.packageName);
         this.static_receivers_bundle=EnvironmentUtil.getStaticRegisteredReceiversOfBundleTypeForPackageName(context,info.packageName);
-        String[]sign_infos=EnvironmentUtil.getAPKSigInfo(info.applicationInfo.sourceDir);
+        //String[]sign_infos=EnvironmentUtil.getAPKSignInfo(info.applicationInfo.sourceDir);
 
-        signatureInfos=new String[]{sign_infos[0],sign_infos[1],sign_infos[2],sign_infos[3],sign_infos[4],EnvironmentUtil.getSignatureMD5StringOfPackageInfo(info)
-        ,EnvironmentUtil.getSignatureSHA1OfPackageInfo(info),EnvironmentUtil.getSignatureSHA256OfPackageInfo(info)};
+        //signatureInfos=new String[]{sign_infos[0],sign_infos[1],sign_infos[2],sign_infos[3],sign_infos[4],EnvironmentUtil.getSignatureMD5StringOfPackageInfo(info)
+        //,EnvironmentUtil.getSignatureSHA1OfPackageInfo(info),EnvironmentUtil.getSignatureSHA256OfPackageInfo(info)};
     }
 
     /**
@@ -93,7 +93,7 @@ public class AppItem implements Comparable<AppItem>, DisplayItem {
         this.drawable=wrapper.drawable;
         this.exportData=flag_data;
         this.exportObb=flag_obb;
-        this.signatureInfos=wrapper.signatureInfos;
+        //this.signatureInfos=wrapper.signatureInfos;
     }
 
     /*private AppItem(Parcel in){
@@ -181,12 +181,12 @@ public class AppItem implements Comparable<AppItem>, DisplayItem {
         return info;
     }
 
-    /**
+    /*
      * 长度为8
      */
-    public String[] getSignatureInfos() {
+    /*public String[] getSignatureInfos() {
         return signatureInfos;
-    }
+    }*/
 
     /*@Override
     public int describeContents() {
@@ -223,7 +223,6 @@ public class AppItem implements Comparable<AppItem>, DisplayItem {
     public int compareTo(@NonNull AppItem o) {
         switch (sort_config){
             default:break;
-            case 0:break;
             case 1:{
                 try{
                     if(PinyinUtil.getFirstSpell(title).toLowerCase().compareTo(PinyinUtil.getFirstSpell(o.title).toLowerCase())>0)return 1;

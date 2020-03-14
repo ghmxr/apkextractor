@@ -1,5 +1,7 @@
 package com.github.ghmxr.apkextractor.utils;
 
+import android.support.annotation.NonNull;
+
 import java.io.BufferedInputStream;
 import java.io.File;
 import java.io.FileInputStream;
@@ -33,13 +35,16 @@ public class FileUtil {
     /**
      * 获取一个文件的CRC32值
      */
-    public static CRC32 getCRC32FromFile(File file) throws Exception{
-        InputStream inputStream = new BufferedInputStream(new FileInputStream(file.getAbsolutePath()));
+    public static CRC32 getCRC32FromFile(@NonNull File file) throws Exception{
+        return getCRC32FromInputStream(new FileInputStream(file.getAbsolutePath()));
+    }
+
+    public static CRC32 getCRC32FromInputStream(@NonNull InputStream inputStream) throws Exception{
         CRC32 crc = new CRC32();
         byte[] bytes = new byte[1024];
-        int cnt;
-        while ((cnt = inputStream.read(bytes)) != -1) {
-            crc.update(bytes, 0, cnt);
+        int length;
+        while ((length = inputStream.read(bytes)) != -1) {
+            crc.update(bytes, 0, length);
         }
         inputStream.close();
         return crc;
