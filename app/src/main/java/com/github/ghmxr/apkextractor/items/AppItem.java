@@ -37,6 +37,8 @@ public class AppItem implements Comparable<AppItem>, DisplayItem {
 
     private PackageInfo info;
 
+    private FileItem fileItem;
+
     /**
      * 程序名
      */
@@ -69,6 +71,7 @@ public class AppItem implements Comparable<AppItem>, DisplayItem {
     public AppItem(@NonNull Context context, @NonNull PackageInfo info){
         PackageManager packageManager=context.getApplicationContext().getPackageManager();
         this.info=info;
+        this.fileItem=new FileItem(new File(info.applicationInfo.sourceDir));
         this.title=packageManager.getApplicationLabel(info.applicationInfo).toString();
         this.size= FileUtil.getFileOrFolderSize(new File(info.applicationInfo.sourceDir));
         this.drawable=packageManager.getApplicationIcon(info.applicationInfo);
@@ -179,6 +182,10 @@ public class AppItem implements Comparable<AppItem>, DisplayItem {
      */
     public @NonNull PackageInfo getPackageInfo(){
         return info;
+    }
+
+    public FileItem getFileItem() {
+        return fileItem;
     }
 
     /*

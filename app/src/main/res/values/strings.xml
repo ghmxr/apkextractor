@@ -53,6 +53,8 @@
     <string name="activity_detail_delete">删除</string>
     <string name="activity_detail_file_name">文件名</string>
     <string name="activity_detail_file_size">文件大小</string>
+    <string name="activity_detail_last_modified">最后修改</string>
+    <string name="activity_detail_nothing_checked">请勾选要安装的数据</string>
 
     <string name="activity_detail_signature_head">签名信息</string>
     <string name="activity_detail_signature_issuser">证书发行者</string>
@@ -74,6 +76,7 @@
     <string name="activity_settings_path">导出路径</string>
     <string name="activity_settings_rules">导出规则</string>
     <string name="activity_settings_share_mode">分享模式</string>
+    <string name="activity_settings_package_scope">安装包范围</string>
     <string name="activity_settings_extension">压缩包扩展名</string>
     <string name="activity_settings_night_mode">夜间模式</string>
     <string name="activity_settings_loading_options">读取项</string>
@@ -109,6 +112,11 @@
     <string name="share_mode_direct_att">直接分享应用源APK文件，无需导出，但不能自定义文件名，不能分享打包有Data或Obb的zip文件</string>
     <string name="share_mode_export">导出后分享</string>
     <string name="share_mode_export_att">先按照命名规则导出到指定的路径再分享导出后的文件，会占用存储空间</string>
+
+    <string name="package_scope_all">全部</string>
+    <string name="package_scope_all_des">设备存储所有范围，如果授权过外置存储也将会进行扫描，可能会更耗时</string>
+    <string name="package_scope_exporting_path">仅导出目录</string>
+    <string name="package_scope_exporting_path_des">仅扫描导出目录下的所有符合格式的安装包</string>
 
     <string name="night_mode_enabled">启用</string>
     <string name="night_mode_disabled">禁用</string>
@@ -175,6 +183,8 @@
     <string name="dialog_loading_selection_activities">活动组件(activity)</string>
     <string name="dialog_loading_selection_receivers">广播接收器(receiver)</string>
     <string name="dialog_loading_selection_static_loaders">自启接收器(会拖慢加载速度)</string>
+    <string name="dialog_loading_selection_signature">APK签名</string>
+    <string name="dialog_loading_selection_file_hash">文件哈希值</string>
 
     <string name="dialog_sort_default">默认</string>
     <string name="dialog_sort_ascending_name">按名称升序（从A到Z）</string>

@@ -14,7 +14,14 @@ import com.github.ghmxr.apkextractor.R;
 import com.github.ghmxr.apkextractor.ui.SignatureView;
 import com.github.ghmxr.apkextractor.utils.EnvironmentUtil;
 
+import java.util.HashMap;
+
 public class GetSignatureInfoTask extends Thread {
+
+    private static final HashMap<String,String[]> sign_infos_cache=new HashMap<>();
+    private static final HashMap<PackageInfo,String> md5_cache=new HashMap<>();
+    private static final HashMap<PackageInfo,String> sha1_cache=new HashMap<>();
+    private static final HashMap<PackageInfo,String> sha256_cache=new HashMap<>();
 
     private final Activity activity;
     private final PackageInfo packageInfo;
@@ -33,10 +40,47 @@ public class GetSignatureInfoTask extends Thread {
     @Override
     public void run() {
         super.run();
-        final String[]sign_infos= EnvironmentUtil.getAPKSignInfo(packageInfo.applicationInfo.sourceDir);
-        final String md5=EnvironmentUtil.getSignatureMD5StringOfPackageInfo(packageInfo);
-        final String sha1=EnvironmentUtil.getSignatureSHA1OfPackageInfo(packageInfo);
-        final String sha256=EnvironmentUtil.getSignatureSHA256OfPackageInfo(packageInfo);
+        String[] sign_infos1;
+        String md5_1;
+        String sha1_1;
+        String sha256_1;
+        synchronized (sign_infos_cache){
+            if(sign_infos_cache.get(packageInfo.applicationInfo.sourceDir)!=null){
+                sign_infos1=sign_infos_cache.get(packageInfo.applicationInfo.sourceDir);
+            }else{
+                sign_infos1=EnvironmentUtil.getAPKSignInfo(packageInfo.applicationInfo.sourceDir);
+                sign_infos_cache.put(packageInfo.applicationInfo.sourceDir,sign_infos1);
+            }
+        }
+        synchronized (md5_cache){
+            if(md5_cache.get(packageInfo)!=null){
+                md5_1=md5_cache.get(packageInfo);
+            }else{
+                md5_1=EnvironmentUtil.getSignatureMD5StringOfPackageInfo(packageInfo);
+                md5_cache.put(packageInfo,md5_1);
+            }
+        }
+        synchronized (sha1_cache){
+            if(sha1_cache.get(packageInfo)!=null){
+                sha1_1=sha1_cache.get(packageInfo);
+            }else{
+                sha1_1=EnvironmentUtil.getSignatureSHA1OfPackageInfo(packageInfo);
+                sha1_cache.put(packageInfo,sha1_1);
+            }
+        }
+        synchronized (sha256_cache){
+            if(sha256_cache.get(packageInfo)!=null){
+                sha256_1=sha256_cache.get(packageInfo);
+            }else{
+                sha256_1=EnvironmentUtil.getSignatureSHA256OfPackageInfo(packageInfo);
+                sha256_cache.put(packageInfo,sha256_1);
+            }
+        }
+        final String[]sign_infos= sign_infos1;
+        final String md5=md5_1;
+        final String sha1=sha1_1;
+        final String sha256=sha256_1;
+
         Global.handler.post(new Runnable() {
             @Override
             public void run() {
@@ -108,6 +152,13 @@ public class GetSignatureInfoTask extends Thread {
             manager.setPrimaryClip(ClipData.newPlainText("message",s));
             Snackbar.make(activity.findViewById(android.R.id.content),activity.getResources().getString(R.string.snack_bar_clipboard),Snackbar.LENGTH_SHORT).show();
         }catch (Exception e){e.printStackTrace();}
+    }
+
+    static synchronized void clearCache(){
+        sign_infos_cache.clear();
+        md5_cache.clear();
+        sha1_cache.clear();
+        sha256_cache.clear();
     }
 
     public interface CompletedCallback{

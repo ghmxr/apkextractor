@@ -83,6 +83,14 @@ public class Constants {
      * stands for a boolean value
      */
     public static final String PREFERENCE_LOAD_STATIC_LOADERS="load_static_receivers";
+    /**
+     * stands for a boolean value
+     */
+    public static final String PREFERENCE_LOAD_APK_SIGNATURE="load_apk_signature";
+    /**
+     * stands for a boolean value
+     */
+    public static final String PREFERENCE_LOAD_FILE_HASH="load_file_hash";
 
     /**
      * stands for a int value
@@ -103,6 +111,8 @@ public class Constants {
     public static final boolean PREFERENCE_LOAD_ACTIVITIES_DEFAULT=true;
     public static final boolean PREFERENCE_LOAD_RECEIVERS_DEFAULT=true;
     public static final boolean PREFERENCE_LOAD_STATIC_LOADERS_DEFAULT=false;
+    public static final boolean PREFERENCE_LOAD_APK_SIGNATURE_DEFAULT=true;
+    public static final boolean PREFERENCE_LOAD_FILE_HASH_DEFAULT=true;
 
 
 
@@ -142,4 +152,12 @@ public class Constants {
      */
     public static final String PREFERENCE_COMPRESSING_EXTENSION="compressing_extension";
     public static final String PREFERENCE_COMPRESSING_EXTENSION_DEFAULT="zip";
+
+    /**
+     * 安装包扫描范围
+     */
+    public static final String PREFERENCE_PACKAGE_SCOPE="package_scope";
+    public static final int PACKAGE_SCOPE_ALL=0;
+    public static final int PACKAGE_SCOPE_EXPORTING_PATH=1;
+    public static final int PREFERENCE_PACKAGE_SCOPE_DEFAULT=PACKAGE_SCOPE_ALL;
 }

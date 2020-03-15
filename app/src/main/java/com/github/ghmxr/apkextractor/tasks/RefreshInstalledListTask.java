@@ -35,11 +35,11 @@ public class RefreshInstalledListTask extends Thread{
     public void run(){
         PackageManager manager=context.getApplicationContext().getPackageManager();
         SharedPreferences settings= SPUtil.getGlobalSharedPreferences(context);
-        int flag=PackageManager.GET_SIGNATURES;
+        int flag=0;
         if(settings.getBoolean(Constants.PREFERENCE_LOAD_PERMISSIONS,Constants.PREFERENCE_LOAD_PERMISSIONS_DEFAULT))flag|=PackageManager.GET_PERMISSIONS;
         if(settings.getBoolean(Constants.PREFERENCE_LOAD_ACTIVITIES,Constants.PREFERENCE_LOAD_ACTIVITIES_DEFAULT))flag|=PackageManager.GET_ACTIVITIES;
         if(settings.getBoolean(Constants.PREFERENCE_LOAD_RECEIVERS,Constants.PREFERENCE_LOAD_RECEIVERS_DEFAULT))flag|=PackageManager.GET_RECEIVERS;
-
+        if(settings.getBoolean(Constants.PREFERENCE_LOAD_APK_SIGNATURE,Constants.PREFERENCE_LOAD_APK_SIGNATURE_DEFAULT))flag|=PackageManager.GET_SIGNATURES;
         final List<PackageInfo> list = manager.getInstalledPackages(flag);
         Global.handler.post(new Runnable() {
             @Override
@@ -66,6 +66,7 @@ public class RefreshInstalledListTask extends Thread{
             Global.app_list.clear();
             Global.app_list.addAll(list_sum);//向全局list保存一个引用
         }
+        GetSignatureInfoTask.clearCache();
         Global.handler.post(new Runnable() {
             @Override
             public void run() {

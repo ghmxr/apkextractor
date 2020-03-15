@@ -63,7 +63,7 @@
                         android:layout_height="wrap_content"
                         android:orientation="horizontal"
                         android:layout_centerVertical="true"
-                        android:layout_marginRight="15dp"
+                        android:layout_marginRight="5dp"
                         android:layout_alignParentRight="true"
                         android:layout_toLeftOf="@+id/package_detail_export_att"
                         android:layout_marginLeft="10dp"
@@ -86,7 +86,24 @@
                             android:singleLine="true"
                             android:textColor="@color/color_text_normal"
                             android:text="Obb"/>
+                        <CheckBox
+                            android:id="@+id/package_detail_apk"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:textSize="12sp"
+                            android:singleLine="true"
+                            android:textColor="@color/color_text_normal"
+                            android:text="apk"/>
                     </LinearLayout>
+                    <ProgressBar
+                        android:layout_width="25dp"
+                        android:layout_height="25dp"
+                        android:id="@+id/package_detail_data_obb_pg"
+                        android:layout_alignParentRight="true"
+                        android:layout_centerVertical="true"
+                        android:layout_marginRight="40dp"
+                        style="?android:attr/progressBarStyleSmall"
+                        android:visibility="gone"/>
                 </RelativeLayout>
 
                 <RelativeLayout
@@ -196,11 +213,12 @@
                         android:layout_marginRight="5dp"
                         android:textSize="12sp"
                         tools:text="package.zip"/>
+                    <ImageView
+                        android:layout_width="match_parent"
+                        android:layout_height="1px"
+                        android:layout_alignParentBottom="true"
+                        android:background="@color/colorDividingLine"/>
                 </RelativeLayout>
-                <ImageView
-                    android:layout_width="match_parent"
-                    android:layout_height="1px"
-                    android:background="@color/colorDividingLine"/>
 
                 <RelativeLayout
                     android:id="@+id/package_detail_version_name_area"
@@ -236,11 +254,12 @@
                         android:layout_marginRight="5dp"
                         android:textSize="12sp"
                         tools:text="1.0"/>
+                    <ImageView
+                        android:layout_width="match_parent"
+                        android:layout_height="1px"
+                        android:layout_alignParentBottom="true"
+                        android:background="@color/colorDividingLine"/>
                 </RelativeLayout>
-                <ImageView
-                    android:layout_width="match_parent"
-                    android:layout_height="1px"
-                    android:background="@color/colorDividingLine"/>
 
                 <RelativeLayout
                     android:id="@+id/package_detail_version_code_area"
@@ -273,11 +292,12 @@
                         android:layout_marginRight="5dp"
                         android:textSize="12sp"
                         tools:text="10"/>
+                    <ImageView
+                        android:layout_width="match_parent"
+                        android:layout_height="1px"
+                        android:layout_alignParentBottom="true"
+                        android:background="@color/colorDividingLine"/>
                 </RelativeLayout>
-                <ImageView
-                    android:layout_width="match_parent"
-                    android:layout_height="1px"
-                    android:background="@color/colorDividingLine"/>
 
                 <RelativeLayout
                     android:id="@+id/package_detail_size_area"
@@ -309,11 +329,12 @@
                         android:layout_marginRight="5dp"
                         android:textSize="12sp"
                         tools:text="100MB"/>
+                    <ImageView
+                        android:layout_width="match_parent"
+                        android:layout_height="1px"
+                        android:layout_alignParentBottom="true"
+                        android:background="@color/colorDividingLine"/>
                 </RelativeLayout>
-                <ImageView
-                    android:layout_width="match_parent"
-                    android:layout_height="1px"
-                    android:background="@color/colorDividingLine"/>
 
                 <RelativeLayout
                     android:id="@+id/package_detail_minimum_api_area"
@@ -346,11 +367,12 @@
                         android:textSize="12sp"
                         android:text="@string/word_unknown"
                         tools:text="14"/>
+                    <ImageView
+                        android:layout_width="match_parent"
+                        android:layout_height="1px"
+                        android:layout_alignParentBottom="true"
+                        android:background="@color/colorDividingLine"/>
                 </RelativeLayout>
-                <ImageView
-                    android:layout_width="match_parent"
-                    android:layout_height="1px"
-                    android:background="@color/colorDividingLine"/>
 
                 <RelativeLayout
                     android:id="@+id/package_detail_target_api_area"
@@ -383,8 +405,46 @@
                         android:textSize="12sp"
                         android:text="@string/word_unknown"
                         tools:text="28"/>
+                    <ImageView
+                        android:id="@+id/package_detail_target_api_dividing"
+                        android:layout_width="match_parent"
+                        android:layout_height="1px"
+                        android:layout_alignParentBottom="true"
+                        android:background="@color/colorDividingLine"/>
                 </RelativeLayout>
 
+                <RelativeLayout
+                    android:id="@+id/package_detail_last_modified_area"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:clickable="true"
+                    android:focusable="true"
+                    android:background="?attr/selectableItemBackground"
+                    android:onClick="onClick">
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentLeft="true"
+                        android:layout_marginLeft="5dp"
+                        android:layout_marginTop="10dp"
+                        android:layout_marginBottom="10dp"
+                        android:layout_centerVertical="true"
+                        android:textSize="14sp"
+                        android:textColor="@color/colorHighLightText"
+                        android:text="@string/activity_detail_last_modified"/>
+                    <TextView
+                        android:id="@+id/package_detail_last_modified"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentRight="true"
+                        android:layout_centerVertical="true"
+                        android:singleLine="true"
+                        android:layout_marginLeft="5dp"
+                        android:layout_marginRight="5dp"
+                        android:textSize="12sp"
+                        android:text="@string/word_unknown"
+                        tools:text="2019/12/12/10:00"/>
+                </RelativeLayout>
             </LinearLayout>
 
         </android.support.v7.widget.CardView>
@@ -417,12 +477,14 @@
             tools:visibility="visible"/>
 
         <TextView
+            android:id="@+id/package_detail_hash_att"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginLeft="13dp"
             android:layout_marginTop="10dp"
             android:textColor="@color/color_text_normal"
             android:textSize="15sp"
+            android:visibility="gone"
             android:text="@string/activity_detail_hash_head"/>
 
         <android.support.v7.widget.CardView
@@ -469,7 +531,15 @@
                         android:layout_marginRight="5dp"
                         android:layout_marginBottom="3dp"
                         android:textSize="12sp"
+                        android:visibility="gone"
                         tools:text="28"/>
+                    <android.support.v4.widget.ContentLoadingProgressBar
+                        android:id="@+id/detail_hash_md5_pg"
+                        android:layout_width="20dp"
+                        android:layout_height="20dp"
+                        android:layout_marginLeft="5dp"
+                        android:layout_marginBottom="5dp"
+                        style="?android:attr/progressBarStyleSmall"/>
                 </LinearLayout>
                 <ImageView
                     android:layout_width="match_parent"
@@ -502,7 +572,15 @@
                         android:layout_marginRight="5dp"
                         android:layout_marginBottom="3dp"
                         android:textSize="12sp"
+                        android:visibility="gone"
                         tools:text="28"/>
+                    <android.support.v4.widget.ContentLoadingProgressBar
+                        android:id="@+id/detail_hash_sha1_pg"
+                        android:layout_width="20dp"
+                        android:layout_height="20dp"
+                        android:layout_marginLeft="5dp"
+                        android:layout_marginBottom="5dp"
+                        style="?android:attr/progressBarStyleSmall"/>
                 </LinearLayout>
                 <ImageView
                     android:layout_width="match_parent"
@@ -535,7 +613,15 @@
                         android:layout_marginRight="5dp"
                         android:layout_marginBottom="3dp"
                         android:textSize="12sp"
+                        android:visibility="gone"
                         tools:text="28"/>
+                    <android.support.v4.widget.ContentLoadingProgressBar
+                        android:id="@+id/detail_hash_sha256_pg"
+                        android:layout_width="20dp"
+                        android:layout_height="20dp"
+                        android:layout_marginLeft="5dp"
+                        android:layout_marginBottom="5dp"
+                        style="?android:attr/progressBarStyleSmall"/>
                 </LinearLayout>
                 <ImageView
                     android:layout_width="match_parent"
@@ -568,18 +654,18 @@
                         android:layout_marginRight="5dp"
                         android:layout_marginBottom="3dp"
                         android:textSize="12sp"
+                        android:visibility="gone"
                         tools:text="28"/>
+                    <android.support.v4.widget.ContentLoadingProgressBar
+                        android:id="@+id/detail_hash_crc32_pg"
+                        android:layout_width="20dp"
+                        android:layout_height="20dp"
+                        android:layout_marginLeft="5dp"
+                        android:layout_marginBottom="5dp"
+                        style="?android:attr/progressBarStyleSmall"/>
                 </LinearLayout>
             </LinearLayout>
         </android.support.v7.widget.CardView>
-
-        <ProgressBar
-            android:id="@+id/package_detail_hash_pg"
-            android:layout_width="80dp"
-            android:layout_height="80dp"
-            style="?android:attr/progressBarStyleLarge"
-            android:layout_gravity="center_horizontal"
-            android:layout_marginTop="30dp"/>
 
         <com.github.ghmxr.apkextractor.ui.AssemblyView
             android:id="@+id/package_detail_assemble"

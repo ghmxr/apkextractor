@@ -29,11 +29,13 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.github.ghmxr.apkextractor.Constants;
 import com.github.ghmxr.apkextractor.Global;
 import com.github.ghmxr.apkextractor.R;
 import com.github.ghmxr.apkextractor.items.AppItem;
 import com.github.ghmxr.apkextractor.tasks.GetPackageInfoViewTask;
 import com.github.ghmxr.apkextractor.tasks.GetSignatureInfoTask;
+import com.github.ghmxr.apkextractor.tasks.HashTask;
 import com.github.ghmxr.apkextractor.ui.AssemblyView;
 import com.github.ghmxr.apkextractor.ui.SignatureView;
 import com.github.ghmxr.apkextractor.ui.ToastManager;
@@ -101,6 +103,7 @@ public class AppDetailActivity extends BaseActivity implements View.OnClickListe
         ((TextView)findViewById(R.id.app_detail_is_system_app)).setText(getResources().getString((appItem.getPackageInfo().applicationInfo.flags& ApplicationInfo.FLAG_SYSTEM)>0?R.string.word_yes:R.string.word_no));
 
         getDataObbSizeAndFillView();
+
         new GetPackageInfoViewTask(this, appItem.getPackageInfo(), appItem.getStaticReceiversBundle(), (AssemblyView) findViewById(R.id.app_detail_assembly), new GetPackageInfoViewTask.CompletedCallback() {
             @Override
             public void onViewsCreated() {
@@ -108,12 +111,57 @@ public class AppDetailActivity extends BaseActivity implements View.OnClickListe
             }
         }).start();
 
-        new GetSignatureInfoTask(this, appItem.getPackageInfo(), (SignatureView) findViewById(R.id.app_detail_signature), new GetSignatureInfoTask.CompletedCallback() {
-            @Override
-            public void onCompleted() {
-                findViewById(R.id.app_detail_sign_pg).setVisibility(View.GONE);
-            }
-        }).start();
+        if(SPUtil.getGlobalSharedPreferences(this).getBoolean(Constants.PREFERENCE_LOAD_APK_SIGNATURE,Constants.PREFERENCE_LOAD_APK_SIGNATURE_DEFAULT)){
+            findViewById(R.id.app_detail_signature_att).setVisibility(View.VISIBLE);
+            findViewById(R.id.app_detail_sign_pg).setVisibility(View.VISIBLE);
+            new GetSignatureInfoTask(this, appItem.getPackageInfo(), (SignatureView) findViewById(R.id.app_detail_signature), new GetSignatureInfoTask.CompletedCallback() {
+                @Override
+                public void onCompleted() {
+                    findViewById(R.id.app_detail_sign_pg).setVisibility(View.GONE);
+                }
+            }).start();
+        }
+
+        if(SPUtil.getGlobalSharedPreferences(this).getBoolean(Constants.PREFERENCE_LOAD_FILE_HASH,Constants.PREFERENCE_LOAD_FILE_HASH_DEFAULT)){
+            findViewById(R.id.app_detail_hash_att).setVisibility(View.VISIBLE);
+            findViewById(R.id.app_detail_hash).setVisibility(View.VISIBLE);
+            new HashTask(appItem.getFileItem(), HashTask.HashType.MD5, new HashTask.CompletedCallback() {
+                @Override
+                public void onHashCompleted(@NonNull String result) {
+                    findViewById(R.id.detail_hash_md5_pg).setVisibility(View.GONE);
+                    TextView tv_md5=findViewById(R.id.detail_hash_md5_value);
+                    tv_md5.setVisibility(View.VISIBLE);
+                    tv_md5.setText(result);
+                }
+            }).start();
+            new HashTask(appItem.getFileItem(), HashTask.HashType.SHA1, new HashTask.CompletedCallback() {
+                @Override
+                public void onHashCompleted(@NonNull String result) {
+                    findViewById(R.id.detail_hash_sha1_pg).setVisibility(View.GONE);
+                    TextView tv_sha1=findViewById(R.id.detail_hash_sha1_value);
+                    tv_sha1.setVisibility(View.VISIBLE);
+                    tv_sha1.setText(result);
+                }
+            }).start();
+            new HashTask(appItem.getFileItem(), HashTask.HashType.SHA256, new HashTask.CompletedCallback() {
+                @Override
+                public void onHashCompleted(@NonNull String result) {
+                    findViewById(R.id.detail_hash_sha256_pg).setVisibility(View.GONE);
+                    TextView tv_sha256=findViewById(R.id.detail_hash_sha256_value);
+                    tv_sha256.setVisibility(View.VISIBLE);
+                    tv_sha256.setText(result);
+                }
+            }).start();
+            new HashTask(appItem.getFileItem(), HashTask.HashType.CRC32, new HashTask.CompletedCallback() {
+                @Override
+                public void onHashCompleted(@NonNull String result) {
+                    findViewById(R.id.detail_hash_crc32_pg).setVisibility(View.GONE);
+                    TextView tv_crc32=findViewById(R.id.detail_hash_crc32_value);
+                    tv_crc32.setVisibility(View.VISIBLE);
+                    tv_crc32.setText(result);
+                }
+            }).start();
+        }
 
         try{
             IntentFilter intentFilter=new IntentFilter();

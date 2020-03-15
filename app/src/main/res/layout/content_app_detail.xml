@@ -576,13 +576,16 @@
         </android.support.v7.widget.CardView>
 
         <TextView
+            android:id="@+id/app_detail_signature_att"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginLeft="13dp"
             android:layout_marginTop="10dp"
             android:textColor="@color/color_text_normal"
             android:textSize="15sp"
-            android:text="@string/activity_detail_signature_head"/>
+            android:text="@string/activity_detail_signature_head"
+            android:visibility="gone"
+            tools:visibility="visible"/>
 
         <com.github.ghmxr.apkextractor.ui.SignatureView
             android:id="@+id/app_detail_signature"
@@ -595,7 +598,200 @@
             android:layout_height="80dp"
             style="?android:attr/progressBarStyleLarge"
             android:layout_gravity="center_horizontal"
-            android:layout_marginTop="30dp"/>
+            android:layout_marginTop="30dp"
+            android:visibility="gone"/>
+
+        <TextView
+            android:id="@+id/app_detail_hash_att"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="13dp"
+            android:layout_marginTop="10dp"
+            android:textColor="@color/color_text_normal"
+            android:textSize="15sp"
+            android:text="@string/activity_detail_hash_head"
+            android:visibility="gone"
+            tools:visibility="visible"/>
+
+        <android.support.v7.widget.CardView
+            android:id="@+id/app_detail_hash"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="8dp"
+            android:layout_marginRight="8dp"
+            android:layout_marginTop="10dp"
+            android:layout_marginBottom="10dp"
+            android:visibility="gone"
+            app:cardElevation="1dp"
+            app:cardCornerRadius="5dp"
+            app:cardBackgroundColor="@color/colorCardArea">
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="vertical"
+                android:layout_margin="5dp">
+                <LinearLayout
+                    android:id="@+id/detail_hash_md5"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:gravity="start"
+                    android:clickable="true"
+                    android:focusable="true"
+                    android:background="?attr/selectableItemBackground"
+                    android:onClick="onClick">
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="5dp"
+                        android:layout_marginTop="10dp"
+                        android:layout_marginBottom="10dp"
+                        android:textSize="14sp"
+                        android:textColor="@color/colorHighLightText"
+                        android:text="@string/activity_detail_hash_md5"/>
+                    <TextView
+                        android:id="@+id/detail_hash_md5_value"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="5dp"
+                        android:layout_marginRight="5dp"
+                        android:layout_marginBottom="3dp"
+                        android:textSize="12sp"
+                        android:visibility="gone"
+                        tools:text="28"/>
+                    <android.support.v4.widget.ContentLoadingProgressBar
+                        android:id="@+id/detail_hash_md5_pg"
+                        android:layout_width="20dp"
+                        android:layout_height="20dp"
+                        android:layout_marginLeft="5dp"
+                        android:layout_marginBottom="5dp"
+                        style="?android:attr/progressBarStyleSmall"/>
+                </LinearLayout>
+                <ImageView
+                    android:layout_width="match_parent"
+                    android:layout_height="1px"
+                    android:background="@color/colorDividingLine"/>
+                <LinearLayout
+                    android:id="@+id/detail_hash_sha1"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:gravity="start"
+                    android:clickable="true"
+                    android:focusable="true"
+                    android:background="?attr/selectableItemBackground"
+                    android:onClick="onClick">
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="5dp"
+                        android:layout_marginTop="10dp"
+                        android:layout_marginBottom="10dp"
+                        android:textSize="14sp"
+                        android:textColor="@color/colorHighLightText"
+                        android:text="@string/activity_detail_hash_sha1"/>
+                    <TextView
+                        android:id="@+id/detail_hash_sha1_value"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="5dp"
+                        android:layout_marginRight="5dp"
+                        android:layout_marginBottom="3dp"
+                        android:textSize="12sp"
+                        android:visibility="gone"
+                        tools:text="28"/>
+                    <android.support.v4.widget.ContentLoadingProgressBar
+                        android:id="@+id/detail_hash_sha1_pg"
+                        android:layout_width="20dp"
+                        android:layout_height="20dp"
+                        android:layout_marginLeft="5dp"
+                        android:layout_marginBottom="5dp"
+                        style="?android:attr/progressBarStyleSmall"/>
+                </LinearLayout>
+                <ImageView
+                    android:layout_width="match_parent"
+                    android:layout_height="1px"
+                    android:background="@color/colorDividingLine"/>
+                <LinearLayout
+                    android:id="@+id/detail_hash_sha256"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:gravity="start"
+                    android:clickable="true"
+                    android:focusable="true"
+                    android:background="?attr/selectableItemBackground"
+                    android:onClick="onClick">
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="5dp"
+                        android:layout_marginTop="10dp"
+                        android:layout_marginBottom="10dp"
+                        android:textSize="14sp"
+                        android:textColor="@color/colorHighLightText"
+                        android:text="@string/activity_detail_hash_sha256"/>
+                    <TextView
+                        android:id="@+id/detail_hash_sha256_value"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="5dp"
+                        android:layout_marginRight="5dp"
+                        android:layout_marginBottom="3dp"
+                        android:textSize="12sp"
+                        android:visibility="gone"
+                        tools:text="28"/>
+                    <android.support.v4.widget.ContentLoadingProgressBar
+                        android:id="@+id/detail_hash_sha256_pg"
+                        android:layout_width="20dp"
+                        android:layout_height="20dp"
+                        android:layout_marginLeft="5dp"
+                        android:layout_marginBottom="5dp"
+                        style="?android:attr/progressBarStyleSmall"/>
+                </LinearLayout>
+                <ImageView
+                    android:layout_width="match_parent"
+                    android:layout_height="1px"
+                    android:background="@color/colorDividingLine"/>
+                <LinearLayout
+                    android:id="@+id/detail_hash_crc32"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:gravity="start"
+                    android:clickable="true"
+                    android:focusable="true"
+                    android:background="?attr/selectableItemBackground"
+                    android:onClick="onClick">
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="5dp"
+                        android:layout_marginTop="10dp"
+                        android:layout_marginBottom="10dp"
+                        android:textSize="14sp"
+                        android:textColor="@color/colorHighLightText"
+                        android:text="@string/activity_detail_hash_crc32"/>
+                    <TextView
+                        android:id="@+id/detail_hash_crc32_value"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="5dp"
+                        android:layout_marginRight="5dp"
+                        android:layout_marginBottom="3dp"
+                        android:textSize="12sp"
+                        android:visibility="gone"
+                        tools:text="28"/>
+                    <android.support.v4.widget.ContentLoadingProgressBar
+                        android:id="@+id/detail_hash_crc32_pg"
+                        android:layout_width="20dp"
+                        android:layout_height="20dp"
+                        android:layout_marginLeft="5dp"
+                        android:layout_marginBottom="5dp"
+                        style="?android:attr/progressBarStyleSmall"/>
+                </LinearLayout>
+            </LinearLayout>
+        </android.support.v7.widget.CardView>
 
         <com.github.ghmxr.apkextractor.ui.AssemblyView
             android:id="@+id/app_detail_assembly"
@@ -608,7 +804,8 @@
             android:layout_height="80dp"
             style="?android:attr/progressBarStyleLarge"
             android:layout_gravity="center_horizontal"
-            android:layout_marginTop="30dp"/>
+            android:layout_marginTop="30dp"
+            android:visibility="gone"/>
     </LinearLayout>
 
 </android.support.v4.widget.NestedScrollView>

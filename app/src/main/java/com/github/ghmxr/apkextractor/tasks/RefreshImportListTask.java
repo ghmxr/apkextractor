@@ -2,12 +2,14 @@ package com.github.ghmxr.apkextractor.tasks;
 
 import android.content.Context;
 import android.net.Uri;
+import android.text.TextUtils;
 
 import com.github.ghmxr.apkextractor.Constants;
 import com.github.ghmxr.apkextractor.Global;
 import com.github.ghmxr.apkextractor.items.FileItem;
 import com.github.ghmxr.apkextractor.items.ImportItem;
 import com.github.ghmxr.apkextractor.utils.SPUtil;
+import com.github.ghmxr.apkextractor.utils.StorageUtil;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -15,19 +17,19 @@ import java.util.List;
 
 public class RefreshImportListTask extends Thread{
     private Context context;
-    private FileItem fileItem;
+    //private FileItem fileItem;
     private RefreshImportListTaskCallback callback;
     public RefreshImportListTask(Context context, RefreshImportListTaskCallback callback){
         this.context=context;
         this.callback=callback;
-        boolean isExternal= SPUtil.getIsSaved2ExternalStorage(context);
-        if(isExternal){
+        //boolean isExternal= SPUtil.getIsSaved2ExternalStorage(context);
+        /*if(isExternal){
             try{
                 fileItem=new FileItem(context, Uri.parse(SPUtil.getExternalStorageUri(context)), SPUtil.getSaveSegment(context));
             }catch (Exception e){e.printStackTrace();}
         }else{
             fileItem=new FileItem(SPUtil.getInternalSavePath(context));
-        }
+        }*/
     }
 
     @Override
@@ -39,8 +41,18 @@ public class RefreshImportListTask extends Thread{
                 if(callback!=null)callback.onRefreshStarted();
             }
         });
+        final int package_scope_value=SPUtil.getGlobalSharedPreferences(context).getInt(Constants.PREFERENCE_PACKAGE_SCOPE,Constants.PREFERENCE_PACKAGE_SCOPE_DEFAULT);
+        FileItem fileItem=null;
+        if(package_scope_value==Constants.PACKAGE_SCOPE_ALL){
+            fileItem=new FileItem(StorageUtil.getMainExternalStoragePath());
+        }else if(package_scope_value==Constants.PACKAGE_SCOPE_EXPORTING_PATH){
+            fileItem=new FileItem(SPUtil.getInternalSavePath(context));
+        }
         try{
             arrayList.addAll(getAllImportItemsFromPath(fileItem));
+            if(!TextUtils.isEmpty(SPUtil.getExternalStorageUri(context))&&package_scope_value==Constants.PACKAGE_SCOPE_ALL){
+                arrayList.addAll(getAllImportItemsFromPath(new FileItem(context, Uri.parse(SPUtil.getExternalStorageUri(context)), SPUtil.getSaveSegment(context))));
+            }
             ImportItem.sort_config=SPUtil.getGlobalSharedPreferences(context).getInt(Constants.PREFERENCE_SORT_CONFIG_IMPORT_ITEMS,0);
             Collections.sort(arrayList);
         }catch (Exception e){e.printStackTrace();}
@@ -48,6 +60,8 @@ public class RefreshImportListTask extends Thread{
             Global.item_list.clear();
             Global.item_list.addAll(arrayList);
         }
+        HashTask.clearResultCache();
+        GetSignatureInfoTask.clearCache();
         if(callback!=null){
             Global.handler.post(new Runnable() {
                 @Override

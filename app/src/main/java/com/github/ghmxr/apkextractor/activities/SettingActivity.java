@@ -62,6 +62,7 @@ public class SettingActivity extends BaseActivity implements View.OnClickListene
         findViewById(R.id.settings_port_number_area).setOnClickListener(this);
         findViewById(R.id.settings_device_name_area).setOnClickListener(this);
         findViewById(R.id.settings_extension_area).setOnClickListener(this);
+        findViewById(R.id.settings_package_scope_area).setOnClickListener(this);
         refreshSettingValues();
 
         if(bundle!=null){
@@ -160,10 +161,14 @@ public class SettingActivity extends BaseActivity implements View.OnClickListene
                 final CheckBox cb_activities=dialogView.findViewById(R.id.loading_activities);
                 final CheckBox cb_receivers=dialogView.findViewById(R.id.loading_receivers);
                 final CheckBox cb_static_loaders=dialogView.findViewById(R.id.loading_static_loaders);
+                final CheckBox cb_signature=dialogView.findViewById(R.id.loading_apk_signature);
+                final CheckBox cb_hash=dialogView.findViewById(R.id.loading_file_hash);
                 cb_permissions.setChecked(settings.getBoolean(Constants.PREFERENCE_LOAD_PERMISSIONS,Constants.PREFERENCE_LOAD_PERMISSIONS_DEFAULT));
                 cb_activities.setChecked(settings.getBoolean(Constants.PREFERENCE_LOAD_ACTIVITIES,Constants.PREFERENCE_LOAD_ACTIVITIES_DEFAULT));
                 cb_receivers.setChecked(settings.getBoolean(Constants.PREFERENCE_LOAD_RECEIVERS,Constants.PREFERENCE_LOAD_RECEIVERS_DEFAULT));
                 cb_static_loaders.setChecked(settings.getBoolean(Constants.PREFERENCE_LOAD_STATIC_LOADERS,Constants.PREFERENCE_LOAD_STATIC_LOADERS_DEFAULT));
+                cb_signature.setChecked(settings.getBoolean(Constants.PREFERENCE_LOAD_APK_SIGNATURE,Constants.PREFERENCE_LOAD_APK_SIGNATURE_DEFAULT));
+                cb_hash.setChecked(settings.getBoolean(Constants.PREFERENCE_LOAD_FILE_HASH,Constants.PREFERENCE_LOAD_FILE_HASH_DEFAULT));
                 new AlertDialog.Builder(this).setTitle(getResources().getString(R.string.activity_settings_loading_options))
                         .setView(dialogView)
                         .setPositiveButton(getResources().getString(R.string.dialog_button_confirm), new DialogInterface.OnClickListener() {
@@ -173,6 +178,8 @@ public class SettingActivity extends BaseActivity implements View.OnClickListene
                                 editor.putBoolean(Constants.PREFERENCE_LOAD_ACTIVITIES,cb_activities.isChecked());
                                 editor.putBoolean(Constants.PREFERENCE_LOAD_RECEIVERS,cb_receivers.isChecked());
                                 editor.putBoolean(Constants.PREFERENCE_LOAD_STATIC_LOADERS,cb_static_loaders.isChecked());
+                                editor.putBoolean(Constants.PREFERENCE_LOAD_APK_SIGNATURE,cb_signature.isChecked());
+                                editor.putBoolean(Constants.PREFERENCE_LOAD_FILE_HASH,cb_hash.isChecked());
                                 editor.apply();
                                 refreshSettingValues();
                                 setResult(RESULT_OK);
@@ -348,6 +355,37 @@ public class SettingActivity extends BaseActivity implements View.OnClickListene
                         }).show();
             }
             break;
+            case R.id.settings_package_scope_area:{
+                View dialogView=LayoutInflater.from(this).inflate(R.layout.dialog_package_scope,null);
+                int value=settings.getInt(Constants.PREFERENCE_PACKAGE_SCOPE,Constants.PREFERENCE_PACKAGE_SCOPE_DEFAULT);
+                ((RadioButton)dialogView.findViewById(R.id.package_scope_all_ra)).setChecked(value==Constants.PACKAGE_SCOPE_ALL);
+                ((RadioButton)dialogView.findViewById(R.id.package_scope_exporting_path_ra)).setChecked(value==Constants.PACKAGE_SCOPE_EXPORTING_PATH);
+                final AlertDialog dialog=new AlertDialog.Builder(this)
+                        .setTitle(getResources().getString(R.string.activity_settings_package_scope))
+                        .setView(dialogView)
+                        .show();
+                dialogView.findViewById(R.id.package_scope_all).setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        editor.putInt(Constants.PREFERENCE_PACKAGE_SCOPE,Constants.PACKAGE_SCOPE_ALL);
+                        editor.apply();
+                        dialog.cancel();
+                        refreshSettingValues();
+                        sendBroadcast(new Intent(Constants.ACTION_REFRESH_IMPORT_ITEMS_LIST));
+                    }
+                });
+                dialogView.findViewById(R.id.package_scope_exporting_path).setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        editor.putInt(Constants.PREFERENCE_PACKAGE_SCOPE,Constants.PACKAGE_SCOPE_EXPORTING_PATH);
+                        editor.apply();
+                        dialog.cancel();
+                        refreshSettingValues();
+                        sendBroadcast(new Intent(Constants.ACTION_REFRESH_IMPORT_ITEMS_LIST));
+                    }
+                });
+            }
+            break;
         }
     }
 
@@ -409,6 +447,19 @@ public class SettingActivity extends BaseActivity implements View.OnClickListene
         ((TextView)findViewById(R.id.settings_port_number_value)).setText(String.valueOf(SPUtil.getPortNumber(this)));
         ((TextView)findViewById(R.id.settings_device_name_value)).setText(SPUtil.getDeviceName(this));
         ((TextView)findViewById(R.id.settings_extension_value)).setText(SPUtil.getCompressingExtensionName(this));
+        final int value_package_scope=settings.getInt(Constants.PREFERENCE_PACKAGE_SCOPE,Constants.PREFERENCE_PACKAGE_SCOPE_DEFAULT);
+        TextView tv_package_scope=findViewById(R.id.settings_package_scope_value);
+        switch (value_package_scope){
+            default:break;
+            case Constants.PACKAGE_SCOPE_ALL:{
+                tv_package_scope.setText(getResources().getString(R.string.package_scope_all));
+            }
+            break;
+            case Constants.PACKAGE_SCOPE_EXPORTING_PATH:{
+                tv_package_scope.setText(getResources().getString(R.string.package_scope_exporting_path));
+            }
+            break;
+        }
     }
 
     @Override

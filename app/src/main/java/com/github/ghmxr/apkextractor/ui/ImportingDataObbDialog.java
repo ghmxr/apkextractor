@@ -10,6 +10,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.CheckBox;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.github.ghmxr.apkextractor.Global;
 import com.github.ghmxr.apkextractor.R;
@@ -122,6 +123,10 @@ public class ImportingDataObbDialog extends AlertDialog implements View.OnClickL
     @Override
     public void onClick(View v) {
         if(v.equals(getButton(AlertDialog.BUTTON_POSITIVE))){
+            if(!cb_apk.isChecked()&&!cb_data.isChecked()&&!cb_obb.isChecked()){
+                ToastManager.showToast(getContext(),getContext().getResources().getString(R.string.activity_detail_nothing_checked), Toast.LENGTH_SHORT);
+                return;
+            }
             if(cb_data.isChecked()) for(ImportItem item: list_data_controllable) item.importData=true;
             if(cb_obb.isChecked()) for (ImportItem item: list_obb_controllable) item.importObb=true;
             if(cb_apk.isChecked()) for(ImportItem item:list_apk_controllable) item.importApk=true;
