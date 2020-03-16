@@ -18,7 +18,7 @@ public class ZipFileUtil {
     public static @Nullable ZipFileInfo getZipFileInfoOfImportItem(@NonNull ImportItem importItem){
         FileItem fileItem=importItem.getFileItem();
         try{
-            if(fileItem.isDocumentFile()){
+            if(fileItem.isDocumentFile()||fileItem.isShareUriInstance()){
                 return getZipFileInfoOfZipInputStream(fileItem.getInputStream());
             }else if(fileItem.isFileInstance()){
                 return getZipFileInfoOfZipFile(new ZipFile(fileItem.getFile()));

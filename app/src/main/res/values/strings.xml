@@ -33,6 +33,9 @@
     <string name="main_page_export">应用</string>
     <string name="main_page_import">安装包</string>
 
+    <string name="activity_package_detail">使用APK Kit安装</string>
+    <string name="activity_package_detail_invalid_format">此文件不是有效的导入格式</string>
+    <string name="activity_package_detail_blank">没有得到有效的文件数据，请重新尝试打开</string>
     <string name="activity_detail_run">运行</string>
     <string name="activity_detail_export">导出</string>
     <string name="activity_detail_share">分享</string>

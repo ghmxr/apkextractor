@@ -3,6 +3,7 @@ package com.github.ghmxr.apkextractor.activities;
 import android.Manifest;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -24,6 +25,7 @@ import android.widget.Toast;
 import com.github.ghmxr.apkextractor.Constants;
 import com.github.ghmxr.apkextractor.Global;
 import com.github.ghmxr.apkextractor.R;
+import com.github.ghmxr.apkextractor.items.FileItem;
 import com.github.ghmxr.apkextractor.items.ImportItem;
 import com.github.ghmxr.apkextractor.tasks.GetImportLengthAndDuplicateInfoTask;
 import com.github.ghmxr.apkextractor.tasks.GetPackageInfoViewTask;
@@ -52,15 +54,34 @@ public class PackageDetailActivity extends BaseActivity implements View.OnClickL
     @Override
     protected void onCreate(Bundle bundle) {
         super.onCreate(bundle);
-
-        try{
-            importItem= Global.item_list.get(getIntent().getIntExtra(EXTRA_IMPORT_ITEM_POSITION,-1));
-        }catch (Exception e){
-            e.printStackTrace();
-            ToastManager.showToast(this,"Can not get the import item, try to refresh and re-open", Toast.LENGTH_SHORT);
-            finish();
+        if(Build.VERSION.SDK_INT>=23&&PermissionChecker.checkSelfPermission(this,Manifest.permission.WRITE_EXTERNAL_STORAGE)!=PermissionChecker.PERMISSION_GRANTED){
+            requestPermissions(new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE},0);
+        }
+        if(getIntent().getAction()!=null&&getIntent().getAction().equals(Intent.ACTION_VIEW)){
+            Uri uri=getIntent().getData();
+            if(uri==null||uri.getLastPathSegment()==null){
+                ToastManager.showToast(this,getResources().getString(R.string.activity_package_detail_blank), Toast.LENGTH_SHORT);
+                finish();
+                return;
+            }
+            if(!uri.getLastPathSegment().toLowerCase().endsWith("zip")&&!uri.getLastPathSegment().toLowerCase().endsWith(SPUtil.getCompressingExtensionName(this).toLowerCase())){
+                ToastManager.showToast(this,getResources().getString(R.string.activity_package_detail_invalid_format),Toast.LENGTH_SHORT);
+                finish();
+                return;
+            }
+            importItem=new ImportItem(this,new FileItem(this, uri));
+        }else{
+            try{
+                importItem= Global.item_list.get(getIntent().getIntExtra(EXTRA_IMPORT_ITEM_POSITION,-1));
+            }catch (Exception e){
+                e.printStackTrace();
+                ToastManager.showToast(this,getResources().getString(R.string.activity_package_detail_blank), Toast.LENGTH_SHORT);
+                finish();
+            }
         }
         if(importItem==null){
+            ToastManager.showToast(this,getResources().getString(R.string.activity_package_detail_blank), Toast.LENGTH_SHORT);
+            finish();
             return;
         }
         setContentView(R.layout.activity_package_detail);
@@ -82,6 +103,9 @@ public class PackageDetailActivity extends BaseActivity implements View.OnClickL
         ((TextView)findViewById(R.id.package_detail_minimum_api)).setText(importItem.getMinSdkVersion());
         ((TextView)findViewById(R.id.package_detail_target_api)).setText(importItem.getTargetSdkVersion());
         ((TextView)findViewById(R.id.package_detail_last_modified)).setText(new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(new Date(importItem.getLastModified())));
+        if(importItem.getFileItem().isShareUriInstance()){
+            findViewById(R.id.package_detail_last_modified_area).setVisibility(View.GONE);
+        }
         if(importItem.getImportType()==ImportItem.ImportType.ZIP){
             findViewById(R.id.package_detail_version_name_title).setVisibility(View.GONE);
             findViewById(R.id.package_detail_version_name_area).setVisibility(View.GONE);
@@ -159,32 +183,36 @@ public class PackageDetailActivity extends BaseActivity implements View.OnClickL
             new Thread(new Runnable() {
                 @Override
                 public void run() {
-                    long data=0;
-                    long obb=0;
-                    long apk=0;
-                    final ZipFileUtil.ZipFileInfo zipFileInfo=ZipFileUtil.getZipFileInfoOfImportItem(importItem);
-                    if(zipFileInfo!=null){
-                        data=zipFileInfo.getDataSize();
-                        obb=zipFileInfo.getObbSize();
-                        apk=zipFileInfo.getApkSize();
-                    }
-                    final long data_final=data;
-                    final long obb_final=obb;
-                    final long apk_final=apk;
-                    Global.handler.post(new Runnable() {
-                        @Override
-                        public void run() {
-                            PackageDetailActivity.this.zipFileInfo=zipFileInfo;
-                            findViewById(R.id.package_detail_data_obb_pg).setVisibility(View.GONE);
-                            findViewById(R.id.package_detail_checkboxes).setVisibility(View.VISIBLE);
-                            cb_data.setEnabled(data_final>0);
-                            cb_obb.setEnabled(obb_final>0);
-                            cb_apk.setEnabled(apk_final>0);
-                            cb_data.setText("data:"+Formatter.formatFileSize(PackageDetailActivity.this,data_final));
-                            cb_obb.setText("obb:"+Formatter.formatFileSize(PackageDetailActivity.this,obb_final));
-                            cb_apk.setText("apk:"+Formatter.formatFileSize(PackageDetailActivity.this,apk_final));
+                    try {
+                        long data=0;
+                        long obb=0;
+                        long apk=0;
+                        final ZipFileUtil.ZipFileInfo zipFileInfo=ZipFileUtil.getZipFileInfoOfImportItem(importItem);
+                        if(zipFileInfo!=null){
+                            data=zipFileInfo.getDataSize();
+                            obb=zipFileInfo.getObbSize();
+                            apk=zipFileInfo.getApkSize();
                         }
-                    });
+                        final long data_final=data;
+                        final long obb_final=obb;
+                        final long apk_final=apk;
+                        Global.handler.post(new Runnable() {
+                            @Override
+                            public void run() {
+                                PackageDetailActivity.this.zipFileInfo=zipFileInfo;
+                                findViewById(R.id.package_detail_data_obb_pg).setVisibility(View.GONE);
+                                findViewById(R.id.package_detail_checkboxes).setVisibility(View.VISIBLE);
+                                cb_data.setEnabled(data_final>0);
+                                cb_obb.setEnabled(obb_final>0);
+                                cb_apk.setEnabled(apk_final>0);
+                                cb_data.setText("data:"+Formatter.formatFileSize(PackageDetailActivity.this,data_final));
+                                cb_obb.setText("obb:"+Formatter.formatFileSize(PackageDetailActivity.this,obb_final));
+                                cb_apk.setText("apk:"+Formatter.formatFileSize(PackageDetailActivity.this,apk_final));
+                            }
+                        });
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
                 }
             }).start();
         }
@@ -368,6 +396,18 @@ public class PackageDetailActivity extends BaseActivity implements View.OnClickL
             break;
         }
         return super.onOptionsItemSelected(item);
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        if(requestCode==0){
+            if(grantResults[0]==PermissionChecker.PERMISSION_GRANTED)recreate();
+            else {
+                ToastManager.showToast(this,getResources().getString(R.string.permission_write),Toast.LENGTH_SHORT);
+                finish();
+            }
+        }
     }
 
     private void checkHeightAndFinish(){

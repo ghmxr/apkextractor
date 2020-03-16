@@ -26,6 +26,7 @@ public class FileItem implements Comparable<FileItem>{
     private Context context;
     private File file=null;
     private DocumentFile documentFile=null;
+    private Uri contentUri;
 
     /**
      * 构造一个documentFile实例的FileItem
@@ -54,9 +55,15 @@ public class FileItem implements Comparable<FileItem>{
         this.file=file;
     }
 
+    public FileItem (@NonNull Context context,@NonNull Uri contentUri){
+        this.context=context;
+        this.contentUri=contentUri;
+    }
+
     public String getName(){
         if(documentFile!=null)return documentFile.getName();
         if(file!=null)return file.getName();
+        if(contentUri!=null)return contentUri.getLastPathSegment();
         return "";
     }
 
@@ -105,6 +112,13 @@ public class FileItem implements Comparable<FileItem>{
     public boolean isFileInstance(){return file!=null;}
 
     /**
+     * 本FileItem是否为通过provider获取的uri实例
+     */
+    public boolean isShareUriInstance(){
+        return contentUri!=null;
+    }
+
+    /**
      * 如果为documentFile实例，则会返回以“external/”开头的片段；如果为File实例，则返回正常的完整路径
      */
     public String getPath(){
@@ -115,6 +129,7 @@ public class FileItem implements Comparable<FileItem>{
             if(index<=uriPath.length())return "external/"+uriPath.substring(index);
         }
         if(file!=null)return file.getAbsolutePath();
+        if(contentUri!=null)return contentUri.getLastPathSegment();
         return "";
     }
 
@@ -150,6 +165,7 @@ public class FileItem implements Comparable<FileItem>{
         try{
             if(documentFile!=null)return documentFile.length();
             if(file!=null)return file.length();
+            if(contentUri!=null&&context!=null)return getInputStream().available();
         }catch (Exception e){e.printStackTrace();}
         return 0;
     }
@@ -181,6 +197,7 @@ public class FileItem implements Comparable<FileItem>{
     public InputStream getInputStream() throws Exception{
         if(documentFile!=null) return context.getContentResolver().openInputStream(documentFile.getUri());
         if(file!=null)return new FileInputStream(file);
+        if(contentUri!=null&&context!=null)return context.getContentResolver().openInputStream(contentUri);
         return null;
     }
 

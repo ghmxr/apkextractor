@@ -229,12 +229,7 @@ public class NetSendTask implements UdpThread.UdpThreadCallback{
                         }
                     });
                     OutputStream outputStream=new BufferedOutputStream(socket.getOutputStream());
-                    InputStream inputStream;
-                    if(fileItem.isDocumentFile()){
-                        inputStream=fileItem.getInputStream();
-                    }else{
-                        inputStream=new FileInputStream(fileItem.getFile());
-                    }
+                    InputStream inputStream=fileItem.getInputStream();
                     if(callback!=null)Global.handler.post(new Runnable() {
                         @Override
                         public void run() {
