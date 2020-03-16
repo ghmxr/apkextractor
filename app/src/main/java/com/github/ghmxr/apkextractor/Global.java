@@ -306,94 +306,104 @@ public class Global {
         new ImportingDataObbDialog(activity, importItems, new ImportingDataObbDialog.ImportDialogDataObbConfirmedCallback() {
             @Override
             public void onImportingDataObbConfirmed(@NonNull final List<ImportItem> importItems2, @NonNull List<ZipFileUtil.ZipFileInfo> zipFileInfos) {
-                final AlertDialog dialog_duplication_wait=new AlertDialog.Builder(activity)
-                        .setTitle(activity.getResources().getString(R.string.dialog_wait))
-                        .setView(LayoutInflater.from(activity).inflate(R.layout.dialog_duplication_file,null))
-                        .setNegativeButton(activity.getResources().getString(R.string.dialog_button_cancel), null)
-                        .setCancelable(false)
-                        .show();
-                final GetImportLengthAndDuplicateInfoTask infoTask=new GetImportLengthAndDuplicateInfoTask(importItems2,zipFileInfos,new GetImportLengthAndDuplicateInfoTask.GetImportLengthAndDuplicateInfoCallback(){
-                    @Override
-                    public void onCheckingFinished(@NonNull List<String>duplication_infos, long total) {
-                        dialog_duplication_wait.cancel();
-                        final ImportingDialog importingDialog=new ImportingDialog(activity,total);
-                        final ImportTask.ImportTaskCallback importTaskCallback=new ImportTask.ImportTaskCallback() {
-                            @Override
-                            public void onImportTaskStarted() {}
-
-                            @Override
-                            public void onRefreshSpeed(long speed) {
-                                importingDialog.setSpeed(speed);
-                            }
-
-                            @Override
-                            public void onImportTaskProgress(@NonNull String writePath, long progress) {
-                                importingDialog.setProgress(progress);
-                                importingDialog.setCurrentWritingName(writePath);
-                            }
-
-                            @Override
-                            public void onImportTaskFinished(@NonNull String errorMessage) {
-                                importingDialog.cancel();
-                                if(callback!=null)callback.onImportFinished(errorMessage);
-                            }
-                        };
-                        final ImportTask importTask=new ImportTask(activity, importItems2,importTaskCallback);
-                        importingDialog.setButton(AlertDialog.BUTTON_NEGATIVE, activity.getResources().getString(R.string.word_stop), new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialog, int which) {
-                                importTask.setInterrupted();
-                                importingDialog.cancel();
-                            }
-                        });
-                        if(duplication_infos.size()==0){
-                            importingDialog.show();
-                            importTask.start();
-                        }else{
-                            StringBuilder stringBuilder=new StringBuilder();
-                            int checkingIndex=duplication_infos.size();
-                            int unListed=0;
-                            if(checkingIndex>100){
-                                unListed=checkingIndex-100;
-                                checkingIndex=100;
-                            }
-                            for(int i=0;i<checkingIndex;i++){
-                                stringBuilder.append(duplication_infos.get(i));
-                                stringBuilder.append("\n\n");
-                            }
-                            if(unListed>0){
-                                stringBuilder.append("+");
-                                stringBuilder.append(unListed);
-                                stringBuilder.append(activity.getResources().getString(R.string.dialog_import_duplicate_more));
-                            }
-                            new AlertDialog.Builder(activity)
-                                    .setTitle(activity.getResources().getString(R.string.dialog_import_duplicate_title))
-                                    .setMessage(activity.getResources().getString(R.string.dialog_import_duplicate_message)+stringBuilder.toString())
-                                    .setPositiveButton(activity.getResources().getString(R.string.dialog_button_confirm), new DialogInterface.OnClickListener() {
-                                        @Override
-                                        public void onClick(DialogInterface dialog, int which) {
-                                            importingDialog.show();
-                                            importTask.start();
-                                        }
-                                    })
-                                    .setNegativeButton(activity.getResources().getString(R.string.dialog_button_cancel), new DialogInterface.OnClickListener() {
-                                        @Override
-                                        public void onClick(DialogInterface dialog, int which) {}
-                                    })
-                                    .show();
-                        }
-                    }
-                });
-                infoTask.start();
-                dialog_duplication_wait.getButton(AlertDialog.BUTTON_NEGATIVE).setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        dialog_duplication_wait.cancel();
-                        infoTask.setInterrupted();
-                    }
-                });
+                showCheckingDuplicationDialogAndStartImporting(activity,importItems2,zipFileInfos,callback);
             }
         }).show();
+    }
+
+    /**
+     * 展示查重对话框，启动导入流程
+     */
+    public static void showCheckingDuplicationDialogAndStartImporting(@NonNull final Activity activity,
+                                                                      @NonNull final List<ImportItem>importItems,
+                                                                      @NonNull final List<ZipFileUtil.ZipFileInfo>zipFileInfos,
+                                                                      @Nullable final ImportTaskFinishedCallback callback){
+        final AlertDialog dialog_duplication_wait=new AlertDialog.Builder(activity)
+                .setTitle(activity.getResources().getString(R.string.dialog_wait))
+                .setView(LayoutInflater.from(activity).inflate(R.layout.dialog_duplication_file,null))
+                .setNegativeButton(activity.getResources().getString(R.string.dialog_button_cancel), null)
+                .setCancelable(false)
+                .show();
+        final GetImportLengthAndDuplicateInfoTask infoTask=new GetImportLengthAndDuplicateInfoTask(importItems,zipFileInfos,new GetImportLengthAndDuplicateInfoTask.GetImportLengthAndDuplicateInfoCallback(){
+            @Override
+            public void onCheckingFinished(@NonNull List<String>duplication_infos, long total) {
+                dialog_duplication_wait.cancel();
+                final ImportingDialog importingDialog=new ImportingDialog(activity,total);
+                final ImportTask.ImportTaskCallback importTaskCallback=new ImportTask.ImportTaskCallback() {
+                    @Override
+                    public void onImportTaskStarted() {}
+
+                    @Override
+                    public void onRefreshSpeed(long speed) {
+                        importingDialog.setSpeed(speed);
+                    }
+
+                    @Override
+                    public void onImportTaskProgress(@NonNull String writePath, long progress) {
+                        importingDialog.setProgress(progress);
+                        importingDialog.setCurrentWritingName(writePath);
+                    }
+
+                    @Override
+                    public void onImportTaskFinished(@NonNull String errorMessage) {
+                        importingDialog.cancel();
+                        if(callback!=null)callback.onImportFinished(errorMessage);
+                    }
+                };
+                final ImportTask importTask=new ImportTask(activity, importItems,importTaskCallback);
+                importingDialog.setButton(AlertDialog.BUTTON_NEGATIVE, activity.getResources().getString(R.string.word_stop), new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        importTask.setInterrupted();
+                        importingDialog.cancel();
+                    }
+                });
+                if(duplication_infos.size()==0){
+                    importingDialog.show();
+                    importTask.start();
+                }else{
+                    StringBuilder stringBuilder=new StringBuilder();
+                    int checkingIndex=duplication_infos.size();
+                    int unListed=0;
+                    if(checkingIndex>100){
+                        unListed=checkingIndex-100;
+                        checkingIndex=100;
+                    }
+                    for(int i=0;i<checkingIndex;i++){
+                        stringBuilder.append(duplication_infos.get(i));
+                        stringBuilder.append("\n\n");
+                    }
+                    if(unListed>0){
+                        stringBuilder.append("+");
+                        stringBuilder.append(unListed);
+                        stringBuilder.append(activity.getResources().getString(R.string.dialog_import_duplicate_more));
+                    }
+                    new AlertDialog.Builder(activity)
+                            .setTitle(activity.getResources().getString(R.string.dialog_import_duplicate_title))
+                            .setMessage(activity.getResources().getString(R.string.dialog_import_duplicate_message)+stringBuilder.toString())
+                            .setPositiveButton(activity.getResources().getString(R.string.dialog_button_confirm), new DialogInterface.OnClickListener() {
+                                @Override
+                                public void onClick(DialogInterface dialog, int which) {
+                                    importingDialog.show();
+                                    importTask.start();
+                                }
+                            })
+                            .setNegativeButton(activity.getResources().getString(R.string.dialog_button_cancel), new DialogInterface.OnClickListener() {
+                                @Override
+                                public void onClick(DialogInterface dialog, int which) {}
+                            })
+                            .show();
+                }
+            }
+        });
+        infoTask.start();
+        dialog_duplication_wait.getButton(AlertDialog.BUTTON_NEGATIVE).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                dialog_duplication_wait.cancel();
+                infoTask.setInterrupted();
+            }
+        });
     }
 
     public interface ImportTaskFinishedCallback{

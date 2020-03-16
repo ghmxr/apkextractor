@@ -204,6 +204,7 @@ public class FileItem implements Comparable<FileItem>{
     public OutputStream getOutputStream() throws Exception{
         if(documentFile!=null)return context.getContentResolver().openOutputStream(documentFile.getUri());
         if(file!=null)return new FileOutputStream(file);
+        if(contentUri!=null&&context!=null)return context.getContentResolver().openOutputStream(contentUri);
         return null;
     }
 
@@ -212,6 +213,10 @@ public class FileItem implements Comparable<FileItem>{
     }
 
     public File getFile(){return file;}
+
+    public Uri getContentUri(){
+        return contentUri;
+    }
 
     public static synchronized void setSort_config(int value){
         sort_config=value;

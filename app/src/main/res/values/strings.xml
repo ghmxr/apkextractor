@@ -60,7 +60,7 @@
     <string name="activity_detail_nothing_checked">请勾选要安装的数据</string>
 
     <string name="activity_detail_signature_head">签名信息</string>
-    <string name="activity_detail_signature_issuser">证书发行者</string>
+    <string name="activity_detail_signature_issuer">证书发行者</string>
     <string name="activity_detail_signature_subject">证书所有者</string>
     <string name="activity_detail_signature_serial">序列号</string>
     <string name="activity_detail_signature_start">起始时间</string>
@@ -127,8 +127,8 @@
     <string name="night_mode_follow_system">跟随系统</string>
 
     <string name="dialog_export_title">正在导出</string>
-    <string name="dialog_export_msg_apk">正在复制到</string>
-    <string name="dialog_export_zip">正在压缩</string>
+    <string name="dialog_export_msg_apk">正在复制到:</string>
+    <string name="dialog_export_zip">正在压缩:</string>
     <string name="dialog_export_stop">停止</string>
 
     <string name="dialog_import_invalid_zip_title">未发现文件</string>
@@ -328,6 +328,8 @@
 
     <string name="info_bind_port_error">绑定到指定端口出现错误，请结束掉其他运行的应用或者手动更改本应用端口号然后重试。\n\n错误信息如下：\n\n</string>
     <string name="info_udp_too_long">文件请求数据报过长，请尝试减少要发送的文件数量，然后重试</string>
+    <string name="info_share_uri_invalid">不支持通过此方式再次进行系统分享</string>
+    <string name="info_no_files_to_send">没有有效的文件信息</string>
 
     <string name="language_follow_system">跟随系统</string>
     <string name="language_chinese" translatable="false">简体中文</string>
@@ -343,12 +345,12 @@
         点击“分享”，可以使用局域网或支持分享的应用例如蓝牙、QQ面对面快传等来分享已选择的应用。\n\n
 
     勾选导出Data或者Obb选项后，会将应用APK和Data或Obb数据打包成zip导出。\n\n
-   <b>Build 8 更新日志：</b> \n
-	<b>新增：局域网间文件传输功能；</b>\n
-    <b>新增：英语适配；(语法错误是必然的)</b>\n
-    <b>修复：分享文件勾选Data或Obb时数据没有被打包成zip的问题；</b>\n
-    <b>修复：导出到外置存储时路径提示错误的问题；</b>\n
-    <b>变动：导出/导入/发送/接收过程可保持屏幕常亮。</b>\n\n
+   <b>Build 9 更新日志：</b> \n
+	<b>新增：安装包详细信息页；</b>\n
+    <b>新增：应用APK签名信息、文件哈希值信息；</b>\n
+    <b>新增：安装包扫描范围设置、导出/导入压缩包扩展名设置；</b>\n
+    <b>新增：打开方式，在文件管理器等其他应用选择通过本应用打开压缩包时可直接进行安装；</b>\n
+    <b>修复：导入安装包时未勾选任何选项仍然进行压缩包检索操作的问题。</b>\n\n
 
         开源地址:\n
          https://github.com/ghmxr/apkextractor \n\n

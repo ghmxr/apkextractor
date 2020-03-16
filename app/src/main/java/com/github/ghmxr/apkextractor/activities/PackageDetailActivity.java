@@ -1,6 +1,9 @@
 package com.github.ghmxr.apkextractor.activities;
 
 import android.Manifest;
+import android.content.ClipData;
+import android.content.ClipboardManager;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.net.Uri;
@@ -14,7 +17,6 @@ import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
 import android.text.format.Formatter;
-import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.CheckBox;
@@ -27,13 +29,10 @@ import com.github.ghmxr.apkextractor.Global;
 import com.github.ghmxr.apkextractor.R;
 import com.github.ghmxr.apkextractor.items.FileItem;
 import com.github.ghmxr.apkextractor.items.ImportItem;
-import com.github.ghmxr.apkextractor.tasks.GetImportLengthAndDuplicateInfoTask;
 import com.github.ghmxr.apkextractor.tasks.GetPackageInfoViewTask;
 import com.github.ghmxr.apkextractor.tasks.GetSignatureInfoTask;
 import com.github.ghmxr.apkextractor.tasks.HashTask;
-import com.github.ghmxr.apkextractor.tasks.ImportTask;
 import com.github.ghmxr.apkextractor.ui.AssemblyView;
-import com.github.ghmxr.apkextractor.ui.ImportingDialog;
 import com.github.ghmxr.apkextractor.ui.SignatureView;
 import com.github.ghmxr.apkextractor.ui.ToastManager;
 import com.github.ghmxr.apkextractor.utils.SPUtil;
@@ -42,7 +41,6 @@ import com.github.ghmxr.apkextractor.utils.ZipFileUtil;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
-import java.util.List;
 
 public class PackageDetailActivity extends BaseActivity implements View.OnClickListener{
 
@@ -64,7 +62,9 @@ public class PackageDetailActivity extends BaseActivity implements View.OnClickL
                 finish();
                 return;
             }
-            if(!uri.getLastPathSegment().toLowerCase().endsWith("zip")&&!uri.getLastPathSegment().toLowerCase().endsWith(SPUtil.getCompressingExtensionName(this).toLowerCase())){
+            if(!uri.getLastPathSegment().toLowerCase().endsWith("zip")
+                    &&!uri.getLastPathSegment().toLowerCase().endsWith(".xapk")
+                    &&!uri.getLastPathSegment().toLowerCase().endsWith(SPUtil.getCompressingExtensionName(this).toLowerCase())){
                 ToastManager.showToast(this,getResources().getString(R.string.activity_package_detail_invalid_format),Toast.LENGTH_SHORT);
                 finish();
                 return;
@@ -105,6 +105,8 @@ public class PackageDetailActivity extends BaseActivity implements View.OnClickL
         ((TextView)findViewById(R.id.package_detail_last_modified)).setText(new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(new Date(importItem.getLastModified())));
         if(importItem.getFileItem().isShareUriInstance()){
             findViewById(R.id.package_detail_last_modified_area).setVisibility(View.GONE);
+            findViewById(R.id.package_detail_size_dividing).setVisibility(View.GONE);
+            findViewById(R.id.package_detail_delete_area).setVisibility(View.GONE);
         }
         if(importItem.getImportType()==ImportItem.ImportType.ZIP){
             findViewById(R.id.package_detail_version_name_title).setVisibility(View.GONE);
@@ -248,103 +250,21 @@ public class PackageDetailActivity extends BaseActivity implements View.OnClickL
                     singleArray.add(importItem1);
                     final ArrayList<ZipFileUtil.ZipFileInfo>zipFileInfos=new ArrayList<>();
                     zipFileInfos.add(zipFileInfo);
-                    final AlertDialog dialog_duplication_wait=new AlertDialog.Builder(this)
-                            .setTitle(getResources().getString(R.string.dialog_wait))
-                            .setView(LayoutInflater.from(this).inflate(R.layout.dialog_duplication_file,null))
-                            .setNegativeButton(getResources().getString(R.string.dialog_button_cancel), null)
-                            .setCancelable(false)
-                            .show();
-
-                    final GetImportLengthAndDuplicateInfoTask infoTask=new GetImportLengthAndDuplicateInfoTask(singleArray,zipFileInfos,new GetImportLengthAndDuplicateInfoTask.GetImportLengthAndDuplicateInfoCallback(){
+                    Global.showCheckingDuplicationDialogAndStartImporting(this, singleArray, zipFileInfos, new Global.ImportTaskFinishedCallback() {
                         @Override
-                        public void onCheckingFinished(@NonNull List<String> duplication_infos, long total) {
-                            dialog_duplication_wait.cancel();
-                            final ImportingDialog importingDialog=new ImportingDialog(PackageDetailActivity.this,total);
-                            final ImportTask.ImportTaskCallback importTaskCallback=new ImportTask.ImportTaskCallback() {
-                                @Override
-                                public void onImportTaskStarted() {}
-
-                                @Override
-                                public void onRefreshSpeed(long speed) {
-                                    importingDialog.setSpeed(speed);
-                                }
-
-                                @Override
-                                public void onImportTaskProgress(@NonNull String writePath, long progress) {
-                                    importingDialog.setProgress(progress);
-                                    importingDialog.setCurrentWritingName(writePath);
-                                }
-
-                                @Override
-                                public void onImportTaskFinished(@NonNull String errorMessage) {
-                                    importingDialog.cancel();
-                                    //if(callback!=null)callback.onImportFinished(errorMessage);
-                                    if(!TextUtils.isEmpty(errorMessage)){
-                                        new AlertDialog.Builder(PackageDetailActivity.this)
-                                                .setTitle(getResources().getString(R.string.dialog_import_finished_error_title))
-                                                .setMessage(getResources().getString(R.string.dialog_import_finished_error_message)+errorMessage)
-                                                .setPositiveButton(getResources().getString(R.string.dialog_button_confirm), new DialogInterface.OnClickListener() {
-                                                    @Override
-                                                    public void onClick(DialogInterface dialog, int which) {}
-                                                })
-                                                .show();
-                                    }else{
-                                        ToastManager.showToast(PackageDetailActivity.this,getResources().getString(R.string.toast_import_complete),Toast.LENGTH_SHORT);
-                                    }
-                                }
-                            };
-                            final ImportTask importTask=new ImportTask(PackageDetailActivity.this, singleArray,importTaskCallback);
-                            importingDialog.setButton(AlertDialog.BUTTON_NEGATIVE, getResources().getString(R.string.word_stop), new DialogInterface.OnClickListener() {
-                                @Override
-                                public void onClick(DialogInterface dialog, int which) {
-                                    importTask.setInterrupted();
-                                    importingDialog.cancel();
-                                }
-                            });
-                            if(duplication_infos.size()==0){
-                                importingDialog.show();
-                                importTask.start();
-                            }else{
-                                StringBuilder stringBuilder=new StringBuilder();
-                                int checkingIndex=duplication_infos.size();
-                                int unListed=0;
-                                if(checkingIndex>100){
-                                    unListed=checkingIndex-100;
-                                    checkingIndex=100;
-                                }
-                                for(int i=0;i<checkingIndex;i++){
-                                    stringBuilder.append(duplication_infos.get(i));
-                                    stringBuilder.append("\n\n");
-                                }
-                                if(unListed>0){
-                                    stringBuilder.append("+");
-                                    stringBuilder.append(unListed);
-                                    stringBuilder.append(getResources().getString(R.string.dialog_import_duplicate_more));
-                                }
+                        public void onImportFinished(String error_message) {
+                            if(!TextUtils.isEmpty(error_message)){
                                 new AlertDialog.Builder(PackageDetailActivity.this)
-                                        .setTitle(getResources().getString(R.string.dialog_import_duplicate_title))
-                                        .setMessage(getResources().getString(R.string.dialog_import_duplicate_message)+stringBuilder.toString())
+                                        .setTitle(getResources().getString(R.string.dialog_import_finished_error_title))
+                                        .setMessage(getResources().getString(R.string.dialog_import_finished_error_message)+error_message)
                                         .setPositiveButton(getResources().getString(R.string.dialog_button_confirm), new DialogInterface.OnClickListener() {
-                                            @Override
-                                            public void onClick(DialogInterface dialog, int which) {
-                                                importingDialog.show();
-                                                importTask.start();
-                                            }
-                                        })
-                                        .setNegativeButton(getResources().getString(R.string.dialog_button_cancel), new DialogInterface.OnClickListener() {
                                             @Override
                                             public void onClick(DialogInterface dialog, int which) {}
                                         })
                                         .show();
+                            }else{
+                                ToastManager.showToast(PackageDetailActivity.this,getResources().getString(R.string.toast_import_complete),Toast.LENGTH_SHORT);
                             }
-                        }
-                    });
-                    infoTask.start();
-                    dialog_duplication_wait.getButton(AlertDialog.BUTTON_NEGATIVE).setOnClickListener(new View.OnClickListener() {
-                        @Override
-                        public void onClick(View v) {
-                            dialog_duplication_wait.cancel();
-                            infoTask.setInterrupted();
                         }
                     });
                 }
@@ -381,6 +301,50 @@ public class PackageDetailActivity extends BaseActivity implements View.OnClickL
                 }catch (Exception e){
                     e.printStackTrace();
                 }
+            }
+            break;
+            case R.id.package_detail_package_name_area:{
+                clip2ClipboardAndShowSnackbar(((TextView)findViewById(R.id.package_detail_file_name)).getText().toString());
+            }
+            break;
+            case R.id.package_detail_version_name_area:{
+                clip2ClipboardAndShowSnackbar(((TextView)findViewById(R.id.package_detail_version_name)).getText().toString());
+            }
+            break;
+            case R.id.package_detail_version_code_area:{
+                clip2ClipboardAndShowSnackbar(((TextView)findViewById(R.id.package_detail_version_code)).getText().toString());
+            }
+            break;
+            case R.id.package_detail_size_area:{
+                clip2ClipboardAndShowSnackbar(((TextView)findViewById(R.id.package_detail_size)).getText().toString());
+            }
+            break;
+            case R.id.package_detail_minimum_api_area:{
+                clip2ClipboardAndShowSnackbar(((TextView)findViewById(R.id.package_detail_minimum_api)).getText().toString());
+            }
+            break;
+            case R.id.package_detail_target_api_area:{
+                clip2ClipboardAndShowSnackbar(((TextView)findViewById(R.id.package_detail_target_api)).getText().toString());
+            }
+            break;
+            case R.id.package_detail_last_modified_area:{
+                clip2ClipboardAndShowSnackbar(((TextView)findViewById(R.id.package_detail_last_modified)).getText().toString());
+            }
+            break;
+            case R.id.detail_hash_md5:{
+                clip2ClipboardAndShowSnackbar(((TextView)findViewById(R.id.detail_hash_md5_value)).getText().toString());
+            }
+            break;
+            case R.id.detail_hash_sha1:{
+                clip2ClipboardAndShowSnackbar(((TextView)findViewById(R.id.detail_hash_sha1_value)).getText().toString());
+            }
+            break;
+            case R.id.detail_hash_sha256:{
+                clip2ClipboardAndShowSnackbar(((TextView)findViewById(R.id.detail_hash_sha256_value)).getText().toString());
+            }
+            break;
+            case R.id.detail_hash_crc32:{
+                clip2ClipboardAndShowSnackbar(((TextView)findViewById(R.id.detail_hash_crc32_value)).getText().toString());
             }
             break;
         }
@@ -420,5 +384,13 @@ public class PackageDetailActivity extends BaseActivity implements View.OnClickL
                 ActivityCompat.finishAfterTransition(this);
             }
         }
+    }
+
+    private void clip2ClipboardAndShowSnackbar(String s){
+        try{
+            ClipboardManager manager=(ClipboardManager)getSystemService(Context.CLIPBOARD_SERVICE);
+            manager.setPrimaryClip(ClipData.newPlainText("message",s));
+            Snackbar.make(findViewById(android.R.id.content),getResources().getString(R.string.snack_bar_clipboard),Snackbar.LENGTH_SHORT).show();
+        }catch (Exception e){e.printStackTrace();}
     }
 }

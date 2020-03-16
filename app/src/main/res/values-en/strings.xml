@@ -31,6 +31,9 @@
     <string name="main_page_export">Applications</string>
     <string name="main_page_import">Packages</string>
 
+    <string name="activity_package_detail">Install by APK Kit</string>
+    <string name="activity_package_detail_invalid_format">Invalid format of importing</string>
+    <string name="activity_package_detail_blank">None valid data found, please try to re-open</string>
     <string name="activity_detail_run">Run</string>
     <string name="activity_detail_export">Export</string>
     <string name="activity_detail_share">Share</string>
@@ -47,9 +50,32 @@
     <string name="activity_detail_target_api">Target API</string>
     <string name="activity_detail_is_system_app">Is system app</string>
     <string name="activity_detail_signature">Signature MD5</string>
+    <string name="activity_detail_install">Install</string>
+    <string name="activity_detail_delete">Delete</string>
+    <string name="activity_detail_file_name">File name</string>
+    <string name="activity_detail_file_size">File size</string>
+    <string name="activity_detail_last_modified">Last modified</string>
+    <string name="activity_detail_nothing_checked">Please check the options to install</string>
+
+    <string name="activity_detail_signature_head">Signature Info</string>
+    <string name="activity_detail_signature_issuer">Signature issuer</string>
+    <string name="activity_detail_signature_subject">Signature owner</string>
+    <string name="activity_detail_signature_serial">Serial number</string>
+    <string name="activity_detail_signature_start">Start time</string>
+    <string name="activity_detail_signature_end">End time</string>
+    <string name="activity_detail_signature_md5">MD5</string>
+    <string name="activity_detail_signature_sha1">SHA1</string>
+    <string name="activity_detail_signature_sha256">SHA256</string>
+
+    <string name="activity_detail_hash_head">Hash values of the file</string>
+    <string name="activity_detail_hash_md5">MD5</string>
+    <string name="activity_detail_hash_sha1">SHA1</string>
+    <string name="activity_detail_hash_sha256">SHA256</string>
+    <string name="activity_detail_hash_crc32">CRC32</string>
 
     <string name="activity_settings_title">Settings</string>
     <string name="activity_settings_path">Exporting path</string>
+    <string name="activity_settings_package_scope">Package scope</string>
     <string name="activity_settings_rules">Exporting rules</string>
     <string name="activity_settings_share_mode">Sharing mode</string>
     <string name="activity_settings_night_mode">Night mode</string>
@@ -77,14 +103,19 @@
     <string name="share_mode_export">Share after exporting</string>
     <string name="share_mode_export_att">Exporting the files to the set path by the naming rules and then share them, but will spend more storage space</string>
 
+    <string name="package_scope_all">All</string>
+    <string name="package_scope_all_des">All ranges of the storage，and will scan external storage if granted, may take more time</string>
+    <string name="package_scope_exporting_path">Only exporting path</string>
+    <string name="package_scope_exporting_path_des">Only scan the packages in the exporting path</string>
+
     <string name="night_mode_enabled">enabled</string>
     <string name="night_mode_disabled">disabled</string>
     <string name="night_mode_auto">auto</string>
     <string name="night_mode_follow_system">follow system</string>
 
     <string name="dialog_export_title">Exporting</string>
-    <string name="dialog_export_msg_apk">Copying to </string>
-    <string name="dialog_export_zip">Compressing </string>
+    <string name="dialog_export_msg_apk">Copying to :</string>
+    <string name="dialog_export_zip">Compressing :</string>
     <string name="dialog_export_stop">stop</string>
 
     <string name="dialog_import_invalid_zip_title">No valid files found</string>
@@ -145,6 +176,8 @@
     <string name="dialog_loading_selection_activities">activity</string>
     <string name="dialog_loading_selection_receivers">receiver</string>
     <string name="dialog_loading_selection_static_loaders">Auto start receivers(will take more time while loading)</string>
+    <string name="dialog_loading_selection_signature">APK Signature</string>
+    <string name="dialog_loading_selection_file_hash">Hash values</string>
 
     <string name="dialog_sort_default">Default</string>
     <string name="dialog_sort_ascending_name">Ascending by name(A→Z)</string>
@@ -301,6 +334,8 @@
     </string>
     <string name="info_bind_port_error">error to bind to the port number, please check if other apps are in use and retry, or change to another port number.</string>
     <string name="info_udp_too_long">The file info message is too long, try to select less files and retry.</string>
+    <string name="info_share_uri_invalid">It is not supported to share files through this way again</string>
+    <string name="info_no_files_to_send">no valid file info found</string>
     <string name="receive_log_self_ip">Native IP:</string>
     <string name="toast_receive_interrupt">Receiving file terminated by the other side</string>
     <string name="toast_receive_refuse">The other side refused to receive the file</string>

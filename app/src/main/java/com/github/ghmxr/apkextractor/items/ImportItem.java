@@ -69,11 +69,12 @@ public class ImportItem implements DisplayItem,Comparable<ImportItem> {
             PackageManager packageManager=context.getApplicationContext().getPackageManager();
             if(fileItem.isFileInstance()){
                 try{
-                    int flag=PackageManager.GET_SIGNATURES;
+                    int flag=0;
                     final SharedPreferences settings=SPUtil.getGlobalSharedPreferences(context);
                     if(settings.getBoolean(Constants.PREFERENCE_LOAD_PERMISSIONS,Constants.PREFERENCE_LOAD_PERMISSIONS_DEFAULT))flag|=PackageManager.GET_PERMISSIONS;
                     if(settings.getBoolean(Constants.PREFERENCE_LOAD_ACTIVITIES,Constants.PREFERENCE_LOAD_ACTIVITIES_DEFAULT))flag|=PackageManager.GET_ACTIVITIES;
                     if(settings.getBoolean(Constants.PREFERENCE_LOAD_RECEIVERS,Constants.PREFERENCE_LOAD_RECEIVERS_DEFAULT))flag|=PackageManager.GET_RECEIVERS;
+                    if(settings.getBoolean(Constants.PREFERENCE_LOAD_APK_SIGNATURE,Constants.PREFERENCE_LOAD_APK_SIGNATURE_DEFAULT))flag|=PackageManager.GET_SIGNATURES;
                     packageInfo=packageManager.getPackageArchiveInfo(fileItem.getPath(),flag);
                 }catch (Exception e){e.printStackTrace();}
                 if(packageInfo!=null){

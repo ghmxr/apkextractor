@@ -59,6 +59,11 @@ public class FileSendActivity extends BaseActivity implements NetSendTask.NetSen
         recyclerView.setLayoutManager(new LinearLayoutManager(this,LinearLayoutManager.VERTICAL,false));
         recyclerView.setAdapter(new ListAdapter(new ArrayList<DeviceItem>()));//不设置的话无法下拉
         swipeRefreshLayout.setColorSchemeColors(getResources().getColor(R.color.colorTitle));
+        if(sendingFiles.size()==0){
+            ToastManager.showToast(this,getResources().getString(R.string.info_no_files_to_send),Toast.LENGTH_SHORT);
+            finish();
+            return;
+        }
         try{
             netSendTask=new NetSendTask(this,this);
         }catch (Exception e){

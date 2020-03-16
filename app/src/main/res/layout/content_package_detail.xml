@@ -34,15 +34,17 @@
                 <RelativeLayout
                     android:id="@+id/package_detail_install_area"
                     android:layout_width="match_parent"
-                    android:layout_height="50dp"
+                    android:layout_height="wrap_content"
                     android:clickable="true"
                     android:focusable="true"
                     android:onClick="onClick"
                     android:background="?attr/selectableItemBackground">
                     <ImageView
                         android:id="@+id/package_detail_run_icon"
-                        android:layout_width="25dp"
-                        android:layout_height="25dp"
+                        android:layout_width="30dp"
+                        android:layout_height="30dp"
+                        android:layout_marginTop="12.5dp"
+                        android:layout_marginBottom="12.5dp"
                         android:layout_alignParentLeft="true"
                         android:layout_centerVertical="true"
                         android:layout_marginLeft="10dp"
@@ -53,48 +55,63 @@
                         android:layout_height="wrap_content"
                         android:layout_centerVertical="true"
                         android:layout_toRightOf="@+id/package_detail_run_icon"
-                        android:layout_marginLeft="20dp"
+                        android:layout_marginLeft="15dp"
                         android:textColor="@color/colorHighLightText"
                         android:textSize="15sp"
                         android:text="@string/activity_detail_install"/>
-                    <LinearLayout
+                    <RelativeLayout
                         android:id="@+id/package_detail_checkboxes"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:orientation="horizontal"
                         android:layout_centerVertical="true"
                         android:layout_marginRight="5dp"
                         android:layout_alignParentRight="true"
                         android:layout_toLeftOf="@+id/package_detail_export_att"
                         android:layout_marginLeft="10dp"
+                        android:layout_marginTop="5dp"
+                        android:layout_marginBottom="5dp"
                         android:visibility="gone"
                         tools:visibility="visible">
-                        <CheckBox
-                            android:id="@+id/package_detail_data"
+                        <GridLayout
+                            android:id="@+id/package_detail_checkboxes_grid"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:layout_marginRight="10dp"
-                            android:textSize="12sp"
-                            android:singleLine="true"
-                            android:textColor="@color/color_text_normal"
-                            android:text="Data"/>
-                        <CheckBox
-                            android:id="@+id/package_detail_obb"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:textSize="12sp"
-                            android:singleLine="true"
-                            android:textColor="@color/color_text_normal"
-                            android:text="Obb"/>
-                        <CheckBox
-                            android:id="@+id/package_detail_apk"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:textSize="12sp"
-                            android:singleLine="true"
-                            android:textColor="@color/color_text_normal"
-                            android:text="apk"/>
-                    </LinearLayout>
+                            android:columnCount="2"
+                            android:layout_marginLeft="20dp">
+                            <CheckBox
+                                android:id="@+id/package_detail_data"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_marginRight="10dp"
+                                android:textSize="12sp"
+                                android:singleLine="true"
+                                android:textColor="@color/color_text_normal"
+                                android:text="Data"/>
+                            <CheckBox
+                                android:id="@+id/package_detail_obb"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:textSize="12sp"
+                                android:singleLine="true"
+                                android:textColor="@color/color_text_normal"
+                                android:text="Obb"/>
+                            <CheckBox
+                                android:id="@+id/package_detail_apk"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:textSize="12sp"
+                                android:singleLine="true"
+                                android:textColor="@color/color_text_normal"
+                                android:text="apk"/>
+                        </GridLayout>
+                        <View
+                            android:layout_width="1px"
+                            android:layout_height="40dp"
+                            android:layout_alignParentLeft="true"
+                            android:layout_centerVertical="true"
+                            android:background="@color/colorDividingLine"/>
+                    </RelativeLayout>
+
                     <ProgressBar
                         android:layout_width="25dp"
                         android:layout_height="25dp"
@@ -103,7 +120,8 @@
                         android:layout_centerVertical="true"
                         android:layout_marginRight="40dp"
                         style="?android:attr/progressBarStyleSmall"
-                        android:visibility="gone"/>
+                        android:visibility="gone"
+                        tools:visibility="visible"/>
                 </RelativeLayout>
 
                 <RelativeLayout
@@ -330,6 +348,7 @@
                         android:textSize="12sp"
                         tools:text="100MB"/>
                     <ImageView
+                        android:id="@+id/package_detail_size_dividing"
                         android:layout_width="match_parent"
                         android:layout_height="1px"
                         android:layout_alignParentBottom="true"

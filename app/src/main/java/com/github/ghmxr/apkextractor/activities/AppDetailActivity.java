@@ -308,6 +308,22 @@ public class AppDetailActivity extends BaseActivity implements View.OnClickListe
                 clip2ClipboardAndShowSnackbar(((TextView)findViewById(R.id.app_detail_is_system_app)).getText().toString());
             }
             break;
+            case R.id.detail_hash_md5:{
+                clip2ClipboardAndShowSnackbar(((TextView)findViewById(R.id.detail_hash_md5_value)).getText().toString());
+            }
+            break;
+            case R.id.detail_hash_sha1:{
+                clip2ClipboardAndShowSnackbar(((TextView)findViewById(R.id.detail_hash_sha1_value)).getText().toString());
+            }
+            break;
+            case R.id.detail_hash_sha256:{
+                clip2ClipboardAndShowSnackbar(((TextView)findViewById(R.id.detail_hash_sha256_value)).getText().toString());
+            }
+            break;
+            case R.id.detail_hash_crc32:{
+                clip2ClipboardAndShowSnackbar(((TextView)findViewById(R.id.detail_hash_crc32_value)).getText().toString());
+            }
+            break;
         }
     }
 

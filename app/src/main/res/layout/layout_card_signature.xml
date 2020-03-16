@@ -38,7 +38,7 @@
                 android:layout_marginBottom="10dp"
                 android:textSize="14sp"
                 android:textColor="@color/colorHighLightText"
-                android:text="@string/activity_detail_signature_issuser"/>
+                android:text="@string/activity_detail_signature_issuer"/>
             <TextView
                 android:id="@+id/detail_signature_sub_value"
                 android:layout_width="wrap_content"

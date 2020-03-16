@@ -71,6 +71,9 @@ public class ShareSelectionDialog extends Dialog implements View.OnClickListener
                         uris.add(Uri.fromFile(fileItem.getFile()));
                     }else if(fileItem.isDocumentFile()){
                         uris.add(fileItem.getDocumentFile().getUri());
+                    }else if(fileItem.isShareUriInstance()){
+                        ToastManager.showToast(getContext(),getContext().getResources().getString(R.string.info_share_uri_invalid),Toast.LENGTH_SHORT);
+                        return;
                     }
                 }
                 Global.shareCertainFiles(getContext(),uris,getContext().getResources().getString(R.string.share_title));
