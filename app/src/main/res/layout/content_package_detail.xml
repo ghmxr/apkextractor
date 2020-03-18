@@ -219,15 +219,12 @@
                         android:text="@string/activity_detail_file_name"/>
                     <TextView
                         android:id="@+id/package_detail_file_name"
-                        android:layout_width="wrap_content"
+                        android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_alignParentRight="true"
                         android:layout_toRightOf="@+id/package_detail_file_name_att"
-                        android:ellipsize="end"
                         android:gravity="end"
                         android:layout_centerVertical="true"
-                        android:singleLine="true"
-                        android:layout_marginLeft="5dp"
+                        android:layout_marginLeft="10dp"
                         android:layout_marginRight="5dp"
                         android:textSize="12sp"
                         tools:text="package.zip"/>
@@ -260,15 +257,12 @@
                         android:text="@string/activity_detail_version_name"/>
                     <TextView
                         android:id="@+id/package_detail_version_name"
-                        android:layout_width="wrap_content"
+                        android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_alignParentRight="true"
                         android:layout_toRightOf="@+id/package_detail_version_name_att"
                         android:gravity="end"
-                        android:ellipsize="end"
                         android:layout_centerVertical="true"
-                        android:singleLine="true"
-                        android:layout_marginLeft="5dp"
+                        android:layout_marginLeft="10dp"
                         android:layout_marginRight="5dp"
                         android:textSize="12sp"
                         tools:text="1.0"/>
@@ -301,12 +295,12 @@
                         android:text="@string/activity_detail_version_code"/>
                     <TextView
                         android:id="@+id/package_detail_version_code"
-                        android:layout_width="wrap_content"
+                        android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_alignParentRight="true"
                         android:layout_centerVertical="true"
-                        android:singleLine="true"
-                        android:layout_marginLeft="5dp"
+                        android:layout_toRightOf="@+id/package_detail_version_code_att"
+                        android:gravity="end"
+                        android:layout_marginLeft="10dp"
                         android:layout_marginRight="5dp"
                         android:textSize="12sp"
                         tools:text="10"/>
@@ -326,6 +320,7 @@
                     android:background="?attr/selectableItemBackground"
                     android:onClick="onClick">
                     <TextView
+                        android:id="@+id/package_detail_size_att"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_alignParentLeft="true"
@@ -338,12 +333,12 @@
                         android:text="@string/activity_detail_file_size"/>
                     <TextView
                         android:id="@+id/package_detail_size"
-                        android:layout_width="wrap_content"
+                        android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_alignParentRight="true"
+                        android:layout_toRightOf="@+id/package_detail_size_att"
+                        android:gravity="end"
                         android:layout_centerVertical="true"
-                        android:singleLine="true"
-                        android:layout_marginLeft="5dp"
+                        android:layout_marginLeft="10dp"
                         android:layout_marginRight="5dp"
                         android:textSize="12sp"
                         tools:text="100MB"/>
@@ -364,6 +359,7 @@
                     android:background="?attr/selectableItemBackground"
                     android:onClick="onClick">
                     <TextView
+                        android:id="@+id/package_detail_minimum_api_att"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_alignParentLeft="true"
@@ -376,12 +372,12 @@
                         android:text="@string/activity_detail_minimum_api"/>
                     <TextView
                         android:id="@+id/package_detail_minimum_api"
-                        android:layout_width="wrap_content"
+                        android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_alignParentRight="true"
+                        android:layout_toRightOf="@+id/package_detail_minimum_api_att"
+                        android:gravity="end"
                         android:layout_centerVertical="true"
-                        android:singleLine="true"
-                        android:layout_marginLeft="5dp"
+                        android:layout_marginLeft="10dp"
                         android:layout_marginRight="5dp"
                         android:textSize="12sp"
                         android:text="@string/word_unknown"
@@ -402,6 +398,7 @@
                     android:background="?attr/selectableItemBackground"
                     android:onClick="onClick">
                     <TextView
+                        android:id="@+id/package_detail_target_api_att"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_alignParentLeft="true"
@@ -414,12 +411,12 @@
                         android:text="@string/activity_detail_target_api"/>
                     <TextView
                         android:id="@+id/package_detail_target_api"
-                        android:layout_width="wrap_content"
+                        android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_alignParentRight="true"
+                        android:layout_toRightOf="@+id/package_detail_target_api_att"
+                        android:gravity="end"
                         android:layout_centerVertical="true"
-                        android:singleLine="true"
-                        android:layout_marginLeft="5dp"
+                        android:layout_marginLeft="10dp"
                         android:layout_marginRight="5dp"
                         android:textSize="12sp"
                         android:text="@string/word_unknown"
@@ -441,6 +438,7 @@
                     android:background="?attr/selectableItemBackground"
                     android:onClick="onClick">
                     <TextView
+                        android:id="@+id/package_detail_last_modified_att"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_alignParentLeft="true"
@@ -453,12 +451,52 @@
                         android:text="@string/activity_detail_last_modified"/>
                     <TextView
                         android:id="@+id/package_detail_last_modified"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_toRightOf="@+id/package_detail_last_modified_att"
+                        android:gravity="end"
+                        android:layout_centerVertical="true"
+                        android:layout_marginLeft="10dp"
+                        android:layout_marginRight="5dp"
+                        android:textSize="12sp"
+                        android:text="@string/word_unknown"
+                        tools:text="2019/12/12/10:00"/>
+                    <ImageView
+                        android:id="@+id/package_detail_last_modified_dividing"
+                        android:layout_width="match_parent"
+                        android:layout_height="1px"
+                        android:layout_alignParentBottom="true"
+                        android:background="@color/colorDividingLine"/>
+                </RelativeLayout>
+
+                <RelativeLayout
+                    android:id="@+id/package_detail_path_area"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:clickable="true"
+                    android:focusable="true"
+                    android:background="?attr/selectableItemBackground"
+                    android:onClick="onClick">
+                    <TextView
+                        android:id="@+id/package_detail_path_att"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_alignParentRight="true"
-                        android:layout_centerVertical="true"
-                        android:singleLine="true"
+                        android:layout_alignParentLeft="true"
                         android:layout_marginLeft="5dp"
+                        android:layout_marginTop="10dp"
+                        android:layout_marginBottom="10dp"
+                        android:layout_centerVertical="true"
+                        android:textSize="14sp"
+                        android:textColor="@color/colorHighLightText"
+                        android:text="@string/activity_detail_path"/>
+                    <TextView
+                        android:id="@+id/package_detail_path"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_toRightOf="@+id/package_detail_path_att"
+                        android:gravity="end"
+                        android:layout_centerVertical="true"
+                        android:layout_marginLeft="10dp"
                         android:layout_marginRight="5dp"
                         android:textSize="12sp"
                         android:text="@string/word_unknown"

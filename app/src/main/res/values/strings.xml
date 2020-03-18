@@ -51,6 +51,7 @@
     <string name="activity_detail_minimum_api">最低API</string>
     <string name="activity_detail_target_api">目标API</string>
     <string name="activity_detail_is_system_app">系统应用</string>
+    <string name="activity_detail_path">完整路径</string>
     <string name="activity_detail_signature">签名MD5</string>
     <string name="activity_detail_install">安装</string>
     <string name="activity_detail_delete">删除</string>
@@ -58,6 +59,7 @@
     <string name="activity_detail_file_size">文件大小</string>
     <string name="activity_detail_last_modified">最后修改</string>
     <string name="activity_detail_nothing_checked">请勾选要安装的数据</string>
+    <string name="activity_detail_wait_loading">请等待，压缩包读取中，可能会花费些时间</string>
 
     <string name="activity_detail_signature_head">签名信息</string>
     <string name="activity_detail_signature_issuer">证书发行者</string>

@@ -129,7 +129,7 @@ public class FileItem implements Comparable<FileItem>{
             if(index<=uriPath.length())return "external/"+uriPath.substring(index);
         }
         if(file!=null)return file.getAbsolutePath();
-        if(contentUri!=null)return contentUri.getLastPathSegment();
+        if(contentUri!=null)return contentUri.toString();
         return "";
     }
 

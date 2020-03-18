@@ -387,7 +387,12 @@ public class FolderSelectorActivity extends BaseActivity {
                 return;
             }
             FileItem parentFile=fileItem.getParent();
-            if(parentFile!=null&&!parentFile.isDocumentFile()&&parentFile.getPath().length()<current_storage_path.length()){
+            if(Build.VERSION.SDK_INT<21){
+                refreshList(parentFile);
+                segments.clear();
+                return;
+            }
+            if(parentFile!=null&&parentFile.isFileInstance()&&parentFile.getPath().length()<current_storage_path.length()){
                 refreshList(null);
                 segments.clear();
                 return;

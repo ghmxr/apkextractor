@@ -101,6 +101,7 @@ public class AppDetailActivity extends BaseActivity implements View.OnClickListe
         ((TextView)findViewById(R.id.app_detail_minimum_api)).setText(Build.VERSION.SDK_INT>=24?String.valueOf(packageInfo.applicationInfo.minSdkVersion):getResources().getString(R.string.word_unknown));
         ((TextView)findViewById(R.id.app_detail_target_api)).setText(String.valueOf(packageInfo.applicationInfo.targetSdkVersion));
         ((TextView)findViewById(R.id.app_detail_is_system_app)).setText(getResources().getString((appItem.getPackageInfo().applicationInfo.flags& ApplicationInfo.FLAG_SYSTEM)>0?R.string.word_yes:R.string.word_no));
+        ((TextView)findViewById(R.id.app_detail_path_value)).setText(appItem.getPackageInfo().applicationInfo.sourceDir);
 
         getDataObbSizeAndFillView();
 
@@ -322,6 +323,10 @@ public class AppDetailActivity extends BaseActivity implements View.OnClickListe
             break;
             case R.id.detail_hash_crc32:{
                 clip2ClipboardAndShowSnackbar(((TextView)findViewById(R.id.detail_hash_crc32_value)).getText().toString());
+            }
+            break;
+            case R.id.app_detail_path_area:{
+                clip2ClipboardAndShowSnackbar(((TextView)findViewById(R.id.app_detail_path_value)).getText().toString());
             }
             break;
         }

@@ -260,6 +260,7 @@
                     android:background="?attr/selectableItemBackground"
                     android:onClick="onClick">
                     <TextView
+                        android:id="@+id/app_detail_package_name_att"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_alignParentLeft="true"
@@ -272,12 +273,12 @@
                         android:text="@string/activity_detail_package_name"/>
                     <TextView
                         android:id="@+id/app_detail_package_name"
-                        android:layout_width="wrap_content"
+                        android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_alignParentRight="true"
+                        android:gravity="end"
+                        android:layout_toRightOf="@+id/app_detail_package_name_att"
                         android:layout_centerVertical="true"
-                        android:singleLine="true"
-                        android:layout_marginLeft="5dp"
+                        android:layout_marginLeft="10dp"
                         android:layout_marginRight="5dp"
                         android:textSize="12sp"
                         tools:text="com.example"/>
@@ -296,6 +297,7 @@
                     android:background="?attr/selectableItemBackground"
                     android:onClick="onClick">
                     <TextView
+                        android:id="@+id/app_detail_version_name_att"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_alignParentLeft="true"
@@ -308,12 +310,12 @@
                         android:text="@string/activity_detail_version_name"/>
                     <TextView
                         android:id="@+id/app_detail_version_name"
-                        android:layout_width="wrap_content"
+                        android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_alignParentRight="true"
+                        android:gravity="end"
+                        android:layout_toRightOf="@+id/app_detail_version_name_att"
                         android:layout_centerVertical="true"
-                        android:singleLine="true"
-                        android:layout_marginLeft="5dp"
+                        android:layout_marginLeft="10dp"
                         android:layout_marginRight="5dp"
                         android:textSize="12sp"
                         tools:text="1.0"/>
@@ -332,6 +334,7 @@
                     android:background="?attr/selectableItemBackground"
                     android:onClick="onClick">
                     <TextView
+                        android:id="@+id/app_detail_version_code_att"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_alignParentLeft="true"
@@ -344,12 +347,12 @@
                         android:text="@string/activity_detail_version_code"/>
                     <TextView
                         android:id="@+id/app_detail_version_code"
-                        android:layout_width="wrap_content"
+                        android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_alignParentRight="true"
+                        android:gravity="end"
+                        android:layout_toRightOf="@+id/app_detail_version_code_att"
                         android:layout_centerVertical="true"
-                        android:singleLine="true"
-                        android:layout_marginLeft="5dp"
+                        android:layout_marginLeft="10dp"
                         android:layout_marginRight="5dp"
                         android:textSize="12sp"
                         tools:text="10"/>
@@ -368,6 +371,7 @@
                     android:background="?attr/selectableItemBackground"
                     android:onClick="onClick">
                     <TextView
+                        android:id="@+id/app_detail_size_att"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_alignParentLeft="true"
@@ -380,12 +384,12 @@
                         android:text="@string/activity_detail_package_size"/>
                     <TextView
                         android:id="@+id/app_detail_size"
-                        android:layout_width="wrap_content"
+                        android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_alignParentRight="true"
+                        android:gravity="end"
+                        android:layout_toRightOf="@+id/app_detail_size_att"
                         android:layout_centerVertical="true"
-                        android:singleLine="true"
-                        android:layout_marginLeft="5dp"
+                        android:layout_marginLeft="10dp"
                         android:layout_marginRight="5dp"
                         android:textSize="12sp"
                         tools:text="100MB"/>
@@ -404,6 +408,7 @@
                     android:background="?attr/selectableItemBackground"
                     android:onClick="onClick">
                     <TextView
+                        android:id="@+id/app_detail_install_time_att"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_alignParentLeft="true"
@@ -416,12 +421,12 @@
                         android:text="@string/activity_detail_first_install_time"/>
                     <TextView
                         android:id="@+id/app_detail_install_time"
-                        android:layout_width="wrap_content"
+                        android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_alignParentRight="true"
+                        android:gravity="end"
+                        android:layout_toRightOf="@+id/app_detail_install_time_att"
                         android:layout_centerVertical="true"
-                        android:singleLine="true"
-                        android:layout_marginLeft="5dp"
+                        android:layout_marginLeft="10dp"
                         android:layout_marginRight="5dp"
                         android:textSize="12sp"
                         tools:text="2019/01/01/19:00:10"/>
@@ -440,6 +445,7 @@
                     android:background="?attr/selectableItemBackground"
                     android:onClick="onClick">
                     <TextView
+                        android:id="@+id/app_detail_update_time_att"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_alignParentLeft="true"
@@ -452,12 +458,12 @@
                         android:text="@string/activity_detail_last_update_time"/>
                     <TextView
                         android:id="@+id/app_detail_update_time"
-                        android:layout_width="wrap_content"
+                        android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_alignParentRight="true"
+                        android:gravity="end"
+                        android:layout_toRightOf="@+id/app_detail_update_time_att"
                         android:layout_centerVertical="true"
-                        android:singleLine="true"
-                        android:layout_marginLeft="5dp"
+                        android:layout_marginLeft="10dp"
                         android:layout_marginRight="5dp"
                         android:textSize="12sp"
                         tools:text="2019/01/01/19:00:10"/>
@@ -476,6 +482,7 @@
                     android:background="?attr/selectableItemBackground"
                     android:onClick="onClick">
                     <TextView
+                        android:id="@+id/app_detail_minimum_api_att"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_alignParentLeft="true"
@@ -488,12 +495,12 @@
                         android:text="@string/activity_detail_minimum_api"/>
                     <TextView
                         android:id="@+id/app_detail_minimum_api"
-                        android:layout_width="wrap_content"
+                        android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_alignParentRight="true"
+                        android:gravity="end"
+                        android:layout_toRightOf="@+id/app_detail_minimum_api_att"
                         android:layout_centerVertical="true"
-                        android:singleLine="true"
-                        android:layout_marginLeft="5dp"
+                        android:layout_marginLeft="10dp"
                         android:layout_marginRight="5dp"
                         android:textSize="12sp"
                         tools:text="14"/>
@@ -512,6 +519,7 @@
                     android:background="?attr/selectableItemBackground"
                     android:onClick="onClick">
                     <TextView
+                        android:id="@+id/app_detail_target_api_att"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_alignParentLeft="true"
@@ -524,12 +532,12 @@
                         android:text="@string/activity_detail_target_api"/>
                     <TextView
                         android:id="@+id/app_detail_target_api"
-                        android:layout_width="wrap_content"
+                        android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_alignParentRight="true"
+                        android:gravity="end"
+                        android:layout_toRightOf="@+id/app_detail_target_api_att"
                         android:layout_centerVertical="true"
-                        android:singleLine="true"
-                        android:layout_marginLeft="5dp"
+                        android:layout_marginLeft="10dp"
                         android:layout_marginRight="5dp"
                         android:textSize="12sp"
                         tools:text="28"/>
@@ -548,6 +556,7 @@
                     android:background="?attr/selectableItemBackground"
                     android:onClick="onClick">
                     <TextView
+                        android:id="@+id/app_detail_is_system_app_att"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_alignParentLeft="true"
@@ -560,12 +569,49 @@
                         android:text="@string/activity_detail_is_system_app"/>
                     <TextView
                         android:id="@+id/app_detail_is_system_app"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:gravity="end"
+                        android:layout_toRightOf="@+id/app_detail_is_system_app_att"
+                        android:layout_centerVertical="true"
+                        android:layout_marginLeft="10dp"
+                        android:layout_marginRight="5dp"
+                        android:textSize="12sp"
+                        tools:text="@string/word_no"/>
+                </RelativeLayout>
+                <ImageView
+                    android:layout_width="match_parent"
+                    android:layout_height="1px"
+                    android:background="@color/colorDividingLine"/>
+
+                <RelativeLayout
+                    android:id="@+id/app_detail_path_area"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:clickable="true"
+                    android:focusable="true"
+                    android:background="?attr/selectableItemBackground"
+                    android:onClick="onClick">
+                    <TextView
+                        android:id="@+id/app_detail_path_att"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_alignParentRight="true"
-                        android:layout_centerVertical="true"
-                        android:singleLine="true"
+                        android:layout_alignParentLeft="true"
                         android:layout_marginLeft="5dp"
+                        android:layout_marginTop="10dp"
+                        android:layout_marginBottom="10dp"
+                        android:layout_centerVertical="true"
+                        android:textSize="14sp"
+                        android:textColor="@color/colorHighLightText"
+                        android:text="@string/activity_detail_path"/>
+                    <TextView
+                        android:id="@+id/app_detail_path_value"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:gravity="end"
+                        android:layout_toRightOf="@+id/app_detail_path_att"
+                        android:layout_centerVertical="true"
+                        android:layout_marginLeft="10dp"
                         android:layout_marginRight="5dp"
                         android:textSize="12sp"
                         tools:text="@string/word_no"/>

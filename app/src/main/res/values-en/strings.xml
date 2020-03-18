@@ -49,6 +49,7 @@
     <string name="activity_detail_minimum_api">Minimum API</string>
     <string name="activity_detail_target_api">Target API</string>
     <string name="activity_detail_is_system_app">Is system app</string>
+    <string name="activity_detail_path">Full path</string>
     <string name="activity_detail_signature">Signature MD5</string>
     <string name="activity_detail_install">Install</string>
     <string name="activity_detail_delete">Delete</string>
@@ -56,6 +57,7 @@
     <string name="activity_detail_file_size">File size</string>
     <string name="activity_detail_last_modified">Last modified</string>
     <string name="activity_detail_nothing_checked">Please check the options to install</string>
+    <string name="activity_detail_wait_loading">Please wait while the package is being reading, and it may take some time</string>
 
     <string name="activity_detail_signature_head">Signature Info</string>
     <string name="activity_detail_signature_issuer">Signature issuer</string>

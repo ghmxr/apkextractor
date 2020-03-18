@@ -103,9 +103,10 @@ public class PackageDetailActivity extends BaseActivity implements View.OnClickL
         ((TextView)findViewById(R.id.package_detail_minimum_api)).setText(importItem.getMinSdkVersion());
         ((TextView)findViewById(R.id.package_detail_target_api)).setText(importItem.getTargetSdkVersion());
         ((TextView)findViewById(R.id.package_detail_last_modified)).setText(new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(new Date(importItem.getLastModified())));
+        ((TextView)findViewById(R.id.package_detail_path)).setText(importItem.getFileItem().getPath());
         if(importItem.getFileItem().isShareUriInstance()){
             findViewById(R.id.package_detail_last_modified_area).setVisibility(View.GONE);
-            findViewById(R.id.package_detail_size_dividing).setVisibility(View.GONE);
+            //findViewById(R.id.package_detail_size_dividing).setVisibility(View.GONE);
             findViewById(R.id.package_detail_delete_area).setVisibility(View.GONE);
         }
         if(importItem.getImportType()==ImportItem.ImportType.ZIP){
@@ -241,6 +242,10 @@ public class PackageDetailActivity extends BaseActivity implements View.OnClickL
                         ToastManager.showToast(this,e.toString(),Toast.LENGTH_SHORT);
                     }
                 }else if(importItem.getImportType()== ImportItem.ImportType.ZIP){
+                    if(findViewById(R.id.package_detail_checkboxes).getVisibility()!=View.VISIBLE){
+                        Snackbar.make(findViewById(android.R.id.content),getResources().getString(R.string.activity_detail_wait_loading),Snackbar.LENGTH_SHORT).show();
+                        return;
+                    }
                     if(!cb_data.isChecked()&&!cb_obb.isChecked()&&!cb_apk.isChecked()){
                         Snackbar.make(findViewById(android.R.id.content),getResources().getString(R.string.activity_detail_nothing_checked),Snackbar.LENGTH_SHORT).show();
                         return;
@@ -345,6 +350,10 @@ public class PackageDetailActivity extends BaseActivity implements View.OnClickL
             break;
             case R.id.detail_hash_crc32:{
                 clip2ClipboardAndShowSnackbar(((TextView)findViewById(R.id.detail_hash_crc32_value)).getText().toString());
+            }
+            break;
+            case R.id.package_detail_path_area:{
+                clip2ClipboardAndShowSnackbar(((TextView)findViewById(R.id.package_detail_path)).getText().toString());
             }
             break;
         }
