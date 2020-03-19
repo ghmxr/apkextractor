@@ -5,6 +5,7 @@ import android.net.Uri;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.provider.DocumentFile;
+import android.text.TextUtils;
 
 import com.github.ghmxr.apkextractor.utils.DocumentFileUtil;
 import com.github.ghmxr.apkextractor.utils.PinyinUtil;
@@ -63,7 +64,23 @@ public class FileItem implements Comparable<FileItem>{
     public String getName(){
         if(documentFile!=null)return documentFile.getName();
         if(file!=null)return file.getName();
-        if(contentUri!=null)return contentUri.getLastPathSegment();
+        if(context!=null&&contentUri!=null){
+            try {
+                DocumentFile documentFile=DocumentFile.fromSingleUri(context,contentUri);
+                if(documentFile!=null){
+                    return documentFile.getName();
+                }else{
+                    String lastSegment=contentUri.getLastPathSegment();
+                    if(lastSegment==null|| TextUtils.isEmpty(lastSegment))return "";
+                    if(lastSegment.contains("/")){
+                        lastSegment=lastSegment.substring(lastSegment.lastIndexOf("/")+1);
+                    }
+                    return lastSegment;
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
         return "";
     }
 
@@ -165,7 +182,11 @@ public class FileItem implements Comparable<FileItem>{
         try{
             if(documentFile!=null)return documentFile.length();
             if(file!=null)return file.length();
-            if(contentUri!=null&&context!=null)return getInputStream().available();
+            if(contentUri!=null&&context!=null){
+                DocumentFile documentFile=DocumentFile.fromSingleUri(context,contentUri);
+                if(documentFile!=null)return documentFile.length();
+                else return getInputStream().available();
+            }
         }catch (Exception e){e.printStackTrace();}
         return 0;
     }

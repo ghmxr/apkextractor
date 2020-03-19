@@ -43,6 +43,9 @@ public class NetSendTask implements UdpThread.UdpThreadCallback{
         this.context=context;
         this.callback=callback;
         //deviceName= SPUtil.getDeviceName(context);
+        if(serverSocket!=null){
+            serverSocket.close();
+        }
         udpThread=new UdpThread(context,this);
         serverSocket=new ServerSocket(SPUtil.getPortNumber(context));
         udpThread.start();

@@ -219,6 +219,7 @@
     <string name="dialog_filename_warn_no_variables">注意:没有输入变量，这会导致多选导出无法正常导出文件！</string>
 
     <string name="activity_send_title">发送文件</string>
+    <string name="activity_send_by_title">通过APK Kit 发送</string>
     <string name="dialog_send_title">发送文件</string>
     <string name="dialog_send_att_head">正在发送:</string>
     <string name="toast_sending_complete">文件发送完成</string>

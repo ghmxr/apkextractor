@@ -209,6 +209,7 @@
     <string name="dialog_filename_warn_no_variables">waring: no variables typed, this will cause errors while exporting multi-files</string>
 
     <string name="activity_send_title">Sending Files</string>
+    <string name="activity_send_by_title">Sending by APK Kit</string>
     <string name="dialog_send_title">Sending Files</string>
     <string name="dialog_send_att_head">Now sending:</string>
     <string name="toast_sending_complete">File sending complete</string>

@@ -33,7 +33,14 @@
             android:theme="@style/AppTheme.NoActionBar"/>
         <activity android:name=".activities.FileSendActivity"
             android:theme="@style/CommonTheme"
-            android:label="@string/activity_send_title"/>
+            android:label="@string/activity_send_by_title">
+            <intent-filter>
+                <action android:name="android.intent.action.SEND"/>
+                <action android:name="android.intent.action.SEND_MULTIPLE"/>
+                <category android:name="android.intent.category.DEFAULT"/>
+                <data android:mimeType="*/*"/>
+            </intent-filter>
+        </activity>
         <activity android:name=".activities.FileReceiveActivity"
             android:theme="@style/CommonTheme"
             android:label="@string/activity_receive_title"/>

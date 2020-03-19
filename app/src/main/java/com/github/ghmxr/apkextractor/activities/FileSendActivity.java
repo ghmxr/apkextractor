@@ -1,6 +1,8 @@
 package com.github.ghmxr.apkextractor.activities;
 
 import android.content.DialogInterface;
+import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.os.SystemClock;
 import android.support.annotation.NonNull;
@@ -30,6 +32,7 @@ import com.github.ghmxr.apkextractor.ui.FileTransferringDialog;
 import com.github.ghmxr.apkextractor.ui.ToastManager;
 import com.github.ghmxr.apkextractor.utils.EnvironmentUtil;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -59,6 +62,31 @@ public class FileSendActivity extends BaseActivity implements NetSendTask.NetSen
         recyclerView.setLayoutManager(new LinearLayoutManager(this,LinearLayoutManager.VERTICAL,false));
         recyclerView.setAdapter(new ListAdapter(new ArrayList<DeviceItem>()));//不设置的话无法下拉
         swipeRefreshLayout.setColorSchemeColors(getResources().getColor(R.color.colorTitle));
+
+        if(Intent.ACTION_SEND.equals(getIntent().getAction())){
+            Uri uri=getIntent().getParcelableExtra(Intent.EXTRA_STREAM);
+            if(uri!=null){
+                if("file".equalsIgnoreCase(uri.getScheme())){
+                    sendingFiles.add(new FileItem(new File(uri.getPath())));
+                }else{
+                    sendingFiles.add(new FileItem(this,uri));
+                }
+            }
+        }
+
+        if(Intent.ACTION_SEND_MULTIPLE.equals(getIntent().getAction())){
+            List<Uri>uris=getIntent().getParcelableArrayListExtra(Intent.EXTRA_STREAM);
+            if(uris!=null){
+                for(Uri uri:uris){
+                    if("file".equalsIgnoreCase(uri.getScheme())){
+                        sendingFiles.add(new FileItem(new File(uri.getPath())));
+                    }else{
+                        sendingFiles.add(new FileItem(this,uri));
+                    }
+                }
+            }
+        }
+
         if(sendingFiles.size()==0){
             ToastManager.showToast(this,getResources().getString(R.string.info_no_files_to_send),Toast.LENGTH_SHORT);
             finish();
