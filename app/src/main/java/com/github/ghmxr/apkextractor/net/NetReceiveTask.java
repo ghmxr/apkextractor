@@ -363,7 +363,6 @@ public class NetReceiveTask implements UdpThread.UdpThreadCallback{
                     outputStream.close();
                     if(!isInterrupted)currentWritingFileItem=null;
                     inputStream.close();
-                    socket.close();
                 }catch (Exception e){
                     if(writingFileItemThisLoop!=null)error_info.append(writingFileItemThisLoop.getPath());
                     else error_info.append(receiveFileItem.getFileName());
@@ -371,6 +370,10 @@ public class NetReceiveTask implements UdpThread.UdpThreadCallback{
                     error_info.append(e.toString());
                     error_info.append("\n\n");
                     e.printStackTrace();
+                }finally {
+                    try{
+                        if(socket!=null)socket.close();
+                    }catch (Exception e){e.printStackTrace();}
                 }
             }
             Global.requestUpdatingMediaDatabase(context);

@@ -273,13 +273,16 @@ public class NetSendTask implements UdpThread.UdpThreadCallback{
                     outputStream.flush();
                     outputStream.close();
                     inputStream.close();
-                    socket.close();
                 }catch (Exception e){
                     e.printStackTrace();
                     error_info.append(fileItem.getName());
                     error_info.append(" : ");
                     error_info.append(e.toString());
                     error_info.append("\n\n");
+                }finally {
+                    try{
+                        if(socket!=null)socket.close();
+                    }catch (Exception e){e.printStackTrace();}
                 }
             }
             if(callback!=null&&!isInterrupted)Global.handler.post(new Runnable() {

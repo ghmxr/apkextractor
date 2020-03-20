@@ -288,42 +288,7 @@ public class MainActivity extends BaseActivity implements View.OnClickListener,V
     ListAdapterOperationListener listAdapterOperationListener_import=new ListAdapterOperationListener() {
         @Override
         public void onItemClicked(DisplayItem displayItem,ViewHolder viewHolder,int position) {
-            if(!(displayItem instanceof ImportItem))return;
-            ImportItem item=(ImportItem)displayItem;
-            /*if(item.getImportType()== ImportItem.ImportType.APK){
-                try{
-                    Intent intent =new Intent(Intent.ACTION_VIEW);
-                    if(Build.VERSION.SDK_INT<=23){
-                        if(item.getFileItem().isFileInstance())intent.setDataAndType(item.getUriFromFile(),"application/vnd.android.package-archive");
-                        else intent.setDataAndType(item.getUri(),"application/vnd.android.package-archive");
-                    }else
-                        intent.setDataAndType(item.getUri(), "application/vnd.android.package-archive");
-                    intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
-                    startActivity(intent);
-                }catch (Exception e){
-                    e.printStackTrace();
-                    ToastManager.showToast(MainActivity.this,e.toString(),Toast.LENGTH_SHORT);
-                }
-            }
-            else if(item.getImportType()== ImportItem.ImportType.ZIP){
-                ArrayList<ImportItem>arrayList=new ArrayList<>();
-                arrayList.add(item);
-                Global.showImportingDataObbDialog(MainActivity.this, arrayList, new Global.ImportTaskFinishedCallback() {
-                    @Override
-                    public void onImportFinished(String error_message) {
-                        if(!error_message.trim().equals("")){
-                            new AlertDialog.Builder(MainActivity.this)
-                                    .setTitle(getResources().getString(R.string.dialog_import_finished_error_title))
-                                    .setMessage(getResources().getString(R.string.dialog_import_finished_error_message)+error_message)
-                                    .setPositiveButton(getResources().getString(R.string.dialog_button_confirm), new DialogInterface.OnClickListener() {
-                                        @Override
-                                        public void onClick(DialogInterface dialog, int which) {}
-                                    })
-                                    .show();
-                        }else ToastManager.showToast(MainActivity.this,getResources().getString(R.string.toast_import_complete),Toast.LENGTH_SHORT);
-                    }
-                });
-            }*/
+            //if(!(displayItem instanceof ImportItem))return;
             Intent intent =new Intent(MainActivity.this,PackageDetailActivity.class);
             intent.putExtra(PackageDetailActivity.EXTRA_IMPORT_ITEM_POSITION,position);
             ActivityOptionsCompat compat = ActivityOptionsCompat.makeSceneTransitionAnimation(MainActivity.this,new Pair<View, String>(viewHolder.icon,"icon"));

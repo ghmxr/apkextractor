@@ -20,6 +20,7 @@ import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.PermissionChecker;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.Toolbar;
+import android.text.TextUtils;
 import android.text.format.Formatter;
 import android.view.KeyEvent;
 import android.view.MenuItem;
@@ -310,19 +311,23 @@ public class AppDetailActivity extends BaseActivity implements View.OnClickListe
             }
             break;
             case R.id.detail_hash_md5:{
-                clip2ClipboardAndShowSnackbar(((TextView)findViewById(R.id.detail_hash_md5_value)).getText().toString());
+                final String value=((TextView)findViewById(R.id.detail_hash_md5_value)).getText().toString();
+                if(!TextUtils.isEmpty(value)) clip2ClipboardAndShowSnackbar(value);
             }
             break;
             case R.id.detail_hash_sha1:{
-                clip2ClipboardAndShowSnackbar(((TextView)findViewById(R.id.detail_hash_sha1_value)).getText().toString());
+                final String value=((TextView)findViewById(R.id.detail_hash_sha1_value)).getText().toString();
+                if(!TextUtils.isEmpty(value)) clip2ClipboardAndShowSnackbar(value);
             }
             break;
             case R.id.detail_hash_sha256:{
-                clip2ClipboardAndShowSnackbar(((TextView)findViewById(R.id.detail_hash_sha256_value)).getText().toString());
+                final String value=((TextView)findViewById(R.id.detail_hash_sha256_value)).getText().toString();
+                if(!TextUtils.isEmpty(value)) clip2ClipboardAndShowSnackbar(value);
             }
             break;
             case R.id.detail_hash_crc32:{
-                clip2ClipboardAndShowSnackbar(((TextView)findViewById(R.id.detail_hash_crc32_value)).getText().toString());
+                final String value=((TextView)findViewById(R.id.detail_hash_crc32_value)).getText().toString();
+                if(!TextUtils.isEmpty(value)) clip2ClipboardAndShowSnackbar(value);
             }
             break;
             case R.id.app_detail_path_area:{

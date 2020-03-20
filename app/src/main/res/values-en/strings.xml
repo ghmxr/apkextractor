@@ -310,7 +310,7 @@
         mxremail@qq.com \n\n
         Donate:
         </string>
-    <string name="activity_receive_refresh"><u>Hasn\'t been seen?(retry)</u></string>
+    <string name="activity_receive_refresh"><u>Have not been seen?(retry)</u></string>
     <string name="activity_send_file_info_head">sending file info</string>
     <string name="activity_settings_device_name">Device name</string>
     <string name="activity_settings_port_invalid">Please type in a number between 1024 to 65535</string>
@@ -329,10 +329,10 @@
     <string name="dialog_settings_device_name_invalid">type in a name</string>
     <string name="help_receive">
         Let the sending side device install APK Kit(Build 8 or higher version) and connect to the same wifi network, or let yourself connect to the ap wireless of the sending side, then let the sending side
-        select the app(s) or package(s) to share ,click through local net, and the sending side will see the device of your side.\n\n
+        select the apps,  packages or files to share ,click through local net, and the sending side will see the device of your side.\n\n
         If this device is connected to the sending side\'s ap, try to check \"ap mode\"\n\n
         After the sending site selected the device to send, the receiving side will see the file receiving request message.The files will be saved to the exporting path.If there is a same named file, the file will
-        automatically be renamed itself by adding number suffix.You can see the received files by package panel or other file explorers.
+        automatically be renamed itself by adding number suffix.You can see the received files of apk or compressed files by the package panel of this app or other format files by other file explorers.
 
     </string>
     <string name="info_bind_port_error">error to bind to the port number, please check if other apps are in use and retry, or change to another port number.</string>

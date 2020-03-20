@@ -52,9 +52,6 @@ public class PackageDetailActivity extends BaseActivity implements View.OnClickL
     @Override
     protected void onCreate(Bundle bundle) {
         super.onCreate(bundle);
-        if(Build.VERSION.SDK_INT>=23&&PermissionChecker.checkSelfPermission(this,Manifest.permission.WRITE_EXTERNAL_STORAGE)!=PermissionChecker.PERMISSION_GRANTED){
-            requestPermissions(new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE},0);
-        }
         if(getIntent().getAction()!=null&&getIntent().getAction().equals(Intent.ACTION_VIEW)){
             Uri uri=getIntent().getData();
             if(uri==null||uri.getLastPathSegment()==null){
@@ -213,8 +210,17 @@ public class PackageDetailActivity extends BaseActivity implements View.OnClickL
                                 cb_apk.setText("apk:"+Formatter.formatFileSize(PackageDetailActivity.this,apk_final));
                             }
                         });
-                    } catch (Exception e) {
+                    } catch (final Exception e) {
                         e.printStackTrace();
+                        Global.handler.post(new Runnable() {
+                            @Override
+                            public void run() {
+                                findViewById(R.id.package_detail_data_obb_pg).setVisibility(View.GONE);
+                                ToastManager.showToast(PackageDetailActivity.this,
+                                        "Occurs error while reading the file:"+e.toString(),
+                                        Toast.LENGTH_SHORT);
+                            }
+                        });
                     }
                 }
             }).start();
@@ -233,8 +239,9 @@ public class PackageDetailActivity extends BaseActivity implements View.OnClickL
                         if(Build.VERSION.SDK_INT<=23){
                             if(importItem.getFileItem().isFileInstance())intent.setDataAndType(importItem.getUriFromFile(),"application/vnd.android.package-archive");
                             else intent.setDataAndType(importItem.getUri(),"application/vnd.android.package-archive");
-                        }else
+                        }else{
                             intent.setDataAndType(importItem.getUri(), "application/vnd.android.package-archive");
+                        }
                         intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
                         startActivity(intent);
                     }catch (Exception e){
@@ -248,6 +255,11 @@ public class PackageDetailActivity extends BaseActivity implements View.OnClickL
                     }
                     if(!cb_data.isChecked()&&!cb_obb.isChecked()&&!cb_apk.isChecked()){
                         Snackbar.make(findViewById(android.R.id.content),getResources().getString(R.string.activity_detail_nothing_checked),Snackbar.LENGTH_SHORT).show();
+                        return;
+                    }
+                    if(Build.VERSION.SDK_INT>=23&&PermissionChecker.checkSelfPermission(this,Manifest.permission.WRITE_EXTERNAL_STORAGE)!=PermissionChecker.PERMISSION_GRANTED){
+                        requestPermissions(new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE},0);
+                        ToastManager.showToast(this,getResources().getString(R.string.permission_write),Toast.LENGTH_SHORT);
                         return;
                     }
                     ImportItem importItem1=new ImportItem(importItem,cb_data.isChecked(),cb_obb.isChecked(),cb_apk.isChecked());
@@ -337,19 +349,23 @@ public class PackageDetailActivity extends BaseActivity implements View.OnClickL
             }
             break;
             case R.id.detail_hash_md5:{
-                clip2ClipboardAndShowSnackbar(((TextView)findViewById(R.id.detail_hash_md5_value)).getText().toString());
+                final String value=((TextView)findViewById(R.id.detail_hash_md5_value)).getText().toString();
+                if(!TextUtils.isEmpty(value)) clip2ClipboardAndShowSnackbar(value);
             }
             break;
             case R.id.detail_hash_sha1:{
-                clip2ClipboardAndShowSnackbar(((TextView)findViewById(R.id.detail_hash_sha1_value)).getText().toString());
+                final String value=((TextView)findViewById(R.id.detail_hash_sha1_value)).getText().toString();
+                if(!TextUtils.isEmpty(value)) clip2ClipboardAndShowSnackbar(value);
             }
             break;
             case R.id.detail_hash_sha256:{
-                clip2ClipboardAndShowSnackbar(((TextView)findViewById(R.id.detail_hash_sha256_value)).getText().toString());
+                final String value=((TextView)findViewById(R.id.detail_hash_sha256_value)).getText().toString();
+                if(!TextUtils.isEmpty(value)) clip2ClipboardAndShowSnackbar(value);
             }
             break;
             case R.id.detail_hash_crc32:{
-                clip2ClipboardAndShowSnackbar(((TextView)findViewById(R.id.detail_hash_crc32_value)).getText().toString());
+                final String value=((TextView)findViewById(R.id.detail_hash_crc32_value)).getText().toString();
+                if(!TextUtils.isEmpty(value)) clip2ClipboardAndShowSnackbar(value);
             }
             break;
             case R.id.package_detail_path_area:{
@@ -369,18 +385,6 @@ public class PackageDetailActivity extends BaseActivity implements View.OnClickL
             break;
         }
         return super.onOptionsItemSelected(item);
-    }
-
-    @Override
-    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
-        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-        if(requestCode==0){
-            if(grantResults[0]==PermissionChecker.PERMISSION_GRANTED)recreate();
-            else {
-                ToastManager.showToast(this,getResources().getString(R.string.permission_write),Toast.LENGTH_SHORT);
-                finish();
-            }
-        }
     }
 
     private void checkHeightAndFinish(){

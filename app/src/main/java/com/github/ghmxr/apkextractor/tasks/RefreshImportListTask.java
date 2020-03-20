@@ -46,7 +46,15 @@ public class RefreshImportListTask extends Thread{
         if(package_scope_value==Constants.PACKAGE_SCOPE_ALL){
             fileItem=new FileItem(StorageUtil.getMainExternalStoragePath());
         }else if(package_scope_value==Constants.PACKAGE_SCOPE_EXPORTING_PATH){
-            fileItem=new FileItem(SPUtil.getInternalSavePath(context));
+            if(SPUtil.getIsSaved2ExternalStorage(context)){
+                try {
+                    fileItem=new FileItem(context, Uri.parse(SPUtil.getExternalStorageUri(context)), SPUtil.getSaveSegment(context));
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }else{
+                fileItem=new FileItem(SPUtil.getInternalSavePath(context));
+            }
         }
         try{
             arrayList.addAll(getAllImportItemsFromPath(fileItem));
