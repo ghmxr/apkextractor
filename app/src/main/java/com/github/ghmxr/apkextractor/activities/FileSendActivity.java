@@ -38,6 +38,7 @@ import java.util.List;
 
 public class FileSendActivity extends BaseActivity implements NetSendTask.NetSendTaskCallback {
 
+    private static FileSendActivity fileSendActivity;
     private NetSendTask netSendTask;
 
     private SwipeRefreshLayout swipeRefreshLayout;
@@ -49,6 +50,10 @@ public class FileSendActivity extends BaseActivity implements NetSendTask.NetSen
 
     @Override
     protected void onCreate(Bundle bundle) {
+        if(fileSendActivity!=null){
+            fileSendActivity.finish();
+        }
+        fileSendActivity=this;
         super.onCreate(bundle);
         setContentView(R.layout.activity_file_send);
         setTitle(getResources().getString(R.string.activity_send_title));
@@ -315,6 +320,7 @@ public class FileSendActivity extends BaseActivity implements NetSendTask.NetSen
     @Override
     public void finish(){
         super.finish();
+        fileSendActivity=null;
         sendingFiles.clear();
         try {
             if(netSendTask!=null)netSendTask.stopTask();

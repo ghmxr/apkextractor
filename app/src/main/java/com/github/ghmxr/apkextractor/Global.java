@@ -1,12 +1,14 @@
 package com.github.ghmxr.apkextractor;
 
 import android.app.Activity;
+import android.content.ComponentName;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.ApplicationInfo;
 import android.database.Cursor;
 import android.net.Uri;
+import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
 import android.provider.MediaStore;
@@ -506,6 +508,23 @@ public class Global {
         }catch (Exception e){
             e.printStackTrace();
             ToastManager.showToast(context,e.toString(),Toast.LENGTH_SHORT);
+        }
+    }
+
+    /**
+     * 请求更新媒体数据库
+     */
+    public static void requestUpdatingMediaDatabase(@NonNull Context context){
+        try{
+            Bundle bundle=new Bundle();
+            bundle.putString("volume","external");
+            Intent intent=new Intent();
+            intent.putExtras(bundle);
+            intent.setComponent(new ComponentName("com.android.providers.media",
+                    "com.android.providers.media.MediaScannerService"));
+            context.startService(intent);
+        }catch (Exception e){
+            e.printStackTrace();
         }
     }
 

@@ -373,6 +373,7 @@ public class NetReceiveTask implements UdpThread.UdpThreadCallback{
                     e.printStackTrace();
                 }
             }
+            Global.requestUpdatingMediaDatabase(context);
             if(callback!=null&&!isInterrupted){
                 Global.handler.post(new Runnable() {
                     @Override

@@ -434,6 +434,14 @@ public class SettingActivity extends BaseActivity implements View.OnClickListene
             if(!read_options.equals(""))read_options+=",";
             read_options+=getResources().getString(R.string.activity_detail_static_loaders);
         }
+        if(settings.getBoolean(Constants.PREFERENCE_LOAD_APK_SIGNATURE,Constants.PREFERENCE_LOAD_APK_SIGNATURE_DEFAULT)){
+            if(!read_options.equals(""))read_options+=",";
+            read_options+=getResources().getString(R.string.dialog_loading_selection_signature);
+        }
+        if(settings.getBoolean(Constants.PREFERENCE_LOAD_FILE_HASH,Constants.PREFERENCE_LOAD_FILE_HASH_DEFAULT)){
+            if(!read_options.equals(""))read_options+=",";
+            read_options+=getResources().getString(R.string.dialog_loading_selection_file_hash);
+        }
         if(read_options.trim().equals(""))read_options=getResources().getString(R.string.word_blank);
         ((TextView)findViewById(R.id.settings_loading_options_value)).setText(read_options);
         String language_value="";

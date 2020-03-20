@@ -6,9 +6,9 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.provider.DocumentFile;
 
-import com.github.ghmxr.apkextractor.items.AppItem;
-import com.github.ghmxr.apkextractor.Global;
 import com.github.ghmxr.apkextractor.Constants;
+import com.github.ghmxr.apkextractor.Global;
+import com.github.ghmxr.apkextractor.items.AppItem;
 import com.github.ghmxr.apkextractor.items.FileItem;
 import com.github.ghmxr.apkextractor.utils.FileUtil;
 import com.github.ghmxr.apkextractor.utils.OutputUtil;
@@ -98,7 +98,7 @@ public class ExportTask extends Thread {
                     if(isExternal) {
                         DocumentFile documentFile = OutputUtil.getWritingDocumentFileForAppItem(context,item,"apk");
                         this.currentWritingFile=new FileItem(context,documentFile);
-                        this.currentWritingPath=SPUtil.getDisplayingExportPath(context)+documentFile.getName();
+                        this.currentWritingPath=SPUtil.getDisplayingExportPath(context)+"/"+documentFile.getName();
                         outputStream= OutputUtil.getOutputStreamForDocumentFile(context,documentFile);
                     }
                     else {
@@ -172,7 +172,7 @@ public class ExportTask extends Thread {
                     if(isExternal){
                         DocumentFile documentFile= OutputUtil.getWritingDocumentFileForAppItem(context,item,SPUtil.getCompressingExtensionName(context));
                         this.currentWritingFile=new FileItem(context,documentFile);
-                        this.currentWritingPath=SPUtil.getDisplayingExportPath(context)+documentFile.getName();
+                        this.currentWritingPath=SPUtil.getDisplayingExportPath(context)+"/"+documentFile.getName();
                         outputStream= OutputUtil.getOutputStreamForDocumentFile(context,documentFile);
                     }
                     else {
@@ -226,6 +226,9 @@ public class ExportTask extends Thread {
                 currentWritingFile.delete();//没有写入完成的文件为破损文件，尝试删除
             }catch(Exception e){}
         }
+
+        //更新导出文件到媒体库
+        Global.requestUpdatingMediaDatabase(context);
 
         postCallback2Listener(new Runnable() {
             @Override

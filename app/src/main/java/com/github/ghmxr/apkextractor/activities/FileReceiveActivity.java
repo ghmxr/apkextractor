@@ -32,6 +32,7 @@ import java.util.List;
 
 public class FileReceiveActivity extends BaseActivity implements NetReceiveTask.NetReceiveTaskCallback{
 
+    private static FileReceiveActivity fileReceiveActivity;
     private NetReceiveTask netReceiveTask;
 
     private FileTransferringDialog receiving_diag;
@@ -54,6 +55,10 @@ public class FileReceiveActivity extends BaseActivity implements NetReceiveTask.
 
     @Override
     protected void onCreate(Bundle bundle) {
+        if(fileReceiveActivity!=null){
+            fileReceiveActivity.finish();
+        }
+        fileReceiveActivity=this;
         super.onCreate(bundle);
         setContentView(R.layout.activity_file_receive);
         setTitle(getResources().getString(R.string.activity_receive_title));
@@ -277,6 +282,7 @@ public class FileReceiveActivity extends BaseActivity implements NetReceiveTask.
     @Override
     public void finish(){
         super.finish();
+        fileReceiveActivity=null;
         try {
             if(netReceiveTask!=null)netReceiveTask.stopTask();
         } catch (Exception e) {
