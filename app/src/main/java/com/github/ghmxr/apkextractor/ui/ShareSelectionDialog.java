@@ -4,9 +4,9 @@ import android.app.Dialog;
 import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
+import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.view.Gravity;
-import android.view.LayoutInflater;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
@@ -28,8 +28,12 @@ public class ShareSelectionDialog extends Dialog implements View.OnClickListener
     public ShareSelectionDialog(@NonNull Context context, @NonNull List<FileItem>fileItems){
         super(context);
         this.fileItems=fileItems;
-        View dialogView=LayoutInflater.from(context).inflate(R.layout.dialog_share_function,null);
-        setContentView(dialogView);
+    }
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.dialog_share_function);
         Window window=getWindow();
         if(window!=null){
             WindowManager.LayoutParams layoutParams=window.getAttributes();
@@ -37,12 +41,12 @@ public class ShareSelectionDialog extends Dialog implements View.OnClickListener
             layoutParams.width= WindowManager.LayoutParams.MATCH_PARENT;
             layoutParams.height=WindowManager.LayoutParams.WRAP_CONTENT;
             window.setAttributes(layoutParams);
+            window.setBackgroundDrawableResource(android.R.color.transparent);
             window.setWindowAnimations(R.style.DialogAnimStyle);
         }
-
-        dialogView.findViewById(R.id.dialog_share_direct).setOnClickListener(this);
-        dialogView.findViewById(R.id.dialog_share_system).setOnClickListener(this);
-        dialogView.findViewById(R.id.dialog_share_cancel).setOnClickListener(this);
+        findViewById(R.id.dialog_share_direct).setOnClickListener(this);
+        findViewById(R.id.dialog_share_system).setOnClickListener(this);
+        findViewById(R.id.dialog_share_cancel).setOnClickListener(this);
     }
 
     @Override

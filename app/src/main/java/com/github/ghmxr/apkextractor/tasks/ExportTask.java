@@ -10,6 +10,7 @@ import com.github.ghmxr.apkextractor.Constants;
 import com.github.ghmxr.apkextractor.Global;
 import com.github.ghmxr.apkextractor.items.AppItem;
 import com.github.ghmxr.apkextractor.items.FileItem;
+import com.github.ghmxr.apkextractor.utils.EnvironmentUtil;
 import com.github.ghmxr.apkextractor.utils.FileUtil;
 import com.github.ghmxr.apkextractor.utils.OutputUtil;
 import com.github.ghmxr.apkextractor.utils.SPUtil;
@@ -228,7 +229,7 @@ public class ExportTask extends Thread {
         }
 
         //更新导出文件到媒体库
-        Global.requestUpdatingMediaDatabase(context);
+        EnvironmentUtil.requestUpdatingMediaDatabase(context);
 
         postCallback2Listener(new Runnable() {
             @Override

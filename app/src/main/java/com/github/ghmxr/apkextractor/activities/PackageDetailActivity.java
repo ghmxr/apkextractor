@@ -54,15 +54,8 @@ public class PackageDetailActivity extends BaseActivity implements View.OnClickL
         super.onCreate(bundle);
         if(getIntent().getAction()!=null&&getIntent().getAction().equals(Intent.ACTION_VIEW)){
             Uri uri=getIntent().getData();
-            if(uri==null||uri.getLastPathSegment()==null){
+            if(uri==null){
                 ToastManager.showToast(this,getResources().getString(R.string.activity_package_detail_blank), Toast.LENGTH_SHORT);
-                finish();
-                return;
-            }
-            if(!uri.getLastPathSegment().toLowerCase().endsWith("zip")
-                    &&!uri.getLastPathSegment().toLowerCase().endsWith(".xapk")
-                    &&!uri.getLastPathSegment().toLowerCase().endsWith(SPUtil.getCompressingExtensionName(this).toLowerCase())){
-                ToastManager.showToast(this,getResources().getString(R.string.activity_package_detail_invalid_format),Toast.LENGTH_SHORT);
                 finish();
                 return;
             }

@@ -51,7 +51,7 @@
     <string name="activity_detail_minimum_api">最低API</string>
     <string name="activity_detail_target_api">目标API</string>
     <string name="activity_detail_is_system_app">系统应用</string>
-    <string name="activity_detail_path">完整路径</string>
+    <string name="activity_detail_path">路径/Uri</string>
     <string name="activity_detail_signature">签名MD5</string>
     <string name="activity_detail_install">安装</string>
     <string name="activity_detail_delete">删除</string>

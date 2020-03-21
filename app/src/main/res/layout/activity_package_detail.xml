@@ -29,7 +29,7 @@
                     android:layout_width="50dp"
                     android:layout_height="50dp"
                     android:layout_gravity="center"
-                    tools:src="@mipmap/ic_launcher"
+                    android:src="@drawable/icon_file"
                     android:transitionName="icon"/>
                 <com.github.ghmxr.apkextractor.ui.AutoMarqueeTextView
                     android:layout_width="wrap_content"

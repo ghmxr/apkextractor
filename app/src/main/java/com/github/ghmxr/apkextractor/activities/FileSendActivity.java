@@ -308,7 +308,11 @@ public class FileSendActivity extends BaseActivity implements NetSendTask.NetSen
     private String getFilesInfoMessage(){
         StringBuilder stringBuilder=new StringBuilder();
         for(FileItem fileItem:sendingFiles){
-            stringBuilder.append(fileItem.getPath());
+            if(fileItem.canGetRealPath()){
+                stringBuilder.append(fileItem.getPath());
+            }else{
+                stringBuilder.append(fileItem.getName());
+            }
             stringBuilder.append("(");
             stringBuilder.append(Formatter.formatFileSize(this,fileItem.length()));
             stringBuilder.append(")");

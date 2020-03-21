@@ -8,6 +8,7 @@ import android.support.v4.provider.DocumentFile;
 import android.text.TextUtils;
 
 import com.github.ghmxr.apkextractor.utils.DocumentFileUtil;
+import com.github.ghmxr.apkextractor.utils.EnvironmentUtil;
 import com.github.ghmxr.apkextractor.utils.PinyinUtil;
 
 import java.io.File;
@@ -27,7 +28,7 @@ public class FileItem implements Comparable<FileItem>{
     private Context context;
     private File file=null;
     private DocumentFile documentFile=null;
-    private Uri contentUri;
+    private Uri contentUri=null;
 
     /**
      * 构造一个documentFile实例的FileItem
@@ -65,21 +66,24 @@ public class FileItem implements Comparable<FileItem>{
         if(documentFile!=null)return documentFile.getName();
         if(file!=null)return file.getName();
         if(context!=null&&contentUri!=null){
+            String nameQueried= EnvironmentUtil.getFileNameFromContentUri(context,contentUri);
+            if(!TextUtils.isEmpty(nameQueried))return nameQueried;
+            String pathQueried=EnvironmentUtil.getFilePathFromContentUri(context,contentUri);
+            if(pathQueried!=null&&!TextUtils.isEmpty(pathQueried)){
+                return new File(pathQueried).getName();
+            }
             try {
                 DocumentFile documentFile=DocumentFile.fromSingleUri(context,contentUri);
                 if(documentFile!=null){
-                    return documentFile.getName();
-                }else{
-                    String lastSegment=contentUri.getLastPathSegment();
-                    if(lastSegment==null|| TextUtils.isEmpty(lastSegment))return "";
-                    if(lastSegment.contains("/")){
-                        lastSegment=lastSegment.substring(lastSegment.lastIndexOf("/")+1);
+                    String fileName=documentFile.getName();
+                    if(!TextUtils.isEmpty(fileName)){
+                        return fileName;
                     }
-                    return lastSegment;
                 }
             } catch (Exception e) {
                 e.printStackTrace();
             }
+            return "unknown.file";
         }
         return "";
     }
@@ -136,6 +140,21 @@ public class FileItem implements Comparable<FileItem>{
     }
 
     /**
+     * 本FileItem是否能拿到文件信息的真实路径
+     * @return true 通过getPath()方法可获得文件用于展示的真实路径
+     */
+    public boolean canGetRealPath(){
+        if(isFileInstance()||isDocumentFile()){
+            return true;
+        }
+        if(isShareUriInstance()){
+            if(context!=null&&contentUri!=null){
+                return !TextUtils.isEmpty(EnvironmentUtil.getFilePathFromContentUri(context,contentUri));
+            }
+        }
+        return false;
+    }
+    /**
      * 如果为documentFile实例，则会返回以“external/”开头的片段；如果为File实例，则返回正常的完整路径
      */
     public String getPath(){
@@ -146,7 +165,11 @@ public class FileItem implements Comparable<FileItem>{
             if(index<=uriPath.length())return "external/"+uriPath.substring(index);
         }
         if(file!=null)return file.getAbsolutePath();
-        if(contentUri!=null)return contentUri.toString();
+        if(context!=null&&contentUri!=null){
+            String path=EnvironmentUtil.getFilePathFromContentUri(context,contentUri);
+            if(!TextUtils.isEmpty(path))return path;
+            return contentUri.toString();
+        }
         return "";
     }
 

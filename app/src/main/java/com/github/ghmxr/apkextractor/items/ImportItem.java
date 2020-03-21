@@ -12,8 +12,8 @@ import android.support.annotation.Nullable;
 
 import com.github.ghmxr.apkextractor.Constants;
 import com.github.ghmxr.apkextractor.DisplayItem;
-import com.github.ghmxr.apkextractor.Global;
 import com.github.ghmxr.apkextractor.R;
+import com.github.ghmxr.apkextractor.utils.EnvironmentUtil;
 import com.github.ghmxr.apkextractor.utils.PinyinUtil;
 import com.github.ghmxr.apkextractor.utils.SPUtil;
 
@@ -54,7 +54,7 @@ public class ImportItem implements DisplayItem,Comparable<ImportItem> {
         version_code=context.getResources().getString(R.string.word_unknown);
         minSdkVersion=context.getResources().getString(R.string.word_unknown);
         targetSdkVersion=context.getResources().getString(R.string.word_unknown);
-
+        drawable=context.getResources().getDrawable(R.drawable.icon_file);
         if(fileItem.getName().trim().toLowerCase().endsWith(".zip")
                 ||fileItem.getName().trim().toLowerCase().endsWith(SPUtil.getCompressingExtensionName(context).toLowerCase())){
             importType=ImportType.ZIP;
@@ -195,7 +195,10 @@ public class ImportItem implements DisplayItem,Comparable<ImportItem> {
             return fileItem.getDocumentFile().getUri();
         }
         if(fileItem.isFileInstance()){
-            return Global.getUriForFileByFileProvider(context,fileItem.getFile());
+            return EnvironmentUtil.getUriForFileByFileProvider(context,fileItem.getFile());
+        }
+        if(fileItem.isShareUriInstance()){
+            return fileItem.getContentUri();
         }
         return null;
     }

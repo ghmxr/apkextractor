@@ -7,17 +7,22 @@ import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.content.pm.ResolveInfo;
+import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.PixelFormat;
 import android.graphics.drawable.Drawable;
 import android.net.DhcpInfo;
+import android.net.Uri;
 import android.net.wifi.WifiInfo;
 import android.net.wifi.WifiManager;
 import android.os.Bundle;
+import android.provider.MediaStore;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
+import android.support.v4.content.FileProvider;
 import android.text.format.Formatter;
-import android.util.Log;
+import android.util.TypedValue;
 import android.widget.Toast;
 
 import com.github.ghmxr.apkextractor.Constants;
@@ -25,6 +30,7 @@ import com.github.ghmxr.apkextractor.R;
 import com.github.ghmxr.apkextractor.ui.ToastManager;
 
 import java.io.BufferedInputStream;
+import java.io.File;
 import java.io.InputStream;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
@@ -368,6 +374,81 @@ public class EnvironmentUtil {
         }catch (Exception e){e.printStackTrace();}
         return "";
     }
+
+    /**
+     * 通过contentUri获取文件名
+     */
+    public static @Nullable
+    String getFileNameFromContentUri(@NonNull Context context, @NonNull Uri uri){
+        try{
+            String result=null;
+            Cursor cursor = context.getContentResolver().query(uri,
+                    new String[]{MediaStore.Files.FileColumns.DISPLAY_NAME},
+                    null, null, null);
+            if (cursor == null) return null;
+            else {
+                if(cursor.moveToFirst()){
+                    int index = cursor.getColumnIndex(MediaStore.Files.FileColumns.DISPLAY_NAME);
+                    result = cursor.getString(index);
+                }
+                cursor.close();
+            }
+            return result;
+        }catch (Exception e){e.printStackTrace();}
+        return null;
+    }
+
+    /**
+     * 通过contentUri获取文件路径
+     */
+    public static @Nullable String getFilePathFromContentUri(@NonNull Context context,@NonNull Uri contentUri){
+        try{
+            String result=null;
+            Cursor cursor = context.getContentResolver().query(contentUri,
+                    new String[]{MediaStore.Files.FileColumns.DATA},
+                    null, null, null);
+            if (cursor == null) return null;
+            else {
+                if(cursor.moveToFirst()){
+                    int index = cursor.getColumnIndex(MediaStore.Files.FileColumns.DATA);
+                    result = cursor.getString(index);
+                }
+                cursor.close();
+            }
+            return result;
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+        return null;
+    }
+
+    /**
+     * 传入的file须为主存储下的文件，且对file有完整的读写权限
+     */
+    public static Uri getUriForFileByFileProvider(@NonNull Context context,@NonNull File file){
+        return FileProvider.getUriForFile(context,"com.github.ghmxr.apkextractor.FileProvider",file);
+    }
+
+    /**
+     * 请求更新媒体数据库
+     */
+    public static void requestUpdatingMediaDatabase(@NonNull Context context){
+        try{
+            Bundle bundle=new Bundle();
+            bundle.putString("volume","external");
+            Intent intent=new Intent();
+            intent.putExtras(bundle);
+            intent.setComponent(new ComponentName("com.android.providers.media",
+                    "com.android.providers.media.MediaScannerService"));
+            context.startService(intent);
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+    }
+
+    /*public static int dp2px(@NonNull Context context,int dp){
+        return (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, dp, context.getResources().getDisplayMetrics());
+    }*/
 
     /*public static String getBroadCastIpAddress(@NonNull Context context){
         try{

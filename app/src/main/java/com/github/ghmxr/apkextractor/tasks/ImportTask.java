@@ -13,6 +13,7 @@ import com.github.ghmxr.apkextractor.Global;
 import com.github.ghmxr.apkextractor.items.FileItem;
 import com.github.ghmxr.apkextractor.items.ImportItem;
 import com.github.ghmxr.apkextractor.ui.ToastManager;
+import com.github.ghmxr.apkextractor.utils.EnvironmentUtil;
 import com.github.ghmxr.apkextractor.utils.OutputUtil;
 import com.github.ghmxr.apkextractor.utils.SPUtil;
 import com.github.ghmxr.apkextractor.utils.StorageUtil;
@@ -100,7 +101,7 @@ public class ImportTask extends Thread {
                                 currentWritePath=writeFile.getAbsolutePath();
                                 currentWrtingFileItem=new FileItem(writeFile);
                                 if(Build.VERSION.SDK_INT<=23)apkUri=Uri.fromFile(writeFile);
-                                else apkUri=Global.getUriForFileByFileProvider(context,writeFile);
+                                else apkUri= EnvironmentUtil.getUriForFileByFileProvider(context,writeFile);
                             }
                             BufferedOutputStream bufferedOutputStream=new BufferedOutputStream(outputStream);
                             byte [] buffer=new byte[1024];

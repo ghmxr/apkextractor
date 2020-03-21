@@ -49,7 +49,7 @@
     <string name="activity_detail_minimum_api">Minimum API</string>
     <string name="activity_detail_target_api">Target API</string>
     <string name="activity_detail_is_system_app">Is system app</string>
-    <string name="activity_detail_path">Full path</string>
+    <string name="activity_detail_path">Path/Uri</string>
     <string name="activity_detail_signature">Signature MD5</string>
     <string name="activity_detail_install">Install</string>
     <string name="activity_detail_delete">Delete</string>
