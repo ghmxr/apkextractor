@@ -379,39 +379,34 @@ public class EnvironmentUtil {
      * 通过contentUri获取文件名
      */
     public static @Nullable
-    String getFileNameFromContentUri(@NonNull Context context, @NonNull Uri uri){
-        try{
-            String result=null;
-            Cursor cursor = context.getContentResolver().query(uri,
-                    new String[]{MediaStore.Files.FileColumns.DISPLAY_NAME},
-                    null, null, null);
-            if (cursor == null) return null;
-            else {
-                if(cursor.moveToFirst()){
-                    int index = cursor.getColumnIndex(MediaStore.Files.FileColumns.DISPLAY_NAME);
-                    result = cursor.getString(index);
-                }
-                cursor.close();
-            }
-            return result;
-        }catch (Exception e){e.printStackTrace();}
-        return null;
+    String getFileNameFromContentUri(@NonNull Context context, @NonNull Uri contentUri){
+        return queryResultByContentResolver(context,contentUri,MediaStore.Files.FileColumns.DISPLAY_NAME);
     }
 
     /**
      * 通过contentUri获取文件路径
      */
     public static @Nullable String getFilePathFromContentUri(@NonNull Context context,@NonNull Uri contentUri){
+        return queryResultByContentResolver(context,contentUri,MediaStore.Files.FileColumns.DATA);
+    }
+
+    /**
+     * 通过contentUri获取文件大小，返回字符串型长度，单位字节
+     */
+    public static @Nullable String getFileLengthFromContentUri(@NonNull Context context,@NonNull Uri contentUri){
+        return queryResultByContentResolver(context,contentUri,MediaStore.Files.FileColumns.SIZE);
+    }
+
+    private static @Nullable String queryResultByContentResolver(@NonNull Context context,@NonNull Uri contentUri,@NonNull String selection){
         try{
             String result=null;
             Cursor cursor = context.getContentResolver().query(contentUri,
-                    new String[]{MediaStore.Files.FileColumns.DATA},
+                    new String[]{selection},
                     null, null, null);
             if (cursor == null) return null;
             else {
                 if(cursor.moveToFirst()){
-                    int index = cursor.getColumnIndex(MediaStore.Files.FileColumns.DATA);
-                    result = cursor.getString(index);
+                    result = cursor.getString(cursor.getColumnIndex(selection));
                 }
                 cursor.close();
             }

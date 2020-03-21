@@ -1,5 +1,6 @@
 package com.github.ghmxr.apkextractor.items;
 
+import android.content.ContentResolver;
 import android.content.Context;
 import android.net.Uri;
 import android.support.annotation.NonNull;
@@ -66,6 +67,9 @@ public class FileItem implements Comparable<FileItem>{
         if(documentFile!=null)return documentFile.getName();
         if(file!=null)return file.getName();
         if(context!=null&&contentUri!=null){
+            if(ContentResolver.SCHEME_FILE.equalsIgnoreCase(contentUri.getScheme())){
+                return contentUri.getLastPathSegment();
+            }
             String nameQueried= EnvironmentUtil.getFileNameFromContentUri(context,contentUri);
             if(!TextUtils.isEmpty(nameQueried))return nameQueried;
             String pathQueried=EnvironmentUtil.getFilePathFromContentUri(context,contentUri);
@@ -166,6 +170,9 @@ public class FileItem implements Comparable<FileItem>{
         }
         if(file!=null)return file.getAbsolutePath();
         if(context!=null&&contentUri!=null){
+            if(ContentResolver.SCHEME_FILE.equalsIgnoreCase(contentUri.getScheme())){
+                return contentUri.getPath();
+            }
             String path=EnvironmentUtil.getFilePathFromContentUri(context,contentUri);
             if(!TextUtils.isEmpty(path))return path;
             return contentUri.toString();
@@ -206,9 +213,15 @@ public class FileItem implements Comparable<FileItem>{
             if(documentFile!=null)return documentFile.length();
             if(file!=null)return file.length();
             if(contentUri!=null&&context!=null){
-                DocumentFile documentFile=DocumentFile.fromSingleUri(context,contentUri);
-                if(documentFile!=null)return documentFile.length();
-                else return getInputStream().available();
+                if(ContentResolver.SCHEME_FILE.equalsIgnoreCase(contentUri.getScheme())){
+                    return new File(contentUri.getPath()).length();
+                }
+                String length=EnvironmentUtil.getFileLengthFromContentUri(context,contentUri);
+                if(length!=null&&!TextUtils.isEmpty(length))return Long.parseLong(length);
+                InputStream inputStream=getInputStream();
+                int available=inputStream.available();
+                inputStream.close();
+                return available;
             }
         }catch (Exception e){e.printStackTrace();}
         return 0;
@@ -241,7 +254,12 @@ public class FileItem implements Comparable<FileItem>{
     public InputStream getInputStream() throws Exception{
         if(documentFile!=null) return context.getContentResolver().openInputStream(documentFile.getUri());
         if(file!=null)return new FileInputStream(file);
-        if(contentUri!=null&&context!=null)return context.getContentResolver().openInputStream(contentUri);
+        if(contentUri!=null&&context!=null){
+            if(ContentResolver.SCHEME_FILE.equalsIgnoreCase(contentUri.getScheme())){
+                return new FileInputStream(new File(contentUri.getPath()));
+            }
+            return context.getContentResolver().openInputStream(contentUri);
+        }
         return null;
     }
 
