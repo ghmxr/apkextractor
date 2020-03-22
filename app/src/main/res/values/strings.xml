@@ -339,15 +339,16 @@
     <string name="language_english" translatable="false">English</string>
 
     <string name="dialog_about_title" translatable="false">APK Kit</string>
-    <string name="dialog_about_message">\n这是一个快速查询、导出或者分享本地已安装APP的小工具，支持将对应APP外置存储中的Data，Obb数据一并打包成zip并分享给对方
-        (主要针对部分含有Data，Obb数据的游戏应用)\n\n
+    <string name="dialog_about_message">\n这是一个Android平台快速查询、导出(提取)或者分享本地已安装APP的小工具，支持将对应APP外置存储中的Data，Obb数据一并打包成zip格式压缩文件
+        (主要针对部分含有Data，Obb数据的游戏应用)。同时支持将包含Data，Obb数据的zip格式压缩包导入到设备。本应用支持导出和导入的包含data,obb数据的压缩包内容为：\n\n
 
-        支持将已导出的zip包导入本机，当导入单个zip包并且zip包的根路径存在apk文件时，导入完成后会自动弹出安装界面。Data、Obb数据会依照原路径解压至主存储/Android/Data或者
-        Android/Obb，APK文件将会解压至导出路径并以原始文件名命名（如有重复会加入数字后缀来命名）。\n\n
+        Android/data/\n
+        Android/obb/\n
+        *.apk\n\n
 
-        点击“分享”，可以使用局域网或支持分享的应用例如蓝牙、QQ面对面快传等来分享已选择的应用。\n\n
+        通过本应用的分享功能，可以将APP或者安装包分享给对方。本应用的局域网分享功能同时支持分享本地外置存储中的任何一个文件，通过文件管理器或其他应用
+        分享时选择本应用即可直接发送给对方，接收端接收到的文件将会保存至导出路径。\n\n
 
-    勾选导出Data或者Obb选项后，会将应用APK和Data或Obb数据打包成zip导出。\n\n
    <b>Build 9 更新日志：</b> \n
 	<b>新增：安装包详细信息页；</b>\n
     <b>新增：应用APK签名信息、文件哈希值信息；</b>\n

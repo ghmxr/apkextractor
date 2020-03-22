@@ -291,18 +291,18 @@
 
     <string name="language_follow_system">follow system</string>
 
-    <string name="dialog_about_message">\nThis is an android app using to look up, export, or share the apps installed on the device,
-        supporting to package data or obb of the app in the external storage to a zip file and share it to another one.
-        (it is mainly aimed to some game apps that contains data or obb)\n\n
+    <string name="dialog_about_message">\n(Translated by machine)This is a small tool for Android platform to quickly query, export (extract) or share locally installed apps.
+        It supports to package the data and OBB data in the external storage of the corresponding app into a ZIP format compressed file
+        (mainly for some game applications containing data and OBB data). At the same time, it supports the import of ZIP format compression package containing
+        data and OBB data to the device. The application supports the export and import of data, and the contents of OBB data compression package are:\n\n
 
-        This app supports to import the zip files exported from itself, and will automatically popup the installing interface after importing completed when you
-         are importing a single zip file. The data or obb files will be decompressed to the main external storage with the path \"/Android/Data\" or \"/Android/obb\"
-         ended, the apk file will be decompressed to the exporting path and named by its initial name, or will add number suffix to its file name if already exists
-        \n\n
+		Android/data/\n
+		Android/obb/\n
+		*.apk\n\n
 
-        Click \"Share\" will share the file(s) selected through local network or other sharing apps such as bluetooth, wifi direct, and more on. \n\n
-
-    It will package the data or obb files with the apk itself to a zip file as you checked the data or obb options.\n\n
+Through the sharing function of this app, you can share the app or installation package to the other party. The LAN sharing function of this application
+        supports the sharing of any file in the local external storage at the same time. When sharing through the file manager or other applications,
+        select this application to send it directly to the other party, and the files received by the receiving end will be saved to the export path.\n\n
 
         Open source:\n
          https://github.com/ghmxr/apkextractor \n\n
