@@ -36,6 +36,7 @@
     <string name="activity_package_detail">使用APK Kit安装</string>
     <string name="activity_package_detail_invalid_format">此文件不是有效的导入格式</string>
     <string name="activity_package_detail_blank">没有得到有效的文件数据，请重新尝试打开</string>
+    <string name="activity_package_detail_apk_attention">请使用其他打包应用来安装APK</string>
     <string name="activity_detail_run">运行</string>
     <string name="activity_detail_export">导出</string>
     <string name="activity_detail_share">分享</string>
@@ -349,14 +350,9 @@
         通过本应用的分享功能，可以将APP或者安装包分享给对方。本应用的局域网分享功能同时支持分享本地外置存储中的任何一个文件，通过文件管理器或其他应用
         分享时选择本应用即可直接发送给对方，接收端接收到的文件将会保存至导出路径。\n\n
 
-   <b>Build 9 更新日志：</b> \n
-	<b>新增：安装包详细信息页；</b>\n
-    <b>新增：应用APK签名信息、文件哈希值信息；</b>\n
-    <b>新增：安装包扫描范围设置、导出/导入压缩包扩展名设置；</b>\n
-    <b>新增：打开方式，在文件管理器等其他应用选择通过本应用打开压缩包时可直接进行安装；</b>\n
-    <b>新增：分享方式，在文件管理器等其他应用选择通过本应用发送可直接分享文件至对方；</b>\n
-    <b>修复：导出或接收新文件后没有刷新媒体库的问题；</b>\n
-    <b>修复：导入安装包时未勾选任何选项仍然进行压缩包检索操作的问题。</b>\n\n
+   <b>Build 10 更新日志：</b> \n
+    <b>修复：在搜索模式下安装包标签中的搜索结果点击打开后内容不一致的问题；</b>\n
+    <b>修复/变动：当使用打开方式打开APK时将不再弹出页面。</b>\n\n
 
         开源地址:\n
          https://github.com/ghmxr/apkextractor \n\n

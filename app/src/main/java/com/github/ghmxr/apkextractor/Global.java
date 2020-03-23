@@ -192,11 +192,30 @@ public class Global {
      * @return 查询到的AppItem
      */
     public static @Nullable AppItem getAppItemByPackageNameFromList(@NonNull List<AppItem>list,@NonNull String package_name){
-        try{
-            for(AppItem item:list){
+        for(AppItem item:list){
+            try {
                 if(item.getPackageName().trim().toLowerCase().equals(package_name.trim().toLowerCase()))return item;
+            } catch (Exception e) {
+                e.printStackTrace();
             }
-        }catch (Exception e){e.printStackTrace();}
+        }
+        return null;
+    }
+
+    /**
+     * 通过FileItem的path从指定list中取出ImportItem
+     * @param list 要遍历的list
+     * @param path FileItem的path，参考{@link FileItem#getPath()}
+     * @return 指定的ImportItem
+     */
+    public static @Nullable ImportItem getImportItemByFileItemPath(@NonNull List<ImportItem>list,@NonNull String path){
+        for(ImportItem importItem:list){
+            try {
+                if(importItem.getFileItem().getPath().equalsIgnoreCase(path))return importItem;
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
         return null;
     }
 

@@ -34,6 +34,7 @@
     <string name="activity_package_detail">Install by APK Kit</string>
     <string name="activity_package_detail_invalid_format">Invalid format of importing</string>
     <string name="activity_package_detail_blank">None valid data found, please try to re-open</string>
+    <string name="activity_package_detail_apk_attention">Please use other packaging apps to install APK</string>
     <string name="activity_detail_run">Run</string>
     <string name="activity_detail_export">Export</string>
     <string name="activity_detail_share">Share</string>

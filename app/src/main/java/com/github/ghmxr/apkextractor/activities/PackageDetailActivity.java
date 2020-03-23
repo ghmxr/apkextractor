@@ -35,6 +35,7 @@ import com.github.ghmxr.apkextractor.tasks.HashTask;
 import com.github.ghmxr.apkextractor.ui.AssemblyView;
 import com.github.ghmxr.apkextractor.ui.SignatureView;
 import com.github.ghmxr.apkextractor.ui.ToastManager;
+import com.github.ghmxr.apkextractor.utils.EnvironmentUtil;
 import com.github.ghmxr.apkextractor.utils.SPUtil;
 import com.github.ghmxr.apkextractor.utils.ZipFileUtil;
 
@@ -45,7 +46,7 @@ import java.util.Date;
 public class PackageDetailActivity extends BaseActivity implements View.OnClickListener{
 
     private ImportItem importItem;
-    public static final String EXTRA_IMPORT_ITEM_POSITION="import_item_position";
+    public static final String EXTRA_IMPORT_ITEM_PATH="import_item_path";
     private CheckBox cb_data,cb_obb,cb_apk;
     private ZipFileUtil.ZipFileInfo zipFileInfo;
 
@@ -60,9 +61,15 @@ public class PackageDetailActivity extends BaseActivity implements View.OnClickL
                 return;
             }
             importItem=new ImportItem(this,new FileItem(this, uri));
+            if("apk".equalsIgnoreCase(EnvironmentUtil.getFileExtensionName(importItem.getFileItem().getName()))){
+                ToastManager.showToast(this,getResources().getString(R.string.activity_package_detail_apk_attention),Toast.LENGTH_SHORT);
+                finish();
+                return;
+            }
         }else{
             try{
-                importItem= Global.item_list.get(getIntent().getIntExtra(EXTRA_IMPORT_ITEM_POSITION,-1));
+                //importItem= Global.item_list.get(getIntent().getIntExtra(EXTRA_IMPORT_ITEM_POSITION,-1));
+                importItem=Global.getImportItemByFileItemPath(Global.item_list,getIntent().getStringExtra(EXTRA_IMPORT_ITEM_PATH));
             }catch (Exception e){
                 e.printStackTrace();
                 ToastManager.showToast(this,getResources().getString(R.string.activity_package_detail_blank), Toast.LENGTH_SHORT);

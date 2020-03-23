@@ -288,9 +288,11 @@ public class MainActivity extends BaseActivity implements View.OnClickListener,V
     ListAdapterOperationListener listAdapterOperationListener_import=new ListAdapterOperationListener() {
         @Override
         public void onItemClicked(DisplayItem displayItem,ViewHolder viewHolder,int position) {
-            //if(!(displayItem instanceof ImportItem))return;
+            if(!(displayItem instanceof ImportItem))return;
+            ImportItem importItem=(ImportItem)displayItem;
             Intent intent =new Intent(MainActivity.this,PackageDetailActivity.class);
-            intent.putExtra(PackageDetailActivity.EXTRA_IMPORT_ITEM_POSITION,position);
+            //intent.putExtra(PackageDetailActivity.EXTRA_IMPORT_ITEM_POSITION,position);
+            intent.putExtra(PackageDetailActivity.EXTRA_IMPORT_ITEM_PATH,importItem.getFileItem().getPath());
             ActivityOptionsCompat compat = ActivityOptionsCompat.makeSceneTransitionAnimation(MainActivity.this,new Pair<View, String>(viewHolder.icon,"icon"));
             try{
                 ActivityCompat.startActivity(MainActivity.this, intent, compat.toBundle());
