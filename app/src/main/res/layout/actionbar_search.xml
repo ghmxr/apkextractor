@@ -2,7 +2,9 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:gravity="center_vertical" >
+    xmlns:tools="http://schemas.android.com/tools"
+    android:gravity="center_vertical"
+    tools:background="@color/colorTitle">
 
     <SearchView
         android:id="@+id/actionbar_main_search"
@@ -11,6 +13,40 @@
         android:layout_marginLeft="0dp"
         android:layout_marginRight="20dp"
         android:queryHint="@string/text_hint_searchview"
-        android:iconifiedByDefault="false"/>
+        android:iconifiedByDefault="false"
+        android:visibility="gone"
+        tools:visibility="gone"/>
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:gravity="center_vertical">
+        <ImageView
+            android:layout_width="25dp"
+            android:layout_height="25dp"
+            android:layout_margin="10dp"
+            android:src="@drawable/icon_search"/>
+        <EditText
+            android:id="@+id/actionbar_main_edit"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:background="@null"
+            android:singleLine="true"
+            android:hint="@string/text_hint_searchview"
+            android:textColor="#ffffff"
+            android:textColorHint="#ececec"
+            android:imeOptions="actionDone"
+            android:focusable="true"/>
+        <ImageView
+            android:id="@+id/actionbar_main_cancel"
+            android:layout_width="25dp"
+            android:layout_height="25dp"
+            android:layout_marginRight="20dp"
+            android:layout_marginLeft="10dp"
+            android:src="@drawable/icon_close"
+            android:visibility="invisible"
+            tools:visibility="visible"/>
+    </LinearLayout>
 
 </RelativeLayout>

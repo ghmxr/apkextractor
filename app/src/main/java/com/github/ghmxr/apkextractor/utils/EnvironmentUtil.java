@@ -1,5 +1,6 @@
 package com.github.ghmxr.apkextractor.utils;
 
+import android.app.Activity;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
@@ -22,7 +23,8 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.content.FileProvider;
 import android.text.format.Formatter;
-import android.util.TypedValue;
+import android.view.View;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.Toast;
 
 import com.github.ghmxr.apkextractor.Constants;
@@ -45,6 +47,22 @@ import java.util.jar.JarEntry;
 import java.util.jar.JarFile;
 
 public class EnvironmentUtil {
+
+    public static void showInputMethod(@NonNull View view){
+        try{
+            InputMethodManager inputMethodManager=(InputMethodManager)view.getContext().getSystemService(Context.INPUT_METHOD_SERVICE);
+            view.requestFocus();
+            inputMethodManager.showSoftInput(view,0);
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+    }
+
+    public static void hideInputMethod(@NonNull final Activity activity){
+        try{
+            ((InputMethodManager)activity.getSystemService(Context.INPUT_METHOD_SERVICE)).hideSoftInputFromWindow(activity.getCurrentFocus().getWindowToken(),0);
+        }catch (Exception e){e.printStackTrace();}
+    }
 
     public static Bitmap drawableToBitmap(Drawable drawable) {
         Bitmap bitmap = Bitmap.createBitmap(drawable.getIntrinsicWidth(),

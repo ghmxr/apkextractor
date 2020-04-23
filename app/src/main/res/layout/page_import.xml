@@ -53,18 +53,6 @@
                     android:clickable="true"
                     android:focusable="true"/>
                 <Button
-                    android:id="@+id/import_deselect_all"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_centerVertical="true"
-                    style="@style/Widget.AppCompat.Button.ButtonBar.AlertDialog"
-                    android:textSize="13sp"
-                    android:singleLine="true"
-                    android:text="@string/deselect_all"
-                    android:clickable="true"
-                    android:focusable="true"
-                    android:visibility="gone"/>
-                <Button
                     android:id="@+id/import_action"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
