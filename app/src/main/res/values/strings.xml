@@ -29,7 +29,9 @@
     <string name="deselect_all">全不选</string>
     <string name="select_all_change">全选/反选</string>
     <string name="bottom_share">分享</string>
+    <string name="bottom_more">更多</string>
     <string name="bottom_delete">删除</string>
+    <string name="more_copy_package_names">复制包名</string>
     <string name="main_page_export">应用</string>
     <string name="main_page_import">安装包</string>
 
@@ -49,10 +51,13 @@
     <string name="activity_detail_package_size">应用包大小</string>
     <string name="activity_detail_first_install_time">首次安装时间</string>
     <string name="activity_detail_last_update_time">上次更新时间</string>
+    <string name="activity_detail_installer_name">安装来源</string>
     <string name="activity_detail_minimum_api">最低API</string>
     <string name="activity_detail_target_api">目标API</string>
     <string name="activity_detail_is_system_app">系统应用</string>
+    <string name="activity_detail_uid" translatable="false">UID</string>
     <string name="activity_detail_path">路径/Uri</string>
+    <string name="activity_detail_launch_intent">主启动类</string>
     <string name="activity_detail_signature">签名MD5</string>
     <string name="activity_detail_install">安装</string>
     <string name="activity_detail_delete">删除</string>
@@ -183,10 +188,14 @@
     <string name="activity_detail_activities">活动组件</string>
     <string name="activity_detail_receivers">广播接收器</string>
     <string name="activity_detail_static_loaders">自启接收器</string>
+    <string name="activity_detail_services">服务</string>
+    <string name="activity_detail_providers">内容提供者</string>
 
     <string name="dialog_loading_selection_att">勾选项越多，加载速度越慢 -_-</string>
     <string name="dialog_loading_selection_permissions">权限(uses-permissions)</string>
     <string name="dialog_loading_selection_activities">活动组件(activity)</string>
+    <string name="dialog_loading_selection_services">服务(service)</string>
+    <string name="dialog_loading_selection_providers">内容提供者(providers)</string>
     <string name="dialog_loading_selection_receivers">广播接收器(receiver)</string>
     <string name="dialog_loading_selection_static_loaders">自启接收器(会拖慢加载速度)</string>
     <string name="dialog_loading_selection_signature">APK签名</string>
@@ -321,6 +330,7 @@
     <string name="word_blank">空</string>
     <string name="word_yes">是</string>
     <string name="word_no">否</string>
+    <string name="word_none">无</string>
     <string name="word_stop">停止</string>
     <string name="word_content_blank">没有内容</string>
     <string name="word_ap_mode">热点模式</string>

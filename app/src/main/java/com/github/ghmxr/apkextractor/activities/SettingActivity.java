@@ -163,12 +163,16 @@ public class SettingActivity extends BaseActivity implements View.OnClickListene
                 final CheckBox cb_static_loaders=dialogView.findViewById(R.id.loading_static_loaders);
                 final CheckBox cb_signature=dialogView.findViewById(R.id.loading_apk_signature);
                 final CheckBox cb_hash=dialogView.findViewById(R.id.loading_file_hash);
+                final CheckBox cb_service=dialogView.findViewById(R.id.loading_services);
+                final CheckBox cb_provider=dialogView.findViewById(R.id.loading_providers);
                 cb_permissions.setChecked(settings.getBoolean(Constants.PREFERENCE_LOAD_PERMISSIONS,Constants.PREFERENCE_LOAD_PERMISSIONS_DEFAULT));
                 cb_activities.setChecked(settings.getBoolean(Constants.PREFERENCE_LOAD_ACTIVITIES,Constants.PREFERENCE_LOAD_ACTIVITIES_DEFAULT));
                 cb_receivers.setChecked(settings.getBoolean(Constants.PREFERENCE_LOAD_RECEIVERS,Constants.PREFERENCE_LOAD_RECEIVERS_DEFAULT));
                 cb_static_loaders.setChecked(settings.getBoolean(Constants.PREFERENCE_LOAD_STATIC_LOADERS,Constants.PREFERENCE_LOAD_STATIC_LOADERS_DEFAULT));
                 cb_signature.setChecked(settings.getBoolean(Constants.PREFERENCE_LOAD_APK_SIGNATURE,Constants.PREFERENCE_LOAD_APK_SIGNATURE_DEFAULT));
                 cb_hash.setChecked(settings.getBoolean(Constants.PREFERENCE_LOAD_FILE_HASH,Constants.PREFERENCE_LOAD_FILE_HASH_DEFAULT));
+                cb_service.setChecked(settings.getBoolean(Constants.PREFERENCE_LOAD_SERVICES,Constants.PREFERENCE_LOAD_SERVICES_DEFAULT));
+                cb_provider.setChecked(settings.getBoolean(Constants.PREFERENCE_LOAD_PROVIDERS,Constants.PREFERENCE_LOAD_PROVIDERS_DEFAULT));
                 new AlertDialog.Builder(this).setTitle(getResources().getString(R.string.activity_settings_loading_options))
                         .setView(dialogView)
                         .setPositiveButton(getResources().getString(R.string.dialog_button_confirm), new DialogInterface.OnClickListener() {
@@ -180,6 +184,8 @@ public class SettingActivity extends BaseActivity implements View.OnClickListene
                                 editor.putBoolean(Constants.PREFERENCE_LOAD_STATIC_LOADERS,cb_static_loaders.isChecked());
                                 editor.putBoolean(Constants.PREFERENCE_LOAD_APK_SIGNATURE,cb_signature.isChecked());
                                 editor.putBoolean(Constants.PREFERENCE_LOAD_FILE_HASH,cb_hash.isChecked());
+                                editor.putBoolean(Constants.PREFERENCE_LOAD_SERVICES,cb_service.isChecked());
+                                editor.putBoolean(Constants.PREFERENCE_LOAD_PROVIDERS,cb_provider.isChecked());
                                 editor.apply();
                                 refreshSettingValues();
                                 setResult(RESULT_OK);
@@ -426,9 +432,17 @@ public class SettingActivity extends BaseActivity implements View.OnClickListene
             if(!read_options.equals(""))read_options+=",";
             read_options+=getResources().getString(R.string.activity_detail_activities);
         }
+        if(settings.getBoolean(Constants.PREFERENCE_LOAD_SERVICES,Constants.PREFERENCE_LOAD_SERVICES_DEFAULT)){
+            if(!read_options.equals(""))read_options+=",";
+            read_options+=getResources().getString(R.string.activity_detail_services);
+        }
         if(settings.getBoolean(Constants.PREFERENCE_LOAD_RECEIVERS,Constants.PREFERENCE_LOAD_RECEIVERS_DEFAULT)){
             if(!read_options.equals(""))read_options+=",";
             read_options+=getResources().getString(R.string.activity_detail_receivers);
+        }
+        if(settings.getBoolean(Constants.PREFERENCE_LOAD_PROVIDERS,Constants.PREFERENCE_LOAD_PROVIDERS_DEFAULT)){
+            if(!read_options.equals(""))read_options+=",";
+            read_options+=getResources().getString(R.string.activity_detail_providers);
         }
         if(settings.getBoolean(Constants.PREFERENCE_LOAD_STATIC_LOADERS,Constants.PREFERENCE_LOAD_STATIC_LOADERS_DEFAULT)){
             if(!read_options.equals(""))read_options+=",";

@@ -103,6 +103,9 @@ public class AppDetailActivity extends BaseActivity implements View.OnClickListe
         ((TextView)findViewById(R.id.app_detail_target_api)).setText(String.valueOf(packageInfo.applicationInfo.targetSdkVersion));
         ((TextView)findViewById(R.id.app_detail_is_system_app)).setText(getResources().getString((appItem.getPackageInfo().applicationInfo.flags& ApplicationInfo.FLAG_SYSTEM)>0?R.string.word_yes:R.string.word_no));
         ((TextView)findViewById(R.id.app_detail_path_value)).setText(appItem.getPackageInfo().applicationInfo.sourceDir);
+        ((TextView)findViewById(R.id.app_detail_installer_name_value)).setText(appItem.getInstallSource());
+        ((TextView)findViewById(R.id.app_detail_uid)).setText(String.valueOf(appItem.getPackageInfo().applicationInfo.uid));
+        ((TextView)findViewById(R.id.app_detail_launcher_value)).setText(appItem.getLaunchingClass());
 
         getDataObbSizeAndFillView();
 
@@ -332,6 +335,18 @@ public class AppDetailActivity extends BaseActivity implements View.OnClickListe
             break;
             case R.id.app_detail_path_area:{
                 clip2ClipboardAndShowSnackbar(((TextView)findViewById(R.id.app_detail_path_value)).getText().toString());
+            }
+            break;
+            case R.id.app_detail_installer_name_area:{
+                clip2ClipboardAndShowSnackbar(((TextView)findViewById(R.id.app_detail_installer_name_value)).getText().toString());
+            }
+            break;
+            case R.id.app_detail_uid_area:{
+                clip2ClipboardAndShowSnackbar(((TextView)findViewById(R.id.app_detail_uid)).getText().toString());
+            }
+            break;
+            case R.id.app_detail_launcher_area:{
+                clip2ClipboardAndShowSnackbar(((TextView)findViewById(R.id.app_detail_launcher_value)).getText().toString());
             }
             break;
         }

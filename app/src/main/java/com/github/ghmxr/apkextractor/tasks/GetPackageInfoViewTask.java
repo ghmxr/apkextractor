@@ -8,6 +8,8 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.ActivityInfo;
 import android.content.pm.PackageInfo;
+import android.content.pm.ProviderInfo;
+import android.content.pm.ServiceInfo;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.Snackbar;
@@ -53,16 +55,22 @@ public class GetPackageInfoViewTask extends Thread {
         final String[] permissions=packageInfo.requestedPermissions;
         final ActivityInfo[] activities=packageInfo.activities;
         final ActivityInfo[] receivers=packageInfo.receivers;
+        final ServiceInfo[] services=packageInfo.services;
+        final ProviderInfo[] providers=packageInfo.providers;
 
         final boolean get_permissions=settings.getBoolean(Constants.PREFERENCE_LOAD_PERMISSIONS,Constants.PREFERENCE_LOAD_PERMISSIONS_DEFAULT);
         final boolean get_activities=settings.getBoolean(Constants.PREFERENCE_LOAD_ACTIVITIES,Constants.PREFERENCE_LOAD_ACTIVITIES_DEFAULT);
         final boolean get_receivers=settings.getBoolean(Constants.PREFERENCE_LOAD_RECEIVERS,Constants.PREFERENCE_LOAD_RECEIVERS_DEFAULT);
         final boolean get_static_loaders=settings.getBoolean(Constants.PREFERENCE_LOAD_STATIC_LOADERS,Constants.PREFERENCE_LOAD_STATIC_LOADERS_DEFAULT);
+        final boolean get_services=settings.getBoolean(Constants.PREFERENCE_LOAD_SERVICES,Constants.PREFERENCE_LOAD_SERVICES_DEFAULT);
+        final boolean get_providers=settings.getBoolean(Constants.PREFERENCE_LOAD_PROVIDERS,Constants.PREFERENCE_LOAD_PROVIDERS_DEFAULT);
 
         final ArrayList<View> permission_child_views=new ArrayList<>();
         final ArrayList<View>activity_child_views=new ArrayList<>();
         final ArrayList<View>receiver_child_views=new ArrayList<>();
         final ArrayList<View>loaders_child_views=new ArrayList<>();
+        final ArrayList<View>service_child_views=new ArrayList<>();
+        final ArrayList<View>provider_child_views=new ArrayList<>();
 
         if(permissions!=null&&get_permissions){
             for(final String s:permissions){
@@ -106,6 +114,40 @@ public class GetPackageInfoViewTask extends Thread {
                         clip2ClipboardAndShowSnackbar(activityInfo.name);
                     }
                 }, null));
+            }
+        }
+
+        if(services!=null&&get_services){
+            for(final ServiceInfo serviceInfo:services){
+                service_child_views.add(getSingleItemView(assemblyView.getLinearLayout_service(), serviceInfo.name, new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        clip2ClipboardAndShowSnackbar(serviceInfo.name);
+                    }
+                }, new View.OnLongClickListener() {
+                    @Override
+                    public boolean onLongClick(View v) {
+                        try{
+                            Intent intent=new Intent();
+                            intent.setClassName(serviceInfo.packageName,serviceInfo.name);
+                            activity.startService(intent);
+                        }catch (Exception e){
+                            ToastManager.showToast(activity,e.toString(),Toast.LENGTH_SHORT);
+                        }
+                        return true;
+                    }
+                }));
+            }
+        }
+
+        if(providers!=null&&get_providers){
+            for(final ProviderInfo providerInfo:providers){
+                provider_child_views.add(getSingleItemView(assemblyView.getLinearLayout_provider(), providerInfo.name, new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        clip2ClipboardAndShowSnackbar(providerInfo.name);
+                    }
+                },null));
             }
         }
 
@@ -166,6 +208,18 @@ public class GetPackageInfoViewTask extends Thread {
                     TextView att_static_loader=assemblyView.getTv_loader();
                     att_static_loader.setText(activity.getResources().getString(R.string.activity_detail_static_loaders)+"("+keys.size()+activity.getResources().getString(R.string.unit_item)+")");
                     assemblyView.findViewById(R.id.detail_card_static_loaders).setVisibility(View.VISIBLE);
+                }
+                if(get_services){
+                    for(View view:service_child_views)assemblyView.getLinearLayout_service().addView(view);
+                    TextView att_service=assemblyView.getTv_service();
+                    att_service.setText(activity.getResources().getString(R.string.activity_detail_services)+"("+service_child_views.size()+activity.getResources().getString(R.string.unit_item)+")");
+                    assemblyView.findViewById(R.id.detail_card_services).setVisibility(View.VISIBLE);
+                }
+                if(get_providers){
+                    for(View view:provider_child_views)assemblyView.getLinearLayout_provider().addView(view);
+                    TextView att_providers=assemblyView.getTv_provider();
+                    att_providers.setText(activity.getResources().getString(R.string.activity_detail_providers)+"("+provider_child_views.size()+activity.getResources().getString(R.string.unit_item)+")");
+                    assemblyView.findViewById(R.id.detail_card_providers).setVisibility(View.VISIBLE);
                 }
                 callback.onViewsCreated();
             }

@@ -1,15 +1,17 @@
 package com.github.ghmxr.apkextractor.items;
 
 import android.content.Context;
+import android.content.Intent;
 import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
+import android.text.TextUtils;
 
 import com.github.ghmxr.apkextractor.DisplayItem;
+import com.github.ghmxr.apkextractor.R;
 import com.github.ghmxr.apkextractor.utils.EnvironmentUtil;
 import com.github.ghmxr.apkextractor.utils.FileUtil;
 import com.github.ghmxr.apkextractor.utils.PinyinUtil;
@@ -53,6 +55,10 @@ public class AppItem implements Comparable<AppItem>, DisplayItem {
      */
     private long size;
 
+    private String installSource;
+
+    private String launchingClass;
+
     //private String[]signatureInfos;
 
     //private HashMap<String, List<String>> static_receivers;
@@ -75,12 +81,26 @@ public class AppItem implements Comparable<AppItem>, DisplayItem {
         this.title=packageManager.getApplicationLabel(info.applicationInfo).toString();
         this.size= FileUtil.getFileOrFolderSize(new File(info.applicationInfo.sourceDir));
         this.drawable=packageManager.getApplicationIcon(info.applicationInfo);
-        //this.static_receivers= EnvironmentUtil.getStaticRegisteredReceiversForPackageName(context,info.packageName);
-        this.static_receivers_bundle=EnvironmentUtil.getStaticRegisteredReceiversOfBundleTypeForPackageName(context,info.packageName);
-        //String[]sign_infos=EnvironmentUtil.getAPKSignInfo(info.applicationInfo.sourceDir);
+        String install_source=context.getResources().getString(R.string.word_unknown);
+        try{
+            final String installer_package_name=packageManager.getInstallerPackageName(info.packageName);
+            final String installer_name=EnvironmentUtil.getAppNameByPackageName(context,installer_package_name);
+            install_source= TextUtils.isEmpty(installer_name)?installer_package_name:installer_name;
+        }catch (Exception e){e.printStackTrace();}
+        this.installSource=install_source;
 
-        //signatureInfos=new String[]{sign_infos[0],sign_infos[1],sign_infos[2],sign_infos[3],sign_infos[4],EnvironmentUtil.getSignatureMD5StringOfPackageInfo(info)
-        //,EnvironmentUtil.getSignatureSHA1OfPackageInfo(info),EnvironmentUtil.getSignatureSHA256OfPackageInfo(info)};
+        String launchingClass=context.getResources().getString(R.string.word_unknown);
+        try{
+            Intent intent=packageManager.getLaunchIntentForPackage(info.packageName);
+            if(intent==null)launchingClass=context.getResources().getString(R.string.word_none);
+            else{
+                launchingClass=intent.getComponent().getClassName();
+            }
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+        this.launchingClass=launchingClass;
+        this.static_receivers_bundle=EnvironmentUtil.getStaticRegisteredReceiversOfBundleTypeForPackageName(context,info.packageName);
     }
 
     /**
@@ -94,6 +114,8 @@ public class AppItem implements Comparable<AppItem>, DisplayItem {
         this.size=wrapper.size;
         this.info=wrapper.info;
         this.drawable=wrapper.drawable;
+        this.installSource=wrapper.installSource;
+        this.launchingClass=wrapper.launchingClass;
         this.exportData=flag_data;
         this.exportObb=flag_obb;
         //this.signatureInfos=wrapper.signatureInfos;
@@ -130,28 +152,28 @@ public class AppItem implements Comparable<AppItem>, DisplayItem {
     /**
      * 获取应用图标
      */
-    public @Nullable Drawable getIcon(){
+    public Drawable getIcon(){
         return drawable;
     }
 
     /**
      * 获取应用名称
      */
-    public @Nullable String getAppName(){
+    public String getAppName(){
         return title;
     }
 
     /**
      * 获取包名
      */
-    public @Nullable String getPackageName(){
+    public String getPackageName(){
         return info.packageName;
     }
 
     /**
      * 获取应用源路径
      */
-    public @NonNull String getSourcePath(){
+    public String getSourcePath(){
         return String.valueOf(info.applicationInfo.sourceDir);
     }
 
@@ -166,7 +188,7 @@ public class AppItem implements Comparable<AppItem>, DisplayItem {
     /**
      * 获取应用版本名称
      */
-    public @Nullable String getVersionName(){
+    public String getVersionName(){
         return info.versionName;
     }
 
@@ -180,8 +202,16 @@ public class AppItem implements Comparable<AppItem>, DisplayItem {
     /**
      * 获取本应用Item对应的PackageInfo实例
      */
-    public @NonNull PackageInfo getPackageInfo(){
+    public PackageInfo getPackageInfo(){
         return info;
+    }
+
+    public String getInstallSource() {
+        return installSource;
+    }
+
+    public String getLaunchingClass() {
+        return launchingClass;
     }
 
     public FileItem getFileItem() {

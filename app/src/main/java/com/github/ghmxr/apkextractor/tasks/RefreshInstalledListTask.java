@@ -40,6 +40,8 @@ public class RefreshInstalledListTask extends Thread{
         if(settings.getBoolean(Constants.PREFERENCE_LOAD_ACTIVITIES,Constants.PREFERENCE_LOAD_ACTIVITIES_DEFAULT))flag|=PackageManager.GET_ACTIVITIES;
         if(settings.getBoolean(Constants.PREFERENCE_LOAD_RECEIVERS,Constants.PREFERENCE_LOAD_RECEIVERS_DEFAULT))flag|=PackageManager.GET_RECEIVERS;
         if(settings.getBoolean(Constants.PREFERENCE_LOAD_APK_SIGNATURE,Constants.PREFERENCE_LOAD_APK_SIGNATURE_DEFAULT))flag|=PackageManager.GET_SIGNATURES;
+        if(settings.getBoolean(Constants.PREFERENCE_LOAD_SERVICES,Constants.PREFERENCE_LOAD_SERVICES_DEFAULT))flag|=PackageManager.GET_SERVICES;
+        if(settings.getBoolean(Constants.PREFERENCE_LOAD_PROVIDERS,Constants.PREFERENCE_LOAD_PROVIDERS_DEFAULT))flag|=PackageManager.GET_PROVIDERS;
         final List<PackageInfo> list = manager.getInstalledPackages(flag);
         Global.handler.post(new Runnable() {
             @Override

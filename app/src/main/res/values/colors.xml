@@ -22,4 +22,5 @@
     <color name="colorSelectedBackground">#90EE90</color>
     <color name="colorSystemAppTitleColor">#FF4500</color>
     <color name="colorSharingDialogBack">#ffffff</color>
+    <color name="color_popup_window">#bb000000</color>
 </resources>

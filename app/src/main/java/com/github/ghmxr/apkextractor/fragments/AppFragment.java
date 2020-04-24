@@ -2,14 +2,18 @@ package com.github.ghmxr.apkextractor.fragments;
 
 import android.Manifest;
 import android.content.BroadcastReceiver;
+import android.content.ClipData;
+import android.content.ClipboardManager;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.graphics.drawable.ColorDrawable;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.design.widget.Snackbar;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.ActivityOptionsCompat;
 import android.support.v4.app.Fragment;
@@ -20,6 +24,7 @@ import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
 import android.text.format.Formatter;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -27,6 +32,7 @@ import android.view.animation.AnimationUtils;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
+import android.widget.PopupWindow;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -64,7 +70,9 @@ public class AppFragment extends Fragment implements View.OnClickListener, Refre
     private CardView card_multi_select,card_normal;
     private CheckBox cb_sys;
     private TextView tv_space_remaining,tv_multi_select_head;
-    private Button btn_select_all,btn_deselect_all,btn_export,btn_share;
+    private Button btn_select_all,btn_export,btn_share,btn_more;
+    private PopupWindow popupWindow;
+    private ViewGroup more_copy_package_names;
     private boolean isScrollable=false;
     private boolean isSearchMode=false;
 
@@ -155,10 +163,16 @@ public class AppFragment extends Fragment implements View.OnClickListener, Refre
         tv_space_remaining=view.findViewById(R.id.main_storage_remain);
         tv_multi_select_head=view.findViewById(R.id.main_select_num_size);
         btn_select_all=view.findViewById(R.id.main_select_all);
-        btn_deselect_all=view.findViewById(R.id.main_deselect_all);
         btn_export=view.findViewById(R.id.main_export);
         btn_share=view.findViewById(R.id.main_share);
-
+        btn_more=view.findViewById(R.id.main_more);
+        View popupView=LayoutInflater.from(getActivity()).inflate(R.layout.pp_more,null);
+        more_copy_package_names=popupView.findViewById(R.id.popup_copy_package_name);
+        more_copy_package_names.setOnClickListener(this);
+        popupWindow=new PopupWindow(popupView,ViewGroup.LayoutParams.WRAP_CONTENT,ViewGroup.LayoutParams.WRAP_CONTENT,true);
+        popupWindow.setBackgroundDrawable(new ColorDrawable(getResources().getColor(R.color.color_popup_window)));
+        popupWindow.setTouchable(true);
+        popupWindow.setOutsideTouchable(true);
         try{
             IntentFilter intentFilter=new IntentFilter();
             intentFilter.addAction(Constants.ACTION_REFRESH_APP_LIST);
@@ -189,11 +203,10 @@ public class AppFragment extends Fragment implements View.OnClickListener, Refre
         cb_sys.setChecked(is_show_sys);
         swipeRefreshLayout.setColorSchemeColors(getActivity().getResources().getColor(R.color.colorTitle));
 
-        btn_export.setOnClickListener(this);
         btn_select_all.setOnClickListener(this);
-        btn_deselect_all.setOnClickListener(this);
         btn_export.setOnClickListener(this);
         btn_share.setOnClickListener(this);
+        btn_more.setOnClickListener(this);
 
         recyclerView.addOnScrollListener(onScrollListener);
         swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
@@ -246,11 +259,7 @@ public class AppFragment extends Fragment implements View.OnClickListener, Refre
         switch (v.getId()){
             default:break;
             case R.id.main_select_all:{
-                if(adapter!=null)adapter.setSelectAll(true);
-            }
-            break;
-            case R.id.main_deselect_all:{
-                if(adapter!=null)adapter.setSelectAll(false);
+                if(adapter!=null)adapter.setToggleSelectAll();
             }
             break;
             case R.id.main_export:{
@@ -261,7 +270,6 @@ public class AppFragment extends Fragment implements View.OnClickListener, Refre
                 }
                 if(adapter==null)return;
                 final ArrayList<AppItem> arrayList=new ArrayList<>(adapter.getSelectedItems());
-                adapter.setMultiSelectMode(false);
                 Global.checkAndExportCertainAppItemsToSetPathWithoutShare(getActivity(), arrayList, true,new Global.ExportTaskFinishedListener() {
                     @Override
                     public void onFinished(@NonNull String error_message) {
@@ -275,10 +283,11 @@ public class AppFragment extends Fragment implements View.OnClickListener, Refre
                                         public void onClick(DialogInterface dialog, int which) {}
                                     })
                                     .show();
-                            return;
+                        }else{
+                            ToastManager.showToast(getActivity(),getResources().getString(R.string.toast_export_complete)+ " "
+                                    +SPUtil.getDisplayingExportPath(getActivity()), Toast.LENGTH_SHORT);
                         }
-                        ToastManager.showToast(getActivity(),getResources().getString(R.string.toast_export_complete)+ " "
-                                +SPUtil.getDisplayingExportPath(getActivity()), Toast.LENGTH_SHORT);
+                        closeMultiSelectMode();
                         refreshAvailableStorage();
                     }
                 });
@@ -292,8 +301,25 @@ public class AppFragment extends Fragment implements View.OnClickListener, Refre
                 }
                 if(adapter==null)return;
                 final ArrayList<AppItem>arrayList=new ArrayList<>(adapter.getSelectedItems());
-                adapter.setMultiSelectMode(false);
+                closeMultiSelectMode();
                 Global.shareCertainAppsByItems(getActivity(),arrayList);
+            }
+            break;
+            case R.id.main_more:{
+                int [] values=EnvironmentUtil.calculatePopWindowPos(btn_more,popupWindow.getContentView());
+                popupWindow.showAtLocation(v,0,values[0],values[1]);
+            }
+            break;
+            case R.id.popup_copy_package_name:{
+                popupWindow.dismiss();
+                StringBuilder stringBuilder=new StringBuilder();
+                List<AppItem>appItemList=adapter.getSelectedItems();
+                for(AppItem appItem:appItemList){
+                    if(stringBuilder.toString().length()>0)stringBuilder.append(",");
+                    stringBuilder.append(appItem.getPackageName());
+                }
+                //closeMultiSelectMode();
+                clip2ClipboardAndShowSnackbar(stringBuilder.toString());
             }
             break;
         }
@@ -429,8 +455,9 @@ public class AppFragment extends Fragment implements View.OnClickListener, Refre
     }
 
     public void sortGlobalListAndRefresh(int value){
+        closeMultiSelectMode();
         AppItem.sort_config=value;
-        adapter.setData(null);
+        if(adapter!=null)adapter.setData(null);
         swipeRefreshLayout.setRefreshing(true);
         cb_sys.setEnabled(false);
         new Thread(new Runnable() {
@@ -442,7 +469,7 @@ public class AppFragment extends Fragment implements View.OnClickListener, Refre
                 Global.handler.post(new Runnable() {
                     @Override
                     public void run() {
-                        adapter.setData(Global.app_list);
+                        if(adapter!=null)adapter.setData(Global.app_list);
                         swipeRefreshLayout.setRefreshing(false);
                         cb_sys.setEnabled(true);
                     }
@@ -487,6 +514,15 @@ public class AppFragment extends Fragment implements View.OnClickListener, Refre
             }
 
             tv_space_remaining.setText(head);
+        }catch (Exception e){e.printStackTrace();}
+    }
+
+    private void clip2ClipboardAndShowSnackbar(String s){
+        try{
+            if(getActivity()==null)return;
+            ClipboardManager manager=(ClipboardManager)getActivity().getSystemService(Context.CLIPBOARD_SERVICE);
+            manager.setPrimaryClip(ClipData.newPlainText("message",s));
+            Snackbar.make(getActivity().findViewById(android.R.id.content),getResources().getString(R.string.snack_bar_clipboard),Snackbar.LENGTH_SHORT).show();
         }catch (Exception e){e.printStackTrace();}
     }
 }

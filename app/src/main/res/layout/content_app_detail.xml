@@ -474,6 +474,43 @@
                     android:background="@color/colorDividingLine"/>
 
                 <RelativeLayout
+                    android:id="@+id/app_detail_installer_name_area"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:clickable="true"
+                    android:focusable="true"
+                    android:background="?attr/selectableItemBackground"
+                    android:onClick="onClick">
+                    <TextView
+                        android:id="@+id/app_detail_installer_name_att"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentLeft="true"
+                        android:layout_marginLeft="5dp"
+                        android:layout_marginTop="10dp"
+                        android:layout_marginBottom="10dp"
+                        android:layout_centerVertical="true"
+                        android:textSize="14sp"
+                        android:textColor="@color/colorHighLightText"
+                        android:text="@string/activity_detail_installer_name"/>
+                    <TextView
+                        android:id="@+id/app_detail_installer_name_value"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:gravity="end"
+                        android:layout_toRightOf="@+id/app_detail_installer_name_att"
+                        android:layout_centerVertical="true"
+                        android:layout_marginLeft="10dp"
+                        android:layout_marginRight="5dp"
+                        android:textSize="12sp"
+                        tools:text="文件管理器"/>
+                </RelativeLayout>
+                <ImageView
+                    android:layout_width="match_parent"
+                    android:layout_height="1px"
+                    android:background="@color/colorDividingLine"/>
+
+                <RelativeLayout
                     android:id="@+id/app_detail_minimum_api_area"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -585,6 +622,43 @@
                     android:background="@color/colorDividingLine"/>
 
                 <RelativeLayout
+                    android:id="@+id/app_detail_uid_area"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:clickable="true"
+                    android:focusable="true"
+                    android:background="?attr/selectableItemBackground"
+                    android:onClick="onClick">
+                    <TextView
+                        android:id="@+id/app_detail_uid_att"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentLeft="true"
+                        android:layout_marginLeft="5dp"
+                        android:layout_marginTop="10dp"
+                        android:layout_marginBottom="10dp"
+                        android:layout_centerVertical="true"
+                        android:textSize="14sp"
+                        android:textColor="@color/colorHighLightText"
+                        android:text="@string/activity_detail_uid"/>
+                    <TextView
+                        android:id="@+id/app_detail_uid"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:gravity="end"
+                        android:layout_toRightOf="@+id/app_detail_uid_att"
+                        android:layout_centerVertical="true"
+                        android:layout_marginLeft="10dp"
+                        android:layout_marginRight="5dp"
+                        android:textSize="12sp"
+                        tools:text="1001"/>
+                </RelativeLayout>
+                <ImageView
+                    android:layout_width="match_parent"
+                    android:layout_height="1px"
+                    android:background="@color/colorDividingLine"/>
+
+                <RelativeLayout
                     android:id="@+id/app_detail_path_area"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -615,6 +689,44 @@
                         android:layout_marginRight="5dp"
                         android:textSize="12sp"
                         tools:text="@string/word_no"/>
+                </RelativeLayout>
+
+                <ImageView
+                    android:layout_width="match_parent"
+                    android:layout_height="1px"
+                    android:background="@color/colorDividingLine"/>
+
+                <RelativeLayout
+                    android:id="@+id/app_detail_launcher_area"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:clickable="true"
+                    android:focusable="true"
+                    android:background="?attr/selectableItemBackground"
+                    android:onClick="onClick">
+                    <TextView
+                        android:id="@+id/app_detail_launcher_att"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentLeft="true"
+                        android:layout_marginLeft="5dp"
+                        android:layout_marginTop="10dp"
+                        android:layout_marginBottom="10dp"
+                        android:layout_centerVertical="true"
+                        android:textSize="14sp"
+                        android:textColor="@color/colorHighLightText"
+                        android:text="@string/activity_detail_launch_intent"/>
+                    <TextView
+                        android:id="@+id/app_detail_launcher_value"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:gravity="end"
+                        android:layout_toRightOf="@+id/app_detail_launcher_att"
+                        android:layout_centerVertical="true"
+                        android:layout_marginLeft="10dp"
+                        android:layout_marginRight="5dp"
+                        android:textSize="12sp"
+                        tools:text="MainActivity"/>
                 </RelativeLayout>
 
             </LinearLayout>

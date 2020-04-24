@@ -25,6 +25,7 @@
                 android:layout_marginBottom="12dp"
                 android:orientation="vertical"
                 android:layout_alignParentLeft="true"
+                android:layout_marginRight="30dp"
                 android:layout_centerVertical="true"
                 android:layout_marginLeft="15dp">
                 <TextView
@@ -100,7 +101,8 @@
                 android:orientation="vertical"
                 android:layout_alignParentLeft="true"
                 android:layout_centerVertical="true"
-                android:layout_marginLeft="15dp">
+                android:layout_marginLeft="15dp"
+                android:layout_marginRight="30dp">
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
@@ -140,7 +142,8 @@
                 android:orientation="vertical"
                 android:layout_alignParentLeft="true"
                 android:layout_centerVertical="true"
-                android:layout_marginLeft="15dp">
+                android:layout_marginLeft="15dp"
+                android:layout_marginRight="30dp">
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
@@ -180,7 +183,8 @@
                 android:orientation="vertical"
                 android:layout_alignParentLeft="true"
                 android:layout_centerVertical="true"
-                android:layout_marginLeft="15dp">
+                android:layout_marginLeft="15dp"
+                android:layout_marginRight="30dp">
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
@@ -220,7 +224,8 @@
                 android:orientation="vertical"
                 android:layout_alignParentLeft="true"
                 android:layout_centerVertical="true"
-                android:layout_marginLeft="15dp">
+                android:layout_marginLeft="15dp"
+                android:layout_marginRight="30dp">
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
@@ -260,7 +265,8 @@
                 android:orientation="vertical"
                 android:layout_alignParentLeft="true"
                 android:layout_centerVertical="true"
-                android:layout_marginLeft="15dp">
+                android:layout_marginLeft="15dp"
+                android:layout_marginRight="30dp">
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
@@ -300,7 +306,8 @@
                 android:orientation="vertical"
                 android:layout_alignParentLeft="true"
                 android:layout_centerVertical="true"
-                android:layout_marginLeft="15dp">
+                android:layout_marginLeft="15dp"
+                android:layout_marginRight="30dp">
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
@@ -340,7 +347,8 @@
                 android:orientation="vertical"
                 android:layout_alignParentLeft="true"
                 android:layout_centerVertical="true"
-                android:layout_marginLeft="15dp">
+                android:layout_marginLeft="15dp"
+                android:layout_marginRight="30dp">
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
@@ -380,7 +388,8 @@
                 android:orientation="vertical"
                 android:layout_alignParentLeft="true"
                 android:layout_centerVertical="true"
-                android:layout_marginLeft="15dp">
+                android:layout_marginLeft="15dp"
+                android:layout_marginRight="30dp">
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
@@ -421,7 +430,8 @@
                 android:orientation="vertical"
                 android:layout_alignParentLeft="true"
                 android:layout_centerVertical="true"
-                android:layout_marginLeft="15dp">
+                android:layout_marginLeft="15dp"
+                android:layout_marginRight="30dp">
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"

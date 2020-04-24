@@ -27,7 +27,9 @@
     <string name="deselect_all">desall</string>
     <string name="select_all_change">sel/des</string>
     <string name="bottom_share">share</string>
+    <string name="bottom_more">more</string>
     <string name="bottom_delete">delete</string>
+    <string name="more_copy_package_names">copy package names</string>
     <string name="main_page_export">Applications</string>
     <string name="main_page_import">Packages</string>
 
@@ -47,10 +49,12 @@
     <string name="activity_detail_package_size">Package size</string>
     <string name="activity_detail_first_install_time">First installed</string>
     <string name="activity_detail_last_update_time">Last updated</string>
+    <string name="activity_detail_installer_name">Installed by</string>
     <string name="activity_detail_minimum_api">Minimum API</string>
     <string name="activity_detail_target_api">Target API</string>
     <string name="activity_detail_is_system_app">Is system app</string>
     <string name="activity_detail_path">Path/Uri</string>
+    <string name="activity_detail_launch_intent">Launching class</string>
     <string name="activity_detail_signature">Signature MD5</string>
     <string name="activity_detail_install">Install</string>
     <string name="activity_detail_delete">Delete</string>
@@ -173,10 +177,14 @@
     <string name="activity_detail_activities">Activities</string>
     <string name="activity_detail_receivers">Broadcast receivers</string>
     <string name="activity_detail_static_loaders">Auto start receivers</string>
+    <string name="activity_detail_services">Services</string>
+    <string name="activity_detail_providers">Providers</string>
 
     <string name="dialog_loading_selection_att">The more checked, the more slow will be while loading -_-</string>
     <string name="dialog_loading_selection_permissions">uses-permissions</string>
     <string name="dialog_loading_selection_activities">activity</string>
+    <string name="dialog_loading_selection_services">service</string>
+    <string name="dialog_loading_selection_providers">provider</string>
     <string name="dialog_loading_selection_receivers">receiver</string>
     <string name="dialog_loading_selection_static_loaders">Auto start receivers(will take more time while loading)</string>
     <string name="dialog_loading_selection_signature">APK Signature</string>
@@ -283,6 +291,7 @@
     <string name="word_blank">blank</string>
     <string name="word_yes">yes</string>
     <string name="word_no">no</string>
+    <string name="word_none">none</string>
     <string name="word_stop">stop</string>
     <string name="word_content_blank">No contents</string>
     <string name="word_ap_mode">AP Mode</string>

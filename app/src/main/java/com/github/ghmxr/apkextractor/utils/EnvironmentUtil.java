@@ -4,7 +4,6 @@ import android.app.Activity;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
-import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.content.pm.ResolveInfo;
@@ -73,6 +72,16 @@ public class EnvironmentUtil {
         drawable.setBounds(0, 0, drawable.getIntrinsicWidth(), drawable.getIntrinsicHeight());
         drawable.draw(canvas);
         return bitmap;
+    }
+
+    public static String getAppNameByPackageName(@NonNull Context context,@NonNull String package_name){
+        try{
+            final PackageManager packageManager=context.getPackageManager();
+            return String.valueOf(packageManager.getApplicationLabel(packageManager.getApplicationInfo(package_name,0)));
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+        return "";
     }
 
     /**
@@ -374,12 +383,7 @@ public class EnvironmentUtil {
      * 获取本应用名称
      */
     public static @NonNull String getAppName(@NonNull Context context){
-        try{
-            PackageManager packageManager=context.getPackageManager();
-            ApplicationInfo applicationInfo=packageManager.getApplicationInfo(context.getPackageName(),0);
-            return String.valueOf(packageManager.getApplicationLabel(applicationInfo));
-        }catch (Exception e){e.printStackTrace();}
-        return "";
+        return getAppNameByPackageName(context,context.getPackageName());
     }
 
     /**
@@ -457,6 +461,38 @@ public class EnvironmentUtil {
         }catch (Exception e){
             e.printStackTrace();
         }
+    }
+
+    /**
+     * 计算出来的位置，y方向就在anchorView的上面和下面对齐显示，x方向就是与屏幕右边对齐显示
+     * 如果anchorView的位置有变化，就可以适当自己额外加入偏移来修正
+     * @param anchorView  呼出window的view
+     * @param contentView   window的内容布局
+     * @return window显示的左上角的xOff,yOff坐标
+     */
+    public static int[] calculatePopWindowPos(final View anchorView, final View contentView) {
+        final int[] windowPos = new int[2];
+        final int[] anchorLoc = new int[2];
+        // 获取锚点View在屏幕上的左上角坐标位置
+        anchorView.getLocationOnScreen(anchorLoc);
+        final int anchorHeight = anchorView.getHeight();
+        // 获取屏幕的高宽
+        final int screenHeight = anchorView.getContext().getResources().getDisplayMetrics().heightPixels;//ScreenUtils.getScreenHeight(anchorView.getContext());
+        final int screenWidth = anchorView.getResources().getDisplayMetrics().widthPixels;
+        contentView.measure(View.MeasureSpec.UNSPECIFIED, View.MeasureSpec.UNSPECIFIED);
+        // 计算contentView的高宽
+        final int windowHeight = contentView.getMeasuredHeight();
+        final int windowWidth = contentView.getMeasuredWidth();
+        // 判断需要向上弹出还是向下弹出显示
+        final boolean isNeedShowUp = (screenHeight - anchorLoc[1] - anchorHeight < windowHeight);
+        if (isNeedShowUp) {
+            windowPos[0] = screenWidth - windowWidth*3/2;
+            windowPos[1] = anchorLoc[1] - windowHeight;
+        } else {
+            windowPos[0] = screenWidth - windowWidth*3/2;
+            windowPos[1] = anchorLoc[1] + anchorHeight;
+        }
+        return windowPos;
     }
 
     /*public static int dp2px(@NonNull Context context,int dp){

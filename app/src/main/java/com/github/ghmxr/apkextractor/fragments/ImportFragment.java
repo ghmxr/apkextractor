@@ -191,6 +191,7 @@ public class ImportFragment extends Fragment implements RefreshImportListTask.Re
                         }else{
                             ToastManager.showToast(getActivity(),getResources().getString(R.string.toast_import_complete),Toast.LENGTH_SHORT);
                         }
+                        closeMultiSelectMode();
                     }
                 });
             }
@@ -216,7 +217,7 @@ public class ImportFragment extends Fragment implements RefreshImportListTask.Re
                                             fileItem.delete();
                                         }catch (Exception e){e.printStackTrace();}
                                     }
-                                    adapter.setMultiSelectMode(false);
+                                    closeMultiSelectMode();
                                     getActivity().sendBroadcast(new Intent(Constants.ACTION_REFRESH_IMPORT_ITEMS_LIST));
                                     getActivity().sendBroadcast(new Intent(Constants.ACTION_REFRESH_AVAILIBLE_STORAGE));
                                 }catch (Exception e){
@@ -241,7 +242,7 @@ public class ImportFragment extends Fragment implements RefreshImportListTask.Re
                     return;
                 }
                 if(adapter==null)return;
-                adapter.setMultiSelectMode(false);
+                closeMultiSelectMode();
                 Global.shareImportItems(getActivity(),new ArrayList<>(adapter.getSelectedItems()));
             }
             break;
@@ -349,8 +350,9 @@ public class ImportFragment extends Fragment implements RefreshImportListTask.Re
     }
 
     public void sortGlobalListAndRefresh(int value){
+        closeMultiSelectMode();
         ImportItem.sort_config=value;
-        adapter.setData(null);
+        if(adapter!=null)adapter.setData(null);
         swipeRefreshLayout.setRefreshing(true);
         new Thread(new Runnable() {
             @Override
@@ -361,7 +363,7 @@ public class ImportFragment extends Fragment implements RefreshImportListTask.Re
                 Global.handler.post(new Runnable() {
                     @Override
                     public void run() {
-                        adapter.setData(Global.item_list);
+                        if(adapter!=null)adapter.setData(Global.item_list);
                         swipeRefreshLayout.setRefreshing(false);
                     }
                 });

@@ -28,12 +28,26 @@
             android:layout_marginBottom="5dp"
             android:text="@string/dialog_loading_selection_activities"/>
         <CheckBox
+            android:id="@+id/loading_services"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="5dp"
+            android:layout_marginBottom="5dp"
+            android:text="@string/dialog_loading_selection_services"/>
+        <CheckBox
             android:id="@+id/loading_receivers"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="5dp"
             android:layout_marginBottom="5dp"
             android:text="@string/dialog_loading_selection_receivers"/>
+        <CheckBox
+            android:id="@+id/loading_providers"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="5dp"
+            android:layout_marginBottom="5dp"
+            android:text="@string/dialog_loading_selection_providers"/>
         <CheckBox
             android:id="@+id/loading_apk_signature"
             android:layout_width="wrap_content"

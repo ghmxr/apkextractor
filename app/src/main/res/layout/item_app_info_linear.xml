@@ -41,6 +41,7 @@
                 android:textColor="@color/colorHighLightText"
                 android:textSize="14sp"
                 android:singleLine="true"
+                android:ellipsize="end"
                 tools:text="应用名称"/>
             <TextView
                 android:id="@+id/item_app_description"
@@ -50,6 +51,7 @@
                 android:textSize="12sp"
                 android:layout_marginTop="2dp"
                 android:singleLine="true"
+                android:ellipsize="end"
                 tools:text="com.example"/>
         </LinearLayout>
         <RelativeLayout
