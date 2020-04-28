@@ -99,8 +99,11 @@
         导致本程序绑定端口失败时才需要手动调整端口号。\n\n局域网共享文件时，双方设置的端口号必须相同，否则将检测不到设备。\n</string>
     <string name="activity_settings_device_name">设备名称</string>
     <string name="dialog_settings_device_name_head">设置一个名称，用于在局域网共享文件时向文件发送方展示。</string>
+    <string name="dialog_settings_package_name_split_head">输入批量复制应用包名时的分隔内容</string>
     <string name="dialog_settings_device_name_hint">输入名称</string>
+    <string name="dialog_settings_package_name_split">输入分隔内容</string>
     <string name="dialog_settings_device_name_invalid">请输入名称</string>
+    <string name="activity_settings_package_name_separator">包名分隔内容</string>
     <string name="activity_settings_language" translatable="false">Language</string>
     <string name="loading_activity">Activity(活动组件)</string>
     <string name="loading_receiver">Receiver(广播接收器)</string>

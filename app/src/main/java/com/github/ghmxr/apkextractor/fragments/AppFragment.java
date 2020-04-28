@@ -315,7 +315,8 @@ public class AppFragment extends Fragment implements View.OnClickListener, Refre
                 StringBuilder stringBuilder=new StringBuilder();
                 List<AppItem>appItemList=adapter.getSelectedItems();
                 for(AppItem appItem:appItemList){
-                    if(stringBuilder.toString().length()>0)stringBuilder.append(",");
+                    if(stringBuilder.toString().length()>0)stringBuilder.append(SPUtil.getGlobalSharedPreferences(getActivity())
+                            .getString(Constants.PREFERENCE_COPYING_PACKAGE_NAME_SEPARATOR,Constants.PREFERENCE_COPYING_PACKAGE_NAME_SEPARATOR_DEFAULT));
                     stringBuilder.append(appItem.getPackageName());
                 }
                 //closeMultiSelectMode();

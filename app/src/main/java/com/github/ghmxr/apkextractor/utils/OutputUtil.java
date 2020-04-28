@@ -65,13 +65,15 @@ public class OutputUtil {
     public static @NonNull String getWriteFileNameForAppItem(@NonNull Context context,@NonNull AppItem item,@NonNull String extension){
         SharedPreferences settings= SPUtil.getGlobalSharedPreferences(context);
         if(extension.equalsIgnoreCase("apk")){
-            return settings.getString(Constants.PREFERENCE_FILENAME_FONT_APK, Constants.PREFERENCE_FILENAME_FONT_DEFAULT).replace(Constants.FONT_APP_NAME, String.valueOf(item.getAppName()))
+            return settings.getString(Constants.PREFERENCE_FILENAME_FONT_APK, Constants.PREFERENCE_FILENAME_FONT_DEFAULT)
+                    .replace(Constants.FONT_APP_NAME, EnvironmentUtil.removeIllegalFileNameCharacters(String.valueOf(item.getAppName())))
                     .replace(Constants.FONT_APP_PACKAGE_NAME, String.valueOf(item.getPackageName()))
                     .replace(Constants.FONT_APP_VERSIONCODE, String.valueOf(item.getVersionCode()))
                     .replace(Constants.FONT_APP_VERSIONNAME, String.valueOf(item.getVersionName()))+".apk";
         }
         else{
-            return settings.getString(Constants.PREFERENCE_FILENAME_FONT_ZIP, Constants.PREFERENCE_FILENAME_FONT_DEFAULT).replace(Constants.FONT_APP_NAME, String.valueOf(item.getAppName()))
+            return settings.getString(Constants.PREFERENCE_FILENAME_FONT_ZIP, Constants.PREFERENCE_FILENAME_FONT_DEFAULT)
+                    .replace(Constants.FONT_APP_NAME, EnvironmentUtil.removeIllegalFileNameCharacters(String.valueOf(item.getAppName())))
                     .replace(Constants.FONT_APP_PACKAGE_NAME, String.valueOf(item.getPackageName()))
                     .replace(Constants.FONT_APP_VERSIONCODE, String.valueOf(item.getVersionCode()))
                     .replace(Constants.FONT_APP_VERSIONNAME, String.valueOf(item.getVersionName()))+"."+extension;

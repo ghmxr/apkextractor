@@ -63,6 +63,7 @@ public class SettingActivity extends BaseActivity implements View.OnClickListene
         findViewById(R.id.settings_device_name_area).setOnClickListener(this);
         findViewById(R.id.settings_extension_area).setOnClickListener(this);
         findViewById(R.id.settings_package_scope_area).setOnClickListener(this);
+        findViewById(R.id.settings_package_name_separator_area).setOnClickListener(this);
         refreshSettingValues();
 
         if(bundle!=null){
@@ -392,6 +393,29 @@ public class SettingActivity extends BaseActivity implements View.OnClickListene
                 });
             }
             break;
+            case R.id.settings_package_name_separator_area:{
+                View dialogView=LayoutInflater.from(this).inflate(R.layout.dialog_package_name_split,null);
+                final EditText editText=dialogView.findViewById(R.id.dialog_package_name_split_edit);
+                editText.setText(settings.getString(Constants.PREFERENCE_COPYING_PACKAGE_NAME_SEPARATOR,Constants.PREFERENCE_COPYING_PACKAGE_NAME_SEPARATOR_DEFAULT));
+               new AlertDialog.Builder(this)
+                        .setTitle(getResources().getString(R.string.activity_settings_package_name_separator))
+                        .setView(dialogView)
+                        .setPositiveButton(getResources().getString(R.string.action_confirm), new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                editor.putString(Constants.PREFERENCE_COPYING_PACKAGE_NAME_SEPARATOR,editText.getText().toString()).apply();
+                                refreshSettingValues();
+                            }
+                        })
+                        .setNegativeButton(getResources().getString(R.string.action_cancel), new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+
+                            }
+                        })
+                       .show();
+            }
+            break;
         }
     }
 
@@ -482,6 +506,7 @@ public class SettingActivity extends BaseActivity implements View.OnClickListene
             }
             break;
         }
+        ((TextView)findViewById(R.id.settings_package_name_separator_value)).setText(settings.getString(Constants.PREFERENCE_COPYING_PACKAGE_NAME_SEPARATOR,Constants.PREFERENCE_COPYING_PACKAGE_NAME_SEPARATOR_DEFAULT));
     }
 
     @Override

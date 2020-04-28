@@ -335,7 +335,10 @@ Through the sharing function of this app, you can share the app or installation 
     <string name="dialog_send_error_message">There are some errors occurred while sending files.The error infos are listed bellow.\n\n</string>
     <string name="dialog_send_error_title">Error</string>
     <string name="dialog_settings_device_name_head">Type a name to show to the sending side while sharing files through local network.</string>
+    <string name="dialog_settings_package_name_split_head">Enter the delimited content when batch copying the application package names</string>
     <string name="dialog_settings_device_name_hint">type in a name</string>
+    <string name="dialog_settings_package_name_split">type in separator</string>
+    <string name="activity_settings_package_name_separator">Pkg Name Separator</string>
     <string name="dialog_settings_device_name_invalid">type in a name</string>
     <string name="help_receive">
         Let the sending side device install APK Kit(Build 8 or higher version) and connect to the same wifi network, or let yourself connect to the ap wireless of the sending side, then let the sending side

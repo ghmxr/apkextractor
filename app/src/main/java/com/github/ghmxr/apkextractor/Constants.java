@@ -170,4 +170,9 @@ public class Constants {
     public static final int PACKAGE_SCOPE_ALL=0;
     public static final int PACKAGE_SCOPE_EXPORTING_PATH=1;
     public static final int PREFERENCE_PACKAGE_SCOPE_DEFAULT=PACKAGE_SCOPE_EXPORTING_PATH;
+    /**
+     * 批量复制包名的分隔内容
+     */
+    public static final String PREFERENCE_COPYING_PACKAGE_NAME_SEPARATOR="copying_package_name_separator";
+    public static final String PREFERENCE_COPYING_PACKAGE_NAME_SEPARATOR_DEFAULT=",";
 }

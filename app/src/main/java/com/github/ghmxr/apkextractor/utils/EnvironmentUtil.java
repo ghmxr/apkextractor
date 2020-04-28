@@ -295,6 +295,19 @@ public class EnvironmentUtil {
     }
 
     /**
+     * 将字符串中包含的非法文件系统符号去掉
+     * @param content 要处理的内容
+     * @return 去掉了文件系统非法符号的内容
+     */
+    public static @NonNull String removeIllegalFileNameCharacters(@NonNull String content){
+        return content.replace("?","").replace("\\","")
+                .replace("/","").replace(":","")
+                .replace("*","").replace("\"","")
+                .replace("<","").replace(">","")
+                .replace("|","");
+    }
+
+    /**
      * 截取文件扩展名，例如Test.apk 则返回 apk
      */
     public static @NonNull String getFileExtensionName(@NonNull String fileName){
