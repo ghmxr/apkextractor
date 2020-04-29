@@ -41,18 +41,6 @@ public class FileReceiveActivity extends BaseActivity implements NetReceiveTask.
 
     private final ArrayList<MessageBean>logMessages=new ArrayList<>();
 
-    /*private final BroadcastReceiver netStatusReceiver=new BroadcastReceiver() {
-        @Override
-        public void onReceive(Context context, Intent intent) {
-            if(intent.getAction().equals(WifiManager.NETWORK_STATE_CHANGED_ACTION)){
-                NetworkInfo networkInfo =intent.getParcelableExtra(WifiManager.EXTRA_NETWORK_INFO);
-                if(networkInfo.getDetailedState()== NetworkInfo.DetailedState.CONNECTED&&netReceiveTask!=null){
-                    netReceiveTask.sendOnlineBroadcastUdp();
-                }
-            }
-        }
-    };*/
-
     @Override
     protected void onCreate(Bundle bundle) {
         if(fileReceiveActivity!=null){
@@ -86,11 +74,8 @@ public class FileReceiveActivity extends BaseActivity implements NetReceiveTask.
                         }
                     })
                     .show();
-            //Toast.makeText(this,e.toString(),Toast.LENGTH_SHORT).show();
         }
-        /*try{
-            registerReceiver(netStatusReceiver,new IntentFilter(WifiManager.NETWORK_STATE_CHANGED_ACTION));
-        }catch (Exception e){e.printStackTrace();}*/
+
         ((AppCompatCheckBox)findViewById(R.id.activity_file_receive_apmode)).setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
@@ -98,24 +83,13 @@ public class FileReceiveActivity extends BaseActivity implements NetReceiveTask.
                 netReceiveTask.switchApMode(isChecked);
             }
         });
-        /*((AppCompatCheckBox)findViewById(R.id.activity_file_receive_screen_on)).setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-            @Override
-            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                try{
-                    if(isChecked)getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
-                    else getWindow().clearFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
-                }catch (Exception e){e.printStackTrace();}
-            }
-        });*/
+
         findViewById(R.id.activity_file_receive_refresh).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 if(netReceiveTask!=null)netReceiveTask.sendOnlineBroadcastUdp();
             }
         });
-        /*try{
-            getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
-        }catch (Exception e){e.printStackTrace();}*/
 
     }
 
@@ -203,13 +177,15 @@ public class FileReceiveActivity extends BaseActivity implements NetReceiveTask.
 
     @Override
     public void onFileReceiveProgress(long progress, long total, @NonNull String currentWritePath) {
-        receiving_diag.setProgressOfSending(progress,total);
-        receiving_diag.setCurrentFileInfo(getResources().getString(R.string.dialog_file_receiving_att)+currentWritePath);
+        if(receiving_diag!=null){
+            receiving_diag.setProgressOfSending(progress,total);
+            receiving_diag.setCurrentFileInfo(getResources().getString(R.string.dialog_file_receiving_att)+currentWritePath);
+        }
     }
 
     @Override
     public void onSpeed(long speedOfBytes) {
-        receiving_diag.setSpeed(speedOfBytes);
+        if(receiving_diag!=null)receiving_diag.setSpeed(speedOfBytes);
     }
 
     @Override
@@ -288,9 +264,6 @@ public class FileReceiveActivity extends BaseActivity implements NetReceiveTask.
         } catch (Exception e) {
             e.printStackTrace();
         }
-        /*try{
-            unregisterReceiver(netStatusReceiver);
-        }catch (Exception e){e.printStackTrace();}*/
     }
 
     private class ListAdapter extends RecyclerView.Adapter<ViewHolder>{
@@ -317,7 +290,7 @@ public class FileReceiveActivity extends BaseActivity implements NetReceiveTask.
 
     private static class ViewHolder extends RecyclerView.ViewHolder{
         TextView time,message;
-        public ViewHolder(@NonNull View itemView) {
+        ViewHolder(@NonNull View itemView) {
             super(itemView);
             time=itemView.findViewById(R.id.item_receive_log_time);
             message=itemView.findViewById(R.id.item_receive_log_content);

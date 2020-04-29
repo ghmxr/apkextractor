@@ -21,14 +21,6 @@
             android:layout_marginRight="15dp"
             android:layout_centerVertical="true">
             <android.support.v7.widget.AppCompatCheckBox
-                android:id="@+id/activity_file_receive_screen_on"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginRight="10dp"
-                android:checked="true"
-                android:text="@string/word_keep_screen_on"
-                android:visibility="gone"/>
-            <android.support.v7.widget.AppCompatCheckBox
                 android:id="@+id/activity_file_receive_apmode"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"

@@ -24,7 +24,6 @@ import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
 import android.text.format.Formatter;
-import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -38,7 +37,6 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.github.ghmxr.apkextractor.Constants;
-import com.github.ghmxr.apkextractor.DisplayItem;
 import com.github.ghmxr.apkextractor.Global;
 import com.github.ghmxr.apkextractor.R;
 import com.github.ghmxr.apkextractor.activities.AppDetailActivity;
@@ -58,7 +56,7 @@ import java.util.Collections;
 import java.util.List;
 
 public class AppFragment extends Fragment implements View.OnClickListener, RefreshInstalledListTask.RefreshInstalledListTaskCallback
-, RecyclerViewAdapter.ListAdapterOperationListener, SearchAppItemTask.SearchTaskCompletedCallback {
+, RecyclerViewAdapter.ListAdapterOperationListener<AppItem>, SearchAppItemTask.SearchTaskCompletedCallback {
 
     private SwipeRefreshLayout swipeRefreshLayout;
     private RecyclerView recyclerView;
@@ -72,7 +70,6 @@ public class AppFragment extends Fragment implements View.OnClickListener, Refre
     private TextView tv_space_remaining,tv_multi_select_head;
     private Button btn_select_all,btn_export,btn_share,btn_more;
     private PopupWindow popupWindow;
-    private ViewGroup more_copy_package_names;
     private boolean isScrollable=false;
     private boolean isSearchMode=false;
 
@@ -167,7 +164,7 @@ public class AppFragment extends Fragment implements View.OnClickListener, Refre
         btn_share=view.findViewById(R.id.main_share);
         btn_more=view.findViewById(R.id.main_more);
         View popupView=LayoutInflater.from(getActivity()).inflate(R.layout.pp_more,null);
-        more_copy_package_names=popupView.findViewById(R.id.popup_copy_package_name);
+        ViewGroup more_copy_package_names = popupView.findViewById(R.id.popup_copy_package_name);
         more_copy_package_names.setOnClickListener(this);
         popupWindow=new PopupWindow(popupView,ViewGroup.LayoutParams.WRAP_CONTENT,ViewGroup.LayoutParams.WRAP_CONTENT,true);
         popupWindow.setBackgroundDrawable(new ColorDrawable(getResources().getColor(R.color.color_popup_window)));
@@ -301,7 +298,7 @@ public class AppFragment extends Fragment implements View.OnClickListener, Refre
                 }
                 if(adapter==null)return;
                 final ArrayList<AppItem>arrayList=new ArrayList<>(adapter.getSelectedItems());
-                closeMultiSelectMode();
+                //closeMultiSelectMode();
                 Global.shareCertainAppsByItems(getActivity(),arrayList);
             }
             break;
@@ -311,9 +308,13 @@ public class AppFragment extends Fragment implements View.OnClickListener, Refre
             }
             break;
             case R.id.popup_copy_package_name:{
+                List<AppItem>appItemList=adapter.getSelectedItems();
+                if(appItemList.size()==0){
+                    Snackbar.make(getActivity().findViewById(android.R.id.content),getResources().getString(R.string.snack_bar_no_app_selected),Snackbar.LENGTH_SHORT).show();
+                    return;
+                }
                 popupWindow.dismiss();
                 StringBuilder stringBuilder=new StringBuilder();
-                List<AppItem>appItemList=adapter.getSelectedItems();
                 for(AppItem appItem:appItemList){
                     if(stringBuilder.toString().length()>0)stringBuilder.append(SPUtil.getGlobalSharedPreferences(getActivity())
                             .getString(Constants.PREFERENCE_COPYING_PACKAGE_NAME_SEPARATOR,Constants.PREFERENCE_COPYING_PACKAGE_NAME_SEPARATOR_DEFAULT));
@@ -361,10 +362,8 @@ public class AppFragment extends Fragment implements View.OnClickListener, Refre
     }
 
     @Override
-    public void onItemClicked(DisplayItem displayItem, RecyclerViewAdapter.ViewHolder viewHolder, int position) {
+    public void onItemClicked(AppItem appItem, RecyclerViewAdapter.ViewHolder viewHolder, int position) {
         if(getActivity()==null)return;
-        if(!(displayItem instanceof AppItem))return;
-        AppItem appItem=(AppItem)displayItem;
         Intent intent=new Intent(getActivity(), AppDetailActivity.class);
         intent.putExtra(BaseActivity.EXTRA_PACKAGE_NAME,appItem.getPackageName());
         ActivityOptionsCompat compat = ActivityOptionsCompat.makeSceneTransitionAnimation(getActivity(),new Pair<View, String>(viewHolder.icon,"icon"));
@@ -374,7 +373,7 @@ public class AppFragment extends Fragment implements View.OnClickListener, Refre
     }
 
     @Override
-    public void onMultiSelectItemChanged(List<DisplayItem> selected_items, long length) {
+    public void onMultiSelectItemChanged(List<AppItem> selected_items, long length) {
         if(getActivity()==null)return;
         tv_multi_select_head.setText(selected_items.size()+getResources().getString(R.string.unit_item)+"/"+ Formatter.formatFileSize(getActivity(),length));
         btn_export.setEnabled(selected_items.size()>0);
@@ -397,6 +396,7 @@ public class AppFragment extends Fragment implements View.OnClickListener, Refre
     public void onSearchTaskCompleted(@NonNull List<AppItem> appItems) {
         if(getActivity()==null)return;
         if(adapter==null)return;
+        swipeRefreshLayout.setRefreshing(false);
         adapter.setData(appItems);
     }
 
@@ -452,6 +452,7 @@ public class AppFragment extends Fragment implements View.OnClickListener, Refre
         if(searchAppItemTask!=null)searchAppItemTask.setInterrupted();
         searchAppItemTask=new SearchAppItemTask(Global.app_list,key,this);
         adapter.setData(null);
+        swipeRefreshLayout.setRefreshing(true);
         searchAppItemTask.start();
     }
 

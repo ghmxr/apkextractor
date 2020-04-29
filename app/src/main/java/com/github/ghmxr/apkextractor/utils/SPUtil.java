@@ -5,13 +5,14 @@ import android.content.SharedPreferences;
 import android.os.Build;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.text.TextUtils;
 
 import com.github.ghmxr.apkextractor.Constants;
 import com.github.ghmxr.apkextractor.R;
 
 public class SPUtil {
 
-    public static @NonNull String getDisplayingExportPath(@NonNull Context context){
+    public static String getDisplayingExportPath(@NonNull Context context){
         if(getIsSaved2ExternalStorage(context)){
             String segment=getSaveSegment(context);
             if(segment==null)segment="";
@@ -22,8 +23,7 @@ public class SPUtil {
      * 获取当前应用导出的内置主路径
      * @return 应用导出内置路径，最后没有文件分隔符，例如 /storage/emulated/0
      */
-    public static @NonNull
-    String getInternalSavePath(@NonNull Context context){
+    public static String getInternalSavePath(@NonNull Context context){
         try{
             return getGlobalSharedPreferences(context).getString(Constants.PREFERENCE_SAVE_PATH, Constants.PREFERENCE_SAVE_PATH_DEFAULT);
         }catch (Exception e){e.printStackTrace();}
@@ -48,7 +48,7 @@ public class SPUtil {
     /**
      * 获取外置存储的uri值
      */
-    public static @NonNull String getExternalStorageUri(@NonNull Context context){
+    public static String getExternalStorageUri(@NonNull Context context){
         return getGlobalSharedPreferences(context).getString(Constants.PREFERENCE_SAVE_PATH_URI,"");
     }
 
@@ -58,7 +58,7 @@ public class SPUtil {
     public static @Nullable
     String getSaveSegment(@NonNull Context context){
         String value=getGlobalSharedPreferences(context).getString(Constants.PREFERENCE_SAVE_PATH_SEGMENT,"");
-        if(value.equals(""))return null;
+        if(TextUtils.isEmpty(value))return null;
         return value;
     }
 
@@ -72,14 +72,14 @@ public class SPUtil {
     /**
      * 获取导出压缩包的扩展名
      */
-    public static @NonNull String getCompressingExtensionName(@NonNull Context context){
+    public static String getCompressingExtensionName(@NonNull Context context){
         return getGlobalSharedPreferences(context).getString(Constants.PREFERENCE_COMPRESSING_EXTENSION,Constants.PREFERENCE_COMPRESSING_EXTENSION_DEFAULT);
     }
 
     /**
      * 获取设备名称
      */
-    public static @NonNull String getDeviceName(@NonNull Context context){
+    public static String getDeviceName(@NonNull Context context){
         try{
             return getGlobalSharedPreferences(context)
                     .getString(Constants.PREFERENCE_DEVICE_NAME, Build.BRAND);

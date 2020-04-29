@@ -23,8 +23,6 @@
     <string name="main_card_remaining_storage">Remaining space</string>
     <string name="bottom_export">export</string>
     <string name="bottom_import">import</string>
-    <string name="select_all">selall</string>
-    <string name="deselect_all">desall</string>
     <string name="select_all_change">sel/des</string>
     <string name="bottom_share">share</string>
     <string name="bottom_more">more</string>
@@ -34,7 +32,6 @@
     <string name="main_page_import">Packages</string>
 
     <string name="activity_package_detail">Install by APK Kit</string>
-    <string name="activity_package_detail_invalid_format">Invalid format of importing</string>
     <string name="activity_package_detail_blank">None valid data found, please try to re-open</string>
     <string name="activity_package_detail_apk_attention">Please use other packaging apps to install APK</string>
     <string name="activity_detail_run">Run</string>
@@ -55,7 +52,6 @@
     <string name="activity_detail_is_system_app">Is system app</string>
     <string name="activity_detail_path">Path/Uri</string>
     <string name="activity_detail_launch_intent">Launching class</string>
-    <string name="activity_detail_signature">Signature MD5</string>
     <string name="activity_detail_install">Install</string>
     <string name="activity_detail_delete">Delete</string>
     <string name="activity_detail_file_name">File name</string>
@@ -87,9 +83,6 @@
     <string name="activity_settings_share_mode">Sharing mode</string>
     <string name="activity_settings_night_mode">Night mode</string>
     <string name="activity_settings_loading_options">Loading options</string>
-    <string name="loading_activity">Activity</string>
-    <string name="loading_receiver">Receiver</string>
-    <string name="loading_boot_receivers">Static receivers(will slow down the loading speed)</string>
     <string name="activity_settings_about">About</string>
 
     <string name="activity_folder_selector_title">Selecting path</string>
@@ -103,7 +96,6 @@
     <string name="activity_folder_selector_external_error">It is not selected to a root path of an external storage, ensure you have selected an external
      storage at the left side then directly clicked "select"</string>
     <string name="activity_attention_select_folder">Please select a folder</string>
-    <string name="activity_attention_path_set">Exporting path has been set </string>
 
     <string name="share_mode_direct">Share directly</string>
     <string name="share_mode_direct_att">Sharing the source apk file directly without exporting, but can not rename the file, or share zip packages with data or obb</string>
@@ -165,8 +157,6 @@
 
     <string name="dialog_button_confirm">Confirm</string>
     <string name="dialog_button_cancel">Cancel</string>
-    <string name="dialog_button_yes">yes</string>
-    <string name="dialog_button_continue">continue</string>
     <string name="dialog_button_accept">accept</string>
     <string name="dialog_button_deny">deny</string>
     <string name="dialog_button_share_this_app">share this app</string>
@@ -257,8 +247,8 @@
     <string name="dialog_share_selection_system">by system interface</string>
 
     <string name="snack_bar_clipboard">has been copied to clipboard</string>
+    <string name="snack_bar_no_app_selected">Please select any apps to copy</string>
     <string name="toast_mkdirs_error">Initializing exporting path failed, please check</string>
-    <string name="toast_wait_list_loading">please wait while the list is loading</string>
 
     <string name="external_storage">External storage</string>
 
@@ -278,12 +268,10 @@
 
     <string name="file_invalid_name">the file name contains illegal character(s)</string>
     <string name="file_blank_name">the file name can not be empty</string>
-    <string name="file_blank_attention">the file name / path can not be empty</string>
 
 
     <string name="unit_item">item(s)</string>
     <string name="word_zip">zip</string>
-    <string name="word_apk">apk</string>
     <string name="word_xapk">xapk</string>
     <string name="word_compressed">compressed</string>
     <string name="word_unknown">unknown</string>

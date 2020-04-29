@@ -168,17 +168,11 @@ public class Global {
             }
 
             @Override
-            public void onExportTaskFinished(List<FileItem> write_paths, String error_message) {
+            public void onExportTaskFinished(List<FileItem> fileItems, String error_message) {
                 dialog.cancel();
                 if(listener!=null)listener.onFinished(error_message);
-                /*ArrayList<Uri>uris=new ArrayList<>();
-                for(FileItem s:write_paths){
-                    if(s.isFileInstance())uris.add(getUriForFileByFileProvider(activity,s.getFile()));
-                    else uris.add(s.getDocumentFile().getUri());
-                }
-                if(if_share) shareCertainFiles(activity,uris,activity.getResources().getString(R.string.share_title));*/
                 if(if_share){
-                    new ShareSelectionDialog(activity,write_paths).show();
+                    new ShareSelectionDialog(activity,fileItems).show();
                 }
             }
         });
@@ -299,17 +293,6 @@ public class Global {
             });
             dialog.show();
         }else {
-            /*ArrayList<Uri>uris=new ArrayList<>();
-            if(items.size()==1){
-                AppItem item=items.get(0);
-                uris.add(Uri.fromFile(new File(item.getSourcePath())));
-                shareCertainFiles(activity,uris,activity.getResources().getString(R.string.share_title)+" "+item.getAppName());
-            }else{
-                for(AppItem item:items){
-                    uris.add(Uri.fromFile(new File(item.getSourcePath())));
-                }
-                shareCertainFiles(activity,uris,activity.getResources().getString(R.string.share_title));
-            }*/
             ArrayList<FileItem>arrayList=new ArrayList<>();
             for(AppItem item:items){
                 arrayList.add(new FileItem(new File(item.getSourcePath())));
@@ -427,19 +410,6 @@ public class Global {
     }
 
     public static void shareImportItems(@NonNull Activity activity,@NonNull List<ImportItem>importItems){
-        /*ArrayList<Uri>uris=new ArrayList<>();
-        for(ImportItem importItem:importItems){
-            try{
-                FileItem fileItem=importItem.getFileItem();
-                if(fileItem.isFileInstance()){
-                    if(Build.VERSION.SDK_INT<=23)uris.add(Uri.fromFile(fileItem.getFile()));
-                    else uris.add(getUriForFileByFileProvider(activity,fileItem.getFile()));
-                }else{
-                    uris.add(fileItem.getDocumentFile().getUri());
-                }
-            }catch (Exception e){e.printStackTrace();}
-        }
-        shareCertainFiles(activity,uris,activity.getResources().getString(R.string.share_title));*/
         ArrayList<FileItem>arrayList=new ArrayList<>();
         for(ImportItem importItem:importItems){
             arrayList.add(importItem.getFileItem());

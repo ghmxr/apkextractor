@@ -25,8 +25,6 @@
     <string name="main_card_remaining_storage">剩余存储空间</string>
     <string name="bottom_export">导出</string>
     <string name="bottom_import">导入</string>
-    <string name="select_all">全选</string>
-    <string name="deselect_all">全不选</string>
     <string name="select_all_change">全选/反选</string>
     <string name="bottom_share">分享</string>
     <string name="bottom_more">更多</string>
@@ -36,7 +34,6 @@
     <string name="main_page_import">安装包</string>
 
     <string name="activity_package_detail">使用APK Kit安装</string>
-    <string name="activity_package_detail_invalid_format">此文件不是有效的导入格式</string>
     <string name="activity_package_detail_blank">没有得到有效的文件数据，请重新尝试打开</string>
     <string name="activity_package_detail_apk_attention">请使用其他打包应用来安装APK</string>
     <string name="activity_detail_run">运行</string>
@@ -58,7 +55,6 @@
     <string name="activity_detail_uid" translatable="false">UID</string>
     <string name="activity_detail_path">路径/Uri</string>
     <string name="activity_detail_launch_intent">主启动类</string>
-    <string name="activity_detail_signature">签名MD5</string>
     <string name="activity_detail_install">安装</string>
     <string name="activity_detail_delete">删除</string>
     <string name="activity_detail_file_name">文件名</string>
@@ -105,9 +101,6 @@
     <string name="dialog_settings_device_name_invalid">请输入名称</string>
     <string name="activity_settings_package_name_separator">包名分隔内容</string>
     <string name="activity_settings_language" translatable="false">Language</string>
-    <string name="loading_activity">Activity(活动组件)</string>
-    <string name="loading_receiver">Receiver(广播接收器)</string>
-    <string name="loading_boot_receivers">自启接收器(会拖慢加载速度)</string>
     <string name="activity_settings_about">关于</string>
 
     <string name="activity_folder_selector_title">选择路径</string>
@@ -120,7 +113,6 @@
     <string name="activity_folder_selector_external_message">请在左侧边栏中选择一个外置存储，然后点击“选择”来授权读取外置存储</string>
     <string name="activity_folder_selector_external_error">没有选择到一个正确的外置存储根目录上，请确定是否选择了正确的外置存储后点击了“选择”</string>
     <string name="activity_attention_select_folder">请选择文件夹</string>
-    <string name="activity_attention_path_set">已设置导出路径至</string>
 
     <string name="share_mode_direct">直接分享</string>
     <string name="share_mode_direct_att">直接分享应用源APK文件，无需导出，但不能自定义文件名，不能分享打包有Data或Obb的zip文件</string>
@@ -181,8 +173,6 @@
     <string name="dialog_button_cancel">取消</string>
     <string name="dialog_button_accept">接受</string>
     <string name="dialog_button_deny">拒绝</string>
-    <string name="dialog_button_yes">是</string>
-    <string name="dialog_button_continue">继续</string>
     <string name="dialog_button_share_this_app">分享本应用</string>
 
     <string name="share_title">分享</string>
@@ -299,8 +289,8 @@
     <string name="dialog_share_selection_system">系统分享</string>
 
     <string name="snack_bar_clipboard">已复制到剪贴板</string>
+    <string name="snack_bar_no_app_selected">请选择应用</string>
     <string name="toast_mkdirs_error">初始化导出路径失败，请检查文件路径</string>
-    <string name="toast_wait_list_loading">请等待列表加载完成</string>
 
     <string name="external_storage">外置存储</string>
 
@@ -320,12 +310,10 @@
 
     <string name="file_invalid_name">名称包含非法字符</string>
     <string name="file_blank_name">名称不能为空</string>
-    <string name="file_blank_attention">文件/路径名不能为空</string>
 
 
     <string name="unit_item">项</string>
     <string name="word_zip">zip</string>
-    <string name="word_apk">apk</string>
     <string name="word_xapk">xapk</string>
     <string name="word_compressed">压缩包</string>
     <string name="word_unknown">未知</string>
@@ -352,7 +340,6 @@
     <string name="language_chinese" translatable="false">简体中文</string>
     <string name="language_english" translatable="false">English</string>
 
-    <string name="dialog_about_title" translatable="false">APK Kit</string>
     <string name="dialog_about_message">\n这是一个Android平台快速查询、导出(提取)或者分享本地已安装APP的小工具，支持将对应APP外置存储中的Data，Obb数据一并打包成zip格式压缩文件
         (主要针对部分含有Data，Obb数据的游戏应用)。同时支持将包含Data，Obb数据的zip格式压缩包导入到设备。本应用支持导出和导入的包含data,obb数据的压缩包内容为：\n\n
 

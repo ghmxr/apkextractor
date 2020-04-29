@@ -2,7 +2,6 @@ package com.github.ghmxr.apkextractor.utils;
 
 import android.support.annotation.NonNull;
 
-import java.io.BufferedInputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.InputStream;

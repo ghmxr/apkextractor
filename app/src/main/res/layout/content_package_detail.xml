@@ -73,7 +73,6 @@
                         android:visibility="gone"
                         tools:visibility="visible">
                         <GridLayout
-                            android:id="@+id/package_detail_checkboxes_grid"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:columnCount="2"
@@ -343,7 +342,6 @@
                         android:textSize="12sp"
                         tools:text="100MB"/>
                     <ImageView
-                        android:id="@+id/package_detail_size_dividing"
                         android:layout_width="match_parent"
                         android:layout_height="1px"
                         android:layout_alignParentBottom="true"
@@ -462,7 +460,6 @@
                         android:text="@string/word_unknown"
                         tools:text="2019/12/12/10:00"/>
                     <ImageView
-                        android:id="@+id/package_detail_last_modified_dividing"
                         android:layout_width="match_parent"
                         android:layout_height="1px"
                         android:layout_alignParentBottom="true"

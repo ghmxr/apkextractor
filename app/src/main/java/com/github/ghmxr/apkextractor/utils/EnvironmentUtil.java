@@ -499,10 +499,10 @@ public class EnvironmentUtil {
         // 判断需要向上弹出还是向下弹出显示
         final boolean isNeedShowUp = (screenHeight - anchorLoc[1] - anchorHeight < windowHeight);
         if (isNeedShowUp) {
-            windowPos[0] = screenWidth - windowWidth*3/2;
+            windowPos[0] = (int) anchorView.getX()+windowWidth/2;//screenWidth - windowWidth*3/2;
             windowPos[1] = anchorLoc[1] - windowHeight;
         } else {
-            windowPos[0] = screenWidth - windowWidth*3/2;
+            windowPos[0] = (int) anchorView.getX()+windowWidth/2;//screenWidth - windowWidth*3/2;
             windowPos[1] = anchorLoc[1] + anchorHeight;
         }
         return windowPos;

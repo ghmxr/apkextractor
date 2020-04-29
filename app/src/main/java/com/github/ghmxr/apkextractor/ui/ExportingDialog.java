@@ -4,8 +4,8 @@ import android.content.Context;
 import android.support.annotation.NonNull;
 import android.text.format.Formatter;
 
-import com.github.ghmxr.apkextractor.items.AppItem;
 import com.github.ghmxr.apkextractor.R;
+import com.github.ghmxr.apkextractor.items.AppItem;
 
 import java.text.DecimalFormat;
 

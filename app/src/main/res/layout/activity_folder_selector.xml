@@ -62,7 +62,6 @@
                         android:layout_margin="10dp"
                         android:src="@drawable/icon_phone"/>
                     <TextView
-                        android:id="@+id/item_internal_name"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_toRightOf="@+id/item_internal_icon"
@@ -95,7 +94,6 @@
                         android:layout_margin="10dp"
                         android:src="@drawable/icon_sd"/>
                     <TextView
-                        android:id="@+id/item_external_name"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_toRightOf="@+id/item_external_icon"
@@ -123,7 +121,6 @@
                         android:layout_margin="12dp"
                         android:src="@drawable/icon_usb"/>
                     <TextView
-                        android:id="@+id/item_other_name"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_toRightOf="@+id/item_other_icon"

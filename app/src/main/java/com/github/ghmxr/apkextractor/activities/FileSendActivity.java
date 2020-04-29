@@ -112,11 +112,8 @@ public class FileSendActivity extends BaseActivity implements NetSendTask.NetSen
                         }
                     })
                     .show();
-            //Toast.makeText(this,e.toString(),Toast.LENGTH_SHORT).show();
         }
-        /*try{
-            getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
-        }catch (Exception e){e.printStackTrace();}*/
+
         swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
@@ -147,15 +144,6 @@ public class FileSendActivity extends BaseActivity implements NetSendTask.NetSen
                 if(netSendTask!=null)netSendTask.setApMode(isChecked);
             }
         });
-        /*((AppCompatCheckBox)findViewById(R.id.activity_file_send_screen_on)).setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-            @Override
-            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                try{
-                    if(isChecked)getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
-                    else getWindow().clearFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
-                }catch (Exception e){e.printStackTrace();}
-            }
-        });*/
     }
 
     @Override
@@ -218,13 +206,15 @@ public class FileSendActivity extends BaseActivity implements NetSendTask.NetSen
 
     @Override
     public void onProgress(long progress, long total, String currentFile) {
-        sendingDiag.setProgressOfSending(progress,total);
-        sendingDiag.setCurrentFileInfo(getResources().getString(R.string.dialog_send_att_head)+currentFile);
+        if(sendingDiag!=null){
+            sendingDiag.setProgressOfSending(progress,total);
+            sendingDiag.setCurrentFileInfo(getResources().getString(R.string.dialog_send_att_head)+currentFile);
+        }
     }
 
     @Override
     public void onSendingSpeed(long bytesOfSpeed) {
-        sendingDiag.setSpeed(bytesOfSpeed);
+        if(sendingDiag!=null)sendingDiag.setSpeed(bytesOfSpeed);
     }
 
     @Override
@@ -378,7 +368,7 @@ public class FileSendActivity extends BaseActivity implements NetSendTask.NetSen
     private static class ViewHolder extends RecyclerView.ViewHolder{
         TextView tv_device_name,tv_ip;
 
-        public ViewHolder(@NonNull View itemView) {
+        ViewHolder(@NonNull View itemView) {
             super(itemView);
             tv_device_name=itemView.findViewById(R.id.item_device_name);
             tv_ip=itemView.findViewById(R.id.item_device_ip);

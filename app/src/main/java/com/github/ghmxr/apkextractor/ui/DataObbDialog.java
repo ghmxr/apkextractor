@@ -10,9 +10,9 @@ import android.view.View;
 import android.widget.CheckBox;
 import android.widget.TextView;
 
-import com.github.ghmxr.apkextractor.items.AppItem;
 import com.github.ghmxr.apkextractor.Global;
 import com.github.ghmxr.apkextractor.R;
+import com.github.ghmxr.apkextractor.items.AppItem;
 import com.github.ghmxr.apkextractor.utils.FileUtil;
 import com.github.ghmxr.apkextractor.utils.StorageUtil;
 

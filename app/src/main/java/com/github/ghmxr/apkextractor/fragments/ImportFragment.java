@@ -29,7 +29,6 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.github.ghmxr.apkextractor.Constants;
-import com.github.ghmxr.apkextractor.DisplayItem;
 import com.github.ghmxr.apkextractor.Global;
 import com.github.ghmxr.apkextractor.R;
 import com.github.ghmxr.apkextractor.activities.PackageDetailActivity;
@@ -45,7 +44,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-public class ImportFragment extends Fragment implements RefreshImportListTask.RefreshImportListTaskCallback,RecyclerViewAdapter.ListAdapterOperationListener
+public class ImportFragment extends Fragment implements RefreshImportListTask.RefreshImportListTaskCallback,RecyclerViewAdapter.ListAdapterOperationListener<ImportItem>
 , SearchPackageTask.SearchTaskCompletedCallback ,View.OnClickListener{
 
     private SwipeRefreshLayout swipeRefreshLayout;
@@ -242,7 +241,7 @@ public class ImportFragment extends Fragment implements RefreshImportListTask.Re
                     return;
                 }
                 if(adapter==null)return;
-                closeMultiSelectMode();
+                //closeMultiSelectMode();
                 Global.shareImportItems(getActivity(),new ArrayList<>(adapter.getSelectedItems()));
             }
             break;
@@ -269,10 +268,8 @@ public class ImportFragment extends Fragment implements RefreshImportListTask.Re
     }
 
     @Override
-    public void onItemClicked(DisplayItem displayItem, RecyclerViewAdapter.ViewHolder viewHolder, int position) {
+    public void onItemClicked(ImportItem importItem, RecyclerViewAdapter.ViewHolder viewHolder, int position) {
         if(getActivity()==null)return;
-        if(!(displayItem instanceof ImportItem))return;
-        ImportItem importItem=(ImportItem)displayItem;
         Intent intent =new Intent(getActivity(), PackageDetailActivity.class);
         //intent.putExtra(PackageDetailActivity.EXTRA_IMPORT_ITEM_POSITION,position);
         intent.putExtra(PackageDetailActivity.EXTRA_IMPORT_ITEM_PATH,importItem.getFileItem().getPath());
@@ -283,7 +280,7 @@ public class ImportFragment extends Fragment implements RefreshImportListTask.Re
     }
 
     @Override
-    public void onMultiSelectItemChanged(List<DisplayItem> selected_items, long length) {
+    public void onMultiSelectItemChanged(List<ImportItem> selected_items, long length) {
         if(getActivity()==null)return;
         tv_multi_select_head.setText(selected_items.size()+getResources().getString(R.string.unit_item)+"/"+ Formatter.formatFileSize(getActivity(),length));
         btn_import.setEnabled(selected_items.size()>0);
@@ -304,6 +301,7 @@ public class ImportFragment extends Fragment implements RefreshImportListTask.Re
     public void onSearchTaskCompleted(@NonNull List<ImportItem> importItems) {
         if(getActivity()==null)return;
         if(adapter==null)return;
+        swipeRefreshLayout.setRefreshing(false);
         adapter.setData(importItems);
     }
 
@@ -327,6 +325,7 @@ public class ImportFragment extends Fragment implements RefreshImportListTask.Re
         if(searchPackageTask!=null)searchPackageTask.setInterrupted();
         searchPackageTask=new SearchPackageTask(Global.item_list,key,this);
         adapter.setData(null);
+        swipeRefreshLayout.setRefreshing(true);
         searchPackageTask.start();
     }
 
