@@ -136,7 +136,7 @@ public class AppItem implements Comparable<AppItem>, DisplayItem {
 
     @Override
     public String getTitle() {
-        return title;
+        return title+"("+getVersionName()+")";
     }
 
     @Override
