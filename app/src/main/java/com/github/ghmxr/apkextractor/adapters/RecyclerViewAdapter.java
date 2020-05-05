@@ -1,6 +1,7 @@
 package com.github.ghmxr.apkextractor.adapters;
 
 import android.app.Activity;
+import android.graphics.Color;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.GridLayoutManager;
@@ -17,6 +18,7 @@ import android.widget.TextView;
 import com.github.ghmxr.apkextractor.Constants;
 import com.github.ghmxr.apkextractor.DisplayItem;
 import com.github.ghmxr.apkextractor.R;
+import com.github.ghmxr.apkextractor.utils.EnvironmentUtil;
 import com.github.ghmxr.apkextractor.utils.SPUtil;
 
 import java.util.ArrayList;
@@ -32,6 +34,7 @@ public class RecyclerViewAdapter<T extends DisplayItem> extends RecyclerView.Ada
     private boolean[] isSelected;
     private boolean isMultiSelectMode=false;
     private int mode;
+    private String highlightKeyword =null;
 
     public RecyclerViewAdapter(@NonNull Activity activity,@NonNull RecyclerView recyclerView,@NonNull List<T>data,
                                @NonNull ListAdapterOperationListener<T> listener){
@@ -54,12 +57,12 @@ public class RecyclerViewAdapter<T extends DisplayItem> extends RecyclerView.Ada
     @Override
     public void onBindViewHolder(@NonNull final ViewHolder viewHolder, int i) {
         final T item=data.get(viewHolder.getAdapterPosition());
-        viewHolder.title.setText(String.valueOf(item.getTitle()));
         viewHolder.title.setTextColor(activity.getResources().getColor((item.isRedMarked()?
                 R.color.colorSystemAppTitleColor:R.color.colorHighLightText)));
+        viewHolder.title.setText(EnvironmentUtil.getSpannableString(String.valueOf(item.getTitle()),highlightKeyword,Color.parseColor("#3498db")));
         viewHolder.icon.setImageDrawable(item.getIconDrawable());
         if(viewHolder.getViewType()==0){
-            viewHolder.description.setText(String.valueOf(item.getDescription()));
+            viewHolder.description.setText(EnvironmentUtil.getSpannableString(item.getDescription(),highlightKeyword,Color.parseColor("#3498db")));
             viewHolder.right.setText(Formatter.formatFileSize(activity,item.getSize()));
             viewHolder.right.setVisibility(isMultiSelectMode?View.GONE:View.VISIBLE);
             viewHolder.cb.setVisibility(isMultiSelectMode?View.VISIBLE:View.GONE);
@@ -113,6 +116,11 @@ public class RecyclerViewAdapter<T extends DisplayItem> extends RecyclerView.Ada
     public void setData(@Nullable List<T>data){
         this.data.clear();
         if(data!=null)this.data.addAll(data);
+        notifyDataSetChanged();
+    }
+
+    public void setHighlightKeyword(String keyword){
+        this.highlightKeyword =keyword;
         notifyDataSetChanged();
     }
 

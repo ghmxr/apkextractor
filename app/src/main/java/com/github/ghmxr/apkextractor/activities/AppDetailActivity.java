@@ -40,14 +40,15 @@ import com.github.ghmxr.apkextractor.tasks.HashTask;
 import com.github.ghmxr.apkextractor.ui.AssemblyView;
 import com.github.ghmxr.apkextractor.ui.SignatureView;
 import com.github.ghmxr.apkextractor.ui.ToastManager;
-import com.github.ghmxr.apkextractor.utils.EnvironmentUtil;
 import com.github.ghmxr.apkextractor.utils.FileUtil;
 import com.github.ghmxr.apkextractor.utils.OutputUtil;
 import com.github.ghmxr.apkextractor.utils.SPUtil;
 import com.github.ghmxr.apkextractor.utils.StorageUtil;
 
 import java.io.File;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 public class AppDetailActivity extends BaseActivity implements View.OnClickListener{
@@ -97,8 +98,8 @@ public class AppDetailActivity extends BaseActivity implements View.OnClickListe
         ((TextView)findViewById(R.id.app_detail_version_name)).setText(appItem.getVersionName());
         ((TextView)findViewById(R.id.app_detail_version_code)).setText(String.valueOf(appItem.getVersionCode()));
         ((TextView)findViewById(R.id.app_detail_size)).setText(Formatter.formatFileSize(this,appItem.getSize()));
-        ((TextView)findViewById(R.id.app_detail_install_time)).setText(EnvironmentUtil.getFormatDateAndTime(packageInfo.firstInstallTime));
-        ((TextView)findViewById(R.id.app_detail_update_time)).setText(EnvironmentUtil.getFormatDateAndTime(packageInfo.lastUpdateTime));
+        ((TextView)findViewById(R.id.app_detail_install_time)).setText(SimpleDateFormat.getDateTimeInstance().format(new Date(packageInfo.firstInstallTime)));
+        ((TextView)findViewById(R.id.app_detail_update_time)).setText(SimpleDateFormat.getDateTimeInstance().format(new Date(packageInfo.lastUpdateTime)));
         ((TextView)findViewById(R.id.app_detail_minimum_api)).setText(Build.VERSION.SDK_INT>=24?String.valueOf(packageInfo.applicationInfo.minSdkVersion):getResources().getString(R.string.word_unknown));
         ((TextView)findViewById(R.id.app_detail_target_api)).setText(String.valueOf(packageInfo.applicationInfo.targetSdkVersion));
         ((TextView)findViewById(R.id.app_detail_is_system_app)).setText(getResources().getString((appItem.getPackageInfo().applicationInfo.flags& ApplicationInfo.FLAG_SYSTEM)>0?R.string.word_yes:R.string.word_no));
@@ -278,35 +279,35 @@ public class AppDetailActivity extends BaseActivity implements View.OnClickListe
             break;
 
             case R.id.app_detail_package_name_area:{
-                clip2ClipboardAndShowSnackbar(appItem.getPackageName());
+                clip2ClipboardAndShowSnackbar(((TextView)findViewById(R.id.app_detail_package_name)).getText().toString());
             }
             break;
             case R.id.app_detail_version_name_area:{
-                clip2ClipboardAndShowSnackbar(appItem.getVersionName());
+                clip2ClipboardAndShowSnackbar(((TextView)findViewById(R.id.app_detail_version_name)).getText().toString());
             }
             break;
             case R.id.app_detail_version_code_area:{
-                clip2ClipboardAndShowSnackbar(String.valueOf(appItem.getVersionCode()));
+                clip2ClipboardAndShowSnackbar(((TextView)findViewById(R.id.app_detail_version_code)).getText().toString());
             }
             break;
             case R.id.app_detail_size_area:{
-                clip2ClipboardAndShowSnackbar(Formatter.formatFileSize(this,appItem.getSize()));
+                clip2ClipboardAndShowSnackbar(((TextView)findViewById(R.id.app_detail_size)).getText().toString());
             }
             break;
             case R.id.app_detail_install_time_area:{
-                clip2ClipboardAndShowSnackbar(EnvironmentUtil.getFormatDateAndTime(appItem.getPackageInfo().firstInstallTime));
+                clip2ClipboardAndShowSnackbar(((TextView)findViewById(R.id.app_detail_install_time)).getText().toString());
             }
             break;
             case R.id.app_detail_update_time_area:{
-                clip2ClipboardAndShowSnackbar(EnvironmentUtil.getFormatDateAndTime(appItem.getPackageInfo().lastUpdateTime));
+                clip2ClipboardAndShowSnackbar(((TextView)findViewById(R.id.app_detail_update_time)).getText().toString());
             }
             break;
             case R.id.app_detail_minimum_api_area:{
-                if(Build.VERSION.SDK_INT>=24)clip2ClipboardAndShowSnackbar(String.valueOf(appItem.getPackageInfo().applicationInfo.minSdkVersion));
+                clip2ClipboardAndShowSnackbar(((TextView)findViewById(R.id.app_detail_minimum_api)).getText().toString());
             }
             break;
             case R.id.app_detail_target_api_area:{
-                clip2ClipboardAndShowSnackbar(String.valueOf(appItem.getPackageInfo().applicationInfo.targetSdkVersion));
+                clip2ClipboardAndShowSnackbar(((TextView)findViewById(R.id.app_detail_target_api)).getText().toString());
             }
             break;
             case R.id.app_detail_is_system_app_area:{

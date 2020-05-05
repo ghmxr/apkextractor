@@ -21,15 +21,15 @@ public class PinyinUtil {
         format.setVCharType(HanyuPinyinVCharType.WITH_V);
 
         char[] input = inputString.trim().toCharArray();
-        String output = "";
+        StringBuilder output = new StringBuilder();
 
         try {
             for (int i = 0; i < input.length; i++) {
                 if (java.lang.Character.toString(input[i]).matches("[\\u4E00-\\u9FA5]+")) {
                     String[] temp = PinyinHelper.toHanyuPinyinStringArray(input[i], format);
-                    output += temp[0];
+                    output.append(temp[0]);
                 } else
-                    output += java.lang.Character.toString(input[i]);
+                    output.append(input[i]);
             }
         } catch (BadHanyuPinyinOutputFormatCombination e) {
             e.printStackTrace();
@@ -40,7 +40,7 @@ public class PinyinUtil {
         catch(Exception ex){
             ex.printStackTrace();
         }
-        return output;
+        return output.toString();
     }
 
     /**
@@ -49,7 +49,7 @@ public class PinyinUtil {
      * @return 汉语拼音首字母
      */
     public static String getFirstSpell(String chinese) {
-        StringBuffer pybf = new StringBuffer();
+        StringBuilder pybf = new StringBuilder();
         char[] arr = chinese.toCharArray();
         HanyuPinyinOutputFormat defaultFormat = new HanyuPinyinOutputFormat();
         defaultFormat.setCaseType(HanyuPinyinCaseType.LOWERCASE);
@@ -86,7 +86,7 @@ public class PinyinUtil {
      * @return 汉语拼音
      */
     public static String getFullSpell(String chinese) {
-        StringBuffer pybf = new StringBuffer();
+        StringBuilder pybf = new StringBuilder();
         char[] arr = chinese.toCharArray();
         HanyuPinyinOutputFormat defaultFormat = new HanyuPinyinOutputFormat();
         defaultFormat.setCaseType(HanyuPinyinCaseType.LOWERCASE);
@@ -110,5 +110,27 @@ public class PinyinUtil {
             ex.printStackTrace();
         }
         return pybf.toString();
+    }
+
+    /**
+     * 获取一个字符串中的所有汉字内容
+     * @param content 要过滤的字符串
+     * @return 所有汉字字符串
+     */
+    static String getAllChineseCharacters(String content){
+        try {
+            return content.replaceAll("[^\u4e00-\u9fa5]","");
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return "";
+    }
+
+    /**
+     * 判断一个char是否为汉字（不包含中文符号）
+     * @return true 为汉字
+     */
+    static boolean isChineseChar(char c){
+        return (c >= 0x4e00)&&(c <= 0x9fbb);
     }
 }

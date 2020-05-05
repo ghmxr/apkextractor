@@ -18,6 +18,7 @@ import com.github.ghmxr.apkextractor.utils.PinyinUtil;
 import com.github.ghmxr.apkextractor.utils.SPUtil;
 
 import java.io.InputStream;
+import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
@@ -127,9 +128,9 @@ public class ImportItem implements DisplayItem,Comparable<ImportItem> {
 
     @Override
     public String getDescription() {
-        SimpleDateFormat simpleDateFormat=new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-        if(importType==ImportType.APK)return simpleDateFormat.format(new Date(lastModified))+"("+version_name+")";
-        return simpleDateFormat.format(new Date(lastModified));
+        DateFormat dateFormat=SimpleDateFormat.getDateTimeInstance();
+        if(importType==ImportType.APK)return dateFormat.format(new Date(lastModified))+"("+version_name+")";
+        return dateFormat.format(new Date(lastModified));
     }
 
     @Override

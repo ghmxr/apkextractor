@@ -11,7 +11,6 @@ import android.support.annotation.Nullable;
 import com.github.ghmxr.apkextractor.Constants;
 import com.github.ghmxr.apkextractor.Global;
 import com.github.ghmxr.apkextractor.items.AppItem;
-import com.github.ghmxr.apkextractor.utils.EnvironmentUtil;
 import com.github.ghmxr.apkextractor.utils.SPUtil;
 
 import java.util.ArrayList;
@@ -23,12 +22,13 @@ import java.util.List;
  */
 public class RefreshInstalledListTask extends Thread{
     private Context context;
-    private boolean flag_system;
+    private final boolean flag_system;
     private RefreshInstalledListTaskCallback listener;
     private List<AppItem> list_sum=new ArrayList<>();
-    public RefreshInstalledListTask(@NonNull Context context, boolean flag_system, @Nullable RefreshInstalledListTaskCallback callback){
+    private volatile boolean isInterrupted=false;
+    public RefreshInstalledListTask(@NonNull Context context, @Nullable RefreshInstalledListTaskCallback callback){
         this.context=context;
-        this.flag_system=flag_system;
+        this.flag_system=SPUtil.getGlobalSharedPreferences(context).getBoolean(Constants.PREFERENCE_SHOW_SYSTEM_APP,Constants.PREFERENCE_SHOW_SYSTEM_APP_DEFAULT);
         this.listener=callback;
     }
     @Override
@@ -42,7 +42,11 @@ public class RefreshInstalledListTask extends Thread{
         if(settings.getBoolean(Constants.PREFERENCE_LOAD_APK_SIGNATURE,Constants.PREFERENCE_LOAD_APK_SIGNATURE_DEFAULT))flag|=PackageManager.GET_SIGNATURES;
         if(settings.getBoolean(Constants.PREFERENCE_LOAD_SERVICES,Constants.PREFERENCE_LOAD_SERVICES_DEFAULT))flag|=PackageManager.GET_SERVICES;
         if(settings.getBoolean(Constants.PREFERENCE_LOAD_PROVIDERS,Constants.PREFERENCE_LOAD_PROVIDERS_DEFAULT))flag|=PackageManager.GET_PROVIDERS;
-        final List<PackageInfo> list = manager.getInstalledPackages(flag);
+        final List<PackageInfo> list = new ArrayList<>();
+        synchronized (RefreshInstalledListTask.class){//加锁是在多线程请求已安装列表时PackageManager可能会抛异常 ParceledListSlice: Failure retrieving array;
+            list.clear();
+            list.addAll(manager.getInstalledPackages(flag));
+        }
         Global.handler.post(new Runnable() {
             @Override
             public void run() {
@@ -50,6 +54,7 @@ public class RefreshInstalledListTask extends Thread{
             }
         });
         for(int i=0;i<list.size();i++){
+            if(isInterrupted)return;
             PackageInfo info=list.get(i);
             boolean info_is_system_app=((info.applicationInfo.flags& ApplicationInfo.FLAG_SYSTEM)>0);
             final int current=i+1;
@@ -62,6 +67,7 @@ public class RefreshInstalledListTask extends Thread{
             if(!flag_system&&info_is_system_app)continue;
             list_sum.add(new AppItem(context,info));
         }
+        if(isInterrupted)return;
         AppItem.sort_config=settings.getInt(Constants.PREFERENCE_SORT_CONFIG,0);
         Collections.sort(list_sum);
         synchronized (Global.app_list){
@@ -76,6 +82,10 @@ public class RefreshInstalledListTask extends Thread{
             }
         });
 
+    }
+
+    public void setInterrupted(){
+        this.isInterrupted=true;
     }
 
     public interface RefreshInstalledListTaskCallback{

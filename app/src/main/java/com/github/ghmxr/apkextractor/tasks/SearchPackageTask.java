@@ -8,18 +8,17 @@ import com.github.ghmxr.apkextractor.utils.PinyinUtil;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Locale;
 
 public class SearchPackageTask extends Thread {
 
-    private boolean isInterrupted=false;
+    private volatile boolean isInterrupted=false;
     private final String search_info;
     private final List<ImportItem> importItemList;
     private final ArrayList<ImportItem> result_importItems=new ArrayList<>();
     private final SearchTaskCompletedCallback callback;
 
     public SearchPackageTask(@NonNull List<ImportItem>importItemList, @NonNull String info, @NonNull SearchTaskCompletedCallback callback){
-        this.search_info=info;
+        this.search_info=info.trim().toLowerCase();
         this.importItemList=importItemList;
         this.callback=callback;
     }
@@ -34,9 +33,12 @@ public class SearchPackageTask extends Thread {
             }
             try{
                 boolean b=(getFormatString(importItem.getItemName()).contains(search_info)||getFormatString(importItem.getDescription()).contains(search_info)
-                        || PinyinUtil.getFirstSpell(importItem.getItemName()).contains(search_info)
-                        ||PinyinUtil.getFullSpell(importItem.getItemName()).contains(search_info)
-                        ||PinyinUtil.getPinYin(importItem.getItemName()).contains(search_info))
+                        ||getFormatString(PinyinUtil.getFirstSpell(importItem.getItemName())).contains(search_info)
+                        ||getFormatString(PinyinUtil.getFullSpell(importItem.getItemName())).contains(search_info)
+                        ||getFormatString(PinyinUtil.getPinYin(importItem.getItemName())).contains(search_info)
+                        ||getFormatString(PinyinUtil.getFirstSpell(importItem.getDescription())).contains(search_info)
+                        ||getFormatString(PinyinUtil.getFullSpell(importItem.getDescription())).contains(search_info)
+                        ||getFormatString(PinyinUtil.getPinYin(importItem.getDescription())).contains(search_info))
                         &&!search_info.trim().equals("");
                 if(b)result_importItems.add(importItem);
             }catch (Exception e){e.printStackTrace();}
@@ -54,7 +56,7 @@ public class SearchPackageTask extends Thread {
     }
 
     private String getFormatString(@NonNull String s){
-        return s.trim().toLowerCase(Locale.getDefault());
+        return s.trim().toLowerCase();
     }
 
     public interface SearchTaskCompletedCallback{

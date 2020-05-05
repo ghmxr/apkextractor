@@ -75,6 +75,8 @@ public class AppFragment extends Fragment implements View.OnClickListener, Refre
 
     private OperationCallback callback;
 
+    private RefreshInstalledListTask refreshInstalledListTask=null;
+
     final RecyclerView.OnScrollListener onScrollListener =new RecyclerView.OnScrollListener() {
         @Override
         public void onScrolled(@NonNull RecyclerView recyclerView, int dx, int dy) {
@@ -116,9 +118,7 @@ public class AppFragment extends Fragment implements View.OnClickListener, Refre
         public void onReceive(Context context, Intent intent) {
             if(getActivity()==null)return;
             if(Constants.ACTION_REFRESH_APP_LIST.equalsIgnoreCase(intent.getAction())){
-                new RefreshInstalledListTask(getActivity(),
-                        SPUtil.getGlobalSharedPreferences(getActivity()).getBoolean(Constants.PREFERENCE_SHOW_SYSTEM_APP,Constants.PREFERENCE_SHOW_SYSTEM_APP_DEFAULT),
-                        AppFragment.this).start();
+                setAndStartRefreshingTask();
             }else if(Constants.ACTION_REFRESH_AVAILIBLE_STORAGE.equalsIgnoreCase(intent.getAction())){
                 refreshAvailableStorage();
             }
@@ -131,9 +131,7 @@ public class AppFragment extends Fragment implements View.OnClickListener, Refre
             if(getActivity()==null)return;
             if(Intent.ACTION_PACKAGE_ADDED.equals(intent.getAction())||Intent.ACTION_PACKAGE_REMOVED.equals(intent.getAction())
                     ||Intent.ACTION_PACKAGE_REPLACED.equals(intent.getAction())){
-                new RefreshInstalledListTask(getActivity(),
-                        SPUtil.getGlobalSharedPreferences(getActivity()).getBoolean(Constants.PREFERENCE_SHOW_SYSTEM_APP,Constants.PREFERENCE_SHOW_SYSTEM_APP_DEFAULT),
-                        AppFragment.this).start();
+                setAndStartRefreshingTask();
             }
         }
     };
@@ -196,8 +194,7 @@ public class AppFragment extends Fragment implements View.OnClickListener, Refre
 
     private void initView(){
         if(getActivity()==null)return;
-        final boolean is_show_sys= SPUtil.getGlobalSharedPreferences(getActivity()).getBoolean(Constants.PREFERENCE_SHOW_SYSTEM_APP,Constants.PREFERENCE_SHOW_SYSTEM_APP_DEFAULT);
-        cb_sys.setChecked(is_show_sys);
+        cb_sys.setChecked(SPUtil.getGlobalSharedPreferences(getActivity()).getBoolean(Constants.PREFERENCE_SHOW_SYSTEM_APP,Constants.PREFERENCE_SHOW_SYSTEM_APP_DEFAULT));
         swipeRefreshLayout.setColorSchemeColors(getActivity().getResources().getColor(R.color.colorTitle));
 
         btn_select_all.setOnClickListener(this);
@@ -218,20 +215,19 @@ public class AppFragment extends Fragment implements View.OnClickListener, Refre
                     swipeRefreshLayout.setRefreshing(false);
                     return;
                 }
-                new RefreshInstalledListTask(getActivity(),
-                        SPUtil.getGlobalSharedPreferences(getActivity()).getBoolean(Constants.PREFERENCE_SHOW_SYSTEM_APP,Constants.PREFERENCE_SHOW_SYSTEM_APP_DEFAULT)
-                        ,AppFragment.this).start();
+                setAndStartRefreshingTask();
             }
         });
         cb_sys.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                buttonView.setEnabled(false);
                 if(getActivity()==null)return;
                 SPUtil.getGlobalSharedPreferences(getActivity()).edit().putBoolean(Constants.PREFERENCE_SHOW_SYSTEM_APP,isChecked).apply();
-                new RefreshInstalledListTask(getActivity(),isChecked,AppFragment.this).start();
+                setAndStartRefreshingTask();
             }
         });
-        new RefreshInstalledListTask(getActivity(),is_show_sys,this).start();
+        setAndStartRefreshingTask();
         refreshAvailableStorage();
     }
 
@@ -393,11 +389,12 @@ public class AppFragment extends Fragment implements View.OnClickListener, Refre
     }
 
     @Override
-    public void onSearchTaskCompleted(@NonNull List<AppItem> appItems) {
+    public void onSearchTaskCompleted(@NonNull List<AppItem> appItems,@NonNull String keyword) {
         if(getActivity()==null)return;
         if(adapter==null)return;
         swipeRefreshLayout.setRefreshing(false);
         adapter.setData(appItems);
+        adapter.setHighlightKeyword(keyword);
     }
 
     public void setOperationCallback(OperationCallback callback){
@@ -429,6 +426,7 @@ public class AppFragment extends Fragment implements View.OnClickListener, Refre
         }
         else {
             setViewVisibilityWithAnimation(card_normal,View.VISIBLE);
+            if(adapter!=null)adapter.setHighlightKeyword(null);
         }
         if(card_multi_select!=null)card_multi_select.setVisibility(View.GONE);
         if(swipeRefreshLayout!=null){
@@ -483,6 +481,16 @@ public class AppFragment extends Fragment implements View.OnClickListener, Refre
     public void setViewMode(int mode){
         if(adapter==null)return;
         adapter.setLayoutManagerAndView(mode);
+    }
+
+    private void setAndStartRefreshingTask(){
+        if(getActivity()==null)return;
+        if(refreshInstalledListTask!=null)refreshInstalledListTask.setInterrupted();
+        refreshInstalledListTask=new RefreshInstalledListTask(getActivity(),this);
+        swipeRefreshLayout.setRefreshing(true);
+        recyclerView.setAdapter(null);
+        cb_sys.setEnabled(false);
+        refreshInstalledListTask.start();
     }
 
     private void setViewVisibilityWithAnimation(View view, int visibility){

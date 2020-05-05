@@ -85,7 +85,16 @@ public class AppItem implements Comparable<AppItem>, DisplayItem {
         try{
             final String installer_package_name=packageManager.getInstallerPackageName(info.packageName);
             final String installer_name=EnvironmentUtil.getAppNameByPackageName(context,installer_package_name);
-            install_source= TextUtils.isEmpty(installer_name)?installer_package_name:installer_name;
+            //install_source= TextUtils.isEmpty(installer_name)?installer_package_name:installer_name;
+            if(!TextUtils.isEmpty(installer_name)){
+                install_source=installer_name;
+            }else{
+                if(!TextUtils.isEmpty(installer_package_name)){
+                    install_source=installer_package_name;
+                }else{
+                    install_source=context.getResources().getString(R.string.word_unknown);
+                }
+            }
         }catch (Exception e){e.printStackTrace();}
         this.installSource=install_source;
 

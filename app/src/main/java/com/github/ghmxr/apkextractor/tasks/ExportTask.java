@@ -37,7 +37,7 @@ public class ExportTask extends Thread {
      * 本次导出任务的目的存储路径是否为外置存储
      */
     private final boolean isExternal;
-    private boolean isInterrupted=false;
+    private volatile boolean isInterrupted=false;
     private long progress=0,total=0;
     private long progress_check_zip =0;
     private long zipTime=0;

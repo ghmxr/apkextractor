@@ -99,6 +99,7 @@ public class MainActivity extends BaseActivity implements View.OnClickListener,V
             public void afterTextChanged(Editable s) {
                 if(s==null)return;
                 cancelView.setVisibility(s.length()>0?View.VISIBLE:View.INVISIBLE);
+                if(!isSearchMode)return;
                 appFragment.updateSearchModeKeywords(s.toString());
                 importFragment.updateSearchModeKeywords(s.toString());
             }
@@ -240,7 +241,6 @@ public class MainActivity extends BaseActivity implements View.OnClickListener,V
 
                     @Override
                     public void onClick(View v) {
-                        // TODO Auto-generated method stub
                         try{
                             startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("https://qr.alipay.com/FKX08041Y09ZGT6ZT91FA5")));
                         }catch (Exception e){
@@ -306,6 +306,7 @@ public class MainActivity extends BaseActivity implements View.OnClickListener,V
     private void closeSearchMode(){
         isSearchMode=false;
         setMenuVisible(true);
+        edit_search.setText("");
         setActionbarDisplayCustomView(false);
         appFragment.setSearchMode(false);
         importFragment.setSearchMode(false);

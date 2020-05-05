@@ -18,10 +18,14 @@ import android.net.wifi.WifiInfo;
 import android.net.wifi.WifiManager;
 import android.os.Bundle;
 import android.provider.MediaStore;
+import android.support.annotation.ColorInt;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.content.FileProvider;
+import android.text.Spannable;
+import android.text.SpannableStringBuilder;
 import android.text.format.Formatter;
+import android.text.style.ForegroundColorSpan;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.Toast;
@@ -85,6 +89,7 @@ public class EnvironmentUtil {
     }
 
     /**
+     * @deprecated
      * 返回 yyyy/mm/dd/hh:mm::ss 字符串
      */
     public static @NonNull String getFormatDateAndTime(long time){
@@ -506,6 +511,91 @@ public class EnvironmentUtil {
             windowPos[1] = anchorLoc[1] + anchorHeight;
         }
         return windowPos;
+    }
+
+    /**
+     * 通过keyword高亮content中的指定内容，支持汉字首字母、全拼匹配
+     * @param content 要匹配的内容
+     * @param keyword 匹配字符
+     * @param color 高亮颜色
+     * @return 生成的Spannable
+     */
+    public static SpannableStringBuilder getSpannableString(@NonNull String content, @Nullable String keyword, @ColorInt int color){
+        SpannableStringBuilder builder=new SpannableStringBuilder(content);
+        if(keyword==null||"".equals(keyword))return builder;
+
+        int index=content.toLowerCase().indexOf(keyword.toLowerCase());
+        if(index>=0){
+            builder.setSpan(new ForegroundColorSpan(color),index,index+keyword.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+            return builder;
+        }
+        keyword=keyword.toLowerCase();
+        final ArrayList<String>singleCharFullSpell=new ArrayList<>();
+        //final ArrayList<String>singleCharFirstSpell=new ArrayList<>();
+        final StringBuilder fullSpell= new StringBuilder();
+        final StringBuilder singleSpell= new StringBuilder();
+        final char[] chars_content=content.toCharArray();
+        for(int i=0;i<chars_content.length;i++){
+            if(PinyinUtil.isChineseChar(chars_content[i])){
+                fullSpell.append(PinyinUtil.getFullSpell(String.valueOf(chars_content[i])).toLowerCase());
+                singleSpell.append(PinyinUtil.getFirstSpell(String.valueOf(chars_content[i])).toLowerCase());
+                singleCharFullSpell.add(PinyinUtil.getFullSpell(String.valueOf(chars_content[i])).toLowerCase());
+                //singleCharFirstSpell.add(PinyinUtil.getFirstSpell(String.valueOf(chars_content[i])).toLowerCase());
+            }else{
+                fullSpell.append(String.valueOf(chars_content[i]).toLowerCase());
+                singleSpell.append(String.valueOf(chars_content[i]).toLowerCase());
+                singleCharFullSpell.add(String.valueOf(chars_content[i]).toLowerCase());
+            }
+        }
+
+        int span_index_begin=-1,span_index_end=-1;
+        final int index_first_spell=singleSpell.indexOf(keyword);
+        if(index_first_spell>=0){
+            span_index_begin=index_first_spell;
+            span_index_end=index_first_spell+keyword.length();
+        }else{
+            int fullSpellCheck=0;
+            String keywordFullSpellCheck=keyword;
+            boolean flag_matched=false;
+            boolean flag_matched_end=true;
+            for(int i=0;i<singleCharFullSpell.size();i++){
+                if(keywordFullSpellCheck.trim().length()==0)break;
+                final String sp=singleCharFullSpell.get(i);
+                if(sp.contains(keyword)&&!flag_matched){
+                    span_index_begin=i;
+                    span_index_end=span_index_begin+1;
+                    break;
+                }
+
+                final int index_2=keywordFullSpellCheck.indexOf(sp);
+                if(index_2>=0&&PinyinUtil.isChineseChar(chars_content[i])){
+                    flag_matched=true;
+                    if(span_index_begin==-1)span_index_begin=i;
+                    keywordFullSpellCheck=keywordFullSpellCheck.substring(index_2+sp.length());
+                    fullSpellCheck++;
+                    continue;
+                }
+
+                final int index_1=sp.indexOf(keywordFullSpellCheck);
+                if(flag_matched){
+                    if(index_1>=0){
+                        fullSpellCheck++;
+                    }else{
+                        flag_matched_end=false;
+                    }
+                    break;
+                }
+            }
+            if(fullSpellCheck>0)span_index_end=span_index_begin+fullSpellCheck;
+            if(!flag_matched_end){
+                span_index_begin=span_index_end=-1;
+            }
+        }
+
+        if(span_index_begin>=0&&span_index_end>=0){
+            builder.setSpan(new ForegroundColorSpan(color),span_index_begin,span_index_end,Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+        }
+        return builder;
     }
 
     /*public static int dp2px(@NonNull Context context,int dp){

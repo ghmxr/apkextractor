@@ -31,7 +31,7 @@ public class ImportTask extends Thread {
 
     private final ArrayList<ImportItem>importItemArrayList=new ArrayList<>();
     private Context context;
-    private boolean isInterrupted=false;
+    private volatile boolean isInterrupted=false;
     //private ArrayList<String>write_paths=new ArrayList<>();
     private String currentWritePath;
     private FileItem currentWrtingFileItem;

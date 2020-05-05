@@ -99,7 +99,7 @@ public class PackageDetailActivity extends BaseActivity implements View.OnClickL
         ((TextView)findViewById(R.id.package_detail_version_code)).setText(importItem.getVersionCode());
         ((TextView)findViewById(R.id.package_detail_minimum_api)).setText(importItem.getMinSdkVersion());
         ((TextView)findViewById(R.id.package_detail_target_api)).setText(importItem.getTargetSdkVersion());
-        ((TextView)findViewById(R.id.package_detail_last_modified)).setText(new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(new Date(importItem.getLastModified())));
+        ((TextView)findViewById(R.id.package_detail_last_modified)).setText(SimpleDateFormat.getDateTimeInstance().format(new Date(importItem.getLastModified())));
         ((TextView)findViewById(R.id.package_detail_path)).setText(importItem.getFileItem().getPath());
         if(importItem.getFileItem().isShareUriInstance()){
             findViewById(R.id.package_detail_last_modified_area).setVisibility(View.GONE);

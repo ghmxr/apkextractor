@@ -18,7 +18,7 @@ public class GetImportLengthAndDuplicateInfoTask extends Thread {
     private List<ZipFileUtil.ZipFileInfo>zipFileInfos;
     private List<ImportItem>importItems;
     private GetImportLengthAndDuplicateInfoCallback callback;
-    private boolean isInterrupted=false;
+    private volatile boolean isInterrupted=false;
 
     public GetImportLengthAndDuplicateInfoTask(@NonNull List<ImportItem>importItems
             , @NonNull List<ZipFileUtil.ZipFileInfo>zipFileInfos
