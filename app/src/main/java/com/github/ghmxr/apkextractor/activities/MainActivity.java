@@ -184,15 +184,22 @@ public class MainActivity extends BaseActivity implements View.OnClickListener,V
         }
 
         if(id==R.id.action_view){
-            SharedPreferences settings= SPUtil.getGlobalSharedPreferences(this);
-            final int mode=settings.getInt(Constants.PREFERENCE_MAIN_PAGE_VIEW_MODE,Constants.PREFERENCE_MAIN_PAGE_VIEW_MODE_DEFAULT);
-            final int result=mode==0?1:0;
-            SharedPreferences.Editor editor=settings.edit();
-            editor.putInt(Constants.PREFERENCE_MAIN_PAGE_VIEW_MODE,result);
-            editor.apply();
             if(isSearchMode)return false;
-            appFragment.setViewMode(result);
-            importFragment.setViewMode(result);
+            final SharedPreferences settings= SPUtil.getGlobalSharedPreferences(this);
+            final SharedPreferences.Editor editor=settings.edit();
+            if(currentSelection==0){
+                final int mode_app=settings.getInt(Constants.PREFERENCE_MAIN_PAGE_VIEW_MODE,Constants.PREFERENCE_MAIN_PAGE_VIEW_MODE_DEFAULT);
+                final int result_app=mode_app==0?1:0;
+                editor.putInt(Constants.PREFERENCE_MAIN_PAGE_VIEW_MODE,result_app);
+                editor.apply();
+                appFragment.setViewMode(result_app);
+            }else if(currentSelection==1){
+                final int mode_pak=settings.getInt(Constants.PREFERENCE_MAIN_PAGE_VIEW_MODE_IMPORT,Constants.PREFERENCE_MAIN_PAGE_VIEW_MODE_IMPORT_DEFAULT);
+                final int result_pak=mode_pak==0?1:0;
+                editor.putInt(Constants.PREFERENCE_MAIN_PAGE_VIEW_MODE_IMPORT,result_pak);
+                editor.apply();
+                importFragment.setViewMode(result_pak);
+            }
         }
 
         if(id==R.id.action_sort){
@@ -281,7 +288,9 @@ public class MainActivity extends BaseActivity implements View.OnClickListener,V
             default:break;
             case REQUEST_CODE_SETTINGS:{
                 if(resultCode==RESULT_OK){
-                    recreate();
+                    //recreate();
+                    finish();
+                    startActivity(new Intent(this,MainActivity.class));
                 }
             }
             break;

@@ -46,7 +46,7 @@ public class SearchPackageTask extends Thread {
         Global.handler.post(new Runnable() {
             @Override
             public void run() {
-                if(!isInterrupted)callback.onSearchTaskCompleted(result_importItems);
+                if(!isInterrupted)callback.onSearchTaskCompleted(result_importItems,search_info);
             }
         });
     }
@@ -60,6 +60,6 @@ public class SearchPackageTask extends Thread {
     }
 
     public interface SearchTaskCompletedCallback{
-        void onSearchTaskCompleted(@NonNull List<ImportItem> importItems);
+        void onSearchTaskCompleted(@NonNull List<ImportItem> importItems,@NonNull String keyword);
     }
 }

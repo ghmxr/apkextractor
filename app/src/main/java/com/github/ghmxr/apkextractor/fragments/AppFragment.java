@@ -351,7 +351,11 @@ public class AppFragment extends Fragment implements View.OnClickListener, Refre
         swipeRefreshLayout.setRefreshing(false);
         /*int mode= SPUtil.getGlobalSharedPreferences(getActivity()).getInt(Constants.PREFERENCE_MAIN_PAGE_VIEW_MODE
                 ,Constants.PREFERENCE_MAIN_PAGE_VIEW_MODE_DEFAULT);*/
-        adapter=new RecyclerViewAdapter<>(getActivity(),recyclerView,appList,this);
+        adapter=new RecyclerViewAdapter<>(getActivity()
+                ,recyclerView
+                ,appList
+                ,SPUtil.getGlobalSharedPreferences(getActivity()).getInt(Constants.PREFERENCE_MAIN_PAGE_VIEW_MODE,Constants.PREFERENCE_MAIN_PAGE_VIEW_MODE_DEFAULT)
+                ,this);
         recyclerView.setAdapter(adapter);
         cb_sys.setEnabled(true);
         //if(isSearchMode)adapter.setData(null);

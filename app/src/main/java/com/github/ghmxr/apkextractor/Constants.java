@@ -60,6 +60,8 @@ public class Constants {
      */
     public static final String PREFERENCE_MAIN_PAGE_VIEW_MODE="main_view_mode";
     public static final int PREFERENCE_MAIN_PAGE_VIEW_MODE_DEFAULT=1;
+    public static final String PREFERENCE_MAIN_PAGE_VIEW_MODE_IMPORT="main_view_mode_import";
+    public static final int PREFERENCE_MAIN_PAGE_VIEW_MODE_IMPORT_DEFAULT=0;
     /**
      * this preference stands for a boolean value;
      */

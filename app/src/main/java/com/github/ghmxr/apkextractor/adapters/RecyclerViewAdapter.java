@@ -36,14 +36,13 @@ public class RecyclerViewAdapter<T extends DisplayItem> extends RecyclerView.Ada
     private int mode;
     private String highlightKeyword =null;
 
-    public RecyclerViewAdapter(@NonNull Activity activity,@NonNull RecyclerView recyclerView,@NonNull List<T>data,
+    public RecyclerViewAdapter(@NonNull Activity activity,@NonNull RecyclerView recyclerView,@NonNull List<T>data,int viewMode,
                                @NonNull ListAdapterOperationListener<T> listener){
         this.activity=activity;
         this.recyclerView=recyclerView;
         this.data.addAll(data);
         this.listener=listener;
-        mode=SPUtil.getGlobalSharedPreferences(activity).getInt(Constants.PREFERENCE_MAIN_PAGE_VIEW_MODE
-                ,Constants.PREFERENCE_MAIN_PAGE_VIEW_MODE_DEFAULT);
+        this.mode=viewMode;
         setLayoutManagerAndView(mode);
     }
 

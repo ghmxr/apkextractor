@@ -39,6 +39,7 @@ import com.github.ghmxr.apkextractor.tasks.RefreshImportListTask;
 import com.github.ghmxr.apkextractor.tasks.SearchPackageTask;
 import com.github.ghmxr.apkextractor.ui.ToastManager;
 import com.github.ghmxr.apkextractor.utils.EnvironmentUtil;
+import com.github.ghmxr.apkextractor.utils.SPUtil;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -261,7 +262,11 @@ public class ImportFragment extends Fragment implements RefreshImportListTask.Re
     public void onRefreshCompleted(List<ImportItem> list) {
         if(getActivity()==null)return;
         swipeRefreshLayout.setRefreshing(false);
-        adapter=new RecyclerViewAdapter<>(getActivity(),recyclerView,list,this);
+        adapter=new RecyclerViewAdapter<>(getActivity()
+                ,recyclerView
+                ,list
+                , SPUtil.getGlobalSharedPreferences(getActivity()).getInt(Constants.PREFERENCE_MAIN_PAGE_VIEW_MODE_IMPORT,Constants.PREFERENCE_MAIN_PAGE_VIEW_MODE_IMPORT_DEFAULT)
+                ,this);
         recyclerView.setAdapter(adapter);
         viewGroup_no_content.setVisibility(list.size()==0?View.VISIBLE:View.GONE);
         //if(isSearchMode)adapter.setData(null);
@@ -298,11 +303,12 @@ public class ImportFragment extends Fragment implements RefreshImportListTask.Re
     }
 
     @Override
-    public void onSearchTaskCompleted(@NonNull List<ImportItem> importItems) {
+    public void onSearchTaskCompleted(@NonNull List<ImportItem> importItems,@NonNull String keyword) {
         if(getActivity()==null)return;
         if(adapter==null)return;
         swipeRefreshLayout.setRefreshing(false);
         adapter.setData(importItems);
+        adapter.setHighlightKeyword(keyword);
     }
 
     public void setSearchMode(boolean b){
@@ -314,6 +320,7 @@ public class ImportFragment extends Fragment implements RefreshImportListTask.Re
         if(adapter==null)return;
         adapter.setMultiSelectMode(false);
         adapter.setData(b?null: Global.item_list);
+        if(!b)adapter.setHighlightKeyword(null);
     }
 
     private SearchPackageTask searchPackageTask;
