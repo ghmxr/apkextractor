@@ -363,7 +363,7 @@ public class ImportFragment extends Fragment implements RefreshImportListTask.Re
         new Thread(new Runnable() {
             @Override
             public void run() {
-                synchronized (Global.app_list){
+                synchronized (Global.item_list){
                     Collections.sort(Global.item_list);
                 }
                 Global.handler.post(new Runnable() {

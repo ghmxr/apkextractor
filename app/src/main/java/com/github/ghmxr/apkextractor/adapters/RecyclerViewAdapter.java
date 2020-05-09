@@ -15,11 +15,9 @@ import android.widget.CheckBox;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.github.ghmxr.apkextractor.Constants;
 import com.github.ghmxr.apkextractor.DisplayItem;
 import com.github.ghmxr.apkextractor.R;
 import com.github.ghmxr.apkextractor.utils.EnvironmentUtil;
-import com.github.ghmxr.apkextractor.utils.SPUtil;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -58,10 +56,20 @@ public class RecyclerViewAdapter<T extends DisplayItem> extends RecyclerView.Ada
         final T item=data.get(viewHolder.getAdapterPosition());
         viewHolder.title.setTextColor(activity.getResources().getColor((item.isRedMarked()?
                 R.color.colorSystemAppTitleColor:R.color.colorHighLightText)));
-        viewHolder.title.setText(EnvironmentUtil.getSpannableString(String.valueOf(item.getTitle()),highlightKeyword,Color.parseColor("#3498db")));
+        try {
+            viewHolder.title.setText(EnvironmentUtil.getSpannableString(String.valueOf(item.getTitle()),highlightKeyword,Color.parseColor("#3498db")));
+        } catch (Exception e) {
+            e.printStackTrace();
+            viewHolder.title.setText(String.valueOf(item.getTitle()));
+        }
         viewHolder.icon.setImageDrawable(item.getIconDrawable());
         if(viewHolder.getViewType()==0){
-            viewHolder.description.setText(EnvironmentUtil.getSpannableString(item.getDescription(),highlightKeyword,Color.parseColor("#3498db")));
+            try {
+                viewHolder.description.setText(EnvironmentUtil.getSpannableString(item.getDescription(),highlightKeyword,Color.parseColor("#3498db")));
+            } catch (Exception e) {
+                e.printStackTrace();
+                viewHolder.description.setText(String.valueOf(item.getDescription()));
+            }
             viewHolder.right.setText(Formatter.formatFileSize(activity,item.getSize()));
             viewHolder.right.setVisibility(isMultiSelectMode?View.GONE:View.VISIBLE);
             viewHolder.cb.setVisibility(isMultiSelectMode?View.VISIBLE:View.GONE);
