@@ -39,6 +39,8 @@ public class AppItemSortConfigDialog extends AlertDialog implements View.OnClick
         RadioButton ra_update_time_descend=dialogView.findViewById(R.id.sort_ra_descending_date);
         RadioButton ra_install_time_ascend=dialogView.findViewById(R.id.sort_ra_ascending_install_date);
         RadioButton ra_install_time_descend=dialogView.findViewById(R.id.sort_ra_descending_install_date);
+        RadioButton ra_package_name_ascend=dialogView.findViewById(R.id.sort_ra_ascending_package_name);
+        RadioButton ra_package_name_descend=dialogView.findViewById(R.id.sort_ra_descending_package_name);
 
         ra_default.setChecked(sort==0);
         ra_name_ascend.setChecked(sort==1);
@@ -49,6 +51,8 @@ public class AppItemSortConfigDialog extends AlertDialog implements View.OnClick
         ra_update_time_descend.setChecked(sort==6);
         ra_install_time_ascend.setChecked(sort==7);
         ra_install_time_descend.setChecked(sort==8);
+        ra_package_name_ascend.setChecked(sort==9);
+        ra_package_name_descend.setChecked(sort==10);
 
         ra_default.setOnClickListener(this);
         ra_name_ascend.setOnClickListener(this);
@@ -59,6 +63,8 @@ public class AppItemSortConfigDialog extends AlertDialog implements View.OnClick
         ra_update_time_descend.setOnClickListener(this);
         ra_install_time_ascend.setOnClickListener(this);
         ra_install_time_descend.setOnClickListener(this);
+        ra_package_name_ascend.setOnClickListener(this);
+        ra_package_name_descend.setOnClickListener(this);
 
         setButton(AlertDialog.BUTTON_NEGATIVE, context.getResources().getString(R.string.dialog_button_cancel), new OnClickListener() {
             @Override
@@ -106,6 +112,14 @@ public class AppItemSortConfigDialog extends AlertDialog implements View.OnClick
             break;
             case R.id.sort_ra_descending_install_date:{
                 sort_config=8;
+            }
+            break;
+            case R.id.sort_ra_ascending_package_name:{
+                sort_config=9;
+            }
+            break;
+            case R.id.sort_ra_descending_package_name:{
+                sort_config=10;
             }
             break;
         }

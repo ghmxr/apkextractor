@@ -36,6 +36,24 @@
             android:layout_marginRight="10dp"
             android:text="@string/dialog_sort_descending_name"/>
         <RadioButton
+            android:id="@+id/sort_ra_ascending_package_name"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="5dp"
+            android:layout_marginBottom="5dp"
+            android:layout_marginLeft="10dp"
+            android:layout_marginRight="10dp"
+            android:text="@string/dialog_sort_ascending_package_name"/>
+        <RadioButton
+            android:id="@+id/sort_ra_descending_package_name"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="5dp"
+            android:layout_marginBottom="5dp"
+            android:layout_marginLeft="10dp"
+            android:layout_marginRight="10dp"
+            android:text="@string/dialog_sort_descending_package_name"/>
+        <RadioButton
             android:id="@+id/sort_ra_ascending_appsize"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"

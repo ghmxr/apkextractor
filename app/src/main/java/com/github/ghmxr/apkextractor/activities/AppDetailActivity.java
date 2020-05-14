@@ -72,7 +72,9 @@ public class AppDetailActivity extends BaseActivity implements View.OnClickListe
         super.onCreate(savedInstanceState);
         //appItem=getIntent().getParcelableExtra(EXTRA_PARCELED_APP_ITEM);
         try{
-            appItem=Global.getAppItemByPackageNameFromList(Global.app_list,getIntent().getStringExtra(EXTRA_PACKAGE_NAME));
+            synchronized (Global.app_list) {
+                appItem=Global.getAppItemByPackageNameFromList(Global.app_list,getIntent().getStringExtra(EXTRA_PACKAGE_NAME));
+            }
         }catch (Exception e){e.printStackTrace();}
         if(appItem==null){
             ToastManager.showToast(this,"(-_-)The AppItem info is null, try to restart this application.",Toast.LENGTH_SHORT);

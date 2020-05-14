@@ -438,7 +438,13 @@ public class AppFragment extends Fragment implements View.OnClickListener, Refre
         }
         if(adapter==null)return;
         adapter.setMultiSelectMode(false);
-        adapter.setData(b?null:Global.app_list);
+        if(b){
+            adapter.setData(null);
+        }else{
+            synchronized (Global.app_list) {
+                adapter.setData(Global.app_list);
+            }
+        }
     }
 
     public boolean getIsSearchMode(){
@@ -452,8 +458,12 @@ public class AppFragment extends Fragment implements View.OnClickListener, Refre
         if(adapter==null)return;
         if(!isSearchMode)return;
         if(searchAppItemTask!=null)searchAppItemTask.setInterrupted();
-        searchAppItemTask=new SearchAppItemTask(Global.app_list,key,this);
+        synchronized (Global.app_list) {
+            searchAppItemTask=new SearchAppItemTask(Global.app_list,key,this);
+        }
         adapter.setData(null);
+        adapter.setMultiSelectMode(false);
+        card_multi_select.setVisibility(View.GONE);
         swipeRefreshLayout.setRefreshing(true);
         searchAppItemTask.start();
     }
@@ -473,7 +483,11 @@ public class AppFragment extends Fragment implements View.OnClickListener, Refre
                 Global.handler.post(new Runnable() {
                     @Override
                     public void run() {
-                        if(adapter!=null)adapter.setData(Global.app_list);
+                        if(adapter!=null){
+                            synchronized (Global.app_list) {
+                                adapter.setData(Global.app_list);
+                            }
+                        }
                         swipeRefreshLayout.setRefreshing(false);
                         cb_sys.setEnabled(true);
                     }

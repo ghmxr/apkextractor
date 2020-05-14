@@ -205,6 +205,8 @@
     <string name="dialog_sort_descending_install_date">按安装日期降序（从新到旧）</string>
     <string name="dialog_sort_ascending_modified_time">按修改时间升序（从旧到新）</string>
     <string name="dialog_sort_descending_modified_time">按修改时间降序（从新到旧）</string>
+    <string name="dialog_sort_ascending_package_name">按包名升序(从A到Z)</string>
+    <string name="dialog_sort_descending_package_name">按包名降序(从Z到A)</string>
 
     <string name="dialog_filename_title">导出规则</string>
     <string name="dialog_filename_apk_att">APK命名规则</string>

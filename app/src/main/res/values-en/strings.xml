@@ -191,6 +191,8 @@
     <string name="dialog_sort_descending_install_date">Descending by installing time(newer→older)</string>
     <string name="dialog_sort_ascending_modified_time">Ascending by last modified time(older→newer)</string>
     <string name="dialog_sort_descending_modified_time">Descending by last modified time(newer→older)</string>
+    <string name="dialog_sort_ascending_package_name">Ascending by package name(A→Z)</string>
+    <string name="dialog_sort_descending_package_name">Descending by package name(Z→A)</string>
 
     <string name="dialog_filename_title">Exporting rules</string>
     <string name="dialog_filename_apk_att">APK naming rules</string>

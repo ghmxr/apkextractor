@@ -69,7 +69,9 @@ public class PackageDetailActivity extends BaseActivity implements View.OnClickL
         }else{
             try{
                 //importItem= Global.item_list.get(getIntent().getIntExtra(EXTRA_IMPORT_ITEM_POSITION,-1));
-                importItem=Global.getImportItemByFileItemPath(Global.item_list,getIntent().getStringExtra(EXTRA_IMPORT_ITEM_PATH));
+                synchronized (Global.item_list) {
+                    importItem=Global.getImportItemByFileItemPath(Global.item_list,getIntent().getStringExtra(EXTRA_IMPORT_ITEM_PATH));
+                }
             }catch (Exception e){
                 e.printStackTrace();
                 ToastManager.showToast(this,getResources().getString(R.string.activity_package_detail_blank), Toast.LENGTH_SHORT);

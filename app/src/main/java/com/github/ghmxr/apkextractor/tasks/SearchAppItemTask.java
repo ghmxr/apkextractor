@@ -13,14 +13,14 @@ public class SearchAppItemTask extends Thread {
 
     private volatile boolean isInterrupted=false;
     private final String search_info;
-    private final List<AppItem> appItemList;
+    private final List<AppItem> appItemList=new ArrayList<>();
     private final ArrayList<AppItem> result_appItems=new ArrayList<>();
     private final SearchTaskCompletedCallback callback;
 
 
-    public SearchAppItemTask(@NonNull List<AppItem>appItems,@NonNull String info,@NonNull SearchTaskCompletedCallback callback){
+    public SearchAppItemTask(List<AppItem>appItems,@NonNull String info,@NonNull SearchTaskCompletedCallback callback){
         this.search_info=info.trim().toLowerCase();
-        this.appItemList=appItems;
+        this.appItemList.addAll(appItems);
         this.callback=callback;
     }
 

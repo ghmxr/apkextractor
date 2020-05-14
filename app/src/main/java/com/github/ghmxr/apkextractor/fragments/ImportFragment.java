@@ -319,7 +319,13 @@ public class ImportFragment extends Fragment implements RefreshImportListTask.Re
         }
         if(adapter==null)return;
         adapter.setMultiSelectMode(false);
-        adapter.setData(b?null: Global.item_list);
+        if(b){
+            adapter.setData(null);
+        }else{
+            synchronized (Global.item_list) {
+                adapter.setData(Global.item_list);
+            }
+        }
         if(!b)adapter.setHighlightKeyword(null);
     }
 
@@ -330,8 +336,12 @@ public class ImportFragment extends Fragment implements RefreshImportListTask.Re
         if(adapter==null)return;
         if(!isSearchMode)return;
         if(searchPackageTask!=null)searchPackageTask.setInterrupted();
-        searchPackageTask=new SearchPackageTask(Global.item_list,key,this);
+        synchronized (Global.item_list) {
+            searchPackageTask=new SearchPackageTask(Global.item_list,key,this);
+        }
         adapter.setData(null);
+        adapter.setMultiSelectMode(false);
+        card_multi_select.setVisibility(View.GONE);
         swipeRefreshLayout.setRefreshing(true);
         searchPackageTask.start();
     }
@@ -369,7 +379,11 @@ public class ImportFragment extends Fragment implements RefreshImportListTask.Re
                 Global.handler.post(new Runnable() {
                     @Override
                     public void run() {
-                        if(adapter!=null)adapter.setData(Global.item_list);
+                        if(adapter!=null){
+                            synchronized (Global.item_list) {
+                                adapter.setData(Global.item_list);
+                            }
+                        }
                         swipeRefreshLayout.setRefreshing(false);
                     }
                 });

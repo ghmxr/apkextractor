@@ -13,13 +13,13 @@ public class SearchPackageTask extends Thread {
 
     private volatile boolean isInterrupted=false;
     private final String search_info;
-    private final List<ImportItem> importItemList;
+    private final List<ImportItem> importItemList=new ArrayList<>();
     private final ArrayList<ImportItem> result_importItems=new ArrayList<>();
     private final SearchTaskCompletedCallback callback;
 
     public SearchPackageTask(@NonNull List<ImportItem>importItemList, @NonNull String info, @NonNull SearchTaskCompletedCallback callback){
         this.search_info=info.trim().toLowerCase();
-        this.importItemList=importItemList;
+        this.importItemList.addAll(importItemList);
         this.callback=callback;
     }
 

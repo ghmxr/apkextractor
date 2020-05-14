@@ -122,6 +122,7 @@ public class RecyclerViewAdapter<T extends DisplayItem> extends RecyclerView.Ada
 
     public void setData(@Nullable List<T>data){
         this.data.clear();
+        isSelected=null;
         if(data!=null)this.data.addAll(data);
         notifyDataSetChanged();
     }
@@ -167,7 +168,7 @@ public class RecyclerViewAdapter<T extends DisplayItem> extends RecyclerView.Ada
      */
     public @NonNull List<T> getSelectedItems(){
         ArrayList<T> list_selected=new ArrayList<>();
-        if(!isMultiSelectMode)return list_selected;
+        if(isSelected==null||isSelected.length!=data.size())return list_selected;
         for(int i=0;i<data.size();i++){
             if(isSelected[i])list_selected.add(data.get(i));
         }
@@ -176,6 +177,7 @@ public class RecyclerViewAdapter<T extends DisplayItem> extends RecyclerView.Ada
 
     private long getSelectedFileLength(){
         long length=0;
+        if(isSelected==null||isSelected.length!=data.size())return 0;
         for(int i=0;i<isSelected.length;i++){
             if(isSelected[i])length+=data.get(i).getSize();
         }

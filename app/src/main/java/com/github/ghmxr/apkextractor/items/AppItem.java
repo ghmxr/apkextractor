@@ -264,6 +264,8 @@ public class AppItem implements Comparable<AppItem>, DisplayItem {
      * 6 - 更新日期降序
      * 7 - 安装日期升序
      * 8 - 安装日期降序
+     * 9 - 包名升序
+     * 10 - 包名降序
      */
     @Override
     public int compareTo(@NonNull AppItem o) {
@@ -311,6 +313,16 @@ public class AppItem implements Comparable<AppItem>, DisplayItem {
             case 8:{
                 if(info.firstInstallTime-o.info.firstInstallTime<0)return 1;
                 if(info.firstInstallTime-o.info.firstInstallTime>0)return -1;
+            }
+            break;
+            case 9:{
+                if(String.valueOf(getPackageName()).toLowerCase().compareTo(String.valueOf(o.getPackageName()).toLowerCase())>0)return 1;
+                if(String.valueOf(getPackageName()).toLowerCase().compareTo(String.valueOf(o.getPackageName()).toLowerCase())<0)return -1;
+            }
+            break;
+            case 10:{
+                if(String.valueOf(getPackageName()).toLowerCase().compareTo(String.valueOf(o.getPackageName()).toLowerCase())<0)return 1;
+                if(String.valueOf(getPackageName()).toLowerCase().compareTo(String.valueOf(o.getPackageName()).toLowerCase())>0)return -1;
             }
             break;
         }
