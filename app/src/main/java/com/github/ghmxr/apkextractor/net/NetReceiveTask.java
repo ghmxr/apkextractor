@@ -1,9 +1,12 @@
 package com.github.ghmxr.apkextractor.net;
 
 import android.content.Context;
+import android.content.Intent;
 import android.support.annotation.NonNull;
 import android.support.v4.provider.DocumentFile;
+import android.text.format.Formatter;
 
+import com.github.ghmxr.apkextractor.Constants;
 import com.github.ghmxr.apkextractor.Global;
 import com.github.ghmxr.apkextractor.R;
 import com.github.ghmxr.apkextractor.items.FileItem;
@@ -330,6 +333,13 @@ public class NetReceiveTask implements UdpThread.UdpThreadCallback{
                                     +"/"+fileNameOfMessage);
                         }
                     });
+                    try {
+                        postLogInfoToCallback(context.getResources().getString(R.string.receive_log_starting_receiving_files).replace("#N",String.valueOf(i+1))
+                                .replace("#P",writingFileItemThisLoop.getPath())
+                                .replace("#L", Formatter.formatFileSize(context,receiveFileItem.length)));
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
                     byte [] buffer=new byte[1024];
                     int length;
                     while ((length=inputStream.read(buffer))!=-1&&!isInterrupted){
@@ -370,6 +380,12 @@ public class NetReceiveTask implements UdpThread.UdpThreadCallback{
                     error_info.append(e.toString());
                     error_info.append("\n\n");
                     e.printStackTrace();
+                    try {
+                        postLogInfoToCallback(context.getResources().getString(R.string.receive_log_receiving_file_exception)
+                        .replace("#N",String.valueOf(i+1))+e);
+                    } catch (Exception ex) {
+                        ex.printStackTrace();
+                    }
                 }finally {
                     try{
                         if(socket!=null)socket.close();
@@ -377,6 +393,7 @@ public class NetReceiveTask implements UdpThread.UdpThreadCallback{
                 }
             }
             EnvironmentUtil.requestUpdatingMediaDatabase(context);
+            context.sendBroadcast(new Intent(Constants.ACTION_REFRESH_AVAILIBLE_STORAGE));
             if(callback!=null&&!isInterrupted){
                 Global.handler.post(new Runnable() {
                     @Override
@@ -386,6 +403,7 @@ public class NetReceiveTask implements UdpThread.UdpThreadCallback{
                 });
             }
             senderIp=null;
+            postLogInfoToCallback(context.getResources().getString(R.string.receive_log_receiving_files_completed));
         }
 
         void setInterrupted(){

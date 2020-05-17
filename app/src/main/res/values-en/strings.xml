@@ -238,6 +238,9 @@
     <string name="receive_log_received_file_request">received receiving file request message:</string>
     <string name="receive_log_received_send_cancel">received sending files canceled message:</string>
     <string name="receive_log_received_transfer_interrupt">received sending files interrupted message:</string>
+    <string name="receive_log_starting_receiving_files">Starting to receive file #N, path: #P, length: #L</string>
+    <string name="receive_log_receiving_file_exception">Occurs exception while receiving file #N, exception info ：\n</string>
+    <string name="receive_log_receiving_files_completed">Receiving files completed</string>
 
     <string name="help_send">
         Let the other side install APK Kit, then connect to a same WiFi network , or connect to this devices\'s AP ,then run APK Kit with selecting the "Receive File"

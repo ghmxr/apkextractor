@@ -37,7 +37,9 @@ public class FileReceiveActivity extends BaseActivity implements NetReceiveTask.
 
     private FileTransferringDialog receiving_diag;
     private AlertDialog request_diag;
+    private RecyclerView recyclerView;
     private ListAdapter listAdapter;
+    private LinearLayoutManager linearLayoutManager;
 
     private final ArrayList<MessageBean>logMessages=new ArrayList<>();
 
@@ -50,8 +52,10 @@ public class FileReceiveActivity extends BaseActivity implements NetReceiveTask.
         super.onCreate(bundle);
         setContentView(R.layout.activity_file_receive);
         setTitle(getResources().getString(R.string.activity_receive_title));
-        RecyclerView recyclerView=findViewById(R.id.activity_file_receive_recyclerview);
-        recyclerView.setLayoutManager(new LinearLayoutManager(this,LinearLayoutManager.VERTICAL,false));
+        recyclerView=findViewById(R.id.activity_file_receive_recyclerview);
+        linearLayoutManager=new LinearLayoutManager(this);
+        linearLayoutManager.setOrientation(LinearLayoutManager.VERTICAL);
+        recyclerView.setLayoutManager(linearLayoutManager);
         listAdapter=new ListAdapter();
         recyclerView.setAdapter(listAdapter);
         try {
@@ -135,7 +139,12 @@ public class FileReceiveActivity extends BaseActivity implements NetReceiveTask.
     public void onLog(String logInfo) {
         MessageBean messageBean=new MessageBean(System.currentTimeMillis(),logInfo);
         logMessages.add(messageBean);
-        if(listAdapter!=null)listAdapter.notifyDataSetChanged();
+        if(listAdapter!=null){
+            listAdapter.notifyDataSetChanged();
+            if(linearLayoutManager!=null){
+                linearLayoutManager.smoothScrollToPosition(recyclerView,null,logMessages.size()-1);
+            }
+        }
     }
 
     @Override

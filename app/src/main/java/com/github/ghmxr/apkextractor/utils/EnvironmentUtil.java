@@ -82,6 +82,8 @@ public class EnvironmentUtil {
         try{
             final PackageManager packageManager=context.getPackageManager();
             return String.valueOf(packageManager.getApplicationLabel(packageManager.getApplicationInfo(package_name,0)));
+        }catch (PackageManager.NameNotFoundException ne){
+            //Do nothing
         }catch (Exception e){
             e.printStackTrace();
         }

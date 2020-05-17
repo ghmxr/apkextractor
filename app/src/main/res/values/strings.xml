@@ -270,6 +270,9 @@
     <string name="receive_log_received_file_request">收到接收文件请求报文:</string>
     <string name="receive_log_received_send_cancel">收到发送端取消发送文件报文:</string>
     <string name="receive_log_received_transfer_interrupt">收到发送端终止发送文件报文:</string>
+    <string name="receive_log_starting_receiving_files">开始接收第#N个文件，路径#P，长度#L</string>
+    <string name="receive_log_receiving_file_exception">接收第#N个文件出现异常，异常信息：\n</string>
+    <string name="receive_log_receiving_files_completed">接收文件完成</string>
 
     <string name="help_send">
         请对方设备安装APK Kit（Build 8及以上版本），并和当前设备接入同一个WiFi网络，或者接入本设备的热点后，打开APK Kit，在左侧边栏选择“接收文件”。\n\n
@@ -352,14 +355,9 @@
         通过本应用的分享功能，可以将APP或者安装包分享给对方。本应用的局域网分享功能同时支持分享本地外置存储中的任何一个文件，通过文件管理器或其他应用
         分享时选择本应用即可直接发送给对方，接收端接收到的文件将会保存至导出路径。\n\n
 
-   <b>Build 11 更新日志：</b> \n
-    <b>新增：应用服务、提供者组件信息，UID，安装来源等信息；</b>\n
-    <b>新增：搜索结果关键字高亮显示；</b>\n
-    <b>变动：应用，安装包视图模式可单独控制；</b>\n
-    <b>修复：在Android 5.0及以下版本打开搜索功能时可能引发的崩溃；</b>\n
-    <b>变动：应用项改为显示应用名称+版本名；</b>\n
-    <b>变动：优化内容排序时的执行速度(去掉重加载)；</b>\n
-    <b>新增：批量复制包名的功能。</b>\n\n
+   <b>Build 12 更新日志：</b> \n
+    <b>新增：应用页按包名排序功能；</b>\n
+    <b>修复：搜索模式多选模式下可能引发的崩溃。</b>\n\n
 
         开源地址:\n
          https://github.com/ghmxr/apkextractor \n\n
