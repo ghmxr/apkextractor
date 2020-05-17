@@ -142,7 +142,7 @@ public class FileReceiveActivity extends BaseActivity implements NetReceiveTask.
         if(listAdapter!=null){
             listAdapter.notifyDataSetChanged();
             if(linearLayoutManager!=null){
-                linearLayoutManager.smoothScrollToPosition(recyclerView,null,logMessages.size()-1);
+                linearLayoutManager.smoothScrollToPosition(recyclerView,null,logMessages.size()>0?logMessages.size()-1:0);
             }
         }
     }
