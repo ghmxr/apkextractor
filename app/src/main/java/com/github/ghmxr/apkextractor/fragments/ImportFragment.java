@@ -249,24 +249,29 @@ public class ImportFragment extends Fragment implements RefreshImportListTask.Re
         }
     }
 
+    private boolean isRefreshing=true;
+
     @Override
     public void onRefreshStarted() {
+        isRefreshing=true;
         if(getActivity()==null)return;
         isScrollable=false;
-        recyclerView.setAdapter(null);
+        if(adapter!=null)adapter.setData(null);
         swipeRefreshLayout.setRefreshing(true);
         viewGroup_no_content.setVisibility(View.GONE);
     }
 
     @Override
     public void onRefreshCompleted(List<ImportItem> list) {
+        isRefreshing=false;
         if(getActivity()==null)return;
         swipeRefreshLayout.setRefreshing(false);
-        adapter=new RecyclerViewAdapter<>(getActivity()
+        if(adapter==null)adapter=new RecyclerViewAdapter<>(getActivity()
                 ,recyclerView
                 ,list
                 , SPUtil.getGlobalSharedPreferences(getActivity()).getInt(Constants.PREFERENCE_MAIN_PAGE_VIEW_MODE_IMPORT,Constants.PREFERENCE_MAIN_PAGE_VIEW_MODE_IMPORT_DEFAULT)
                 ,this);
+        else adapter.setData(list);
         recyclerView.setAdapter(adapter);
         viewGroup_no_content.setVisibility(list.size()==0?View.VISIBLE:View.GONE);
         //if(isSearchMode)adapter.setData(null);
@@ -315,15 +320,26 @@ public class ImportFragment extends Fragment implements RefreshImportListTask.Re
         this.isSearchMode=b;
         if(card_multi_select!=null)card_multi_select.setVisibility(View.GONE);
         if(swipeRefreshLayout!=null){
-            swipeRefreshLayout.setEnabled(!b);
+            //swipeRefreshLayout.setEnabled(!b);
+            if(b){
+                swipeRefreshLayout.setRefreshing(false);
+                swipeRefreshLayout.setEnabled(false);
+            }else{
+                swipeRefreshLayout.setEnabled(true);
+                if(isRefreshing){
+                    swipeRefreshLayout.setRefreshing(true);
+                }
+            }
         }
         if(adapter==null)return;
         adapter.setMultiSelectMode(false);
         if(b){
             adapter.setData(null);
         }else{
-            synchronized (Global.item_list) {
-                adapter.setData(Global.item_list);
+            if(!isRefreshing){
+                synchronized (Global.item_list) {
+                    adapter.setData(Global.item_list);
+                }
             }
         }
         if(!b)adapter.setHighlightKeyword(null);
@@ -404,6 +420,12 @@ public class ImportFragment extends Fragment implements RefreshImportListTask.Re
         btn_import.setOnClickListener(this);
         swipeRefreshLayout.setColorSchemeColors(getActivity().getResources().getColor(R.color.colorTitle));
         recyclerView.addOnScrollListener(onScrollListener);
+        adapter=new RecyclerViewAdapter<>(getActivity()
+                ,recyclerView
+                ,null
+                , SPUtil.getGlobalSharedPreferences(getActivity()).getInt(Constants.PREFERENCE_MAIN_PAGE_VIEW_MODE_IMPORT,Constants.PREFERENCE_MAIN_PAGE_VIEW_MODE_IMPORT_DEFAULT)
+                ,this);
+        recyclerView.setAdapter(adapter);
         swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {

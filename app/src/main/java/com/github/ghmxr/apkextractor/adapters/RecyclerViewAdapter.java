@@ -34,11 +34,11 @@ public class RecyclerViewAdapter<T extends DisplayItem> extends RecyclerView.Ada
     private int mode;
     private String highlightKeyword =null;
 
-    public RecyclerViewAdapter(@NonNull Activity activity,@NonNull RecyclerView recyclerView,@NonNull List<T>data,int viewMode,
+    public RecyclerViewAdapter(@NonNull Activity activity,@NonNull RecyclerView recyclerView,@Nullable List<T>data,int viewMode,
                                @NonNull ListAdapterOperationListener<T> listener){
         this.activity=activity;
         this.recyclerView=recyclerView;
-        this.data.addAll(data);
+        if(data!=null)this.data.addAll(data);
         this.listener=listener;
         this.mode=viewMode;
         setLayoutManagerAndView(mode);
