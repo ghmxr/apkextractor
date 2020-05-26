@@ -94,6 +94,7 @@ public class PackageDetailActivity extends BaseActivity implements View.OnClickL
         cb_apk=findViewById(R.id.package_detail_apk);
         ((ImageView)findViewById(R.id.package_icon)).setImageDrawable(importItem.getIconDrawable());
         ((TextView)findViewById(R.id.package_detail_name)).setText(importItem.getFileItem().getName());
+        ((TextView)findViewById(R.id.package_detail_package_name)).setText(importItem.getPackageInfo()!=null?String.valueOf(importItem.getPackageInfo().packageName):"");
         ((TextView)findViewById(R.id.package_detail_version_name_title)).setText(importItem.getVersionName());
         ((TextView)findViewById(R.id.package_detail_file_name)).setText(importItem.getFileItem().getName());
         ((TextView)findViewById(R.id.package_detail_size)).setText(Formatter.formatFileSize(this,importItem.getSize()));
@@ -110,6 +111,7 @@ public class PackageDetailActivity extends BaseActivity implements View.OnClickL
         }
         if(importItem.getImportType()==ImportItem.ImportType.ZIP){
             findViewById(R.id.package_detail_version_name_title).setVisibility(View.GONE);
+            findViewById(R.id.package_detail_package_name_area).setVisibility(View.GONE);
             findViewById(R.id.package_detail_version_name_area).setVisibility(View.GONE);
             findViewById(R.id.package_detail_version_code_area).setVisibility(View.GONE);
             findViewById(R.id.package_detail_minimum_api_area).setVisibility(View.GONE);
@@ -322,7 +324,7 @@ public class PackageDetailActivity extends BaseActivity implements View.OnClickL
                 }
             }
             break;
-            case R.id.package_detail_package_name_area:{
+            case R.id.package_detail_file_name_area:{
                 clip2ClipboardAndShowSnackbar(((TextView)findViewById(R.id.package_detail_file_name)).getText().toString());
             }
             break;

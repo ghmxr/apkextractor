@@ -97,16 +97,16 @@ public class ExportTask extends Thread {
 
                     OutputStream outputStream;
                     if(isExternal) {
-                        DocumentFile documentFile = OutputUtil.getWritingDocumentFileForAppItem(context,item,"apk");
+                        DocumentFile documentFile = OutputUtil.getWritingDocumentFileForAppItem(context,item,"apk",i+1);
                         this.currentWritingFile=new FileItem(context,documentFile);
                         this.currentWritingPath=SPUtil.getDisplayingExportPath(context)+"/"+documentFile.getName();
                         outputStream= OutputUtil.getOutputStreamForDocumentFile(context,documentFile);
                     }
                     else {
-                        String writePath=OutputUtil.getAbsoluteWritePath(context,item,"apk");
+                        String writePath=OutputUtil.getAbsoluteWritePath(context,item,"apk",i+1);
                         this.currentWritingFile=new FileItem(writePath);
                         this.currentWritingPath=writePath;
-                        outputStream=new FileOutputStream(new File(OutputUtil.getAbsoluteWritePath(context,item,"apk")));
+                        outputStream=new FileOutputStream(new File(OutputUtil.getAbsoluteWritePath(context,item,"apk",i+1)));
                     }
 
                     postCallback2Listener(new Runnable() {
@@ -171,16 +171,16 @@ public class ExportTask extends Thread {
                 else{
                     OutputStream outputStream;
                     if(isExternal){
-                        DocumentFile documentFile= OutputUtil.getWritingDocumentFileForAppItem(context,item,SPUtil.getCompressingExtensionName(context));
+                        DocumentFile documentFile= OutputUtil.getWritingDocumentFileForAppItem(context,item,SPUtil.getCompressingExtensionName(context),i+1);
                         this.currentWritingFile=new FileItem(context,documentFile);
                         this.currentWritingPath=SPUtil.getDisplayingExportPath(context)+"/"+documentFile.getName();
                         outputStream= OutputUtil.getOutputStreamForDocumentFile(context,documentFile);
                     }
                     else {
-                        String writePath=OutputUtil.getAbsoluteWritePath(context,item,SPUtil.getCompressingExtensionName(context));
+                        String writePath=OutputUtil.getAbsoluteWritePath(context,item,SPUtil.getCompressingExtensionName(context),i+1);
                         this.currentWritingFile= new FileItem(writePath);
                         this.currentWritingPath=writePath;
-                        outputStream=new FileOutputStream(new File(OutputUtil.getAbsoluteWritePath(context,item,SPUtil.getCompressingExtensionName(context))));
+                        outputStream=new FileOutputStream(new File(OutputUtil.getAbsoluteWritePath(context,item,SPUtil.getCompressingExtensionName(context),i+1)));
                     }
                     postCallback2Listener(new Runnable() {
                         @Override

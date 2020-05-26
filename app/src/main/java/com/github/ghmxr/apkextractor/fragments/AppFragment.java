@@ -334,6 +334,7 @@ public class AppFragment extends Fragment implements View.OnClickListener, Refre
         progressBar.setProgress(0);
         swipeRefreshLayout.setRefreshing(true);
         cb_sys.setEnabled(false);
+        card_multi_select.setVisibility(View.GONE);
     }
 
     @Override
@@ -349,6 +350,7 @@ public class AppFragment extends Fragment implements View.OnClickListener, Refre
         loading_content.setVisibility(View.GONE);
         viewGroup_no_content.setVisibility(appList.size()==0?View.VISIBLE:View.GONE);
         swipeRefreshLayout.setRefreshing(false);
+        swipeRefreshLayout.setEnabled(true);
         /*int mode= SPUtil.getGlobalSharedPreferences(getActivity()).getInt(Constants.PREFERENCE_MAIN_PAGE_VIEW_MODE
                 ,Constants.PREFERENCE_MAIN_PAGE_VIEW_MODE_DEFAULT);*/
         adapter=new RecyclerViewAdapter<>(getActivity()

@@ -33,9 +33,18 @@
             android:layout_centerHorizontal="true"
             android:layout_below="@+id/loading_pg"
             android:layout_marginTop="30dp"
+            android:layout_marginLeft="40dp"
+            android:layout_marginRight="40dp"
             android:textColor="@color/colorHighLightText"
             android:textSize="18sp"
-            android:text="@string/att_loading"/>
+            android:text="@string/att_loading"
+            android:gravity="center_horizontal"
+            android:maxLines="5"
+            android:ellipsize="middle"
+            tools:text="正在扫描 /storage/emulated/0/Backup/com.github.ghmxr.apkextractor-12.apk
+            正在扫描 /storage/emulated/0/Backup/com.github.ghmxr.apkextractor-12.apk
+            正在扫描 /storage/emulated/0/Backup/com.github.ghmxr.apkextractor-12.apk
+            正在扫描 /storage/emulated/0/Backup/com.github.ghmxr.apkextractor-12.apk"/>
     </RelativeLayout>
     <LinearLayout
         android:layout_width="wrap_content"

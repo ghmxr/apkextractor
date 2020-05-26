@@ -197,7 +197,7 @@
                 android:orientation="vertical"
                 android:layout_margin="5dp">
                 <RelativeLayout
-                    android:id="@+id/package_detail_package_name_area"
+                    android:id="@+id/package_detail_file_name_area"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:clickable="true"
@@ -227,6 +227,44 @@
                         android:layout_marginRight="5dp"
                         android:textSize="12sp"
                         tools:text="package.zip"/>
+                    <ImageView
+                        android:layout_width="match_parent"
+                        android:layout_height="1px"
+                        android:layout_alignParentBottom="true"
+                        android:background="@color/colorDividingLine"/>
+                </RelativeLayout>
+
+                <RelativeLayout
+                    android:id="@+id/package_detail_package_name_area"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:clickable="true"
+                    android:focusable="true"
+                    android:background="?attr/selectableItemBackground"
+                    android:onClick="onClick">
+                    <TextView
+                        android:id="@+id/package_detail_package_name_att"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentLeft="true"
+                        android:layout_marginLeft="5dp"
+                        android:layout_marginTop="10dp"
+                        android:layout_marginBottom="10dp"
+                        android:layout_centerVertical="true"
+                        android:textSize="14sp"
+                        android:textColor="@color/colorHighLightText"
+                        android:text="@string/activity_detail_package_name"/>
+                    <TextView
+                        android:id="@+id/package_detail_package_name"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_toRightOf="@+id/package_detail_package_name_att"
+                        android:gravity="end"
+                        android:layout_centerVertical="true"
+                        android:layout_marginLeft="10dp"
+                        android:layout_marginRight="5dp"
+                        android:textSize="12sp"
+                        tools:text="com.example"/>
                     <ImageView
                         android:layout_width="match_parent"
                         android:layout_height="1px"

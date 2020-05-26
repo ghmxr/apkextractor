@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content">
 
@@ -160,19 +161,28 @@
                 android:layout_height="wrap_content"
                 android:orientation="horizontal">
                 <Button
+                    android:id="@+id/filename_sequence_number"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    style="?android:attr/buttonStyleSmall"
+                    android:layout_margin="5dp"
+                    android:text="@string/dialog_filename_button_sequence_number"/>
+                <Button
                     android:id="@+id/filename_connector"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     style="?android:attr/buttonStyleSmall"
                     android:layout_margin="5dp"
-                    android:text="-"/>
+                    android:text="-"
+                    tools:ignore="HardcodedText" />
                 <Button
-                    android:id="@+id/filename_upderline"
+                    android:id="@+id/filename_underline"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     style="?android:attr/buttonStyleSmall"
                     android:layout_margin="5dp"
-                    android:text="_"/>
+                    android:text="_"
+                    tools:ignore="HardcodedText" />
                 <Button
                     android:id="@+id/filename_appname"
                     android:layout_width="wrap_content"
@@ -201,6 +211,48 @@
                     style="?android:attr/buttonStyleSmall"
                     android:layout_margin="5dp"
                     android:text="@string/dialog_filename_button_versioncode"/>
+                <Button
+                    android:id="@+id/filename_year"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    style="?android:attr/buttonStyleSmall"
+                    android:layout_margin="5dp"
+                    android:text="@string/dialog_filename_button_year"/>
+                <Button
+                    android:id="@+id/filename_month"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    style="?android:attr/buttonStyleSmall"
+                    android:layout_margin="5dp"
+                    android:text="@string/dialog_filename_button_month"/>
+                <Button
+                    android:id="@+id/filename_day_of_month"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    style="?android:attr/buttonStyleSmall"
+                    android:layout_margin="5dp"
+                    android:text="@string/dialog_filename_button_day_of_month"/>
+                <Button
+                    android:id="@+id/filename_hour_of_day"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    style="?android:attr/buttonStyleSmall"
+                    android:layout_margin="5dp"
+                    android:text="@string/dialog_filename_button_hour_of_day"/>
+                <Button
+                    android:id="@+id/filename_minute"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    style="?android:attr/buttonStyleSmall"
+                    android:layout_margin="5dp"
+                    android:text="@string/dialog_filename_button_minute"/>
+                <Button
+                    android:id="@+id/filename_second"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    style="?android:attr/buttonStyleSmall"
+                    android:layout_margin="5dp"
+                    android:text="@string/dialog_filename_button_second"/>
             </LinearLayout>
         </HorizontalScrollView>
 

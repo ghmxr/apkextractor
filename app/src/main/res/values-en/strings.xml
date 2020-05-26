@@ -207,7 +207,7 @@
     <string name="dialog_filename_preview_version">1.0</string>
     <string name="dialog_filename_preview_versioncode">1</string>
     <string name="dialog_filename_toast_blank">Naming rule(s) can not be empty</string>
-    <string name="dialog_filename_warn_no_variables">waring: no variables typed, this will cause errors while exporting multi-files</string>
+    <string name="dialog_filename_warn_no_variables">no unique variable(?N, ?P,?A), file overwrite may occur during export!</string>
 
     <string name="activity_send_title">Sending Files</string>
     <string name="activity_send_by_title">Sending by APK Kit</string>

@@ -2,6 +2,7 @@ package com.github.ghmxr.apkextractor.tasks;
 
 import android.content.Context;
 import android.net.Uri;
+import android.support.annotation.NonNull;
 import android.text.TextUtils;
 
 import com.github.ghmxr.apkextractor.Constants;
@@ -18,7 +19,7 @@ import java.util.List;
 public class RefreshImportListTask extends Thread{
     private Context context;
     //private FileItem fileItem;
-    private RefreshImportListTaskCallback callback;
+    private final RefreshImportListTaskCallback callback;
     public RefreshImportListTask(Context context, RefreshImportListTaskCallback callback){
         this.context=context;
         this.callback=callback;
@@ -38,7 +39,7 @@ public class RefreshImportListTask extends Thread{
         if(callback!=null)Global.handler.post(new Runnable() {
             @Override
             public void run() {
-                if(callback!=null)callback.onRefreshStarted();
+                callback.onRefreshStarted();
             }
         });
         final int package_scope_value=SPUtil.getGlobalSharedPreferences(context).getInt(Constants.PREFERENCE_PACKAGE_SCOPE,Constants.PREFERENCE_PACKAGE_SCOPE_DEFAULT);
@@ -74,13 +75,13 @@ public class RefreshImportListTask extends Thread{
             Global.handler.post(new Runnable() {
                 @Override
                 public void run() {
-                    if(callback!=null)callback.onRefreshCompleted(arrayList);
+                    callback.onRefreshCompleted(arrayList);
                 }
             });
         }
     }
 
-    private ArrayList<ImportItem> getAllImportItemsFromPath(FileItem fileItem){
+    private ArrayList<ImportItem> getAllImportItemsFromPath(final FileItem fileItem){
         ArrayList<ImportItem>arrayList=new ArrayList<>();
         try{
             if (fileItem==null)return arrayList;
@@ -89,18 +90,34 @@ public class RefreshImportListTask extends Thread{
                 if(fileItem.getPath().trim().toLowerCase().endsWith(".apk")||fileItem.getPath().trim().toLowerCase().endsWith(".zip")
                 ||fileItem.getPath().trim().toLowerCase().endsWith(".xapk")
                         ||fileItem.getPath().trim().toLowerCase().endsWith(SPUtil.getCompressingExtensionName(context).toLowerCase())){
+                    if(callback!=null){
+                        Global.handler.post(new Runnable() {
+                            @Override
+                            public void run() {
+                                callback.onProgress(fileItem);
+                            }
+                        });
+                    }
                     arrayList.add(new ImportItem(context,fileItem));
                 }
                 return arrayList;
             }
             List<FileItem>fileItems=fileItem.listFileItems();
-            for(FileItem fileItem1:fileItems){
+            for(final FileItem fileItem1:fileItems){
                 if(fileItem1.isDirectory())arrayList.addAll(getAllImportItemsFromPath(fileItem1));
                 else {
                     if(fileItem1.getPath().trim().toLowerCase().endsWith(".apk")||fileItem1.getPath().trim().toLowerCase().endsWith(".zip")
                             ||fileItem1.getPath().trim().toLowerCase().endsWith(".xapk")
                             ||fileItem1.getPath().trim().toLowerCase().endsWith(SPUtil.getCompressingExtensionName(context).toLowerCase())){
                         try{
+                            if(callback!=null){
+                                Global.handler.post(new Runnable() {
+                                    @Override
+                                    public void run() {
+                                        callback.onProgress(fileItem1);
+                                    }
+                                });
+                            }
                             arrayList.add(new ImportItem(context,fileItem1));
                         }catch (Exception e){e.printStackTrace();}
                     }
@@ -112,6 +129,7 @@ public class RefreshImportListTask extends Thread{
 
     public interface RefreshImportListTaskCallback{
         void onRefreshStarted();
+        void onProgress(@NonNull FileItem fileItem);
         void onRefreshCompleted(List<ImportItem> list);
     }
 }

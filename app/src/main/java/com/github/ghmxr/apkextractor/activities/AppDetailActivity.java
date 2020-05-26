@@ -238,7 +238,7 @@ public class AppDetailActivity extends BaseActivity implements View.OnClickListe
                         ToastManager.showToast(AppDetailActivity.this,getResources().getString(R.string.toast_export_complete)+" "
                                 +SPUtil.getDisplayingExportPath(AppDetailActivity.this)+"/"
                                 +OutputUtil.getWriteFileNameForAppItem(AppDetailActivity.this,single_list.get(0),(item.exportData||item.exportObb)?
-                                SPUtil.getCompressingExtensionName(AppDetailActivity.this):"apk"),Toast.LENGTH_SHORT);
+                                SPUtil.getCompressingExtensionName(AppDetailActivity.this):"apk",1),Toast.LENGTH_SHORT);
                     }
                 });
             }

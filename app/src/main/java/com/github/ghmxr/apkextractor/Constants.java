@@ -132,10 +132,17 @@ public class Constants {
     public static final int SHARE_MODE_AFTER_EXTRACT=0;
     public static final int PREFERENCE_SHAREMODE_DEFAULT=SHARE_MODE_DIRECT;
 
+    public static final String FONT_AUTO_SEQUENCE_NUMBER="?A";
     public static final String FONT_APP_NAME="?N";
     public static final String FONT_APP_PACKAGE_NAME="?P";
     public static final String FONT_APP_VERSIONCODE="?C";
     public static final String FONT_APP_VERSIONNAME="?V";
+    public static final String FONT_YEAR="?Y";
+    public static final String FONT_MONTH="?M";
+    public static final String FONT_DAY_OF_MONTH="?D";
+    public static final String FONT_HOUR_OF_DAY="?H";
+    public static final String FONT_MINUTE="?I";
+    public static final String FONT_SECOND="?S";
 
     public static final int ZIP_LEVEL_STORED=0;
     public static final int ZIP_LEVEL_LOW=1;

@@ -122,6 +122,7 @@ public class RecyclerViewAdapter<T extends DisplayItem> extends RecyclerView.Ada
 
     public void setData(@Nullable List<T>data){
         this.data.clear();
+        isMultiSelectMode=false;
         isSelected=null;
         if(data!=null)this.data.addAll(data);
         notifyDataSetChanged();

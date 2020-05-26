@@ -26,6 +26,7 @@ import android.text.Spannable;
 import android.text.SpannableStringBuilder;
 import android.text.format.Formatter;
 import android.text.style.ForegroundColorSpan;
+import android.util.TypedValue;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.Toast;
@@ -78,7 +79,7 @@ public class EnvironmentUtil {
         return bitmap;
     }
 
-    public static String getAppNameByPackageName(@NonNull Context context,@NonNull String package_name){
+    public static @NonNull String getAppNameByPackageName(@NonNull Context context,@NonNull String package_name){
         try{
             final PackageManager packageManager=context.getPackageManager();
             return String.valueOf(packageManager.getApplicationLabel(packageManager.getApplicationInfo(package_name,0)));
@@ -91,23 +92,38 @@ public class EnvironmentUtil {
     }
 
     /**
-     * @deprecated
-     * 返回 yyyy/mm/dd/hh:mm::ss 字符串
+     * 返回当前时间值
+     * @param field 参考{@link Calendar#YEAR} {@link Calendar#MONTH} {@link Calendar#MINUTE}
+     * {@link Calendar#HOUR_OF_DAY} {@link Calendar#MINUTE} {@link Calendar#SECOND}
      */
-    public static @NonNull String getFormatDateAndTime(long time){
+    public static @NonNull String getCurrentTimeValue(int field){
         Calendar calendar=Calendar.getInstance();
-        calendar.setTimeInMillis(time);
-        return calendar.get(Calendar.YEAR)+"/"+getFormatNumberWithZero(calendar.get(Calendar.MONTH)+1)
-                +"/"+getFormatNumberWithZero(calendar.get(Calendar.DAY_OF_MONTH))
-                +"/"+getFormatNumberWithZero(calendar.get(Calendar.HOUR_OF_DAY))
-                +":"+getFormatNumberWithZero(calendar.get(Calendar.MINUTE))
-                +":"+getFormatNumberWithZero(calendar.get(Calendar.SECOND));
+        calendar.setTimeInMillis(System.currentTimeMillis());
+        int value=calendar.get(field);
+        if(field==Calendar.MONTH)value++;
+        return getFormatNumberWithZero(value);
     }
 
-    public static @NonNull String getFormatNumberWithZero(int value){
-        if(value<0)return String.valueOf(0);
-        if(value<=9)return "0"+value;
+    private static @NonNull String getFormatNumberWithZero(int value){
+        if(value>=0&&value<=9){
+            return "0"+value;
+        }
         return String.valueOf(value);
+    }
+
+    public static String getEmptyVariableString(@NonNull String value){
+        value=value.replace(Constants.FONT_APP_NAME, "");
+        value=value.replace(Constants.FONT_APP_PACKAGE_NAME,"");
+        value=value.replace(Constants.FONT_APP_VERSIONNAME,"");
+        value=value.replace(Constants.FONT_APP_VERSIONCODE,"");
+        value=value.replace(Constants.FONT_YEAR,"");
+        value=value.replace(Constants.FONT_MONTH,"");
+        value=value.replace(Constants.FONT_DAY_OF_MONTH,"");
+        value=value.replace(Constants.FONT_HOUR_OF_DAY,"");
+        value=value.replace(Constants.FONT_MINUTE,"");
+        value=value.replace(Constants.FONT_SECOND,"");
+        value=value.replace(Constants.FONT_AUTO_SEQUENCE_NUMBER,"");
+        return value;
     }
 
     /**
@@ -329,7 +345,9 @@ public class EnvironmentUtil {
      */
     public static @NonNull String getFileMainName(@NonNull String fileName){
         try{
-            return fileName.substring(0,fileName.lastIndexOf("."));
+            final int lastIndex=fileName.lastIndexOf(".");
+            if(lastIndex==-1)return fileName;
+            return fileName.substring(0,lastIndex);
         }catch (Exception e){e.printStackTrace();}
         return "";
     }
@@ -600,9 +618,9 @@ public class EnvironmentUtil {
         return builder;
     }
 
-    /*public static int dp2px(@NonNull Context context,int dp){
+    public static int dp2px(@NonNull Context context,int dp){
         return (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, dp, context.getResources().getDisplayMetrics());
-    }*/
+    }
 
     /*public static String getBroadCastIpAddress(@NonNull Context context){
         try{

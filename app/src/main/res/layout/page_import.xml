@@ -77,14 +77,14 @@
                     android:focusable="true"
                     android:ellipsize="end" />
                 <Button
-                    android:id="@+id/import_share"
+                    android:id="@+id/import_more"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     style="@style/Widget.AppCompat.Button.ButtonBar.AlertDialog"
                     android:layout_centerVertical="true"
                     android:textSize="13sp"
                     android:singleLine="true"
-                    android:text="@string/bottom_share"
+                    android:text="@string/bottom_more"
                     android:clickable="true"
                     android:focusable="true"
                     android:ellipsize="end" />

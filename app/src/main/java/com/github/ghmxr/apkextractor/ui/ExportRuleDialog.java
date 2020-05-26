@@ -19,6 +19,8 @@ import com.github.ghmxr.apkextractor.Constants;
 import com.github.ghmxr.apkextractor.utils.EnvironmentUtil;
 import com.github.ghmxr.apkextractor.utils.SPUtil;
 
+import java.util.Calendar;
+
 public class ExportRuleDialog extends AlertDialog implements View.OnClickListener,DialogInterface.OnClickListener{
 
 
@@ -37,10 +39,10 @@ public class ExportRuleDialog extends AlertDialog implements View.OnClickListene
         settings= SPUtil.getGlobalSharedPreferences(context);
 
         final View dialogView= LayoutInflater.from(context).inflate(R.layout.dialog_rule,null);
-        edit_apk=(EditText)dialogView.findViewById(R.id.filename_apk);
-        edit_zip=(EditText)dialogView.findViewById(R.id.filename_zip);
-        preview=((TextView)dialogView.findViewById(R.id.filename_preview));
-        spinner=((Spinner)dialogView.findViewById(R.id.spinner_zip_level));
+        edit_apk= dialogView.findViewById(R.id.filename_apk);
+        edit_zip= dialogView.findViewById(R.id.filename_zip);
+        preview= dialogView.findViewById(R.id.filename_preview);
+        spinner= dialogView.findViewById(R.id.spinner_zip_level);
 
         ((TextView)dialogView.findViewById(R.id.filename_zip_end)).setText("."+SPUtil.getCompressingExtensionName(context));
         edit_apk.setText(settings.getString(Constants.PREFERENCE_FILENAME_FONT_APK, Constants.PREFERENCE_FILENAME_FONT_DEFAULT));
@@ -82,23 +84,16 @@ public class ExportRuleDialog extends AlertDialog implements View.OnClickListene
         edit_apk.addTextChangedListener(new TextWatcher(){
 
             @Override
-            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-                // TODO Auto-generated method stub
-
-            }
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
 
             @Override
-            public void onTextChanged(CharSequence s, int start, int before, int count) {
-                // TODO Auto-generated method stub
-
-            }
+            public void onTextChanged(CharSequence s, int start, int before, int count) {}
 
             @Override
             public void afterTextChanged(Editable s) {
-                // TODO Auto-generated method stub
                 preview.setText(getFormatedExportFileName(edit_apk.getText().toString(),edit_zip.getText().toString()));
                 if(!edit_apk.getText().toString().contains(Constants.FONT_APP_NAME)&&!edit_apk.getText().toString().contains(Constants.FONT_APP_PACKAGE_NAME)
-                        &&!edit_apk.getText().toString().contains(Constants.FONT_APP_VERSIONCODE)&&!edit_apk.getText().toString().contains(Constants.FONT_APP_VERSIONNAME)){
+                        &&!edit_apk.getText().toString().contains(Constants.FONT_AUTO_SEQUENCE_NUMBER)){
                     dialogView.findViewById(R.id.filename_apk_warn).setVisibility(View.VISIBLE);
                 }else{
                     dialogView.findViewById(R.id.filename_apk_warn).setVisibility(View.GONE);
@@ -109,23 +104,16 @@ public class ExportRuleDialog extends AlertDialog implements View.OnClickListene
         edit_zip.addTextChangedListener(new TextWatcher(){
 
             @Override
-            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-                // TODO Auto-generated method stub
-
-            }
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
 
             @Override
-            public void onTextChanged(CharSequence s, int start, int before, int count) {
-                // TODO Auto-generated method stub
-
-            }
+            public void onTextChanged(CharSequence s, int start, int before, int count) {}
 
             @Override
             public void afterTextChanged(Editable s) {
-                // TODO Auto-generated method stub
                 preview.setText(getFormatedExportFileName(edit_apk.getText().toString(),edit_zip.getText().toString()));
                 if(!edit_zip.getText().toString().contains(Constants.FONT_APP_NAME)&&!edit_zip.getText().toString().contains(Constants.FONT_APP_PACKAGE_NAME)
-                        &&!edit_zip.getText().toString().contains(Constants.FONT_APP_VERSIONCODE)&&!edit_zip.getText().toString().contains(Constants.FONT_APP_VERSIONNAME)){
+                &&!edit_zip.getText().toString().contains(Constants.FONT_AUTO_SEQUENCE_NUMBER)){
                     dialogView.findViewById(R.id.filename_zip_warn).setVisibility(View.VISIBLE);
                 }else{
                     dialogView.findViewById(R.id.filename_zip_warn).setVisibility(View.GONE);
@@ -139,7 +127,14 @@ public class ExportRuleDialog extends AlertDialog implements View.OnClickListene
         dialogView.findViewById(R.id.filename_version).setOnClickListener(this);
         dialogView.findViewById(R.id.filename_versioncode).setOnClickListener(this);
         dialogView.findViewById(R.id.filename_connector).setOnClickListener(this);
-        dialogView.findViewById(R.id.filename_upderline).setOnClickListener(this);
+        dialogView.findViewById(R.id.filename_underline).setOnClickListener(this);
+        dialogView.findViewById(R.id.filename_year).setOnClickListener(this);
+        dialogView.findViewById(R.id.filename_month).setOnClickListener(this);
+        dialogView.findViewById(R.id.filename_day_of_month).setOnClickListener(this);
+        dialogView.findViewById(R.id.filename_hour_of_day).setOnClickListener(this);
+        dialogView.findViewById(R.id.filename_minute).setOnClickListener(this);
+        dialogView.findViewById(R.id.filename_second).setOnClickListener(this);
+        dialogView.findViewById(R.id.filename_sequence_number).setOnClickListener(this);
     }
 
     @Override
@@ -191,12 +186,75 @@ public class ExportRuleDialog extends AlertDialog implements View.OnClickListene
                 }
             }
             break;
-            case R.id.filename_upderline:{
+            case R.id.filename_underline:{
                 if(edit_apk.isFocused()){
                     edit_apk.getText().insert(edit_apk.getSelectionStart(), "_");
                 }
                 if(edit_zip.isFocused()){
                     edit_zip.getText().insert(edit_zip.getSelectionStart(), "_");
+                }
+            }
+            break;
+            case R.id.filename_year:{
+                if(edit_apk.isFocused()){
+                    edit_apk.getText().insert(edit_apk.getSelectionStart(),Constants.FONT_YEAR);
+                }
+                if(edit_zip.isFocused()){
+                    edit_zip.getText().insert(edit_zip.getSelectionStart(), Constants.FONT_YEAR);
+                }
+            }
+            break;
+            case R.id.filename_month:{
+                if(edit_apk.isFocused()){
+                    edit_apk.getText().insert(edit_apk.getSelectionStart(),Constants.FONT_MONTH);
+                }
+                if(edit_zip.isFocused()){
+                    edit_zip.getText().insert(edit_zip.getSelectionStart(), Constants.FONT_MONTH);
+                }
+            }
+            break;
+            case R.id.filename_day_of_month:{
+                if(edit_apk.isFocused()){
+                    edit_apk.getText().insert(edit_apk.getSelectionStart(),Constants.FONT_DAY_OF_MONTH);
+                }
+                if(edit_zip.isFocused()){
+                    edit_zip.getText().insert(edit_zip.getSelectionStart(), Constants.FONT_DAY_OF_MONTH);
+                }
+            }
+            break;
+            case R.id.filename_hour_of_day:{
+                if(edit_apk.isFocused()){
+                    edit_apk.getText().insert(edit_apk.getSelectionStart(),Constants.FONT_HOUR_OF_DAY);
+                }
+                if(edit_zip.isFocused()){
+                    edit_zip.getText().insert(edit_zip.getSelectionStart(), Constants.FONT_HOUR_OF_DAY);
+                }
+            }
+            break;
+            case R.id.filename_minute:{
+                if(edit_apk.isFocused()){
+                    edit_apk.getText().insert(edit_apk.getSelectionStart(),Constants.FONT_MINUTE);
+                }
+                if(edit_zip.isFocused()){
+                    edit_zip.getText().insert(edit_zip.getSelectionStart(), Constants.FONT_MINUTE);
+                }
+            }
+            break;
+            case R.id.filename_second:{
+                if(edit_apk.isFocused()){
+                    edit_apk.getText().insert(edit_apk.getSelectionStart(),Constants.FONT_SECOND);
+                }
+                if(edit_zip.isFocused()){
+                    edit_zip.getText().insert(edit_zip.getSelectionStart(), Constants.FONT_SECOND);
+                }
+            }
+            break;
+            case R.id.filename_sequence_number:{
+                if(edit_apk.isFocused()){
+                    edit_apk.getText().insert(edit_apk.getSelectionStart(),Constants.FONT_AUTO_SEQUENCE_NUMBER);
+                }
+                if(edit_zip.isFocused()){
+                    edit_zip.getText().insert(edit_zip.getSelectionStart(), Constants.FONT_AUTO_SEQUENCE_NUMBER);
                 }
             }
             break;
@@ -214,8 +272,8 @@ public class ExportRuleDialog extends AlertDialog implements View.OnClickListene
                     return;
                 }
 
-                String apk_replaced_variables=edit_apk.getText().toString().replace(Constants.FONT_APP_NAME, "").replace(Constants.FONT_APP_PACKAGE_NAME, "").replace(Constants.FONT_APP_VERSIONCODE, "").replace(Constants.FONT_APP_VERSIONNAME, "");
-                String zip_replaced_variables=edit_zip.getText().toString().replace(Constants.FONT_APP_NAME, "").replace(Constants.FONT_APP_PACKAGE_NAME, "").replace(Constants.FONT_APP_VERSIONCODE, "").replace(Constants.FONT_APP_VERSIONNAME, "");
+                final String apk_replaced_variables=EnvironmentUtil.getEmptyVariableString(edit_apk.getText().toString());
+                final String zip_replaced_variables=EnvironmentUtil.getEmptyVariableString(edit_zip.getText().toString());
                 if(!EnvironmentUtil.isALegalFileName(apk_replaced_variables)||!EnvironmentUtil.isALegalFileName(zip_replaced_variables)){
                     ToastManager.showToast(getContext(),getContext().getResources().getString(R.string.file_invalid_name),Toast.LENGTH_SHORT);
                     return;
@@ -243,14 +301,27 @@ public class ExportRuleDialog extends AlertDialog implements View.OnClickListene
     public void onClick(DialogInterface dialog, int which) {}
 
     private String getFormatedExportFileName(String apk, String zip){
+        return getContext().getResources().getString(R.string.word_preview)+":\n\nAPK:  "+getReplacedString(apk)+".apk\n\n"
+                +getContext().getResources().getString(R.string.word_compressed)+":  "+getReplacedString(zip)+"."
+                +SPUtil.getCompressingExtensionName(getContext());
+    }
+
+    private String getReplacedString(String value){
         final String PREVIEW_APPNAME=getContext().getResources().getString(R.string.dialog_filename_preview_appname);
         final String PREVIEW_PACKAGENAME=getContext().getResources().getString(R.string.dialog_filename_preview_packagename);
         final String PREVIEW_VERSION=getContext().getResources().getString(R.string.dialog_filename_preview_version);
         final String PREVIEW_VERSIONCODE=getContext().getResources().getString(R.string.dialog_filename_preview_versioncode);
-        return getContext().getResources().getString(R.string.word_preview)+":\n\nAPK:  "+apk.replace(Constants.FONT_APP_NAME, PREVIEW_APPNAME)
-                .replace(Constants.FONT_APP_PACKAGE_NAME, PREVIEW_PACKAGENAME).replace(Constants.FONT_APP_VERSIONCODE, PREVIEW_VERSIONCODE).replace(Constants.FONT_APP_VERSIONNAME, PREVIEW_VERSION)+".apk\n\n"
-                +getContext().getResources().getString(R.string.word_compressed)+":  "+zip.replace(Constants.FONT_APP_NAME, PREVIEW_APPNAME)
-                .replace(Constants.FONT_APP_PACKAGE_NAME, PREVIEW_PACKAGENAME).replace(Constants.FONT_APP_VERSIONCODE, PREVIEW_VERSIONCODE).replace(Constants.FONT_APP_VERSIONNAME, PREVIEW_VERSION)+"."
-                +SPUtil.getCompressingExtensionName(getContext());
+        value=value.replace(Constants.FONT_APP_NAME, PREVIEW_APPNAME);
+        value=value.replace(Constants.FONT_APP_PACKAGE_NAME, PREVIEW_PACKAGENAME);
+        value=value.replace(Constants.FONT_APP_VERSIONNAME, PREVIEW_VERSION);
+        value=value.replace(Constants.FONT_APP_VERSIONCODE, PREVIEW_VERSIONCODE);
+        value=value.replace(Constants.FONT_YEAR,EnvironmentUtil.getCurrentTimeValue(Calendar.YEAR));
+        value=value.replace(Constants.FONT_MONTH,EnvironmentUtil.getCurrentTimeValue(Calendar.MONTH));
+        value=value.replace(Constants.FONT_DAY_OF_MONTH,EnvironmentUtil.getCurrentTimeValue(Calendar.DAY_OF_MONTH));
+        value=value.replace(Constants.FONT_HOUR_OF_DAY,EnvironmentUtil.getCurrentTimeValue(Calendar.HOUR_OF_DAY));
+        value=value.replace(Constants.FONT_MINUTE,EnvironmentUtil.getCurrentTimeValue(Calendar.MINUTE));
+        value=value.replace(Constants.FONT_SECOND,EnvironmentUtil.getCurrentTimeValue(Calendar.SECOND));
+        value=value.replace(Constants.FONT_AUTO_SEQUENCE_NUMBER,String.valueOf(2));
+        return value;
     }
 }

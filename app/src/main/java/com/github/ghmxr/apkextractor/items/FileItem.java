@@ -104,6 +104,26 @@ public class FileItem implements Comparable<FileItem>{
         return false;
     }
 
+    public boolean renameTo(@NonNull String newName){
+        if(file!=null){
+            final String path=file.getParent();
+            final File destFile;
+            if(path==null){
+                destFile=new File("/"+newName);
+            }else{
+                destFile=new File(path+"/"+newName);
+            }
+            if(file.renameTo(destFile)){
+                file=destFile;
+                return true;
+            }
+        }
+        if(documentFile!=null){
+            return documentFile.renameTo(newName);
+        }
+        return false;
+    }
+
     /**
      * 此方法只针对file生效
      */

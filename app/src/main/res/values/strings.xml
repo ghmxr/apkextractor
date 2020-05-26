@@ -30,6 +30,8 @@
     <string name="bottom_more">更多</string>
     <string name="bottom_delete">删除</string>
     <string name="more_copy_package_names">复制包名</string>
+    <string name="more_file_rename">重命名</string>
+    <string name="hint_file_rename">输入文件名或变量</string>
     <string name="main_page_export">应用</string>
     <string name="main_page_import">安装包</string>
 
@@ -216,15 +218,24 @@
     <string name="dialog_filename_button_packagename">包名(?P)</string>
     <string name="dialog_filename_button_version">版本(?V)</string>
     <string name="dialog_filename_button_versioncode">版本号(?C)</string>
+    <string name="dialog_filename_button_year">年(?Y)</string>
+    <string name="dialog_filename_button_month">月(?M)</string>
+    <string name="dialog_filename_button_day_of_month">日(?D)</string>
+    <string name="dialog_filename_button_hour_of_day">时(?H)</string>
+    <string name="dialog_filename_button_minute">分(?I)</string>
+    <string name="dialog_filename_button_second">秒(?S)</string>
+    <string name="dialog_filename_button_sequence_number">序号(?A)</string>
     <string name="dialog_filename_preview_appname">示例应用</string>
     <string name="dialog_filename_preview_packagename">com.example</string>
     <string name="dialog_filename_preview_version">1.0</string>
     <string name="dialog_filename_preview_versioncode">1</string>
     <string name="dialog_filename_toast_blank">命名规则不能为空</string>
-    <string name="dialog_filename_warn_no_variables">注意:没有输入变量，这会导致多选导出无法正常导出文件！</string>
+    <string name="dialog_filename_warn_no_variables">没有独特变量(应用名，包名，序号)，导出时可能会出现文件覆盖！</string>
+    <string name="dialog_filename_rename_warn_no_variables">没有独特变量(序号)，多文件重命名可能会出现错误！</string>
+    <string name="dialog_filename_failure">文件无法重命名:</string>
 
     <string name="activity_send_title">发送文件</string>
-    <string name="activity_send_by_title">使用APK Kit 发送</string>
+    <string name="activity_send_by_title">使用APK Kit发送</string>
     <string name="dialog_send_title">发送文件</string>
     <string name="dialog_send_att_head">正在发送:</string>
     <string name="toast_sending_complete">文件发送完成</string>
@@ -334,6 +345,7 @@
     <string name="word_error">错误</string>
     <string name="word_custom">自定义</string>
     <string name="att_loading">正在载入&#8230;</string>
+    <string name="att_scanning">正在扫描</string>
     <string name="att_checking_duplication">检查重名文件&#8230;</string>
 
     <string name="info_bind_port_error">绑定到指定端口出现错误，请结束掉其他运行的应用或者手动更改本应用端口号然后重试。\n\n错误信息如下：\n\n</string>

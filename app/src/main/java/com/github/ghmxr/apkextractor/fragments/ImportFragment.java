@@ -6,6 +6,7 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.graphics.drawable.ColorDrawable;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -20,11 +21,14 @@ import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
 import android.text.format.Formatter;
+import android.util.TypedValue;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.AnimationUtils;
 import android.widget.Button;
+import android.widget.PopupWindow;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -37,6 +41,7 @@ import com.github.ghmxr.apkextractor.items.FileItem;
 import com.github.ghmxr.apkextractor.items.ImportItem;
 import com.github.ghmxr.apkextractor.tasks.RefreshImportListTask;
 import com.github.ghmxr.apkextractor.tasks.SearchPackageTask;
+import com.github.ghmxr.apkextractor.ui.FileRenamingDialog;
 import com.github.ghmxr.apkextractor.ui.ToastManager;
 import com.github.ghmxr.apkextractor.utils.EnvironmentUtil;
 import com.github.ghmxr.apkextractor.utils.SPUtil;
@@ -52,9 +57,13 @@ public class ImportFragment extends Fragment implements RefreshImportListTask.Re
     private RecyclerView recyclerView;
     private RecyclerViewAdapter<ImportItem> adapter;
     private ViewGroup viewGroup_no_content;
+    private ViewGroup viewGroup_progress;
+    private ProgressBar progressBar;
+    private TextView progressTextView;
     private CardView card_multi_select;
     private TextView tv_multi_select_head;
-    private Button btn_import,btn_delete,btn_share,btn_select;
+    private Button btn_import,btn_delete, btn_more,btn_select;
+    private PopupWindow popupWindow;
     private boolean isScrollable=false;
     private boolean isSearchMode=false;
 
@@ -117,12 +126,22 @@ public class ImportFragment extends Fragment implements RefreshImportListTask.Re
         swipeRefreshLayout=view.findViewById(R.id.content_swipe);
         recyclerView=view.findViewById(R.id.content_recyclerview);
         viewGroup_no_content=view.findViewById(R.id.no_content_att);
+        viewGroup_progress=view.findViewById(R.id.loading);
+        progressBar=view.findViewById(R.id.loading_pg);
+        progressTextView=view.findViewById(R.id.loading_text);
         card_multi_select=view.findViewById(R.id.import_card_multi_select);
         tv_multi_select_head=view.findViewById(R.id.import_card_att);
         btn_select=view.findViewById(R.id.import_select_all);
         btn_delete=view.findViewById(R.id.import_delete);
         btn_import=view.findViewById(R.id.import_action);
-        btn_share=view.findViewById(R.id.import_share);
+        btn_more =view.findViewById(R.id.import_more);
+        View popupView=LayoutInflater.from(getActivity()).inflate(R.layout.pp_more_import,null);
+        popupView.findViewById(R.id.popup_file_rename).setOnClickListener(this);
+        popupView.findViewById(R.id.popup_share).setOnClickListener(this);
+        popupWindow=new PopupWindow(popupView,ViewGroup.LayoutParams.WRAP_CONTENT,ViewGroup.LayoutParams.WRAP_CONTENT,true);
+        popupWindow.setBackgroundDrawable(new ColorDrawable(getResources().getColor(R.color.color_popup_window)));
+        popupWindow.setTouchable(true);
+        popupWindow.setOutsideTouchable(true);
 
         try {
             IntentFilter intentFilter=new IntentFilter();
@@ -235,15 +254,26 @@ public class ImportFragment extends Fragment implements RefreshImportListTask.Re
                         .show();
             }
             break;
-            case R.id.import_share:{
+            case R.id.import_more:{
+                int [] values=EnvironmentUtil.calculatePopWindowPos(btn_more,popupWindow.getContentView());
+                popupWindow.showAtLocation(v,0,values[0],values[1]);
+            }
+            break;
+            case R.id.popup_share:{
                 if(Build.VERSION.SDK_INT>=23&&PermissionChecker.checkSelfPermission(getActivity(),Manifest.permission.WRITE_EXTERNAL_STORAGE)!=PermissionChecker.PERMISSION_GRANTED){
                     Global.showRequestingWritePermissionSnackBar(getActivity());
                     requestPermissions(new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE},0);
                     return;
                 }
                 if(adapter==null)return;
-                //closeMultiSelectMode();
+                if(adapter.getSelectedItems().size()==0)return;
                 Global.shareImportItems(getActivity(),new ArrayList<>(adapter.getSelectedItems()));
+                popupWindow.dismiss();
+            }
+            break;
+            case R.id.popup_file_rename:{
+                popupWindow.dismiss();
+                new FileRenamingDialog(getActivity(),adapter.getSelectedItems()).show();
             }
             break;
         }
@@ -259,6 +289,22 @@ public class ImportFragment extends Fragment implements RefreshImportListTask.Re
         if(adapter!=null)adapter.setData(null);
         swipeRefreshLayout.setRefreshing(true);
         viewGroup_no_content.setVisibility(View.GONE);
+        viewGroup_progress.setVisibility(View.VISIBLE);
+        ViewGroup.LayoutParams layoutParams=viewGroup_progress.getLayoutParams();
+        layoutParams.height=EnvironmentUtil.dp2px(getActivity(),160);
+        viewGroup_progress.setLayoutParams(layoutParams);
+        progressTextView.setText(getActivity().getResources().getString(R.string.att_scanning));
+        progressTextView.setTextSize(TypedValue.COMPLEX_UNIT_SP,14);
+        progressBar.setIndeterminate(true);
+        card_multi_select.setVisibility(View.GONE);
+    }
+
+    @Override
+    public void onProgress(@NonNull FileItem fileItem) {
+        if(getActivity()==null)return;
+        if(progressTextView!=null){
+            progressTextView.setText(getActivity().getResources().getString(R.string.att_scanning)+" "+fileItem.getPath());
+        }
     }
 
     @Override
@@ -266,6 +312,7 @@ public class ImportFragment extends Fragment implements RefreshImportListTask.Re
         isRefreshing=false;
         if(getActivity()==null)return;
         swipeRefreshLayout.setRefreshing(false);
+        swipeRefreshLayout.setEnabled(true);
         if(adapter==null)adapter=new RecyclerViewAdapter<>(getActivity()
                 ,recyclerView
                 ,list
@@ -274,6 +321,7 @@ public class ImportFragment extends Fragment implements RefreshImportListTask.Re
         else adapter.setData(list);
         recyclerView.setAdapter(adapter);
         viewGroup_no_content.setVisibility(list.size()==0?View.VISIBLE:View.GONE);
+        viewGroup_progress.setVisibility(View.GONE);
         //if(isSearchMode)adapter.setData(null);
     }
 
@@ -295,7 +343,6 @@ public class ImportFragment extends Fragment implements RefreshImportListTask.Re
         tv_multi_select_head.setText(selected_items.size()+getResources().getString(R.string.unit_item)+"/"+ Formatter.formatFileSize(getActivity(),length));
         btn_import.setEnabled(selected_items.size()>0);
         btn_delete.setEnabled(selected_items.size()>0);
-        btn_share.setEnabled(selected_items.size()>0);
     }
 
     @Override
@@ -324,10 +371,12 @@ public class ImportFragment extends Fragment implements RefreshImportListTask.Re
             if(b){
                 swipeRefreshLayout.setRefreshing(false);
                 swipeRefreshLayout.setEnabled(false);
+                viewGroup_progress.setVisibility(View.GONE);
             }else{
                 swipeRefreshLayout.setEnabled(true);
                 if(isRefreshing){
                     swipeRefreshLayout.setRefreshing(true);
+                    viewGroup_progress.setVisibility(View.VISIBLE);
                 }
             }
         }
@@ -340,6 +389,8 @@ public class ImportFragment extends Fragment implements RefreshImportListTask.Re
                 synchronized (Global.item_list) {
                     adapter.setData(Global.item_list);
                 }
+            }else {
+                adapter.setData(null);
             }
         }
         if(!b)adapter.setHighlightKeyword(null);
@@ -415,7 +466,7 @@ public class ImportFragment extends Fragment implements RefreshImportListTask.Re
     private void initView(){
         if(getActivity()==null)return;
         btn_select.setOnClickListener(this);
-        btn_share.setOnClickListener(this);
+        btn_more.setOnClickListener(this);
         btn_delete.setOnClickListener(this);
         btn_import.setOnClickListener(this);
         swipeRefreshLayout.setColorSchemeColors(getActivity().getResources().getColor(R.color.colorTitle));

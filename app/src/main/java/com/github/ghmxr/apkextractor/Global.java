@@ -218,10 +218,11 @@ public class Global {
         StringBuilder builder=new StringBuilder();
         boolean external=SPUtil.getIsSaved2ExternalStorage(context);
         if(external){
-            for(AppItem item:items){
+            for(int i=0;i<items.size();i++){
+                final AppItem item=items.get(i);
                 try{
                     DocumentFile searchFile=OutputUtil.getExportPathDocumentFile(context).findFile(OutputUtil.getWriteFileNameForAppItem(context,item,(item.exportData||item.exportObb)?
-                            SPUtil.getCompressingExtensionName(context):"apk"));
+                            SPUtil.getCompressingExtensionName(context):"apk",i));
                     if(searchFile!=null){
                         builder.append(DocumentFileUtil.getDisplayPathForDocumentFile(context,searchFile));
                         builder.append("\n\n");
@@ -229,8 +230,9 @@ public class Global {
                 }catch (Exception e){e.printStackTrace();}
             }
         }else {
-            for(AppItem item:items){
-                File file=new File(OutputUtil.getAbsoluteWritePath(context,item,(item.exportData||item.exportObb)?SPUtil.getCompressingExtensionName(context):"apk"));
+            for(int i=0;i<items.size();i++){
+                final AppItem item=items.get(i);
+                File file=new File(OutputUtil.getAbsoluteWritePath(context,item,(item.exportData||item.exportObb)?SPUtil.getCompressingExtensionName(context):"apk",i+1));
                 if(file.exists()){
                     builder.append(file.getAbsolutePath());
                     builder.append("\n\n");
