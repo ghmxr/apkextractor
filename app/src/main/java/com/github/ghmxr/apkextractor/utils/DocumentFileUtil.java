@@ -50,7 +50,7 @@ public class DocumentFileUtil {
     public static boolean canWrite2ExternalStorage(@NonNull Context context){
         SharedPreferences settings= SPUtil.getGlobalSharedPreferences(context);
         String uri_value=settings.getString(Constants.PREFERENCE_SAVE_PATH_URI,"");
-        if(uri_value.equals(""))return false;
+        if("".equals(uri_value))return false;
         try{
             return DocumentFile.fromTreeUri(context,Uri.parse(uri_value)).canWrite();
         }catch (Exception e){e.printStackTrace();}

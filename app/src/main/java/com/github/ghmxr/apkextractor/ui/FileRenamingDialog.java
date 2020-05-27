@@ -3,14 +3,16 @@ package com.github.ghmxr.apkextractor.ui;
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.DialogInterface;
-import android.content.Intent;
 import android.content.pm.PackageInfo;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.Editable;
+import android.text.Spannable;
+import android.text.SpannableStringBuilder;
 import android.text.TextWatcher;
+import android.text.style.ForegroundColorSpan;
 import android.util.TypedValue;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -34,12 +36,16 @@ public class FileRenamingDialog extends AlertDialog implements View.OnClickListe
     private EditText editText;
     private RecyclerView recyclerView;
     private ViewGroup vg_warn;
+    private final CompletedCallback callback;
+
+    private boolean isAllApk=true;
 
     @SuppressLint("SetTextI18n")
-    public FileRenamingDialog(@NonNull Context context, @NonNull List<ImportItem> importItems) {
+    public FileRenamingDialog(@NonNull Context context, @NonNull List<ImportItem> importItems,@NonNull CompletedCallback callback) {
         super(context);
         this.importItems=importItems;
-        boolean isAllApk=true;
+        this.callback=callback;
+
         for(ImportItem importItem:importItems){
             if(importItem.getImportType()!= ImportItem.ImportType.APK){
                 isAllApk=false;
@@ -89,9 +95,9 @@ public class FileRenamingDialog extends AlertDialog implements View.OnClickListe
             btn_V.setVisibility(View.GONE);
         }
         if(importItems.size()==1){
-            editText.setText(importItems.get(0).getFileItem().getName());
+            editText.setText(EnvironmentUtil.getFileMainName(importItems.get(0).getFileItem().getName()));
         }else{
-            editText.setText("NewFile"+Constants.FONT_AUTO_SEQUENCE_NUMBER);
+            editText.setText("NewFile-"+Constants.FONT_AUTO_SEQUENCE_NUMBER);
         }
 
         setView(dialogView);
@@ -102,6 +108,8 @@ public class FileRenamingDialog extends AlertDialog implements View.OnClickListe
             public void onClick(DialogInterface dialog, int which) {}
         });
     }
+
+    private long confirmCheckTime=0L;
 
     @Override
     public void show() {
@@ -118,33 +126,34 @@ public class FileRenamingDialog extends AlertDialog implements View.OnClickListe
                     return;
                 }
                 //final String content=editText.getText().toString();
+                boolean containVariables=isAllApk?containsAnyVariables():containSequenceVariable();
+                if(!containVariables&&importItems.size()>0){
+                    final long currentTime=System.currentTimeMillis();
+                    if(currentTime-confirmCheckTime>2000L){
+                        confirmCheckTime=currentTime;
+                        ToastManager.showToast(getContext(),getContext().getResources().getString(R.string.dialog_filename_rename_warn_no_variables_confirm),Toast.LENGTH_SHORT);
+                        return;
+                    }
+                }
+
                 final StringBuilder errorBuilder=new StringBuilder();
                 for(int i=0;i<importItems.size();i++){
                     final ImportItem importItem=importItems.get(i);
+                    final String initialName=importItem.getFileItem().getName();
+                    final String newName=getPreviewRenamedFileName(i);
                     try{
-                        final String initialName=importItem.getFileItem().getName();
-                        final String newName=getPreviewRenamedFileName(i);
-                        if(!importItem.getFileItem().renameTo(newName)){
-                            errorBuilder.append(getContext().getResources().getString(R.string.dialog_filename_failure));
-                            errorBuilder.append(initialName);
-                            errorBuilder.append("\n\n");
-                        }
+                        importItem.getFileItem().renameTo(newName);
                     }catch (Exception e){
                         e.printStackTrace();
+                        errorBuilder.append(getContext().getResources().getString(R.string.dialog_filename_failure));
+                        errorBuilder.append(initialName);
+                        errorBuilder.append(":");
+                        errorBuilder.append(e);
+                        errorBuilder.append("\n\n");
                     }
                 }
                 cancel();
-                if(errorBuilder.length()>0){
-                    new AlertDialog.Builder(getContext())
-                            .setTitle(getContext().getResources().getString(R.string.word_error))
-                            .setMessage(errorBuilder.toString())
-                            .setPositiveButton(getContext().getResources().getString(R.string.action_confirm), new OnClickListener() {
-                                @Override
-                                public void onClick(DialogInterface dialog, int which) {}
-                            })
-                            .show();
-                }
-                getContext().sendBroadcast(new Intent(Constants.ACTION_REFRESH_IMPORT_ITEMS_LIST));
+                if(callback!=null)callback.onCompleted(errorBuilder.toString());
             }
         });
     }
@@ -158,9 +167,7 @@ public class FileRenamingDialog extends AlertDialog implements View.OnClickListe
     @Override
     public void afterTextChanged(Editable s) {
         recyclerView.setAdapter(new ListAdapter());
-        if(!editText.getText().toString().contains(Constants.FONT_APP_NAME)&&!editText.getText().toString().contains(Constants.FONT_APP_PACKAGE_NAME)
-                &&!editText.getText().toString().contains(Constants.FONT_AUTO_SEQUENCE_NUMBER)
-                &&importItems.size()>1){
+        if((isAllApk?!containsAnyVariables():!containSequenceVariable())&&importItems.size()>1){
             vg_warn.setVisibility(View.VISIBLE);
         }else{
             vg_warn.setVisibility(View.GONE);
@@ -233,7 +240,7 @@ public class FileRenamingDialog extends AlertDialog implements View.OnClickListe
     private String getPreviewRenamedFileName(int position){
         final ImportItem importItem=importItems.get(position);
         final PackageInfo packageInfo=importItem.getPackageInfo();
-        String value=EnvironmentUtil.getFileMainName(editText.getText().toString());
+        String value=editText.getText().toString();
         value=value.replace(Constants.FONT_APP_NAME,packageInfo!=null?EnvironmentUtil.getAppNameByPackageName(getContext(),packageInfo.packageName):"");
         value=value.replace(Constants.FONT_APP_PACKAGE_NAME, packageInfo!=null?String.valueOf(packageInfo.packageName):"");
         value=value.replace(Constants.FONT_APP_VERSIONNAME, packageInfo!=null?String.valueOf(packageInfo.versionName):"");
@@ -247,6 +254,15 @@ public class FileRenamingDialog extends AlertDialog implements View.OnClickListe
         value=value.replace(Constants.FONT_AUTO_SEQUENCE_NUMBER,String.valueOf(position));
         value=value+"."+EnvironmentUtil.getFileExtensionName(importItem.getItemName());
         return value;
+    }
+
+    private boolean containsAnyVariables(){
+        return editText.getText().toString().contains(Constants.FONT_APP_NAME)||editText.getText().toString().contains(Constants.FONT_APP_PACKAGE_NAME)
+                ||editText.getText().toString().contains(Constants.FONT_AUTO_SEQUENCE_NUMBER);
+    }
+
+    private boolean containSequenceVariable(){
+        return editText.getText().toString().contains(Constants.FONT_AUTO_SEQUENCE_NUMBER);
     }
 
     private class ListAdapter extends RecyclerView.Adapter<ViewHolder>{
@@ -263,7 +279,16 @@ public class FileRenamingDialog extends AlertDialog implements View.OnClickListe
 
         @Override
         public void onBindViewHolder(@NonNull ViewHolder viewHolder, int i) {
-            viewHolder.textView.setText(getCurrentFileName(viewHolder.getAdapterPosition())+" -> "+getPreviewRenamedFileName(viewHolder.getAdapterPosition())+"\n\n");
+            final String oldName=getCurrentFileName(viewHolder.getAdapterPosition());
+            final String newName=getPreviewRenamedFileName(viewHolder.getAdapterPosition());
+            SpannableStringBuilder builder=new SpannableStringBuilder(oldName
+                    +" -> "
+                    +newName
+                    +"\n\n");
+            builder.setSpan(new ForegroundColorSpan(getContext().getResources().getColor(R.color.color_text_normal)),0,oldName.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+            builder.setSpan(new ForegroundColorSpan(getContext().getResources().getColor(R.color.colorAccent)),oldName.length(),oldName.length()+4,Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+            builder.setSpan(new ForegroundColorSpan(getContext().getResources().getColor(R.color.colorFirstAttention)),oldName.length()+4,builder.toString().length(),Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+            viewHolder.textView.setText(builder);
         }
 
         @Override
@@ -279,5 +304,9 @@ public class FileRenamingDialog extends AlertDialog implements View.OnClickListe
             super(textView);
             this.textView=textView;
         }
+    }
+
+    public interface CompletedCallback{
+        void onCompleted(@NonNull String errorInfo);
     }
 }

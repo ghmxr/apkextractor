@@ -273,7 +273,25 @@ public class ImportFragment extends Fragment implements RefreshImportListTask.Re
             break;
             case R.id.popup_file_rename:{
                 popupWindow.dismiss();
-                new FileRenamingDialog(getActivity(),adapter.getSelectedItems()).show();
+                new FileRenamingDialog(getActivity(), adapter.getSelectedItems(), new FileRenamingDialog.CompletedCallback() {
+                    @Override
+                    public void onCompleted(@NonNull String errorInfo) {
+                        if(errorInfo.length()>0){
+                            if(getActivity()==null)return;
+                            new AlertDialog.Builder(getActivity())
+                                    .setTitle(getActivity().getResources().getString(R.string.word_error))
+                                    .setMessage(errorInfo)
+                                    .setPositiveButton(getActivity().getResources().getString(R.string.action_confirm), new DialogInterface.OnClickListener() {
+                                        @Override
+                                        public void onClick(DialogInterface dialog, int which) {}
+                                    })
+                                    .show();
+                            new RefreshImportListTask(getActivity(),ImportFragment.this).start();
+                        }else{
+                            closeMultiSelectMode();
+                        }
+                    }
+                }).show();
             }
             break;
         }

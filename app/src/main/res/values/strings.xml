@@ -232,7 +232,8 @@
     <string name="dialog_filename_toast_blank">命名规则不能为空</string>
     <string name="dialog_filename_warn_no_variables">没有独特变量(应用名，包名，序号)，导出时可能会出现文件覆盖！</string>
     <string name="dialog_filename_rename_warn_no_variables">没有独特变量(序号)，多文件重命名可能会出现错误！</string>
-    <string name="dialog_filename_failure">文件无法重命名:</string>
+    <string name="dialog_filename_rename_warn_no_variables_confirm">(再点击一次强行继续)没有独特变量(序号)，多文件重命名可能会出现错误！</string>
+    <string name="dialog_filename_failure">重命名错误:</string>
 
     <string name="activity_send_title">发送文件</string>
     <string name="activity_send_by_title">使用APK Kit发送</string>

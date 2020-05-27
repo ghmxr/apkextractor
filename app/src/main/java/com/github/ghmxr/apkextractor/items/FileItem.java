@@ -104,7 +104,7 @@ public class FileItem implements Comparable<FileItem>{
         return false;
     }
 
-    public boolean renameTo(@NonNull String newName){
+    public boolean renameTo(@NonNull String newName) throws Exception{
         if(file!=null){
             final String path=file.getParent();
             final File destFile;
@@ -113,9 +113,14 @@ public class FileItem implements Comparable<FileItem>{
             }else{
                 destFile=new File(path+"/"+newName);
             }
+            if(destFile.exists()){
+                throw new Exception(destFile.getAbsolutePath()+" already exists");
+            }
             if(file.renameTo(destFile)){
                 file=destFile;
                 return true;
+            }else{
+                throw new Exception("error renaming to "+destFile.getAbsolutePath());
             }
         }
         if(documentFile!=null){
