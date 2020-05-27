@@ -233,7 +233,8 @@
     <string name="dialog_filename_warn_no_variables">没有独特变量(应用名，包名，序号)，导出时可能会出现文件覆盖！</string>
     <string name="dialog_filename_rename_warn_no_variables">没有独特变量(序号)，多文件重命名可能会出现错误！</string>
     <string name="dialog_filename_rename_warn_no_variables_confirm">(再点击一次强行继续)没有独特变量(序号)，多文件重命名可能会出现错误！</string>
-    <string name="dialog_filename_failure">重命名错误:</string>
+    <string name="dialog_filename_confirm">再点击一次确定继续</string>
+    <string name="dialog_filename_failure">下列文件重命名时出现错误，错误信息如下:\n\n</string>
 
     <string name="activity_send_title">发送文件</string>
     <string name="activity_send_by_title">使用APK Kit发送</string>
@@ -368,9 +369,10 @@
         通过本应用的分享功能，可以将APP或者安装包分享给对方。本应用的局域网分享功能同时支持分享本地外置存储中的任何一个文件，通过文件管理器或其他应用
         分享时选择本应用即可直接发送给对方，接收端接收到的文件将会保存至导出路径。\n\n
 
-   <b>Build 12 更新日志：</b> \n
-    <b>新增：应用页按包名排序功能；</b>\n
-    <b>修复：搜索模式多选模式下可能引发的崩溃，优化其他已知细节。</b>\n\n
+   <b>Build 13 更新日志：</b> \n
+    <b>新增：安装包批量重命名功能；</b>\n
+    <b>变动：扫描安装包当前进度的展示；</b>\n
+    <b>修复部分已知问题。</b>\n\n
 
         开源地址:\n
          https://github.com/ghmxr/apkextractor \n\n

@@ -24,10 +24,12 @@
     <string name="bottom_export">export</string>
     <string name="bottom_import">import</string>
     <string name="select_all_change">sel/des</string>
-    <string name="bottom_share">share</string>
+    <string name="bottom_share">Share</string>
     <string name="bottom_more">more</string>
     <string name="bottom_delete">delete</string>
     <string name="more_copy_package_names">copy package names</string>
+    <string name="more_file_rename">Rename</string>
+    <string name="hint_file_rename">Type in file name or variables</string>
     <string name="main_page_export">Applications</string>
     <string name="main_page_import">Packages</string>
 
@@ -202,12 +204,23 @@
     <string name="dialog_filename_button_packagename">package name(?P)</string>
     <string name="dialog_filename_button_version">version name(?V)</string>
     <string name="dialog_filename_button_versioncode">version code(?C)</string>
+    <string name="dialog_filename_button_year">Year(?Y)</string>
+    <string name="dialog_filename_button_month">Month(?M)</string>
+    <string name="dialog_filename_button_day_of_month">Day(?D)</string>
+    <string name="dialog_filename_button_hour_of_day">Hour(?H)</string>
+    <string name="dialog_filename_button_minute">Minute(?I)</string>
+    <string name="dialog_filename_button_second">Second(?S)</string>
+    <string name="dialog_filename_button_sequence_number">Seq(?A)</string>
     <string name="dialog_filename_preview_appname">exampleApp</string>
     <string name="dialog_filename_preview_packagename">com.example</string>
     <string name="dialog_filename_preview_version">1.0</string>
     <string name="dialog_filename_preview_versioncode">1</string>
     <string name="dialog_filename_toast_blank">Naming rule(s) can not be empty</string>
     <string name="dialog_filename_warn_no_variables">no unique variable(?N, ?P,?A), file overwrite may occur during export!</string>
+    <string name="dialog_filename_rename_warn_no_variables">no unique variable(?A), errors may occur during renaming files!</string>
+    <string name="dialog_filename_rename_warn_no_variables_confirm">(Click again to continue forcibly) no unique variable(?A), errors may occur during renaming files!</string>
+    <string name="dialog_filename_confirm">Click again to continue</string>
+    <string name="dialog_filename_failure">Errors occurred while renaming the following file with the following error message:\n\n</string>
 
     <string name="activity_send_title">Sending Files</string>
     <string name="activity_send_by_title">Sending by APK Kit</string>
@@ -290,6 +303,7 @@
     <string name="word_ap_mode">AP Mode</string>
     <string name="word_custom">custom</string>
     <string name="att_loading">Loading&#8230;</string>
+    <string name="att_scanning">Scanning&#160;</string>
     <string name="att_checking_duplication">Checking duplication files&#8230;</string>
 
     <string name="language_follow_system">follow system</string>

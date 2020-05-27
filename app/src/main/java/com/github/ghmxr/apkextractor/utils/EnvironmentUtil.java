@@ -322,12 +322,17 @@ public class EnvironmentUtil {
      * @param content 要处理的内容
      * @return 去掉了文件系统非法符号的内容
      */
-    public static @NonNull String removeIllegalFileNameCharacters(@NonNull String content){
-        return content.replace("?","").replace("\\","")
-                .replace("/","").replace(":","")
-                .replace("*","").replace("\"","")
-                .replace("<","").replace(">","")
-                .replace("|","");
+    static @NonNull String removeIllegalFileNameCharacters(@NonNull String content){
+        content=content.replace("?","");
+        content=content.replace("\\","");
+        content=content.replace("/","");
+        content=content.replace(":","");
+        content=content.replace("*","");
+        content=content.replace("\"","");
+        content=content.replace("<","");
+        content=content.replace(">","");
+        content=content.replace("|","");
+        return content;
     }
 
     /**

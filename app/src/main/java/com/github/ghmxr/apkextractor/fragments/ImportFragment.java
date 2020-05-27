@@ -280,7 +280,7 @@ public class ImportFragment extends Fragment implements RefreshImportListTask.Re
                             if(getActivity()==null)return;
                             new AlertDialog.Builder(getActivity())
                                     .setTitle(getActivity().getResources().getString(R.string.word_error))
-                                    .setMessage(errorInfo)
+                                    .setMessage(getActivity().getResources().getString(R.string.dialog_filename_failure)+errorInfo)
                                     .setPositiveButton(getActivity().getResources().getString(R.string.action_confirm), new DialogInterface.OnClickListener() {
                                         @Override
                                         public void onClick(DialogInterface dialog, int which) {}

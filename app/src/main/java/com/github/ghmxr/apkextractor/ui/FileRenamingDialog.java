@@ -88,12 +88,12 @@ public class FileRenamingDialog extends AlertDialog implements View.OnClickListe
         btn_S.setOnClickListener(this);
         btn_A.setOnClickListener(this);
 
-        if(!isAllApk){
+        /*if(!isAllApk){
             btn_C.setVisibility(View.GONE);
             btn_N.setVisibility(View.GONE);
             btn_P.setVisibility(View.GONE);
             btn_V.setVisibility(View.GONE);
-        }
+        }*/
         if(importItems.size()==1){
             editText.setText(EnvironmentUtil.getFileMainName(importItems.get(0).getFileItem().getName()));
         }else{
@@ -126,14 +126,18 @@ public class FileRenamingDialog extends AlertDialog implements View.OnClickListe
                     return;
                 }
                 //final String content=editText.getText().toString();
+                String toastContent;
                 boolean containVariables=isAllApk?containsAnyVariables():containSequenceVariable();
-                if(!containVariables&&importItems.size()>0){
-                    final long currentTime=System.currentTimeMillis();
-                    if(currentTime-confirmCheckTime>2000L){
-                        confirmCheckTime=currentTime;
-                        ToastManager.showToast(getContext(),getContext().getResources().getString(R.string.dialog_filename_rename_warn_no_variables_confirm),Toast.LENGTH_SHORT);
-                        return;
-                    }
+                if(!containVariables&&importItems.size()>1){
+                    toastContent=getContext().getResources().getString(R.string.dialog_filename_rename_warn_no_variables_confirm);
+                }else{
+                    toastContent=getContext().getResources().getString(R.string.dialog_filename_confirm);
+                }
+                final long currentTime=System.currentTimeMillis();
+                if(currentTime-confirmCheckTime>2000L){
+                    confirmCheckTime=currentTime;
+                    ToastManager.showToast(getContext(), toastContent,Toast.LENGTH_SHORT);
+                    return;
                 }
 
                 final StringBuilder errorBuilder=new StringBuilder();
@@ -145,7 +149,6 @@ public class FileRenamingDialog extends AlertDialog implements View.OnClickListe
                         importItem.getFileItem().renameTo(newName);
                     }catch (Exception e){
                         e.printStackTrace();
-                        errorBuilder.append(getContext().getResources().getString(R.string.dialog_filename_failure));
                         errorBuilder.append(initialName);
                         errorBuilder.append(":");
                         errorBuilder.append(e);
@@ -265,6 +268,8 @@ public class FileRenamingDialog extends AlertDialog implements View.OnClickListe
         return editText.getText().toString().contains(Constants.FONT_AUTO_SEQUENCE_NUMBER);
     }
 
+    private static final String FILE_RENAME_ARROW=" -> ";
+
     private class ListAdapter extends RecyclerView.Adapter<ViewHolder>{
         @NonNull
         @Override
@@ -282,12 +287,12 @@ public class FileRenamingDialog extends AlertDialog implements View.OnClickListe
             final String oldName=getCurrentFileName(viewHolder.getAdapterPosition());
             final String newName=getPreviewRenamedFileName(viewHolder.getAdapterPosition());
             SpannableStringBuilder builder=new SpannableStringBuilder(oldName
-                    +" -> "
+                    +FILE_RENAME_ARROW
                     +newName
                     +"\n\n");
             builder.setSpan(new ForegroundColorSpan(getContext().getResources().getColor(R.color.color_text_normal)),0,oldName.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
-            builder.setSpan(new ForegroundColorSpan(getContext().getResources().getColor(R.color.colorAccent)),oldName.length(),oldName.length()+4,Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
-            builder.setSpan(new ForegroundColorSpan(getContext().getResources().getColor(R.color.colorFirstAttention)),oldName.length()+4,builder.toString().length(),Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+            builder.setSpan(new ForegroundColorSpan(getContext().getResources().getColor(R.color.colorAccent)),oldName.length(),oldName.length()+FILE_RENAME_ARROW.length(),Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+            builder.setSpan(new ForegroundColorSpan(getContext().getResources().getColor(R.color.colorFirstAttention)),oldName.length()+FILE_RENAME_ARROW.length(),builder.toString().length(),Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
             viewHolder.textView.setText(builder);
         }
 
