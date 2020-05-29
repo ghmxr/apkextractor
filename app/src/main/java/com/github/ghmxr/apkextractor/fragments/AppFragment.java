@@ -516,10 +516,10 @@ public class AppFragment extends Fragment implements View.OnClickListener, Refre
     private void setViewVisibilityWithAnimation(View view, int visibility){
         if(getActivity()==null)return;
         if(visibility==View.GONE){
-            view.startAnimation(AnimationUtils.loadAnimation(getActivity(),R.anim.exit_300));
+            if(view.getVisibility()!=View.GONE)view.startAnimation(AnimationUtils.loadAnimation(getActivity(),R.anim.exit_300));
             view.setVisibility(View.GONE);
         }else if(visibility==View.VISIBLE){
-            view.startAnimation(AnimationUtils.loadAnimation(getActivity(),R.anim.entry_300));
+            if(view.getVisibility()!=View.VISIBLE)view.startAnimation(AnimationUtils.loadAnimation(getActivity(),R.anim.entry_300));
             view.setVisibility(View.VISIBLE);
         }
     }

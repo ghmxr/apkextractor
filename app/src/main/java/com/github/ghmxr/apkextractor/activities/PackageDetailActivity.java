@@ -94,7 +94,7 @@ public class PackageDetailActivity extends BaseActivity implements View.OnClickL
         cb_apk=findViewById(R.id.package_detail_apk);
         ((ImageView)findViewById(R.id.package_icon)).setImageDrawable(importItem.getIconDrawable());
         ((TextView)findViewById(R.id.package_detail_name)).setText(importItem.getFileItem().getName());
-        ((TextView)findViewById(R.id.package_detail_package_name)).setText(importItem.getPackageInfo()!=null?String.valueOf(importItem.getPackageInfo().packageName):"");
+        ((TextView)findViewById(R.id.package_detail_package_name)).setText(importItem.getPackageInfo()!=null?String.valueOf(importItem.getPackageInfo().packageName):getResources().getString(R.string.word_unknown));
         ((TextView)findViewById(R.id.package_detail_version_name_title)).setText(importItem.getVersionName());
         ((TextView)findViewById(R.id.package_detail_file_name)).setText(importItem.getFileItem().getName());
         ((TextView)findViewById(R.id.package_detail_size)).setText(Formatter.formatFileSize(this,importItem.getSize()));

@@ -272,6 +272,7 @@ public class ImportFragment extends Fragment implements RefreshImportListTask.Re
             }
             break;
             case R.id.popup_file_rename:{
+                if(adapter==null||adapter.getSelectedItems().size()==0)return;
                 popupWindow.dismiss();
                 new FileRenamingDialog(getActivity(), adapter.getSelectedItems(), new FileRenamingDialog.CompletedCallback() {
                     @Override
@@ -516,10 +517,10 @@ public class ImportFragment extends Fragment implements RefreshImportListTask.Re
     private void setViewVisibilityWithAnimation(View view, int visibility){
         if(getActivity()==null)return;
         if(visibility==View.GONE){
-            view.startAnimation(AnimationUtils.loadAnimation(getActivity(),R.anim.exit_300));
+            if(view.getVisibility()!=View.GONE)view.startAnimation(AnimationUtils.loadAnimation(getActivity(),R.anim.exit_300));
             view.setVisibility(View.GONE);
         }else if(visibility==View.VISIBLE){
-            view.startAnimation(AnimationUtils.loadAnimation(getActivity(),R.anim.entry_300));
+            if(view.getVisibility()!=View.VISIBLE)view.startAnimation(AnimationUtils.loadAnimation(getActivity(),R.anim.entry_300));
             view.setVisibility(View.VISIBLE);
         }
     }

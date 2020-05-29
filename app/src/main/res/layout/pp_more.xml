@@ -7,7 +7,7 @@
     tools:background="#99000000">
     <RelativeLayout
         android:id="@+id/popup_copy_package_name"
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:clickable="true"
         android:focusable="true"
