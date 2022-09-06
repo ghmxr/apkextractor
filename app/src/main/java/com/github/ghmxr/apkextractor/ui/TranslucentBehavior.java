@@ -12,13 +12,15 @@ import com.github.ghmxr.apkextractor.R;
 
 public class TranslucentBehavior extends CoordinatorLayout.Behavior<Toolbar> {
 
-    /**标题栏的高度*/
+    /**
+     * 标题栏的高度
+     */
     private int mToolbarHeight = 0;
     private Context context;
 
     public TranslucentBehavior(Context context, AttributeSet attrs) {
         super(context, attrs);
-        this.context=context;
+        this.context = context;
     }
 
     @Override

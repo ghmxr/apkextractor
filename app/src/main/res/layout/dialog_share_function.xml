@@ -1,17 +1,20 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent" android:layout_height="wrap_content"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
     android:orientation="vertical"
     android:layout_marginLeft="15dp"
     android:layout_marginRight="15dp"
     android:layout_marginBottom="10dp"
     android:background="@drawable/shape_share_dialog">
+
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
         android:gravity="center_horizontal"
         android:layout_marginTop="20dp">
+
         <LinearLayout
             android:id="@+id/dialog_share_direct"
             android:layout_width="0dp"
@@ -22,18 +25,21 @@
             android:focusable="true"
             android:gravity="center_horizontal"
             android:background="?attr/selectableItemBackground">
+
             <ImageView
                 android:layout_width="50dp"
                 android:layout_height="50dp"
-                android:src="@drawable/icon_local_net"/>
+                android:src="@drawable/icon_local_net" />
+
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:textColor="@color/colorHighLightText"
                 android:textSize="14sp"
                 android:layout_marginTop="10dp"
-                android:text="@string/dialog_share_selection_self"/>
+                android:text="@string/dialog_share_selection_self" />
         </LinearLayout>
+
         <LinearLayout
             android:id="@+id/dialog_share_system"
             android:layout_width="0dp"
@@ -44,20 +50,23 @@
             android:focusable="true"
             android:gravity="center_horizontal"
             android:background="?attr/selectableItemBackground">
+
             <ImageView
                 android:layout_width="50dp"
                 android:layout_height="50dp"
                 android:scaleType="fitXY"
-                android:src="@drawable/icon_share"/>
+                android:src="@drawable/icon_share" />
+
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:textColor="@color/colorHighLightText"
                 android:textSize="14sp"
                 android:layout_marginTop="10dp"
-                android:text="@string/dialog_share_selection_system"/>
+                android:text="@string/dialog_share_selection_system" />
         </LinearLayout>
     </LinearLayout>
+
     <TextView
         android:id="@+id/dialog_share_cancel"
         android:layout_width="match_parent"
@@ -69,5 +78,5 @@
         android:focusable="true"
         android:textColor="@color/colorFirstAttention"
         android:background="?attr/selectableItemBackground"
-        android:text="@string/dialog_button_cancel"/>
+        android:text="@string/dialog_button_cancel" />
 </LinearLayout>

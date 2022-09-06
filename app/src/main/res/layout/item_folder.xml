@@ -3,13 +3,15 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="55dp">
+
     <ImageView
         android:id="@+id/item_folder_icon"
         android:layout_width="35dp"
         android:layout_height="35dp"
         android:layout_gravity="center_vertical|start"
         android:layout_margin="10dp"
-        android:src="@drawable/icon_folder"/>
+        android:src="@drawable/icon_folder" />
+
     <TextView
         android:id="@+id/item_folder_name"
         android:layout_width="wrap_content"
@@ -19,12 +21,13 @@
         android:textSize="13sp"
         android:singleLine="true"
         android:layout_marginRight="10dp"
-        tools:text="Folder Name"/>
+        tools:text="Folder Name" />
+
     <ImageView
         android:layout_width="match_parent"
         android:layout_height="1px"
         android:layout_alignParentBottom="true"
         android:layout_marginLeft="15dp"
         android:layout_marginRight="20dp"
-        android:background="@color/colorDividingLine"/>
+        android:background="@color/colorDividingLine" />
 </RelativeLayout>

@@ -5,6 +5,7 @@
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
     tools:background="#99000000">
+
     <RelativeLayout
         android:id="@+id/popup_copy_package_name"
         android:layout_width="match_parent"
@@ -12,12 +13,13 @@
         android:clickable="true"
         android:focusable="true"
         android:background="?attr/selectableItemBackground">
+
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_margin="8dp"
             android:textSize="14sp"
             android:textColor="@color/colorHighLightTextDarkBackground"
-            android:text="@string/more_copy_package_names"/>
+            android:text="@string/more_copy_package_names" />
     </RelativeLayout>
 </LinearLayout>

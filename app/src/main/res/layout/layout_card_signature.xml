@@ -14,6 +14,7 @@
     app:cardElevation="1dp"
     app:cardCornerRadius="5dp"
     app:cardBackgroundColor="@color/colorCardArea">
+
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
@@ -30,6 +31,7 @@
             android:background="?attr/selectableItemBackground"
             android:onClick="onClick"
             android:gravity="start">
+
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -38,7 +40,8 @@
                 android:layout_marginBottom="10dp"
                 android:textSize="14sp"
                 android:textColor="@color/colorHighLightText"
-                android:text="@string/activity_detail_signature_issuer"/>
+                android:text="@string/activity_detail_signature_issuer" />
+
             <TextView
                 android:id="@+id/detail_signature_sub_value"
                 android:layout_width="wrap_content"
@@ -47,12 +50,13 @@
                 android:layout_marginRight="5dp"
                 android:layout_marginBottom="3dp"
                 android:textSize="12sp"
-                tools:text="28"/>
+                tools:text="28" />
         </LinearLayout>
+
         <ImageView
             android:layout_width="match_parent"
             android:layout_height="1px"
-            android:background="@color/colorDividingLine"/>
+            android:background="@color/colorDividingLine" />
 
         <LinearLayout
             android:id="@+id/detail_signature_iss"
@@ -64,6 +68,7 @@
             android:focusable="true"
             android:background="?attr/selectableItemBackground"
             android:onClick="onClick">
+
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -72,7 +77,8 @@
                 android:layout_marginBottom="10dp"
                 android:textSize="14sp"
                 android:textColor="@color/colorHighLightText"
-                android:text="@string/activity_detail_signature_subject"/>
+                android:text="@string/activity_detail_signature_subject" />
+
             <TextView
                 android:id="@+id/detail_signature_iss_value"
                 android:layout_width="wrap_content"
@@ -81,12 +87,13 @@
                 android:layout_marginRight="5dp"
                 android:layout_marginBottom="3dp"
                 android:textSize="12sp"
-                tools:text="28"/>
+                tools:text="28" />
         </LinearLayout>
+
         <ImageView
             android:layout_width="match_parent"
             android:layout_height="1px"
-            android:background="@color/colorDividingLine"/>
+            android:background="@color/colorDividingLine" />
 
         <LinearLayout
             android:id="@+id/detail_signature_serial"
@@ -98,6 +105,7 @@
             android:focusable="true"
             android:background="?attr/selectableItemBackground"
             android:onClick="onClick">
+
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -106,7 +114,8 @@
                 android:layout_marginBottom="10dp"
                 android:textSize="14sp"
                 android:textColor="@color/colorHighLightText"
-                android:text="@string/activity_detail_signature_serial"/>
+                android:text="@string/activity_detail_signature_serial" />
+
             <TextView
                 android:id="@+id/detail_signature_serial_value"
                 android:layout_width="wrap_content"
@@ -115,12 +124,13 @@
                 android:layout_marginRight="5dp"
                 android:layout_marginBottom="3dp"
                 android:textSize="12sp"
-                tools:text="28"/>
+                tools:text="28" />
         </LinearLayout>
+
         <ImageView
             android:layout_width="match_parent"
             android:layout_height="1px"
-            android:background="@color/colorDividingLine"/>
+            android:background="@color/colorDividingLine" />
 
         <LinearLayout
             android:id="@+id/detail_signature_start"
@@ -132,6 +142,7 @@
             android:focusable="true"
             android:background="?attr/selectableItemBackground"
             android:onClick="onClick">
+
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -140,7 +151,8 @@
                 android:layout_marginBottom="10dp"
                 android:textSize="14sp"
                 android:textColor="@color/colorHighLightText"
-                android:text="@string/activity_detail_signature_start"/>
+                android:text="@string/activity_detail_signature_start" />
+
             <TextView
                 android:id="@+id/detail_signature_start_value"
                 android:layout_width="wrap_content"
@@ -149,12 +161,13 @@
                 android:layout_marginRight="5dp"
                 android:layout_marginBottom="3dp"
                 android:textSize="12sp"
-                tools:text="28"/>
+                tools:text="28" />
         </LinearLayout>
+
         <ImageView
             android:layout_width="match_parent"
             android:layout_height="1px"
-            android:background="@color/colorDividingLine"/>
+            android:background="@color/colorDividingLine" />
 
         <LinearLayout
             android:id="@+id/detail_signature_end"
@@ -166,6 +179,7 @@
             android:focusable="true"
             android:background="?attr/selectableItemBackground"
             android:onClick="onClick">
+
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -175,7 +189,8 @@
                 android:layout_centerVertical="true"
                 android:textSize="14sp"
                 android:textColor="@color/colorHighLightText"
-                android:text="@string/activity_detail_signature_end"/>
+                android:text="@string/activity_detail_signature_end" />
+
             <TextView
                 android:id="@+id/detail_signature_end_value"
                 android:layout_width="wrap_content"
@@ -184,12 +199,13 @@
                 android:layout_marginRight="5dp"
                 android:layout_marginBottom="3dp"
                 android:textSize="12sp"
-                tools:text="28"/>
+                tools:text="28" />
         </LinearLayout>
+
         <ImageView
             android:layout_width="match_parent"
             android:layout_height="1px"
-            android:background="@color/colorDividingLine"/>
+            android:background="@color/colorDividingLine" />
 
         <LinearLayout
             android:id="@+id/detail_signature_md5"
@@ -201,6 +217,7 @@
             android:focusable="true"
             android:background="?attr/selectableItemBackground"
             android:onClick="onClick">
+
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -209,7 +226,8 @@
                 android:layout_marginBottom="10dp"
                 android:textSize="14sp"
                 android:textColor="@color/colorHighLightText"
-                android:text="@string/activity_detail_signature_md5"/>
+                android:text="@string/activity_detail_signature_md5" />
+
             <TextView
                 android:id="@+id/detail_signature_md5_value"
                 android:layout_width="wrap_content"
@@ -218,12 +236,13 @@
                 android:layout_marginRight="5dp"
                 android:layout_marginBottom="3dp"
                 android:textSize="12sp"
-                tools:text="28"/>
+                tools:text="28" />
         </LinearLayout>
+
         <ImageView
             android:layout_width="match_parent"
             android:layout_height="1px"
-            android:background="@color/colorDividingLine"/>
+            android:background="@color/colorDividingLine" />
 
         <LinearLayout
             android:id="@+id/detail_signature_sha1"
@@ -235,6 +254,7 @@
             android:focusable="true"
             android:background="?attr/selectableItemBackground"
             android:onClick="onClick">
+
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -243,7 +263,8 @@
                 android:layout_marginBottom="10dp"
                 android:textSize="14sp"
                 android:textColor="@color/colorHighLightText"
-                android:text="@string/activity_detail_signature_sha1"/>
+                android:text="@string/activity_detail_signature_sha1" />
+
             <TextView
                 android:id="@+id/detail_signature_sha1_value"
                 android:layout_width="wrap_content"
@@ -252,12 +273,13 @@
                 android:layout_marginRight="5dp"
                 android:layout_marginBottom="3dp"
                 android:textSize="12sp"
-                tools:text="28"/>
+                tools:text="28" />
         </LinearLayout>
+
         <ImageView
             android:layout_width="match_parent"
             android:layout_height="1px"
-            android:background="@color/colorDividingLine"/>
+            android:background="@color/colorDividingLine" />
 
         <LinearLayout
             android:id="@+id/detail_signature_sha256"
@@ -269,6 +291,7 @@
             android:focusable="true"
             android:background="?attr/selectableItemBackground"
             android:onClick="onClick">
+
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -277,7 +300,8 @@
                 android:layout_marginBottom="10dp"
                 android:textSize="14sp"
                 android:textColor="@color/colorHighLightText"
-                android:text="@string/activity_detail_signature_sha256"/>
+                android:text="@string/activity_detail_signature_sha256" />
+
             <TextView
                 android:id="@+id/detail_signature_sha256_value"
                 android:layout_width="wrap_content"
@@ -286,7 +310,7 @@
                 android:layout_marginRight="5dp"
                 android:layout_marginBottom="3dp"
                 android:textSize="12sp"
-                tools:text="28"/>
+                tools:text="28" />
         </LinearLayout>
     </LinearLayout>
 </android.support.v7.widget.CardView>

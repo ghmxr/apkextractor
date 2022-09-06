@@ -10,8 +10,8 @@ public class MyApplication extends Application {
     @Override
     public void onCreate() {
         super.onCreate();
-        SharedPreferences settings= SPUtil.getGlobalSharedPreferences(this);
-        int night_mode=settings.getInt(Constants.PREFERENCE_NIGHT_MODE,Constants.PREFERENCE_NIGHT_MODE_DEFAULT);
+        SharedPreferences settings = SPUtil.getGlobalSharedPreferences(this);
+        int night_mode = settings.getInt(Constants.PREFERENCE_NIGHT_MODE, Constants.PREFERENCE_NIGHT_MODE_DEFAULT);
         AppCompatDelegate.setDefaultNightMode(night_mode);
     }
 }

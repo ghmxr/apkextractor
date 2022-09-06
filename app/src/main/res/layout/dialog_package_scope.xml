@@ -2,13 +2,15 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:orientation="vertical" >
+    android:orientation="vertical">
+
     <RelativeLayout
         android:id="@+id/package_scope_all"
         android:layout_width="match_parent"
         android:layout_height="80dp"
         android:clickable="true"
         android:background="?android:attr/selectableItemBackground">
+
         <LinearLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -17,18 +19,21 @@
             android:layout_centerVertical="true"
             android:layout_toRightOf="@+id/package_scope_all_ra"
             android:layout_marginLeft="10dp">
+
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:textSize="15sp"
                 android:textColor="@color/colorHighLightText"
                 android:text="@string/package_scope_all" />
+
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:textSize="11sp"
-                android:text="@string/package_scope_all_des"/>
+                android:text="@string/package_scope_all_des" />
         </LinearLayout>
+
         <RadioButton
             android:id="@+id/package_scope_all_ra"
             android:layout_width="wrap_content"
@@ -37,12 +42,13 @@
             android:layout_centerVertical="true"
             android:layout_marginLeft="10dp"
             android:clickable="false"
-            android:focusable="false"/>
+            android:focusable="false" />
+
         <ImageView
             android:layout_width="match_parent"
             android:layout_height="1px"
             android:layout_alignParentBottom="true"
-            android:background="#dddddd"/>
+            android:background="#dddddd" />
     </RelativeLayout>
 
     <RelativeLayout
@@ -51,6 +57,7 @@
         android:layout_height="80dp"
         android:clickable="true"
         android:background="?android:attr/selectableItemBackground">
+
         <LinearLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -59,18 +66,21 @@
             android:layout_toRightOf="@+id/package_scope_exporting_path_ra"
             android:layout_marginLeft="10dp"
             android:layout_marginRight="10dp">
+
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:textSize="15sp"
                 android:textColor="@color/colorHighLightText"
                 android:text="@string/package_scope_exporting_path" />
+
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:textSize="11sp"
-                android:text="@string/package_scope_exporting_path_des"/>
+                android:text="@string/package_scope_exporting_path_des" />
         </LinearLayout>
+
         <RadioButton
             android:id="@+id/package_scope_exporting_path_ra"
             android:layout_width="wrap_content"
@@ -79,7 +89,7 @@
             android:layout_centerVertical="true"
             android:layout_marginLeft="10dp"
             android:clickable="false"
-            android:focusable="false"/>
+            android:focusable="false" />
     </RelativeLayout>
 
 </LinearLayout>

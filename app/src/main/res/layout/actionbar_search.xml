@@ -11,11 +11,13 @@
         android:layout_height="wrap_content"
         android:orientation="horizontal"
         android:gravity="center_vertical">
+
         <ImageView
             android:layout_width="22dp"
             android:layout_height="22dp"
             android:layout_margin="10dp"
-            android:src="@drawable/icon_search"/>
+            android:src="@drawable/icon_search" />
+
         <EditText
             android:id="@+id/actionbar_main_edit"
             android:layout_width="0dp"
@@ -27,7 +29,8 @@
             android:textColor="#ffffff"
             android:textColorHint="#ececec"
             android:imeOptions="actionDone"
-            android:focusable="true"/>
+            android:focusable="true" />
+
         <ImageView
             android:id="@+id/actionbar_main_cancel"
             android:layout_width="25dp"
@@ -36,7 +39,7 @@
             android:layout_marginLeft="10dp"
             android:src="@drawable/icon_close"
             android:visibility="invisible"
-            tools:visibility="visible"/>
+            tools:visibility="visible" />
     </LinearLayout>
 
 </RelativeLayout>

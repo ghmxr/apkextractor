@@ -2,72 +2,83 @@
 <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_height="wrap_content"
     android:layout_width="match_parent">
+
     <LinearLayout
-        android:orientation="vertical" android:layout_width="match_parent"
+        android:orientation="vertical"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:gravity="center_vertical">
+
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_margin="10dp"
             android:textSize="14sp"
             android:textColor="@color/colorAccent"
-            android:text="@string/dialog_loading_selection_att"/>
+            android:text="@string/dialog_loading_selection_att" />
+
         <CheckBox
             android:id="@+id/loading_permissions"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="5dp"
             android:layout_marginBottom="5dp"
-            android:text="@string/dialog_loading_selection_permissions"/>
+            android:text="@string/dialog_loading_selection_permissions" />
+
         <CheckBox
             android:id="@+id/loading_activities"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="5dp"
             android:layout_marginBottom="5dp"
-            android:text="@string/dialog_loading_selection_activities"/>
+            android:text="@string/dialog_loading_selection_activities" />
+
         <CheckBox
             android:id="@+id/loading_services"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="5dp"
             android:layout_marginBottom="5dp"
-            android:text="@string/dialog_loading_selection_services"/>
+            android:text="@string/dialog_loading_selection_services" />
+
         <CheckBox
             android:id="@+id/loading_receivers"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="5dp"
             android:layout_marginBottom="5dp"
-            android:text="@string/dialog_loading_selection_receivers"/>
+            android:text="@string/dialog_loading_selection_receivers" />
+
         <CheckBox
             android:id="@+id/loading_providers"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="5dp"
             android:layout_marginBottom="5dp"
-            android:text="@string/dialog_loading_selection_providers"/>
+            android:text="@string/dialog_loading_selection_providers" />
+
         <CheckBox
             android:id="@+id/loading_apk_signature"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="5dp"
             android:layout_marginBottom="5dp"
-            android:text="@string/dialog_loading_selection_signature"/>
+            android:text="@string/dialog_loading_selection_signature" />
+
         <CheckBox
             android:id="@+id/loading_file_hash"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="5dp"
             android:layout_marginBottom="5dp"
-            android:text="@string/dialog_loading_selection_file_hash"/>
+            android:text="@string/dialog_loading_selection_file_hash" />
+
         <CheckBox
             android:id="@+id/loading_static_loaders"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="5dp"
             android:layout_marginBottom="10dp"
-            android:text="@string/dialog_loading_selection_static_loaders"/>
+            android:text="@string/dialog_loading_selection_static_loaders" />
     </LinearLayout>
 </ScrollView>

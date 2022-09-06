@@ -11,6 +11,7 @@ public class PinyinUtil {
 
     /**
      * 将字符串中的中文转化为拼音,其他字符不变
+     *
      * @param inputString
      * @return
      */
@@ -33,11 +34,9 @@ public class PinyinUtil {
             }
         } catch (BadHanyuPinyinOutputFormatCombination e) {
             e.printStackTrace();
-        }
-        catch(java.lang.NullPointerException npex){
+        } catch (java.lang.NullPointerException npex) {
             npex.printStackTrace();
-        }
-        catch(Exception ex){
+        } catch (Exception ex) {
             ex.printStackTrace();
         }
         return output.toString();
@@ -45,6 +44,7 @@ public class PinyinUtil {
 
     /**
      * 获取汉字串拼音首字母，英文字符不变
+     *
      * @param chinese 汉字串
      * @return 汉语拼音首字母
      */
@@ -54,7 +54,7 @@ public class PinyinUtil {
         HanyuPinyinOutputFormat defaultFormat = new HanyuPinyinOutputFormat();
         defaultFormat.setCaseType(HanyuPinyinCaseType.LOWERCASE);
         defaultFormat.setToneType(HanyuPinyinToneType.WITHOUT_TONE);
-        try{
+        try {
             for (int i = 0; i < arr.length; i++) {
                 if (arr[i] > 128) {
                     String[] temp = PinyinHelper.toHanyuPinyinStringArray(arr[i], defaultFormat);
@@ -66,14 +66,11 @@ public class PinyinUtil {
                     pybf.append(arr[i]);
                 }
             }
-        }
-        catch (BadHanyuPinyinOutputFormatCombination bhpe) {
+        } catch (BadHanyuPinyinOutputFormatCombination bhpe) {
             bhpe.printStackTrace();
-        }
-        catch(java.lang.NullPointerException npex){
+        } catch (java.lang.NullPointerException npex) {
             npex.printStackTrace();
-        }
-        catch(Exception ex){
+        } catch (Exception ex) {
             ex.printStackTrace();
         }
 
@@ -82,6 +79,7 @@ public class PinyinUtil {
 
     /**
      * 获取汉字串拼音，英文字符不变
+     *
      * @param chinese 汉字串
      * @return 汉语拼音
      */
@@ -91,7 +89,7 @@ public class PinyinUtil {
         HanyuPinyinOutputFormat defaultFormat = new HanyuPinyinOutputFormat();
         defaultFormat.setCaseType(HanyuPinyinCaseType.LOWERCASE);
         defaultFormat.setToneType(HanyuPinyinToneType.WITHOUT_TONE);
-        try{
+        try {
             for (int i = 0; i < arr.length; i++) {
                 if (arr[i] > 128) {
                     pybf.append(PinyinHelper.toHanyuPinyinStringArray(arr[i], defaultFormat)[0]);
@@ -99,14 +97,11 @@ public class PinyinUtil {
                     pybf.append(arr[i]);
                 }
             }
-        }
-        catch (BadHanyuPinyinOutputFormatCombination e) {
+        } catch (BadHanyuPinyinOutputFormatCombination e) {
             e.printStackTrace();
-        }
-        catch(java.lang.NullPointerException npex){
+        } catch (java.lang.NullPointerException npex) {
             npex.printStackTrace();
-        }
-        catch(Exception ex){
+        } catch (Exception ex) {
             ex.printStackTrace();
         }
         return pybf.toString();
@@ -114,12 +109,13 @@ public class PinyinUtil {
 
     /**
      * 获取一个字符串中的所有汉字内容
+     *
      * @param content 要过滤的字符串
      * @return 所有汉字字符串
      */
-    static String getAllChineseCharacters(String content){
+    static String getAllChineseCharacters(String content) {
         try {
-            return content.replaceAll("[^\u4e00-\u9fa5]","");
+            return content.replaceAll("[^\u4e00-\u9fa5]", "");
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -128,9 +124,10 @@ public class PinyinUtil {
 
     /**
      * 判断一个char是否为汉字（不包含中文符号）
+     *
      * @return true 为汉字
      */
-    static boolean isChineseChar(char c){
-        return (c >= 0x4e00)&&(c <= 0x9fbb);
+    static boolean isChineseChar(char c) {
+        return (c >= 0x4e00) && (c <= 0x9fbb);
     }
 }

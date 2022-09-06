@@ -22,98 +22,106 @@ import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
-public class ImportItem implements DisplayItem,Comparable<ImportItem> {
+public class ImportItem implements DisplayItem, Comparable<ImportItem> {
 
-    public enum ImportType{
-        APK,ZIP
+    public enum ImportType {
+        APK, ZIP
     }
 
-    public static int sort_config=0;
+    public static int sort_config = 0;
 
     private Context context;
 
     private FileItem fileItem;
     private long length;
-    private ImportType importType=ImportType.ZIP;
+    private ImportType importType = ImportType.ZIP;
 
     private PackageInfo packageInfo;
-    private Drawable drawable=null;
-    private String version_name="";
-    private String version_code="";
-    private String minSdkVersion="";
-    private String targetSdkVersion="";
+    private Drawable drawable = null;
+    private String version_name = "";
+    private String version_code = "";
+    private String minSdkVersion = "";
+    private String targetSdkVersion = "";
     private long lastModified;
 
-    public transient boolean importData=false;
-    public transient boolean importObb=false;
-    public transient boolean importApk=false;
+    public transient boolean importData = false;
+    public transient boolean importObb = false;
+    public transient boolean importApk = false;
 
-    public ImportItem(@NonNull Context context,@NonNull FileItem fileItem){
-        this.fileItem=fileItem;
-        this.context=context;
-        version_name=context.getResources().getString(R.string.word_unknown);
-        version_code=context.getResources().getString(R.string.word_unknown);
-        minSdkVersion=context.getResources().getString(R.string.word_unknown);
-        targetSdkVersion=context.getResources().getString(R.string.word_unknown);
-        drawable=context.getResources().getDrawable(R.drawable.icon_file);
-        if(fileItem.getName().trim().toLowerCase().endsWith(".zip")
-                ||fileItem.getName().trim().toLowerCase().endsWith(SPUtil.getCompressingExtensionName(context).toLowerCase())){
-            importType=ImportType.ZIP;
-            drawable=context.getResources().getDrawable(R.drawable.icon_zip);
+    public ImportItem(@NonNull Context context, @NonNull FileItem fileItem) {
+        this.fileItem = fileItem;
+        this.context = context;
+        version_name = context.getResources().getString(R.string.word_unknown);
+        version_code = context.getResources().getString(R.string.word_unknown);
+        minSdkVersion = context.getResources().getString(R.string.word_unknown);
+        targetSdkVersion = context.getResources().getString(R.string.word_unknown);
+        drawable = context.getResources().getDrawable(R.drawable.icon_file);
+        if (fileItem.getName().trim().toLowerCase().endsWith(".zip")
+                || fileItem.getName().trim().toLowerCase().endsWith(SPUtil.getCompressingExtensionName(context).toLowerCase())) {
+            importType = ImportType.ZIP;
+            drawable = context.getResources().getDrawable(R.drawable.icon_zip);
         }
-        if(fileItem.getName().trim().toLowerCase().endsWith(".xapk")){
-            importType=ImportType.ZIP;
-            drawable=context.getResources().getDrawable(R.drawable.icon_xapk);
+        if (fileItem.getName().trim().toLowerCase().endsWith(".xapk")) {
+            importType = ImportType.ZIP;
+            drawable = context.getResources().getDrawable(R.drawable.icon_xapk);
         }
-        if(fileItem.getName().trim().toLowerCase().endsWith(".apk")){
-            importType=ImportType.APK;
-            PackageManager packageManager=context.getApplicationContext().getPackageManager();
-            if(fileItem.isFileInstance()){
-                try{
-                    int flag=0;
-                    final SharedPreferences settings=SPUtil.getGlobalSharedPreferences(context);
-                    if(settings.getBoolean(Constants.PREFERENCE_LOAD_PERMISSIONS,Constants.PREFERENCE_LOAD_PERMISSIONS_DEFAULT))flag|=PackageManager.GET_PERMISSIONS;
-                    if(settings.getBoolean(Constants.PREFERENCE_LOAD_ACTIVITIES,Constants.PREFERENCE_LOAD_ACTIVITIES_DEFAULT))flag|=PackageManager.GET_ACTIVITIES;
-                    if(settings.getBoolean(Constants.PREFERENCE_LOAD_RECEIVERS,Constants.PREFERENCE_LOAD_RECEIVERS_DEFAULT))flag|=PackageManager.GET_RECEIVERS;
-                    if(settings.getBoolean(Constants.PREFERENCE_LOAD_APK_SIGNATURE,Constants.PREFERENCE_LOAD_APK_SIGNATURE_DEFAULT))flag|=PackageManager.GET_SIGNATURES;
-                    if(settings.getBoolean(Constants.PREFERENCE_LOAD_SERVICES,Constants.PREFERENCE_LOAD_SERVICES_DEFAULT))flag|=PackageManager.GET_SERVICES;
-                    if(settings.getBoolean(Constants.PREFERENCE_LOAD_PROVIDERS,Constants.PREFERENCE_LOAD_PROVIDERS_DEFAULT))flag|=PackageManager.GET_PROVIDERS;
-                    packageInfo=packageManager.getPackageArchiveInfo(fileItem.getPath(),flag);
-                }catch (Exception e){e.printStackTrace();}
-                if(packageInfo!=null){
-                    packageInfo.applicationInfo.sourceDir=fileItem.getPath();
-                    packageInfo.applicationInfo.publicSourceDir=fileItem.getPath();
-                    drawable=packageInfo.applicationInfo.loadIcon(packageManager);
-                    version_name=packageInfo.versionName;
-                    version_code=String.valueOf(packageInfo.versionCode);
-                    if(Build.VERSION.SDK_INT>23){
-                        minSdkVersion=String.valueOf(packageInfo.applicationInfo.minSdkVersion);
+        if (fileItem.getName().trim().toLowerCase().endsWith(".apk")) {
+            importType = ImportType.APK;
+            PackageManager packageManager = context.getApplicationContext().getPackageManager();
+            if (fileItem.isFileInstance()) {
+                try {
+                    int flag = 0;
+                    final SharedPreferences settings = SPUtil.getGlobalSharedPreferences(context);
+                    if (settings.getBoolean(Constants.PREFERENCE_LOAD_PERMISSIONS, Constants.PREFERENCE_LOAD_PERMISSIONS_DEFAULT))
+                        flag |= PackageManager.GET_PERMISSIONS;
+                    if (settings.getBoolean(Constants.PREFERENCE_LOAD_ACTIVITIES, Constants.PREFERENCE_LOAD_ACTIVITIES_DEFAULT))
+                        flag |= PackageManager.GET_ACTIVITIES;
+                    if (settings.getBoolean(Constants.PREFERENCE_LOAD_RECEIVERS, Constants.PREFERENCE_LOAD_RECEIVERS_DEFAULT))
+                        flag |= PackageManager.GET_RECEIVERS;
+                    if (settings.getBoolean(Constants.PREFERENCE_LOAD_APK_SIGNATURE, Constants.PREFERENCE_LOAD_APK_SIGNATURE_DEFAULT))
+                        flag |= PackageManager.GET_SIGNATURES;
+                    if (settings.getBoolean(Constants.PREFERENCE_LOAD_SERVICES, Constants.PREFERENCE_LOAD_SERVICES_DEFAULT))
+                        flag |= PackageManager.GET_SERVICES;
+                    if (settings.getBoolean(Constants.PREFERENCE_LOAD_PROVIDERS, Constants.PREFERENCE_LOAD_PROVIDERS_DEFAULT))
+                        flag |= PackageManager.GET_PROVIDERS;
+                    packageInfo = packageManager.getPackageArchiveInfo(fileItem.getPath(), flag);
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+                if (packageInfo != null) {
+                    packageInfo.applicationInfo.sourceDir = fileItem.getPath();
+                    packageInfo.applicationInfo.publicSourceDir = fileItem.getPath();
+                    drawable = packageInfo.applicationInfo.loadIcon(packageManager);
+                    version_name = packageInfo.versionName;
+                    version_code = String.valueOf(packageInfo.versionCode);
+                    if (Build.VERSION.SDK_INT > 23) {
+                        minSdkVersion = String.valueOf(packageInfo.applicationInfo.minSdkVersion);
                     }
-                    targetSdkVersion=String.valueOf(packageInfo.applicationInfo.targetSdkVersion);
-                }else{
-                    drawable=context.getResources().getDrawable(R.drawable.icon_apk);
+                    targetSdkVersion = String.valueOf(packageInfo.applicationInfo.targetSdkVersion);
+                } else {
+                    drawable = context.getResources().getDrawable(R.drawable.icon_apk);
 
                 }
-            }else{
-                drawable=context.getResources().getDrawable(R.drawable.icon_apk);
+            } else {
+                drawable = context.getResources().getDrawable(R.drawable.icon_apk);
             }
 
         }
-        length=fileItem.length();
-        lastModified =fileItem.lastModified();
+        length = fileItem.length();
+        lastModified = fileItem.lastModified();
     }
 
-    public ImportItem(@NonNull ImportItem wrapper,boolean importData,boolean importObb,boolean importApk){
-        this.drawable=wrapper.drawable;
-        this.version_name=wrapper.version_name;
-        this.fileItem=wrapper.fileItem;
-        this.context=wrapper.context;
-        this.importType=wrapper.importType;
-        this.length=wrapper.length;
-        this.lastModified =wrapper.lastModified;
-        this.importData=importData;
-        this.importObb=importObb;
-        this.importApk=importApk;
+    public ImportItem(@NonNull ImportItem wrapper, boolean importData, boolean importObb, boolean importApk) {
+        this.drawable = wrapper.drawable;
+        this.version_name = wrapper.version_name;
+        this.fileItem = wrapper.fileItem;
+        this.context = wrapper.context;
+        this.importType = wrapper.importType;
+        this.length = wrapper.length;
+        this.lastModified = wrapper.lastModified;
+        this.importData = importData;
+        this.importObb = importObb;
+        this.importApk = importApk;
     }
 
     @Override
@@ -128,8 +136,9 @@ public class ImportItem implements DisplayItem,Comparable<ImportItem> {
 
     @Override
     public String getDescription() {
-        DateFormat dateFormat=SimpleDateFormat.getDateTimeInstance();
-        if(importType==ImportType.APK)return dateFormat.format(new Date(lastModified))+"("+version_name+")";
+        DateFormat dateFormat = SimpleDateFormat.getDateTimeInstance();
+        if (importType == ImportType.APK)
+            return dateFormat.format(new Date(lastModified)) + "(" + version_name + ")";
         return dateFormat.format(new Date(lastModified));
     }
 
@@ -143,64 +152,67 @@ public class ImportItem implements DisplayItem,Comparable<ImportItem> {
         return false;
     }
 
-    public String getItemName(){
+    public String getItemName() {
         return fileItem.getName();
     }
 
-    public long getLastModified(){
+    public long getLastModified() {
         return lastModified;
     }
 
-    public ImportType getImportType(){
+    public ImportType getImportType() {
         return importType;
     }
 
-    public PackageInfo getPackageInfo(){
+    public PackageInfo getPackageInfo() {
         return packageInfo;
     }
 
     /**
      * 只针对apk的版本名
      */
-    public String getVersionName(){
+    public String getVersionName() {
         return version_name;
     }
 
-    public String getVersionCode(){
+    public String getVersionCode() {
         return version_code;
     }
 
-    public String getMinSdkVersion(){
+    public String getMinSdkVersion() {
         return minSdkVersion;
     }
 
-    public String getTargetSdkVersion(){
+    public String getTargetSdkVersion() {
         return targetSdkVersion;
     }
 
-    public Drawable getItemIconDrawable(){
+    public Drawable getItemIconDrawable() {
         return drawable;
     }
 
-    public FileItem getFileItem(){
+    public FileItem getFileItem() {
         return fileItem;
     }
+
     /**
      * 当本项目为zip包时的输入流
      */
-    public @Nullable InputStream getZipInputStream() throws Exception{
-        if(importType==ImportType.ZIP) return fileItem.getInputStream();
+    public @Nullable
+    InputStream getZipInputStream() throws Exception {
+        if (importType == ImportType.ZIP) return fileItem.getInputStream();
         return null;
     }
 
-    public @Nullable Uri getUri(){
-        if(fileItem.isDocumentFile()){
+    public @Nullable
+    Uri getUri() {
+        if (fileItem.isDocumentFile()) {
             return fileItem.getDocumentFile().getUri();
         }
-        if(fileItem.isFileInstance()){
-            return EnvironmentUtil.getUriForFileByFileProvider(context,fileItem.getFile());
+        if (fileItem.isFileInstance()) {
+            return EnvironmentUtil.getUriForFileByFileProvider(context, fileItem.getFile());
         }
-        if(fileItem.isShareUriInstance()){
+        if (fileItem.isShareUriInstance()) {
             return fileItem.getContentUri();
         }
         return null;
@@ -208,49 +220,60 @@ public class ImportItem implements DisplayItem,Comparable<ImportItem> {
 
     /**
      * 如果此导入项为存储到内置存储的Uri.fromFile()
+     *
      * @return uri
      */
-    public @Nullable Uri getUriFromFile(){
-        if(fileItem.isFileInstance())return Uri.fromFile(fileItem.getFile());
+    public @Nullable
+    Uri getUriFromFile() {
+        if (fileItem.isFileInstance()) return Uri.fromFile(fileItem.getFile());
         return null;
     }
 
     @Override
     public int compareTo(@NonNull ImportItem o) {
-        switch (sort_config){
-            default:break;
-            case 1:{
-                try{
-                    if(PinyinUtil.getFirstSpell(getTitle()).toLowerCase().compareTo(PinyinUtil.getFirstSpell(o.getTitle()).toLowerCase())>0)return 1;
-                    if(PinyinUtil.getFirstSpell(getTitle()).toLowerCase().compareTo(PinyinUtil.getFirstSpell(o.getTitle()).toLowerCase())<0) return -1;
-                }catch (Exception e){e.printStackTrace();}
+        switch (sort_config) {
+            default:
+                break;
+            case 1: {
+                try {
+                    if (PinyinUtil.getFirstSpell(getTitle()).toLowerCase().compareTo(PinyinUtil.getFirstSpell(o.getTitle()).toLowerCase()) > 0)
+                        return 1;
+                    if (PinyinUtil.getFirstSpell(getTitle()).toLowerCase().compareTo(PinyinUtil.getFirstSpell(o.getTitle()).toLowerCase()) < 0)
+                        return -1;
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
             }
             break;
-            case 2:{
-                try{
-                    if(PinyinUtil.getFirstSpell(getTitle()).toLowerCase().compareTo(PinyinUtil.getFirstSpell(o.getTitle()).toLowerCase())<0)return 1;
-                    if(PinyinUtil.getFirstSpell(getTitle()).toLowerCase().compareTo(PinyinUtil.getFirstSpell(o.getTitle()).toLowerCase())>0)return -1;
-                }catch (Exception e){e.printStackTrace();}
+            case 2: {
+                try {
+                    if (PinyinUtil.getFirstSpell(getTitle()).toLowerCase().compareTo(PinyinUtil.getFirstSpell(o.getTitle()).toLowerCase()) < 0)
+                        return 1;
+                    if (PinyinUtil.getFirstSpell(getTitle()).toLowerCase().compareTo(PinyinUtil.getFirstSpell(o.getTitle()).toLowerCase()) > 0)
+                        return -1;
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
             }
             break;
-            case 3:{
-                if(getSize()-o.getSize()>0)return 1;
-                if(getSize()-o.getSize()<0)return -1;
+            case 3: {
+                if (getSize() - o.getSize() > 0) return 1;
+                if (getSize() - o.getSize() < 0) return -1;
             }
             break;
-            case 4:{
-                if(getSize()-o.getSize()<0)return 1;
-                if(getSize()-o.getSize()>0)return -1;
+            case 4: {
+                if (getSize() - o.getSize() < 0) return 1;
+                if (getSize() - o.getSize() > 0) return -1;
             }
             break;
-            case 5:{
-                if(getLastModified()-o.getLastModified()>0)return 1;
-                if(getLastModified()-o.getLastModified()<0)return -1;
+            case 5: {
+                if (getLastModified() - o.getLastModified() > 0) return 1;
+                if (getLastModified() - o.getLastModified() < 0) return -1;
             }
             break;
-            case 6:{
-                if(getLastModified()-o.getLastModified()<0)return 1;
-                if(getLastModified()-o.getLastModified()>0)return -1;
+            case 6: {
+                if (getLastModified() - o.getLastModified() < 0) return 1;
+                if (getLastModified() - o.getLastModified() > 0) return -1;
             }
             break;
         }

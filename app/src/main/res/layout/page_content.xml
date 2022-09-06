@@ -3,15 +3,18 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     xmlns:tools="http://schemas.android.com/tools">
+
     <android.support.v4.widget.SwipeRefreshLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:id="@+id/content_swipe">
+
         <android.support.v7.widget.RecyclerView
             android:id="@+id/content_recyclerview"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"/>
+            android:layout_height="match_parent" />
     </android.support.v4.widget.SwipeRefreshLayout>
+
     <RelativeLayout
         android:id="@+id/loading"
         android:layout_width="match_parent"
@@ -19,13 +22,15 @@
         android:layout_centerVertical="true"
         android:visibility="gone"
         tools:visibility="visible">
+
         <ProgressBar
             android:id="@+id/loading_pg"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginLeft="30dp"
             android:layout_marginRight="30dp"
-            style="?android:attr/progressBarStyleHorizontal"/>
+            style="?android:attr/progressBarStyleHorizontal" />
+
         <TextView
             android:id="@+id/loading_text"
             android:layout_width="wrap_content"
@@ -44,8 +49,9 @@
             tools:text="正在扫描 /storage/emulated/0/Backup/com.github.ghmxr.apkextractor-12.apk
             正在扫描 /storage/emulated/0/Backup/com.github.ghmxr.apkextractor-12.apk
             正在扫描 /storage/emulated/0/Backup/com.github.ghmxr.apkextractor-12.apk
-            正在扫描 /storage/emulated/0/Backup/com.github.ghmxr.apkextractor-12.apk"/>
+            正在扫描 /storage/emulated/0/Backup/com.github.ghmxr.apkextractor-12.apk" />
     </RelativeLayout>
+
     <LinearLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -54,15 +60,17 @@
         android:orientation="horizontal"
         android:gravity="center_vertical"
         android:visibility="gone">
+
         <ImageView
             android:layout_width="55dp"
             android:layout_height="55dp"
-            android:src="@drawable/icon_face_neutral"/>
+            android:src="@drawable/icon_face_neutral" />
+
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textSize="16sp"
             android:textColor="@color/colorHighLightText"
-            android:text="@string/word_content_blank"/>
+            android:text="@string/word_content_blank" />
     </LinearLayout>
 </RelativeLayout>

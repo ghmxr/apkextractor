@@ -5,7 +5,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools">
 
-    <include layout="@layout/page_content"/>
+    <include layout="@layout/page_content" />
 
     <android.support.v7.widget.CardView
         android:id="@+id/export_card"
@@ -20,15 +20,18 @@
         app:cardCornerRadius="0dp"
         app:cardBackgroundColor="@color/colorMainBottomCard"
         tools:visibility="gone">
+
         <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent">
+
             <LinearLayout
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:orientation="horizontal"
                 android:layout_centerHorizontal="true"
                 android:layout_centerVertical="true">
+
                 <TextView
                     android:id="@+id/main_storage_remain"
                     android:layout_width="wrap_content"
@@ -41,7 +44,8 @@
                     android:textSize="13sp"
                     android:textColor="@color/colorHighLightText"
                     android:singleLine="true"
-                    android:text="@string/main_card_remaining_storage"/>
+                    android:text="@string/main_card_remaining_storage" />
+
                 <CheckBox
                     android:id="@+id/main_show_system_app"
                     android:layout_width="wrap_content"
@@ -56,7 +60,7 @@
                     android:textColor="@color/colorHighLightText"
                     android:layout_alignParentRight="true"
                     android:singleLine="true"
-                    android:text="@string/main_card_show_system_app"/>
+                    android:text="@string/main_card_show_system_app" />
             </LinearLayout>
         </RelativeLayout>
     </android.support.v7.widget.CardView>
@@ -75,9 +79,11 @@
         app:cardCornerRadius="0dp"
         app:cardBackgroundColor="@color/colorMainBottomCard"
         tools:visibility="visible">
+
         <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent">
+
             <TextView
                 android:id="@+id/main_select_num_size"
                 android:layout_width="wrap_content"
@@ -87,7 +93,8 @@
                 android:layout_marginTop="10dp"
                 android:textSize="12sp"
                 android:textColor="@color/colorHighLightText"
-                tools:text="10项/1024MB"/>
+                tools:text="10项/1024MB" />
+
             <LinearLayout
                 android:layout_below="@+id/main_select_num_size"
                 android:layout_width="wrap_content"
@@ -95,6 +102,7 @@
                 android:orientation="horizontal"
                 android:layout_centerHorizontal="true"
                 android:layout_centerVertical="true">
+
                 <Button
                     android:id="@+id/main_select_all"
                     android:layout_width="wrap_content"
@@ -105,7 +113,8 @@
                     android:singleLine="true"
                     android:text="@string/select_all_change"
                     android:clickable="true"
-                    android:focusable="true"/>
+                    android:focusable="true" />
+
                 <Button
                     android:id="@+id/main_export"
                     android:layout_width="wrap_content"
@@ -118,6 +127,7 @@
                     android:clickable="true"
                     android:focusable="true"
                     android:ellipsize="end" />
+
                 <Button
                     android:id="@+id/main_share"
                     android:layout_width="wrap_content"
@@ -129,7 +139,8 @@
                     android:text="@string/bottom_share"
                     android:clickable="true"
                     android:focusable="true"
-                    android:ellipsize="end"/>
+                    android:ellipsize="end" />
+
                 <Button
                     android:id="@+id/main_more"
                     android:layout_width="wrap_content"
@@ -141,7 +152,7 @@
                     android:text="@string/bottom_more"
                     android:clickable="true"
                     android:focusable="true"
-                    android:ellipsize="end"/>
+                    android:ellipsize="end" />
             </LinearLayout>
         </RelativeLayout>
     </android.support.v7.widget.CardView>

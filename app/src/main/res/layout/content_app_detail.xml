@@ -7,6 +7,7 @@
     app:layout_behavior="@string/appbar_scrolling_view_behavior"
     tools:context=".activities.AppDetailActivity"
     tools:showIn="@layout/activity_app_detail">
+
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -27,10 +28,12 @@
             app:cardBackgroundColor="@color/colorCardArea"
             app:cardElevation="1dp"
             app:cardCornerRadius="5dp">
+
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:orientation="vertical">
+
                 <RelativeLayout
                     android:id="@+id/app_detail_run_area"
                     android:layout_width="match_parent"
@@ -39,6 +42,7 @@
                     android:focusable="true"
                     android:background="?attr/selectableItemBackground"
                     android:onClick="onClick">
+
                     <ImageView
                         android:id="@+id/app_detail_run_icon"
                         android:layout_width="30dp"
@@ -46,7 +50,8 @@
                         android:layout_alignParentLeft="true"
                         android:layout_centerVertical="true"
                         android:layout_marginLeft="10dp"
-                        android:src="@drawable/icon_play"/>
+                        android:src="@drawable/icon_play" />
+
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
@@ -55,7 +60,7 @@
                         android:layout_marginLeft="15dp"
                         android:textColor="@color/colorHighLightText"
                         android:textSize="15sp"
-                        android:text="@string/activity_detail_run"/>
+                        android:text="@string/activity_detail_run" />
                 </RelativeLayout>
 
                 <RelativeLayout
@@ -66,6 +71,7 @@
                     android:focusable="true"
                     android:onClick="onClick"
                     android:background="?attr/selectableItemBackground">
+
                     <ImageView
                         android:id="@+id/app_detail_export_icon"
                         android:layout_width="25dp"
@@ -73,7 +79,8 @@
                         android:layout_alignParentLeft="true"
                         android:layout_centerVertical="true"
                         android:layout_marginLeft="10dp"
-                        android:src="@drawable/icon_download"/>
+                        android:src="@drawable/icon_download" />
+
                     <TextView
                         android:id="@+id/app_detail_export_att"
                         android:layout_width="wrap_content"
@@ -83,7 +90,8 @@
                         android:layout_marginLeft="20dp"
                         android:textColor="@color/colorHighLightText"
                         android:textSize="15sp"
-                        android:text="@string/activity_detail_export"/>
+                        android:text="@string/activity_detail_export" />
+
                     <LinearLayout
                         android:id="@+id/app_detail_export_checkboxes"
                         android:layout_width="wrap_content"
@@ -95,6 +103,7 @@
                         android:layout_toLeftOf="@+id/app_detail_export_att"
                         android:layout_marginLeft="10dp"
                         android:visibility="gone">
+
                         <CheckBox
                             android:id="@+id/app_detail_export_data"
                             android:layout_width="wrap_content"
@@ -103,7 +112,8 @@
                             android:textSize="12sp"
                             android:singleLine="true"
                             android:textColor="@color/color_text_normal"
-                            android:text="Data"/>
+                            android:text="Data" />
+
                         <CheckBox
                             android:id="@+id/app_detail_export_obb"
                             android:layout_width="wrap_content"
@@ -111,8 +121,9 @@
                             android:textSize="12sp"
                             android:singleLine="true"
                             android:textColor="@color/color_text_normal"
-                            android:text="Obb"/>
+                            android:text="Obb" />
                     </LinearLayout>
+
                     <ProgressBar
                         android:layout_width="25dp"
                         android:layout_height="25dp"
@@ -121,7 +132,7 @@
                         android:layout_centerVertical="true"
                         android:layout_marginRight="40dp"
                         style="?android:attr/progressBarStyleSmall"
-                        android:visibility="visible"/>
+                        android:visibility="visible" />
                 </RelativeLayout>
 
                 <RelativeLayout
@@ -132,6 +143,7 @@
                     android:focusable="true"
                     android:onClick="onClick"
                     android:background="?attr/selectableItemBackground">
+
                     <ImageView
                         android:id="@+id/app_detail_share_icon"
                         android:layout_width="30dp"
@@ -139,7 +151,8 @@
                         android:layout_alignParentLeft="true"
                         android:layout_centerVertical="true"
                         android:layout_marginLeft="10dp"
-                        android:src="@drawable/icon_share"/>
+                        android:src="@drawable/icon_share" />
+
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
@@ -148,7 +161,7 @@
                         android:layout_marginLeft="15dp"
                         android:textColor="@color/colorHighLightText"
                         android:textSize="14sp"
-                        android:text="@string/activity_detail_share"/>
+                        android:text="@string/activity_detail_share" />
                 </RelativeLayout>
 
                 <RelativeLayout
@@ -159,6 +172,7 @@
                     android:focusable="true"
                     android:onClick="onClick"
                     android:background="?attr/selectableItemBackground">
+
                     <ImageView
                         android:id="@+id/app_detail_detail_icon"
                         android:layout_width="30dp"
@@ -166,7 +180,8 @@
                         android:layout_alignParentLeft="true"
                         android:layout_centerVertical="true"
                         android:layout_marginLeft="10dp"
-                        android:src="@drawable/icon_info"/>
+                        android:src="@drawable/icon_info" />
+
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
@@ -175,7 +190,7 @@
                         android:layout_marginLeft="15dp"
                         android:textColor="@color/colorHighLightText"
                         android:textSize="14sp"
-                        android:text="@string/activity_detail_system_detail"/>
+                        android:text="@string/activity_detail_system_detail" />
                 </RelativeLayout>
 
                 <RelativeLayout
@@ -186,6 +201,7 @@
                     android:focusable="true"
                     android:onClick="onClick"
                     android:background="?attr/selectableItemBackground">
+
                     <ImageView
                         android:id="@+id/app_detail_market_icon"
                         android:layout_width="30dp"
@@ -193,7 +209,8 @@
                         android:layout_alignParentLeft="true"
                         android:layout_centerVertical="true"
                         android:layout_marginLeft="10dp"
-                        android:src="@drawable/icon_market"/>
+                        android:src="@drawable/icon_market" />
+
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
@@ -202,7 +219,7 @@
                         android:layout_marginLeft="15dp"
                         android:textColor="@color/colorHighLightText"
                         android:textSize="14sp"
-                        android:text="@string/activity_detail_market"/>
+                        android:text="@string/activity_detail_market" />
                 </RelativeLayout>
 
                 <RelativeLayout
@@ -213,6 +230,7 @@
                     android:focusable="true"
                     android:onClick="onClick"
                     android:background="?attr/selectableItemBackground">
+
                     <ImageView
                         android:id="@+id/app_detail_delete_icon"
                         android:layout_width="30dp"
@@ -220,7 +238,8 @@
                         android:layout_alignParentLeft="true"
                         android:layout_centerVertical="true"
                         android:layout_marginLeft="10dp"
-                        android:src="@drawable/icon_delete"/>
+                        android:src="@drawable/icon_delete" />
+
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
@@ -229,7 +248,7 @@
                         android:layout_marginLeft="15dp"
                         android:textColor="@color/colorHighLightText"
                         android:textSize="14sp"
-                        android:text="@string/activity_detail_uninstall"/>
+                        android:text="@string/activity_detail_uninstall" />
                 </RelativeLayout>
 
             </LinearLayout>
@@ -246,11 +265,13 @@
             app:cardElevation="1dp"
             app:cardCornerRadius="5dp"
             app:cardBackgroundColor="@color/colorCardArea">
+
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:orientation="vertical"
                 android:layout_margin="5dp">
+
                 <RelativeLayout
                     android:id="@+id/app_detail_package_name_area"
                     android:layout_width="match_parent"
@@ -259,6 +280,7 @@
                     android:focusable="true"
                     android:background="?attr/selectableItemBackground"
                     android:onClick="onClick">
+
                     <TextView
                         android:id="@+id/app_detail_package_name_att"
                         android:layout_width="wrap_content"
@@ -270,7 +292,8 @@
                         android:layout_centerVertical="true"
                         android:textSize="14sp"
                         android:textColor="@color/colorHighLightText"
-                        android:text="@string/activity_detail_package_name"/>
+                        android:text="@string/activity_detail_package_name" />
+
                     <TextView
                         android:id="@+id/app_detail_package_name"
                         android:layout_width="match_parent"
@@ -281,12 +304,13 @@
                         android:layout_marginLeft="10dp"
                         android:layout_marginRight="5dp"
                         android:textSize="12sp"
-                        tools:text="com.example"/>
+                        tools:text="com.example" />
                 </RelativeLayout>
+
                 <ImageView
                     android:layout_width="match_parent"
                     android:layout_height="1px"
-                    android:background="@color/colorDividingLine"/>
+                    android:background="@color/colorDividingLine" />
 
                 <RelativeLayout
                     android:id="@+id/app_detail_version_name_area"
@@ -296,6 +320,7 @@
                     android:focusable="true"
                     android:background="?attr/selectableItemBackground"
                     android:onClick="onClick">
+
                     <TextView
                         android:id="@+id/app_detail_version_name_att"
                         android:layout_width="wrap_content"
@@ -307,7 +332,8 @@
                         android:layout_centerVertical="true"
                         android:textSize="14sp"
                         android:textColor="@color/colorHighLightText"
-                        android:text="@string/activity_detail_version_name"/>
+                        android:text="@string/activity_detail_version_name" />
+
                     <TextView
                         android:id="@+id/app_detail_version_name"
                         android:layout_width="match_parent"
@@ -318,12 +344,13 @@
                         android:layout_marginLeft="10dp"
                         android:layout_marginRight="5dp"
                         android:textSize="12sp"
-                        tools:text="1.0"/>
+                        tools:text="1.0" />
                 </RelativeLayout>
+
                 <ImageView
                     android:layout_width="match_parent"
                     android:layout_height="1px"
-                    android:background="@color/colorDividingLine"/>
+                    android:background="@color/colorDividingLine" />
 
                 <RelativeLayout
                     android:id="@+id/app_detail_version_code_area"
@@ -333,6 +360,7 @@
                     android:focusable="true"
                     android:background="?attr/selectableItemBackground"
                     android:onClick="onClick">
+
                     <TextView
                         android:id="@+id/app_detail_version_code_att"
                         android:layout_width="wrap_content"
@@ -344,7 +372,8 @@
                         android:layout_centerVertical="true"
                         android:textSize="14sp"
                         android:textColor="@color/colorHighLightText"
-                        android:text="@string/activity_detail_version_code"/>
+                        android:text="@string/activity_detail_version_code" />
+
                     <TextView
                         android:id="@+id/app_detail_version_code"
                         android:layout_width="match_parent"
@@ -355,12 +384,13 @@
                         android:layout_marginLeft="10dp"
                         android:layout_marginRight="5dp"
                         android:textSize="12sp"
-                        tools:text="10"/>
+                        tools:text="10" />
                 </RelativeLayout>
+
                 <ImageView
                     android:layout_width="match_parent"
                     android:layout_height="1px"
-                    android:background="@color/colorDividingLine"/>
+                    android:background="@color/colorDividingLine" />
 
                 <RelativeLayout
                     android:id="@+id/app_detail_size_area"
@@ -370,6 +400,7 @@
                     android:focusable="true"
                     android:background="?attr/selectableItemBackground"
                     android:onClick="onClick">
+
                     <TextView
                         android:id="@+id/app_detail_size_att"
                         android:layout_width="wrap_content"
@@ -381,7 +412,8 @@
                         android:layout_centerVertical="true"
                         android:textSize="14sp"
                         android:textColor="@color/colorHighLightText"
-                        android:text="@string/activity_detail_package_size"/>
+                        android:text="@string/activity_detail_package_size" />
+
                     <TextView
                         android:id="@+id/app_detail_size"
                         android:layout_width="match_parent"
@@ -392,12 +424,13 @@
                         android:layout_marginLeft="10dp"
                         android:layout_marginRight="5dp"
                         android:textSize="12sp"
-                        tools:text="100MB"/>
+                        tools:text="100MB" />
                 </RelativeLayout>
+
                 <ImageView
                     android:layout_width="match_parent"
                     android:layout_height="1px"
-                    android:background="@color/colorDividingLine"/>
+                    android:background="@color/colorDividingLine" />
 
                 <RelativeLayout
                     android:id="@+id/app_detail_install_time_area"
@@ -407,6 +440,7 @@
                     android:focusable="true"
                     android:background="?attr/selectableItemBackground"
                     android:onClick="onClick">
+
                     <TextView
                         android:id="@+id/app_detail_install_time_att"
                         android:layout_width="wrap_content"
@@ -418,7 +452,8 @@
                         android:layout_centerVertical="true"
                         android:textSize="14sp"
                         android:textColor="@color/colorHighLightText"
-                        android:text="@string/activity_detail_first_install_time"/>
+                        android:text="@string/activity_detail_first_install_time" />
+
                     <TextView
                         android:id="@+id/app_detail_install_time"
                         android:layout_width="match_parent"
@@ -429,12 +464,13 @@
                         android:layout_marginLeft="10dp"
                         android:layout_marginRight="5dp"
                         android:textSize="12sp"
-                        tools:text="2019/01/01/19:00:10"/>
+                        tools:text="2019/01/01/19:00:10" />
                 </RelativeLayout>
+
                 <ImageView
                     android:layout_width="match_parent"
                     android:layout_height="1px"
-                    android:background="@color/colorDividingLine"/>
+                    android:background="@color/colorDividingLine" />
 
                 <RelativeLayout
                     android:id="@+id/app_detail_update_time_area"
@@ -444,6 +480,7 @@
                     android:focusable="true"
                     android:background="?attr/selectableItemBackground"
                     android:onClick="onClick">
+
                     <TextView
                         android:id="@+id/app_detail_update_time_att"
                         android:layout_width="wrap_content"
@@ -455,7 +492,8 @@
                         android:layout_centerVertical="true"
                         android:textSize="14sp"
                         android:textColor="@color/colorHighLightText"
-                        android:text="@string/activity_detail_last_update_time"/>
+                        android:text="@string/activity_detail_last_update_time" />
+
                     <TextView
                         android:id="@+id/app_detail_update_time"
                         android:layout_width="match_parent"
@@ -466,12 +504,13 @@
                         android:layout_marginLeft="10dp"
                         android:layout_marginRight="5dp"
                         android:textSize="12sp"
-                        tools:text="2019/01/01/19:00:10"/>
+                        tools:text="2019/01/01/19:00:10" />
                 </RelativeLayout>
+
                 <ImageView
                     android:layout_width="match_parent"
                     android:layout_height="1px"
-                    android:background="@color/colorDividingLine"/>
+                    android:background="@color/colorDividingLine" />
 
                 <RelativeLayout
                     android:id="@+id/app_detail_installer_name_area"
@@ -481,6 +520,7 @@
                     android:focusable="true"
                     android:background="?attr/selectableItemBackground"
                     android:onClick="onClick">
+
                     <TextView
                         android:id="@+id/app_detail_installer_name_att"
                         android:layout_width="wrap_content"
@@ -492,7 +532,8 @@
                         android:layout_centerVertical="true"
                         android:textSize="14sp"
                         android:textColor="@color/colorHighLightText"
-                        android:text="@string/activity_detail_installer_name"/>
+                        android:text="@string/activity_detail_installer_name" />
+
                     <TextView
                         android:id="@+id/app_detail_installer_name_value"
                         android:layout_width="match_parent"
@@ -503,12 +544,13 @@
                         android:layout_marginLeft="10dp"
                         android:layout_marginRight="5dp"
                         android:textSize="12sp"
-                        tools:text="文件管理器"/>
+                        tools:text="文件管理器" />
                 </RelativeLayout>
+
                 <ImageView
                     android:layout_width="match_parent"
                     android:layout_height="1px"
-                    android:background="@color/colorDividingLine"/>
+                    android:background="@color/colorDividingLine" />
 
                 <RelativeLayout
                     android:id="@+id/app_detail_minimum_api_area"
@@ -518,6 +560,7 @@
                     android:focusable="true"
                     android:background="?attr/selectableItemBackground"
                     android:onClick="onClick">
+
                     <TextView
                         android:id="@+id/app_detail_minimum_api_att"
                         android:layout_width="wrap_content"
@@ -529,7 +572,8 @@
                         android:layout_centerVertical="true"
                         android:textSize="14sp"
                         android:textColor="@color/colorHighLightText"
-                        android:text="@string/activity_detail_minimum_api"/>
+                        android:text="@string/activity_detail_minimum_api" />
+
                     <TextView
                         android:id="@+id/app_detail_minimum_api"
                         android:layout_width="match_parent"
@@ -540,12 +584,13 @@
                         android:layout_marginLeft="10dp"
                         android:layout_marginRight="5dp"
                         android:textSize="12sp"
-                        tools:text="14"/>
+                        tools:text="14" />
                 </RelativeLayout>
+
                 <ImageView
                     android:layout_width="match_parent"
                     android:layout_height="1px"
-                    android:background="@color/colorDividingLine"/>
+                    android:background="@color/colorDividingLine" />
 
                 <RelativeLayout
                     android:id="@+id/app_detail_target_api_area"
@@ -555,6 +600,7 @@
                     android:focusable="true"
                     android:background="?attr/selectableItemBackground"
                     android:onClick="onClick">
+
                     <TextView
                         android:id="@+id/app_detail_target_api_att"
                         android:layout_width="wrap_content"
@@ -566,7 +612,8 @@
                         android:layout_centerVertical="true"
                         android:textSize="14sp"
                         android:textColor="@color/colorHighLightText"
-                        android:text="@string/activity_detail_target_api"/>
+                        android:text="@string/activity_detail_target_api" />
+
                     <TextView
                         android:id="@+id/app_detail_target_api"
                         android:layout_width="match_parent"
@@ -577,12 +624,13 @@
                         android:layout_marginLeft="10dp"
                         android:layout_marginRight="5dp"
                         android:textSize="12sp"
-                        tools:text="28"/>
+                        tools:text="28" />
                 </RelativeLayout>
+
                 <ImageView
                     android:layout_width="match_parent"
                     android:layout_height="1px"
-                    android:background="@color/colorDividingLine"/>
+                    android:background="@color/colorDividingLine" />
 
                 <RelativeLayout
                     android:id="@+id/app_detail_is_system_app_area"
@@ -592,6 +640,7 @@
                     android:focusable="true"
                     android:background="?attr/selectableItemBackground"
                     android:onClick="onClick">
+
                     <TextView
                         android:id="@+id/app_detail_is_system_app_att"
                         android:layout_width="wrap_content"
@@ -603,7 +652,8 @@
                         android:layout_centerVertical="true"
                         android:textSize="14sp"
                         android:textColor="@color/colorHighLightText"
-                        android:text="@string/activity_detail_is_system_app"/>
+                        android:text="@string/activity_detail_is_system_app" />
+
                     <TextView
                         android:id="@+id/app_detail_is_system_app"
                         android:layout_width="match_parent"
@@ -614,12 +664,13 @@
                         android:layout_marginLeft="10dp"
                         android:layout_marginRight="5dp"
                         android:textSize="12sp"
-                        tools:text="@string/word_no"/>
+                        tools:text="@string/word_no" />
                 </RelativeLayout>
+
                 <ImageView
                     android:layout_width="match_parent"
                     android:layout_height="1px"
-                    android:background="@color/colorDividingLine"/>
+                    android:background="@color/colorDividingLine" />
 
                 <RelativeLayout
                     android:id="@+id/app_detail_uid_area"
@@ -629,6 +680,7 @@
                     android:focusable="true"
                     android:background="?attr/selectableItemBackground"
                     android:onClick="onClick">
+
                     <TextView
                         android:id="@+id/app_detail_uid_att"
                         android:layout_width="wrap_content"
@@ -640,7 +692,8 @@
                         android:layout_centerVertical="true"
                         android:textSize="14sp"
                         android:textColor="@color/colorHighLightText"
-                        android:text="@string/activity_detail_uid"/>
+                        android:text="@string/activity_detail_uid" />
+
                     <TextView
                         android:id="@+id/app_detail_uid"
                         android:layout_width="match_parent"
@@ -651,12 +704,13 @@
                         android:layout_marginLeft="10dp"
                         android:layout_marginRight="5dp"
                         android:textSize="12sp"
-                        tools:text="1001"/>
+                        tools:text="1001" />
                 </RelativeLayout>
+
                 <ImageView
                     android:layout_width="match_parent"
                     android:layout_height="1px"
-                    android:background="@color/colorDividingLine"/>
+                    android:background="@color/colorDividingLine" />
 
                 <RelativeLayout
                     android:id="@+id/app_detail_path_area"
@@ -666,6 +720,7 @@
                     android:focusable="true"
                     android:background="?attr/selectableItemBackground"
                     android:onClick="onClick">
+
                     <TextView
                         android:id="@+id/app_detail_path_att"
                         android:layout_width="wrap_content"
@@ -677,7 +732,8 @@
                         android:layout_centerVertical="true"
                         android:textSize="14sp"
                         android:textColor="@color/colorHighLightText"
-                        android:text="@string/activity_detail_path"/>
+                        android:text="@string/activity_detail_path" />
+
                     <TextView
                         android:id="@+id/app_detail_path_value"
                         android:layout_width="match_parent"
@@ -688,13 +744,13 @@
                         android:layout_marginLeft="10dp"
                         android:layout_marginRight="5dp"
                         android:textSize="12sp"
-                        tools:text="@string/word_no"/>
+                        tools:text="@string/word_no" />
                 </RelativeLayout>
 
                 <ImageView
                     android:layout_width="match_parent"
                     android:layout_height="1px"
-                    android:background="@color/colorDividingLine"/>
+                    android:background="@color/colorDividingLine" />
 
                 <RelativeLayout
                     android:id="@+id/app_detail_launcher_area"
@@ -704,6 +760,7 @@
                     android:focusable="true"
                     android:background="?attr/selectableItemBackground"
                     android:onClick="onClick">
+
                     <TextView
                         android:id="@+id/app_detail_launcher_att"
                         android:layout_width="wrap_content"
@@ -715,7 +772,8 @@
                         android:layout_centerVertical="true"
                         android:textSize="14sp"
                         android:textColor="@color/colorHighLightText"
-                        android:text="@string/activity_detail_launch_intent"/>
+                        android:text="@string/activity_detail_launch_intent" />
+
                     <TextView
                         android:id="@+id/app_detail_launcher_value"
                         android:layout_width="match_parent"
@@ -726,7 +784,7 @@
                         android:layout_marginLeft="10dp"
                         android:layout_marginRight="5dp"
                         android:textSize="12sp"
-                        tools:text="MainActivity"/>
+                        tools:text="MainActivity" />
                 </RelativeLayout>
 
             </LinearLayout>
@@ -743,12 +801,12 @@
             android:textSize="15sp"
             android:text="@string/activity_detail_signature_head"
             android:visibility="gone"
-            tools:visibility="visible"/>
+            tools:visibility="visible" />
 
         <com.github.ghmxr.apkextractor.ui.SignatureView
             android:id="@+id/app_detail_signature"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"/>
+            android:layout_height="wrap_content" />
 
         <ProgressBar
             android:id="@+id/app_detail_sign_pg"
@@ -757,7 +815,7 @@
             style="?android:attr/progressBarStyleLarge"
             android:layout_gravity="center_horizontal"
             android:layout_marginTop="30dp"
-            android:visibility="gone"/>
+            android:visibility="gone" />
 
         <TextView
             android:id="@+id/app_detail_hash_att"
@@ -769,7 +827,7 @@
             android:textSize="15sp"
             android:text="@string/activity_detail_hash_head"
             android:visibility="gone"
-            tools:visibility="visible"/>
+            tools:visibility="visible" />
 
         <android.support.v7.widget.CardView
             android:id="@+id/app_detail_hash"
@@ -783,11 +841,13 @@
             app:cardElevation="1dp"
             app:cardCornerRadius="5dp"
             app:cardBackgroundColor="@color/colorCardArea">
+
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:orientation="vertical"
                 android:layout_margin="5dp">
+
                 <LinearLayout
                     android:id="@+id/detail_hash_md5"
                     android:layout_width="match_parent"
@@ -798,6 +858,7 @@
                     android:focusable="true"
                     android:background="?attr/selectableItemBackground"
                     android:onClick="onClick">
+
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
@@ -806,7 +867,8 @@
                         android:layout_marginBottom="10dp"
                         android:textSize="14sp"
                         android:textColor="@color/colorHighLightText"
-                        android:text="@string/activity_detail_hash_md5"/>
+                        android:text="@string/activity_detail_hash_md5" />
+
                     <TextView
                         android:id="@+id/detail_hash_md5_value"
                         android:layout_width="wrap_content"
@@ -816,19 +878,22 @@
                         android:layout_marginBottom="3dp"
                         android:textSize="12sp"
                         android:visibility="gone"
-                        tools:text="28"/>
+                        tools:text="28" />
+
                     <android.support.v4.widget.ContentLoadingProgressBar
                         android:id="@+id/detail_hash_md5_pg"
                         android:layout_width="20dp"
                         android:layout_height="20dp"
                         android:layout_marginLeft="5dp"
                         android:layout_marginBottom="5dp"
-                        style="?android:attr/progressBarStyleSmall"/>
+                        style="?android:attr/progressBarStyleSmall" />
                 </LinearLayout>
+
                 <ImageView
                     android:layout_width="match_parent"
                     android:layout_height="1px"
-                    android:background="@color/colorDividingLine"/>
+                    android:background="@color/colorDividingLine" />
+
                 <LinearLayout
                     android:id="@+id/detail_hash_sha1"
                     android:layout_width="match_parent"
@@ -839,6 +904,7 @@
                     android:focusable="true"
                     android:background="?attr/selectableItemBackground"
                     android:onClick="onClick">
+
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
@@ -847,7 +913,8 @@
                         android:layout_marginBottom="10dp"
                         android:textSize="14sp"
                         android:textColor="@color/colorHighLightText"
-                        android:text="@string/activity_detail_hash_sha1"/>
+                        android:text="@string/activity_detail_hash_sha1" />
+
                     <TextView
                         android:id="@+id/detail_hash_sha1_value"
                         android:layout_width="wrap_content"
@@ -857,19 +924,22 @@
                         android:layout_marginBottom="3dp"
                         android:textSize="12sp"
                         android:visibility="gone"
-                        tools:text="28"/>
+                        tools:text="28" />
+
                     <android.support.v4.widget.ContentLoadingProgressBar
                         android:id="@+id/detail_hash_sha1_pg"
                         android:layout_width="20dp"
                         android:layout_height="20dp"
                         android:layout_marginLeft="5dp"
                         android:layout_marginBottom="5dp"
-                        style="?android:attr/progressBarStyleSmall"/>
+                        style="?android:attr/progressBarStyleSmall" />
                 </LinearLayout>
+
                 <ImageView
                     android:layout_width="match_parent"
                     android:layout_height="1px"
-                    android:background="@color/colorDividingLine"/>
+                    android:background="@color/colorDividingLine" />
+
                 <LinearLayout
                     android:id="@+id/detail_hash_sha256"
                     android:layout_width="match_parent"
@@ -880,6 +950,7 @@
                     android:focusable="true"
                     android:background="?attr/selectableItemBackground"
                     android:onClick="onClick">
+
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
@@ -888,7 +959,8 @@
                         android:layout_marginBottom="10dp"
                         android:textSize="14sp"
                         android:textColor="@color/colorHighLightText"
-                        android:text="@string/activity_detail_hash_sha256"/>
+                        android:text="@string/activity_detail_hash_sha256" />
+
                     <TextView
                         android:id="@+id/detail_hash_sha256_value"
                         android:layout_width="wrap_content"
@@ -898,19 +970,22 @@
                         android:layout_marginBottom="3dp"
                         android:textSize="12sp"
                         android:visibility="gone"
-                        tools:text="28"/>
+                        tools:text="28" />
+
                     <android.support.v4.widget.ContentLoadingProgressBar
                         android:id="@+id/detail_hash_sha256_pg"
                         android:layout_width="20dp"
                         android:layout_height="20dp"
                         android:layout_marginLeft="5dp"
                         android:layout_marginBottom="5dp"
-                        style="?android:attr/progressBarStyleSmall"/>
+                        style="?android:attr/progressBarStyleSmall" />
                 </LinearLayout>
+
                 <ImageView
                     android:layout_width="match_parent"
                     android:layout_height="1px"
-                    android:background="@color/colorDividingLine"/>
+                    android:background="@color/colorDividingLine" />
+
                 <LinearLayout
                     android:id="@+id/detail_hash_crc32"
                     android:layout_width="match_parent"
@@ -921,6 +996,7 @@
                     android:focusable="true"
                     android:background="?attr/selectableItemBackground"
                     android:onClick="onClick">
+
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
@@ -929,7 +1005,8 @@
                         android:layout_marginBottom="10dp"
                         android:textSize="14sp"
                         android:textColor="@color/colorHighLightText"
-                        android:text="@string/activity_detail_hash_crc32"/>
+                        android:text="@string/activity_detail_hash_crc32" />
+
                     <TextView
                         android:id="@+id/detail_hash_crc32_value"
                         android:layout_width="wrap_content"
@@ -939,14 +1016,15 @@
                         android:layout_marginBottom="3dp"
                         android:textSize="12sp"
                         android:visibility="gone"
-                        tools:text="28"/>
+                        tools:text="28" />
+
                     <android.support.v4.widget.ContentLoadingProgressBar
                         android:id="@+id/detail_hash_crc32_pg"
                         android:layout_width="20dp"
                         android:layout_height="20dp"
                         android:layout_marginLeft="5dp"
                         android:layout_marginBottom="5dp"
-                        style="?android:attr/progressBarStyleSmall"/>
+                        style="?android:attr/progressBarStyleSmall" />
                 </LinearLayout>
             </LinearLayout>
         </android.support.v7.widget.CardView>
@@ -954,7 +1032,7 @@
         <com.github.ghmxr.apkextractor.ui.AssemblyView
             android:id="@+id/app_detail_assembly"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"/>
+            android:layout_height="wrap_content" />
 
         <ProgressBar
             android:id="@+id/app_detail_card_pg"
@@ -963,7 +1041,7 @@
             style="?android:attr/progressBarStyleLarge"
             android:layout_gravity="center_horizontal"
             android:layout_marginTop="30dp"
-            android:visibility="gone"/>
+            android:visibility="gone" />
     </LinearLayout>
 
 </android.support.v4.widget.NestedScrollView>

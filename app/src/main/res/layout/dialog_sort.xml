@@ -7,6 +7,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical">
+
         <RadioButton
             android:id="@+id/sort_ra_default"
             android:layout_width="match_parent"
@@ -15,7 +16,7 @@
             android:layout_marginBottom="5dp"
             android:layout_marginLeft="10dp"
             android:layout_marginRight="10dp"
-            android:text="@string/dialog_sort_default"/>
+            android:text="@string/dialog_sort_default" />
 
         <RadioButton
             android:id="@+id/sort_ra_ascending_appname"
@@ -25,7 +26,8 @@
             android:layout_marginBottom="5dp"
             android:layout_marginLeft="10dp"
             android:layout_marginRight="10dp"
-            android:text="@string/dialog_sort_ascending_name"/>
+            android:text="@string/dialog_sort_ascending_name" />
+
         <RadioButton
             android:id="@+id/sort_ra_descending_appname"
             android:layout_width="match_parent"
@@ -34,7 +36,8 @@
             android:layout_marginBottom="5dp"
             android:layout_marginLeft="10dp"
             android:layout_marginRight="10dp"
-            android:text="@string/dialog_sort_descending_name"/>
+            android:text="@string/dialog_sort_descending_name" />
+
         <RadioButton
             android:id="@+id/sort_ra_ascending_package_name"
             android:layout_width="match_parent"
@@ -43,7 +46,8 @@
             android:layout_marginBottom="5dp"
             android:layout_marginLeft="10dp"
             android:layout_marginRight="10dp"
-            android:text="@string/dialog_sort_ascending_package_name"/>
+            android:text="@string/dialog_sort_ascending_package_name" />
+
         <RadioButton
             android:id="@+id/sort_ra_descending_package_name"
             android:layout_width="match_parent"
@@ -52,7 +56,8 @@
             android:layout_marginBottom="5dp"
             android:layout_marginLeft="10dp"
             android:layout_marginRight="10dp"
-            android:text="@string/dialog_sort_descending_package_name"/>
+            android:text="@string/dialog_sort_descending_package_name" />
+
         <RadioButton
             android:id="@+id/sort_ra_ascending_appsize"
             android:layout_width="match_parent"
@@ -61,7 +66,8 @@
             android:layout_marginBottom="5dp"
             android:layout_marginLeft="10dp"
             android:layout_marginRight="10dp"
-            android:text="@string/dialog_sort_ascending_size"/>
+            android:text="@string/dialog_sort_ascending_size" />
+
         <RadioButton
             android:id="@+id/sort_ra_descending_appsize"
             android:layout_width="match_parent"
@@ -70,7 +76,8 @@
             android:layout_marginBottom="5dp"
             android:layout_marginLeft="10dp"
             android:layout_marginRight="10dp"
-            android:text="@string/dialog_sort_descending_size"/>
+            android:text="@string/dialog_sort_descending_size" />
+
         <RadioButton
             android:id="@+id/sort_ra_ascending_date"
             android:layout_width="match_parent"
@@ -79,7 +86,8 @@
             android:layout_marginBottom="5dp"
             android:layout_marginLeft="10dp"
             android:layout_marginRight="10dp"
-            android:text="@string/dialog_sort_ascending_date"/>
+            android:text="@string/dialog_sort_ascending_date" />
+
         <RadioButton
             android:id="@+id/sort_ra_descending_date"
             android:layout_width="match_parent"
@@ -88,7 +96,8 @@
             android:layout_marginBottom="5dp"
             android:layout_marginLeft="10dp"
             android:layout_marginRight="10dp"
-            android:text="@string/dialog_sort_descending_date"/>
+            android:text="@string/dialog_sort_descending_date" />
+
         <RadioButton
             android:id="@+id/sort_ra_ascending_install_date"
             android:layout_width="match_parent"
@@ -97,7 +106,8 @@
             android:layout_marginBottom="5dp"
             android:layout_marginLeft="10dp"
             android:layout_marginRight="10dp"
-            android:text="@string/dialog_sort_ascending_install_date"/>
+            android:text="@string/dialog_sort_ascending_install_date" />
+
         <RadioButton
             android:id="@+id/sort_ra_descending_install_date"
             android:layout_width="match_parent"
@@ -106,7 +116,7 @@
             android:layout_marginBottom="5dp"
             android:layout_marginLeft="10dp"
             android:layout_marginRight="10dp"
-            android:text="@string/dialog_sort_descending_install_date"/>
+            android:text="@string/dialog_sort_descending_install_date" />
     </LinearLayout>
 
 </ScrollView>

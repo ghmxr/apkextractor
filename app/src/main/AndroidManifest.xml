@@ -1,9 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.github.ghmxr.apkextractor">
-    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
-    <uses-permission android:name="android.permission.INTERNET"/>
-    <uses-permission android:name="android.permission.ACCESS_WIFI_STATE"/>
+
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
+
     <application
         android:name=".MyApplication"
         android:allowBackup="true"
@@ -18,39 +20,47 @@
             android:theme="@style/AppTheme.NoActionBar">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
-                <action android:name="android.intent.action.VIEW"/>
+                <action android:name="android.intent.action.VIEW" />
+
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".activities.AppDetailActivity"
+        <activity
+            android:name=".activities.AppDetailActivity"
             android:label="Detail"
-            android:theme="@style/AppTheme.NoActionBar"/>
-        <activity android:name=".activities.SettingActivity"
+            android:theme="@style/AppTheme.NoActionBar" />
+        <activity
+            android:name=".activities.SettingActivity"
             android:label="@string/activity_settings_title"
-            android:theme="@style/AppTheme.NoActionBar"/>
-        <activity android:name=".activities.FolderSelectorActivity"
+            android:theme="@style/AppTheme.NoActionBar" />
+        <activity
+            android:name=".activities.FolderSelectorActivity"
             android:label="@string/activity_folder_selector_title"
-            android:theme="@style/AppTheme.NoActionBar"/>
-        <activity android:name=".activities.FileSendActivity"
+            android:theme="@style/AppTheme.NoActionBar" />
+        <activity
+            android:name=".activities.FileSendActivity"
             android:theme="@style/CommonTheme"
             android:label="@string/activity_send_by_title">
             <intent-filter>
-                <action android:name="android.intent.action.SEND"/>
-                <action android:name="android.intent.action.SEND_MULTIPLE"/>
-                <category android:name="android.intent.category.DEFAULT"/>
-                <data android:mimeType="*/*"/>
+                <action android:name="android.intent.action.SEND" />
+                <action android:name="android.intent.action.SEND_MULTIPLE" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+                <data android:mimeType="*/*" />
             </intent-filter>
         </activity>
-        <activity android:name=".activities.FileReceiveActivity"
+        <activity
+            android:name=".activities.FileReceiveActivity"
             android:theme="@style/CommonTheme"
-            android:label="@string/activity_receive_title"/>
-        <activity android:name=".activities.PackageDetailActivity"
+            android:label="@string/activity_receive_title" />
+        <activity
+            android:name=".activities.PackageDetailActivity"
             android:label="@string/activity_package_detail"
             android:theme="@style/AppTheme.NoActionBar">
             <intent-filter>
-                <action android:name="android.intent.action.VIEW"/>
-                <category android:name="android.intent.category.DEFAULT"/>
-                <data android:mimeType="*/*"/>
+                <action android:name="android.intent.action.VIEW" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <data android:mimeType="*/*" />
             </intent-filter>
         </activity>
 

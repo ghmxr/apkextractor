@@ -37,100 +37,102 @@ public class ExportTask extends Thread {
      * 本次导出任务的目的存储路径是否为外置存储
      */
     private final boolean isExternal;
-    private volatile boolean isInterrupted=false;
-    private long progress=0,total=0;
-    private long progress_check_zip =0;
-    private long zipTime=0;
-    private long zipWriteLength_second=0;
+    private volatile boolean isInterrupted = false;
+    private long progress = 0, total = 0;
+    private long progress_check_zip = 0;
+    private long zipTime = 0;
+    private long zipWriteLength_second = 0;
 
-    private FileItem currentWritingFile=null;
-    private String currentWritingPath=null;
+    private FileItem currentWritingFile = null;
+    private String currentWritingPath = null;
 
-    private final ArrayList<FileItem>write_paths=new ArrayList<>();
-    private final StringBuilder error_message=new StringBuilder();
+    private final ArrayList<FileItem> write_paths = new ArrayList<>();
+    private final StringBuilder error_message = new StringBuilder();
 
     /**
      * 导出任务构造方法
-     * @param list 要导出的AppItem集合
+     *
+     * @param list     要导出的AppItem集合
      * @param callback 任务进度回调，在主UI线程
      */
-    public ExportTask(@NonNull Context context, @NonNull List<AppItem>list,@Nullable ExportProgressListener callback){
+    public ExportTask(@NonNull Context context, @NonNull List<AppItem> list, @Nullable ExportProgressListener callback) {
         super();
-        this.context=context;
-        this.list=list;
-        this.listener=callback;
-        isExternal= SPUtil.getIsSaved2ExternalStorage(context);
+        this.context = context;
+        this.list = list;
+        this.listener = callback;
+        isExternal = SPUtil.getIsSaved2ExternalStorage(context);
     }
 
-    public void setExportProgressListener(ExportProgressListener listener){
-        this.listener=listener;
+    public void setExportProgressListener(ExportProgressListener listener) {
+        this.listener = listener;
     }
 
     @Override
     public void run() {
-        try{
+        try {
             //初始化File导出路径
-            if(!isExternal){
-                File export_path=new File(SPUtil.getInternalSavePath(context));
-                if(!export_path.exists()){
+            if (!isExternal) {
+                File export_path = new File(SPUtil.getInternalSavePath(context));
+                if (!export_path.exists()) {
                     export_path.mkdirs();
                 }
             }
-        }catch (Exception e){
+        } catch (Exception e) {
             e.printStackTrace();
-            if(listener!=null)listener.onExportTaskFinished(new ArrayList<FileItem>(),e.toString());
+            if (listener != null)
+                listener.onExportTaskFinished(new ArrayList<FileItem>(), e.toString());
             return;
         }
 
-        total= getTotalLength();
-        long progress_check_apk=0;
-        long bytesPerSecond=0;
-        long startTime=System.currentTimeMillis();
+        total = getTotalLength();
+        long progress_check_apk = 0;
+        long bytesPerSecond = 0;
+        long startTime = System.currentTimeMillis();
 
-        for(int i=0;i<list.size();i++){
-            if(isInterrupted)break;
-            try{
-                final AppItem item=list.get(i);
-                final int order_this_loop=i+1;
+        for (int i = 0; i < list.size(); i++) {
+            if (isInterrupted) break;
+            try {
+                final AppItem item = list.get(i);
+                final int order_this_loop = i + 1;
 
-                if(!item.exportData&&!item.exportObb){
+                if (!item.exportData && !item.exportObb) {
 
                     OutputStream outputStream;
-                    if(isExternal) {
-                        DocumentFile documentFile = OutputUtil.getWritingDocumentFileForAppItem(context,item,"apk",i+1);
-                        this.currentWritingFile=new FileItem(context,documentFile);
-                        this.currentWritingPath=SPUtil.getDisplayingExportPath(context)+"/"+documentFile.getName();
-                        outputStream= OutputUtil.getOutputStreamForDocumentFile(context,documentFile);
-                    }
-                    else {
-                        String writePath=OutputUtil.getAbsoluteWritePath(context,item,"apk",i+1);
-                        this.currentWritingFile=new FileItem(writePath);
-                        this.currentWritingPath=writePath;
-                        outputStream=new FileOutputStream(new File(OutputUtil.getAbsoluteWritePath(context,item,"apk",i+1)));
+                    if (isExternal) {
+                        DocumentFile documentFile = OutputUtil.getWritingDocumentFileForAppItem(context, item, "apk", i + 1);
+                        this.currentWritingFile = new FileItem(context, documentFile);
+                        this.currentWritingPath = SPUtil.getDisplayingExportPath(context) + "/" + documentFile.getName();
+                        outputStream = OutputUtil.getOutputStreamForDocumentFile(context, documentFile);
+                    } else {
+                        String writePath = OutputUtil.getAbsoluteWritePath(context, item, "apk", i + 1);
+                        this.currentWritingFile = new FileItem(writePath);
+                        this.currentWritingPath = writePath;
+                        outputStream = new FileOutputStream(new File(OutputUtil.getAbsoluteWritePath(context, item, "apk", i + 1)));
                     }
 
                     postCallback2Listener(new Runnable() {
                         @Override
                         public void run() {
-                            if(listener!=null)listener.onExportAppItemStarted(order_this_loop,item,list.size(),String.valueOf(currentWritingPath));
+                            if (listener != null)
+                                listener.onExportAppItemStarted(order_this_loop, item, list.size(), String.valueOf(currentWritingPath));
                         }
                     });
 
                     InputStream in = new FileInputStream(String.valueOf(item.getSourcePath())); //读入原文件
 
-                    BufferedOutputStream out= new BufferedOutputStream(outputStream);
+                    BufferedOutputStream out = new BufferedOutputStream(outputStream);
 
                     int byteread;
-                    byte[] buffer = new byte[1024*10];
-                    while ( (byteread = in.read(buffer)) != -1&&!this.isInterrupted) {
+                    byte[] buffer = new byte[1024 * 10];
+                    while ((byteread = in.read(buffer)) != -1 && !this.isInterrupted) {
                         out.write(buffer, 0, byteread);
                         progress += byteread;
-                        bytesPerSecond+=byteread;
-                        long endTime=System.currentTimeMillis();
-                        if((endTime-startTime)>1000){
-                            startTime=endTime;
-                            final long speed=bytesPerSecond;
-                            bytesPerSecond=0;
+                        bytesPerSecond += byteread;
+                        long endTime = System.currentTimeMillis();
+                        if ((endTime - startTime) > 1000) {
+                            startTime = endTime;
+                            final long speed = bytesPerSecond;
+                            bytesPerSecond = 0;
                             /*Long speed=Long.valueOf(bytesPerSecond);
 				            	 bytesPerSecond=0;
 				            	 Message msg_speed = new Message();
@@ -140,14 +142,14 @@ public class ExportTask extends Thread {
                             postCallback2Listener(new Runnable() {
                                 @Override
                                 public void run() {
-                                    if(listener!=null)listener.onExportSpeedUpdated(speed);
+                                    if (listener != null) listener.onExportSpeedUpdated(speed);
                                 }
                             });
 
                         }
 
-                        if((progress-progress_check_apk)>100*1024){   //每写100K发送一次更新进度的Message
-                            progress_check_apk=progress;
+                        if ((progress - progress_check_apk) > 100 * 1024) {   //每写100K发送一次更新进度的Message
+                            progress_check_apk = progress;
                             /*Message msg_progress=new Message();
                             Long progressinfo[]  = new Long[]{Long.valueOf(progress),Long.valueOf(total)};
                             msg_progress.what=BaseActivity.MESSAGE_COPYFILE_REFRESH_PROGRESS;
@@ -156,7 +158,8 @@ public class ExportTask extends Thread {
                             postCallback2Listener(new Runnable() {
                                 @Override
                                 public void run() {
-                                    if(listener!=null)listener.onExportProgressUpdated(progress,total,String.valueOf(currentWritingPath));
+                                    if (listener != null)
+                                        listener.onExportProgressUpdated(progress, total, String.valueOf(currentWritingPath));
                                 }
                             });
                         }
@@ -165,67 +168,67 @@ public class ExportTask extends Thread {
                     in.close();
                     out.close();
                     write_paths.add(currentWritingFile);
-                    if(!isInterrupted)currentWritingFile=null;
-                }
-
-                else{
+                    if (!isInterrupted) currentWritingFile = null;
+                } else {
                     OutputStream outputStream;
-                    if(isExternal){
-                        DocumentFile documentFile= OutputUtil.getWritingDocumentFileForAppItem(context,item,SPUtil.getCompressingExtensionName(context),i+1);
-                        this.currentWritingFile=new FileItem(context,documentFile);
-                        this.currentWritingPath=SPUtil.getDisplayingExportPath(context)+"/"+documentFile.getName();
-                        outputStream= OutputUtil.getOutputStreamForDocumentFile(context,documentFile);
-                    }
-                    else {
-                        String writePath=OutputUtil.getAbsoluteWritePath(context,item,SPUtil.getCompressingExtensionName(context),i+1);
-                        this.currentWritingFile= new FileItem(writePath);
-                        this.currentWritingPath=writePath;
-                        outputStream=new FileOutputStream(new File(OutputUtil.getAbsoluteWritePath(context,item,SPUtil.getCompressingExtensionName(context),i+1)));
+                    if (isExternal) {
+                        DocumentFile documentFile = OutputUtil.getWritingDocumentFileForAppItem(context, item, SPUtil.getCompressingExtensionName(context), i + 1);
+                        this.currentWritingFile = new FileItem(context, documentFile);
+                        this.currentWritingPath = SPUtil.getDisplayingExportPath(context) + "/" + documentFile.getName();
+                        outputStream = OutputUtil.getOutputStreamForDocumentFile(context, documentFile);
+                    } else {
+                        String writePath = OutputUtil.getAbsoluteWritePath(context, item, SPUtil.getCompressingExtensionName(context), i + 1);
+                        this.currentWritingFile = new FileItem(writePath);
+                        this.currentWritingPath = writePath;
+                        outputStream = new FileOutputStream(new File(OutputUtil.getAbsoluteWritePath(context, item, SPUtil.getCompressingExtensionName(context), i + 1)));
                     }
                     postCallback2Listener(new Runnable() {
                         @Override
                         public void run() {
-                            if(listener!=null)listener.onExportAppItemStarted(order_this_loop,item,list.size(),currentWritingFile.getPath());
+                            if (listener != null)
+                                listener.onExportAppItemStarted(order_this_loop, item, list.size(), currentWritingFile.getPath());
                         }
                     });
 
-                    ZipOutputStream zos=new ZipOutputStream(new BufferedOutputStream(outputStream));
+                    ZipOutputStream zos = new ZipOutputStream(new BufferedOutputStream(outputStream));
                     zos.setComment("Packaged by com.github.ghmxr.apkextractor \nhttps://github.com/ghmxr/apkextractor");
-                    int zip_level= SPUtil.getGlobalSharedPreferences(context).getInt(Constants.PREFERENCE_ZIP_COMPRESS_LEVEL, Constants.PREFERENCE_ZIP_COMPRESS_LEVEL_DEFAULT);
+                    int zip_level = SPUtil.getGlobalSharedPreferences(context).getInt(Constants.PREFERENCE_ZIP_COMPRESS_LEVEL, Constants.PREFERENCE_ZIP_COMPRESS_LEVEL_DEFAULT);
 
-                    if(zip_level>=0&&zip_level<=9) zos.setLevel(zip_level);
+                    if (zip_level >= 0 && zip_level <= 9) zos.setLevel(zip_level);
 
-                    writeZip(new File(String.valueOf(item.getSourcePath())),"",zos,zip_level);
-                    if(item.exportData){
-                        writeZip(new File(StorageUtil.getMainExternalStoragePath()+"/android/data/"+item.getPackageName()),"Android/data/",zos,zip_level);
+                    writeZip(new File(String.valueOf(item.getSourcePath())), "", zos, zip_level);
+                    if (item.exportData) {
+                        writeZip(new File(StorageUtil.getMainExternalStoragePath() + "/android/data/" + item.getPackageName()), "Android/data/", zos, zip_level);
                     }
-                    if(item.exportObb){
-                        writeZip(new File(StorageUtil.getMainExternalStoragePath()+"/android/obb/"+item.getPackageName()),"Android/obb/",zos,zip_level);
+                    if (item.exportObb) {
+                        writeZip(new File(StorageUtil.getMainExternalStoragePath() + "/android/obb/" + item.getPackageName()), "Android/obb/", zos, zip_level);
                     }
                     zos.flush();
                     zos.close();
                     write_paths.add(currentWritingFile);
-                    if(!isInterrupted)currentWritingFile=null;
+                    if (!isInterrupted) currentWritingFile = null;
                 }
 
 
-            }catch (Exception e){
+            } catch (Exception e) {
                 e.printStackTrace();
                 this.error_message.append(currentWritingPath);
                 this.error_message.append(":");
                 this.error_message.append(e.toString());
                 this.error_message.append("\n\n");
-                try{
+                try {
                     currentWritingFile.delete();//在写入中如果有异常就尝试删除这个文件，有可能是破损的
-                }catch (Exception ee){}
+                } catch (Exception ee) {
+                }
             }
 
         }
 
-        if(isInterrupted){
-            try{
+        if (isInterrupted) {
+            try {
                 currentWritingFile.delete();//没有写入完成的文件为破损文件，尝试删除
-            }catch(Exception e){}
+            } catch (Exception e) {
+            }
         }
 
         //更新导出文件到媒体库
@@ -234,7 +237,8 @@ public class ExportTask extends Thread {
         postCallback2Listener(new Runnable() {
             @Override
             public void run() {
-                if(listener!=null&&!isInterrupted)listener.onExportTaskFinished(write_paths,error_message.toString());
+                if (listener != null && !isInterrupted)
+                    listener.onExportTaskFinished(write_paths, error_message.toString());
                 context.sendBroadcast(new Intent(Constants.ACTION_REFRESH_IMPORT_ITEMS_LIST));
                 context.sendBroadcast(new Intent(Constants.ACTION_REFRESH_AVAILIBLE_STORAGE));
             }
@@ -243,25 +247,26 @@ public class ExportTask extends Thread {
     }
 
 
-    private void postCallback2Listener(Runnable runnable){
-        if(listener==null||runnable==null)return;
+    private void postCallback2Listener(Runnable runnable) {
+        if (listener == null || runnable == null) return;
         Global.handler.post(runnable);
     }
 
 
     /**
      * 获取本次导出的总计长度
+     *
      * @return 总长度，字节
      */
-    private long getTotalLength(){
-        long total=0;
-        for(AppItem item:list){
-            total+=item.getSize();
-            if(item.exportData){
-                total+= FileUtil.getFileOrFolderSize(new File(StorageUtil.getMainExternalStoragePath()+"/android/data/"+item.getPackageName()));
+    private long getTotalLength() {
+        long total = 0;
+        for (AppItem item : list) {
+            total += item.getSize();
+            if (item.exportData) {
+                total += FileUtil.getFileOrFolderSize(new File(StorageUtil.getMainExternalStoragePath() + "/android/data/" + item.getPackageName()));
             }
-            if(item.exportObb){
-                total+=FileUtil.getFileOrFolderSize(new File(StorageUtil.getMainExternalStoragePath()+"/android/obb/"+item.getPackageName()));
+            if (item.exportObb) {
+                total += FileUtil.getFileOrFolderSize(new File(StorageUtil.getMainExternalStoragePath() + "/android/obb/" + item.getPackageName()));
             }
         }
         return total;
@@ -270,34 +275,34 @@ public class ExportTask extends Thread {
     /**
      * 将本Runnable停止，删除当前正在导出而未完成的文件，使线程返回
      */
-    public void setInterrupted(){
-        this.isInterrupted=true;
+    public void setInterrupted() {
+        this.isInterrupted = true;
     }
 
     private void writeZip(final File file, String parent, ZipOutputStream zos, final int zip_level) {
-        if(file==null||parent==null||zos==null) return;
-        if(isInterrupted) return;
-        if(file.exists()){
-            if(file.isDirectory()){
-                parent+=file.getName()+File.separator;
-                File [] files=file.listFiles();
-                if(files.length>0){
-                    for(File f:files){
-                        writeZip(f,parent,zos,zip_level);
+        if (file == null || parent == null || zos == null) return;
+        if (isInterrupted) return;
+        if (file.exists()) {
+            if (file.isDirectory()) {
+                parent += file.getName() + File.separator;
+                File[] files = file.listFiles();
+                if (files.length > 0) {
+                    for (File f : files) {
+                        writeZip(f, parent, zos, zip_level);
                     }
-                }else{
-                    try{
+                } else {
+                    try {
                         zos.putNextEntry(new ZipEntry(parent));
-                    }catch(IOException e){
+                    } catch (IOException e) {
                         e.printStackTrace();
                     }
                 }
-            }else{
-                try{
-                    FileInputStream in=new FileInputStream(file);
-                    ZipEntry zipentry=new ZipEntry(parent+file.getName());
+            } else {
+                try {
+                    FileInputStream in = new FileInputStream(file);
+                    ZipEntry zipentry = new ZipEntry(parent + file.getName());
 
-                    if(zip_level== Constants.ZIP_LEVEL_STORED){
+                    if (zip_level == Constants.ZIP_LEVEL_STORED) {
                         zipentry.setMethod(ZipOutputStream.STORED);
                         zipentry.setCompressedSize(file.length());
                         zipentry.setSize(file.length());
@@ -305,7 +310,7 @@ public class ExportTask extends Thread {
                     }
 
                     zos.putNextEntry(zipentry);
-                    byte[] buffer=new byte[1024];
+                    byte[] buffer = new byte[1024];
                     int length;
 
                     /*Message msg_currentfile = new Message();
@@ -317,32 +322,33 @@ public class ExportTask extends Thread {
                     postCallback2Listener(new Runnable() {
                         @Override
                         public void run() {
-                            if(listener!=null)listener.onExportZipProgressUpdated(file.getAbsolutePath());
+                            if (listener != null)
+                                listener.onExportZipProgressUpdated(file.getAbsolutePath());
                         }
                     });
 
-                    while((length=in.read(buffer))!=-1&&!isInterrupted){
-                        zos.write(buffer,0,length);
-                        this.progress+=length;
-                        this.zipWriteLength_second+=length;
-                        Long endTime=System.currentTimeMillis();
-                        if(endTime-this.zipTime>1000){
-                            this.zipTime=endTime;
+                    while ((length = in.read(buffer)) != -1 && !isInterrupted) {
+                        zos.write(buffer, 0, length);
+                        this.progress += length;
+                        this.zipWriteLength_second += length;
+                        Long endTime = System.currentTimeMillis();
+                        if (endTime - this.zipTime > 1000) {
+                            this.zipTime = endTime;
                             /*Message msg_speed=new Message();
                             msg_speed.what=BaseActivity.MESSAGE_COPYFILE_REFRESH_SPEED;
                             msg_speed.obj=this.zipWriteLength_second;
                             BaseActivity.sendMessage(msg_speed);*/
-                            final long zip_speed=zipWriteLength_second;
+                            final long zip_speed = zipWriteLength_second;
                             postCallback2Listener(new Runnable() {
                                 @Override
                                 public void run() {
-                                    if(listener!=null)listener.onExportSpeedUpdated(zip_speed);
+                                    if (listener != null) listener.onExportSpeedUpdated(zip_speed);
                                 }
                             });
-                            this.zipWriteLength_second=0;
+                            this.zipWriteLength_second = 0;
                         }
-                        if(this.progress- progress_check_zip >100*1024){
-                            progress_check_zip =this.progress;
+                        if (this.progress - progress_check_zip > 100 * 1024) {
+                            progress_check_zip = this.progress;
                             /*Message msg=new Message();
                             msg.what=Main.MESSAGE_COPYFILE_REFRESH_PROGRESS;
                             msg.obj=new Long[]{this.progress,this.total};
@@ -350,7 +356,8 @@ public class ExportTask extends Thread {
                             postCallback2Listener(new Runnable() {
                                 @Override
                                 public void run() {
-                                    if(listener!=null)listener.onExportProgressUpdated(progress,total,file.getAbsolutePath());
+                                    if (listener != null)
+                                        listener.onExportProgressUpdated(progress, total, file.getAbsolutePath());
                                 }
                             });
                         }
@@ -358,7 +365,7 @@ public class ExportTask extends Thread {
                     }
                     zos.flush();
                     in.close();
-                }catch(Exception e){
+                } catch (Exception e) {
                     e.printStackTrace();
                 }
             }
@@ -366,13 +373,16 @@ public class ExportTask extends Thread {
     }
 
 
-
-    public interface ExportProgressListener{
+    public interface ExportProgressListener {
         void onExportAppItemStarted(int order, AppItem item, int total, String write_path);
+
         void onExportProgressUpdated(long current, long total, String write_path);
+
         void onExportZipProgressUpdated(String write_path);
+
         void onExportSpeedUpdated(long speed);
+
         //void onAppItemFinished(int order,AppItem item,int total);
-        void onExportTaskFinished(List<FileItem>write_paths, String error_message);
+        void onExportTaskFinished(List<FileItem> write_paths, String error_message);
     }
 }

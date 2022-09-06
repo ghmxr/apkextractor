@@ -13,26 +13,26 @@ import java.util.List;
 public class IpMessage {
     private String version;
     private String packageNumber;
-    private String deviceName= Constants.PREFERENCE_DEVICE_NAME_DEFAULT;
-    private int command=-1;
-    private String additionalMessage="null";
+    private String deviceName = Constants.PREFERENCE_DEVICE_NAME_DEFAULT;
+    private int command = -1;
+    private String additionalMessage = "null";
 
-    public IpMessage(){
-        version=String.valueOf(IpMessageConstants.VERSION);
-        packageNumber=String.valueOf(System.currentTimeMillis());
+    public IpMessage() {
+        version = String.valueOf(IpMessageConstants.VERSION);
+        packageNumber = String.valueOf(System.currentTimeMillis());
     }
 
-    public IpMessage(String protocolString){
-        String[]args=protocolString.split(":");
-        version=args[0];
-        packageNumber=args[1];
-        deviceName=args[2];
-        command=Integer.parseInt(args[3]);
-        if(args.length>=5){
-            additionalMessage =args[4];
+    public IpMessage(String protocolString) {
+        String[] args = protocolString.split(":");
+        version = args[0];
+        packageNumber = args[1];
+        deviceName = args[2];
+        command = Integer.parseInt(args[3]);
+        if (args.length >= 5) {
+            additionalMessage = args[4];
         }
-        for(int i=5;i<args.length;i++){
-            additionalMessage+= ":"+args[i];
+        for (int i = 5; i < args.length; i++) {
+            additionalMessage += ":" + args[i];
         }
     }
 
@@ -72,8 +72,8 @@ public class IpMessage {
         return packageNumber;
     }
 
-    public String toProtocolString(){
-        StringBuilder builder=new StringBuilder();
+    public String toProtocolString() {
+        StringBuilder builder = new StringBuilder();
         builder.append(version);
         builder.append(":");
         builder.append(packageNumber);
@@ -95,34 +95,37 @@ public class IpMessage {
     /**
      * 单个文件信息的切割符 0x07
      */
-    public static String fileInfoSplit(){
+    public static String fileInfoSplit() {
         return new String(new byte[]{0x07});
     }
 
     /**
      * 通过FileItem的list集合获取一个发送文件请求的IpMessage
+     *
      * @param sendFiles 要发送的文件
      */
     public static @Nullable
-    IpMessage getSendingFileRequestIpMessgae(@NonNull Context context, @NonNull List<FileItem> sendFiles){
-        try{
-            StringBuilder ipMsg_addtional=new StringBuilder();
-            for(int i=0;i<sendFiles.size();i++){
-                StringBuilder ipMsg_fileInfo=new StringBuilder();
-                FileItem fileItem=sendFiles.get(i);
+    IpMessage getSendingFileRequestIpMessgae(@NonNull Context context, @NonNull List<FileItem> sendFiles) {
+        try {
+            StringBuilder ipMsg_addtional = new StringBuilder();
+            for (int i = 0; i < sendFiles.size(); i++) {
+                StringBuilder ipMsg_fileInfo = new StringBuilder();
+                FileItem fileItem = sendFiles.get(i);
                 ipMsg_fileInfo.append(fileItem.getName());
                 ipMsg_fileInfo.append(fileInfoSplit());
                 ipMsg_fileInfo.append(fileItem.length());
                 ipMsg_addtional.append(ipMsg_fileInfo.toString());
-                if(i<sendFiles.size()-1)ipMsg_addtional.append(":");
+                if (i < sendFiles.size() - 1) ipMsg_addtional.append(":");
             }
 
-            IpMessage ipMessage=new IpMessage();
+            IpMessage ipMessage = new IpMessage();
             ipMessage.setCommand(IpMessageConstants.MSG_SEND_FILE_REQUEST);
             ipMessage.setDeviceName(SPUtil.getDeviceName(context));
             ipMessage.setAdditionalMessage(ipMsg_addtional.toString());
             return ipMessage;
-        }catch (Exception e){e.printStackTrace();}
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
         return null;
     }
 }

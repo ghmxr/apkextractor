@@ -20,24 +20,26 @@ public abstract class ProgressDialog extends AlertDialog {
     TextView att_left;
     TextView att_right;
 
-    public ProgressDialog(@NonNull Context context,@NonNull String title) {
+    public ProgressDialog(@NonNull Context context, @NonNull String title) {
         super(context);
-        View dialog_view=LayoutInflater.from(context).inflate(R.layout.dialog_with_progress,null);
+        View dialog_view = LayoutInflater.from(context).inflate(R.layout.dialog_with_progress, null);
         setView(dialog_view);
-        progressBar=dialog_view.findViewById(R.id.dialog_progress_bar);
-        att=dialog_view.findViewById(R.id.dialog_att);
-        att_left=dialog_view.findViewById(R.id.dialog_att_left);
-        att_right=dialog_view.findViewById(R.id.dialog_att_right);
-        ((AppCompatCheckBox)dialog_view.findViewById(R.id.dialog_progress_keep_on)).setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+        progressBar = dialog_view.findViewById(R.id.dialog_progress_bar);
+        att = dialog_view.findViewById(R.id.dialog_att);
+        att_left = dialog_view.findViewById(R.id.dialog_att_left);
+        att_right = dialog_view.findViewById(R.id.dialog_att_right);
+        ((AppCompatCheckBox) dialog_view.findViewById(R.id.dialog_progress_keep_on)).setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                try{
-                    if(isChecked){
+                try {
+                    if (isChecked) {
                         getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
-                    }else {
+                    } else {
                         getWindow().clearFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
                     }
-                }catch (Exception e){e.printStackTrace();}
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
             }
         });
         setTitle(title);
@@ -46,8 +48,10 @@ public abstract class ProgressDialog extends AlertDialog {
     @Override
     public void show() {
         super.show();
-        try{
+        try {
             getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
-        }catch (Exception e){e.printStackTrace();}
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 }

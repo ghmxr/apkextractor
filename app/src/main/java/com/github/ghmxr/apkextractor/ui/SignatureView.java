@@ -9,7 +9,7 @@ import android.widget.TextView;
 
 import com.github.ghmxr.apkextractor.R;
 
-public class SignatureView extends LinearLayout{
+public class SignatureView extends LinearLayout {
 
     private final ViewGroup root;
 
@@ -33,34 +33,34 @@ public class SignatureView extends LinearLayout{
 
 
     public SignatureView(Context context) {
-        this(context,null);
+        this(context, null);
     }
 
     public SignatureView(Context context, @Nullable AttributeSet attrs) {
-        this(context, attrs,0);
+        this(context, attrs, 0);
     }
 
     public SignatureView(Context context, @Nullable AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
-        inflate(context, R.layout.layout_card_signature,this);
-        root=findViewById(R.id.detail_signature_root);
-        tv_sub_value=findViewById(R.id.detail_signature_sub_value);
-        tv_iss_value=findViewById(R.id.detail_signature_iss_value);
-        tv_serial_value=findViewById(R.id.detail_signature_serial_value);
-        tv_start=findViewById(R.id.detail_signature_start_value);
-        tv_end=findViewById(R.id.detail_signature_end_value);
-        tv_md5=findViewById(R.id.detail_signature_md5_value);
-        tv_sha1=findViewById(R.id.detail_signature_sha1_value);
-        tv_sha256=findViewById(R.id.detail_signature_sha256_value);
+        inflate(context, R.layout.layout_card_signature, this);
+        root = findViewById(R.id.detail_signature_root);
+        tv_sub_value = findViewById(R.id.detail_signature_sub_value);
+        tv_iss_value = findViewById(R.id.detail_signature_iss_value);
+        tv_serial_value = findViewById(R.id.detail_signature_serial_value);
+        tv_start = findViewById(R.id.detail_signature_start_value);
+        tv_end = findViewById(R.id.detail_signature_end_value);
+        tv_md5 = findViewById(R.id.detail_signature_md5_value);
+        tv_sha1 = findViewById(R.id.detail_signature_sha1_value);
+        tv_sha256 = findViewById(R.id.detail_signature_sha256_value);
 
-        linearLayout_sub=findViewById(R.id.detail_signature_sub);
-        linearLayout_iss=findViewById(R.id.detail_signature_iss);
-        linearLayout_serial=findViewById(R.id.detail_signature_serial);
-        linearLayout_start=findViewById(R.id.detail_signature_start);
-        linearLayout_end=findViewById(R.id.detail_signature_end);
-        linearLayout_md5=findViewById(R.id.detail_signature_md5);
-        linearLayout_sha1=findViewById(R.id.detail_signature_sha1);
-        linearLayout_sha256=findViewById(R.id.detail_signature_sha256);
+        linearLayout_sub = findViewById(R.id.detail_signature_sub);
+        linearLayout_iss = findViewById(R.id.detail_signature_iss);
+        linearLayout_serial = findViewById(R.id.detail_signature_serial);
+        linearLayout_start = findViewById(R.id.detail_signature_start);
+        linearLayout_end = findViewById(R.id.detail_signature_end);
+        linearLayout_md5 = findViewById(R.id.detail_signature_md5);
+        linearLayout_sha1 = findViewById(R.id.detail_signature_sha1);
+        linearLayout_sha256 = findViewById(R.id.detail_signature_sha256);
     }
 
     public TextView getTv_sub_value() {

@@ -1,18 +1,21 @@
 <?xml version="1.0" encoding="utf-8"?>
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
-    <item android:id="@+id/action_help"
+    <item
+        android:id="@+id/action_help"
         android:icon="@drawable/icon_help"
         android:title="@string/action_help"
         android:orderInCategory="1"
-        app:showAsAction="ifRoom"/>
-    <item android:id="@+id/action_ap"
+        app:showAsAction="ifRoom" />
+    <item
+        android:id="@+id/action_ap"
         android:title="@string/action_ap"
         android:icon="@drawable/icon_ap"
         android:orderInCategory="2"
-        app:showAsAction="ifRoom"/>
-    <item android:id="@+id/action_files_info"
+        app:showAsAction="ifRoom" />
+    <item
+        android:id="@+id/action_files_info"
         android:title="@string/action_file_info"
         android:orderInCategory="3"
-        app:showAsAction="never"/>
+        app:showAsAction="never" />
 </menu>

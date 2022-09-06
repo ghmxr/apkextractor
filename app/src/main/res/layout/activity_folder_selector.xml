@@ -17,11 +17,13 @@
             app:popupTheme="@style/AppTheme.PopupOverlay" />
 
     </android.support.design.widget.AppBarLayout>
+
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:orientation="vertical"
         app:layout_behavior="@string/appbar_scrolling_view_behavior">
+
         <TextView
             android:id="@+id/folder_selector_current_path"
             android:layout_width="wrap_content"
@@ -31,15 +33,18 @@
             android:singleLine="true"
             android:ellipsize="start"
             android:textColor="@color/colorHighLightText"
-            tools:text="/storage/emulated/0/Backup"/>
+            tools:text="/storage/emulated/0/Backup" />
+
         <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent">
+
             <ListView
                 android:id="@+id/folder_selector_listview"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                tools:visibility="gone"/>
+                tools:visibility="gone" />
+
             <LinearLayout
                 android:id="@+id/folder_selector_storage_selection"
                 android:layout_width="match_parent"
@@ -47,6 +52,7 @@
                 android:orientation="vertical"
                 android:visibility="gone"
                 tools:visibility="visible">
+
                 <RelativeLayout
                     android:id="@+id/item_internal"
                     android:layout_width="match_parent"
@@ -54,13 +60,15 @@
                     android:clickable="true"
                     android:focusable="true"
                     android:background="?attr/selectableItemBackground">
+
                     <ImageView
                         android:id="@+id/item_internal_icon"
                         android:layout_width="35dp"
                         android:layout_height="35dp"
                         android:layout_gravity="center_vertical|start"
                         android:layout_margin="10dp"
-                        android:src="@drawable/icon_phone"/>
+                        android:src="@drawable/icon_phone" />
+
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
@@ -70,15 +78,17 @@
                         android:singleLine="true"
                         android:layout_marginRight="10dp"
                         android:text="@string/activity_folder_selector_item_internal"
-                        android:textColor="@color/colorHighLightText"/>
+                        android:textColor="@color/colorHighLightText" />
+
                     <ImageView
                         android:layout_width="match_parent"
                         android:layout_height="1px"
                         android:layout_alignParentBottom="true"
                         android:layout_marginLeft="15dp"
                         android:layout_marginRight="20dp"
-                        android:background="@color/colorDividingLine"/>
+                        android:background="@color/colorDividingLine" />
                 </RelativeLayout>
+
                 <RelativeLayout
                     android:id="@+id/item_external"
                     android:layout_width="match_parent"
@@ -86,13 +96,15 @@
                     android:clickable="true"
                     android:focusable="true"
                     android:background="?attr/selectableItemBackground">
+
                     <ImageView
                         android:id="@+id/item_external_icon"
                         android:layout_width="35dp"
                         android:layout_height="35dp"
                         android:layout_gravity="center_vertical|start"
                         android:layout_margin="10dp"
-                        android:src="@drawable/icon_sd"/>
+                        android:src="@drawable/icon_sd" />
+
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
@@ -102,8 +114,9 @@
                         android:singleLine="true"
                         android:layout_marginRight="10dp"
                         android:text="@string/activity_folder_selector_item_external"
-                        android:textColor="@color/colorHighLightText"/>
+                        android:textColor="@color/colorHighLightText" />
                 </RelativeLayout>
+
                 <RelativeLayout
                     android:id="@+id/item_other"
                     android:layout_width="match_parent"
@@ -113,13 +126,15 @@
                     android:background="?attr/selectableItemBackground"
                     android:visibility="gone"
                     tools:visibility="visible">
+
                     <ImageView
                         android:id="@+id/item_other_icon"
                         android:layout_width="30dp"
                         android:layout_height="30dp"
                         android:layout_gravity="center_vertical|start"
                         android:layout_margin="12dp"
-                        android:src="@drawable/icon_usb"/>
+                        android:src="@drawable/icon_usb" />
+
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
@@ -129,16 +144,18 @@
                         android:singleLine="true"
                         android:layout_marginRight="10dp"
                         android:text="@string/activity_folder_selector_item_others"
-                        android:textColor="@color/colorHighLightText"/>
+                        android:textColor="@color/colorHighLightText" />
+
                     <ImageView
                         android:layout_width="match_parent"
                         android:layout_height="1px"
                         android:layout_alignParentTop="true"
                         android:layout_marginLeft="15dp"
                         android:layout_marginRight="20dp"
-                        android:background="@color/colorDividingLine"/>
+                        android:background="@color/colorDividingLine" />
                 </RelativeLayout>
             </LinearLayout>
+
             <ProgressBar
                 android:id="@+id/folder_selector_loading"
                 android:layout_width="90dp"
@@ -146,7 +163,8 @@
                 android:layout_centerVertical="true"
                 android:layout_centerHorizontal="true"
                 style="?android:attr/progressBarStyleLarge"
-                android:visibility="gone"/>
+                android:visibility="gone" />
+
             <LinearLayout
                 android:id="@+id/folder_selector_att"
                 android:layout_width="wrap_content"
@@ -155,16 +173,18 @@
                 android:layout_centerHorizontal="true"
                 android:layout_centerVertical="true"
                 android:visibility="gone">
+
                 <ImageView
                     android:layout_width="55dp"
                     android:layout_height="55dp"
-                    android:src="@drawable/icon_face_neutral"/>
+                    android:src="@drawable/icon_face_neutral" />
+
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center_vertical"
                     android:textSize="18sp"
-                    android:text="@string/activity_folder_selector_blank_folder"/>
+                    android:text="@string/activity_folder_selector_blank_folder" />
             </LinearLayout>
         </RelativeLayout>
     </LinearLayout>

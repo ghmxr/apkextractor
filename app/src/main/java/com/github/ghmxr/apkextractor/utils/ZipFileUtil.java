@@ -15,116 +15,124 @@ import java.util.zip.ZipInputStream;
 
 public class ZipFileUtil {
 
-    public static @Nullable ZipFileInfo getZipFileInfoOfImportItem(@NonNull ImportItem importItem){
-        FileItem fileItem=importItem.getFileItem();
-        try{
-            if(fileItem.isDocumentFile()||fileItem.isShareUriInstance()){
+    public static @Nullable
+    ZipFileInfo getZipFileInfoOfImportItem(@NonNull ImportItem importItem) {
+        FileItem fileItem = importItem.getFileItem();
+        try {
+            if (fileItem.isDocumentFile() || fileItem.isShareUriInstance()) {
                 return getZipFileInfoOfZipInputStream(fileItem.getInputStream());
-            }else if(fileItem.isFileInstance()){
+            } else if (fileItem.isFileInstance()) {
                 return getZipFileInfoOfZipFile(new ZipFile(fileItem.getFile()));
             }
-        }catch (Exception e){e.printStackTrace();}
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
         return null;
     }
 
-    private static @NonNull ZipFileInfo getZipFileInfoOfZipFile(ZipFile zipFile){
-        ZipFileInfo zipFileInfo=new ZipFileInfo();
-        try{
-            Enumeration entries =zipFile.entries();
-            while (entries.hasMoreElements()){
-                ZipEntry zipEntry=(ZipEntry) entries.nextElement();
-                String entryPath=zipEntry.getName().replaceAll("\\*", "/");
-                if((entryPath.toLowerCase().startsWith("android/data"))&&!zipEntry.isDirectory()){
+    private static @NonNull
+    ZipFileInfo getZipFileInfoOfZipFile(ZipFile zipFile) {
+        ZipFileInfo zipFileInfo = new ZipFileInfo();
+        try {
+            Enumeration entries = zipFile.entries();
+            while (entries.hasMoreElements()) {
+                ZipEntry zipEntry = (ZipEntry) entries.nextElement();
+                String entryPath = zipEntry.getName().replaceAll("\\*", "/");
+                if ((entryPath.toLowerCase().startsWith("android/data")) && !zipEntry.isDirectory()) {
                     zipFileInfo.addEntry(entryPath);
                     zipFileInfo.addDataSize(zipEntry.getSize());
-                }
-                else if((entryPath.toLowerCase().startsWith("android/obb"))&&!zipEntry.isDirectory()){
+                } else if ((entryPath.toLowerCase().startsWith("android/obb")) && !zipEntry.isDirectory()) {
                     zipFileInfo.addEntry(entryPath);
                     zipFileInfo.addObbSize(zipEntry.getSize());
-                }
-                else if((entryPath.toLowerCase().endsWith(".apk"))&&!entryPath.contains("/")&&!zipEntry.isDirectory()){
+                } else if ((entryPath.toLowerCase().endsWith(".apk")) && !entryPath.contains("/") && !zipEntry.isDirectory()) {
                     zipFileInfo.addEntry(entryPath);
                     zipFileInfo.addApkSize(zipEntry.getSize());
                 }
             }
 
-        }catch (Exception e){e.printStackTrace();}
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
         return zipFileInfo;
     }
 
     /**
      * 获取一个zip文件中data或者obb的大小，为耗时阻塞方法
+     *
      * @return 字节
      */
-    private static @NonNull ZipFileInfo getZipFileInfoOfZipInputStream(@NonNull InputStream inputStream){
-        ZipFileInfo zipFileInfo=new ZipFileInfo();
-        try{
-            ZipInputStream zipInputStream=new ZipInputStream(inputStream);
-            ZipEntry zipEntry=zipInputStream.getNextEntry();
-            while (zipEntry!=null){
-                String entryPath=zipEntry.getName().replaceAll("\\*", "/");
-                if((entryPath.toLowerCase().startsWith("android/data"))&&!zipEntry.isDirectory()){
+    private static @NonNull
+    ZipFileInfo getZipFileInfoOfZipInputStream(@NonNull InputStream inputStream) {
+        ZipFileInfo zipFileInfo = new ZipFileInfo();
+        try {
+            ZipInputStream zipInputStream = new ZipInputStream(inputStream);
+            ZipEntry zipEntry = zipInputStream.getNextEntry();
+            while (zipEntry != null) {
+                String entryPath = zipEntry.getName().replaceAll("\\*", "/");
+                if ((entryPath.toLowerCase().startsWith("android/data")) && !zipEntry.isDirectory()) {
                     zipFileInfo.addEntry(entryPath);
-                    long total_this_file=0;
+                    long total_this_file = 0;
                     int len;
-                    byte[] buffer=new byte[1024];
-                    while ((len=zipInputStream.read(buffer))!=-1){
-                        total_this_file+=len;
+                    byte[] buffer = new byte[1024];
+                    while ((len = zipInputStream.read(buffer)) != -1) {
+                        total_this_file += len;
                     }
                     zipFileInfo.addDataSize(total_this_file);
-                }
-                else if(entryPath.toLowerCase().startsWith("android/obb")&&!zipEntry.isDirectory()){
+                } else if (entryPath.toLowerCase().startsWith("android/obb") && !zipEntry.isDirectory()) {
                     zipFileInfo.addEntry(entryPath);
-                    long total_this_file=0;
+                    long total_this_file = 0;
                     int len;
-                    byte[] buffer=new byte[1024];
-                    while ((len=zipInputStream.read(buffer))!=-1){
-                        total_this_file+=len;
+                    byte[] buffer = new byte[1024];
+                    while ((len = zipInputStream.read(buffer)) != -1) {
+                        total_this_file += len;
                     }
                     zipFileInfo.addObbSize(total_this_file);
-                }
-                else if(entryPath.toLowerCase().endsWith(".apk")&&!zipEntry.isDirectory()&&!entryPath.contains("/")){
+                } else if (entryPath.toLowerCase().endsWith(".apk") && !zipEntry.isDirectory() && !entryPath.contains("/")) {
                     zipFileInfo.addEntry(entryPath);
-                    long total_this_file=0;
+                    long total_this_file = 0;
                     int len;
-                    byte[] buffer=new byte[1024];
-                    while ((len=zipInputStream.read(buffer))!=-1){
-                        total_this_file+=len;
+                    byte[] buffer = new byte[1024];
+                    while ((len = zipInputStream.read(buffer)) != -1) {
+                        total_this_file += len;
                     }
                     zipFileInfo.addApkSize(total_this_file);
                 }
 
-                zipEntry=zipInputStream.getNextEntry();
+                zipEntry = zipInputStream.getNextEntry();
             }
             zipInputStream.close();
-        }catch (Exception e){e.printStackTrace();}
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
         return zipFileInfo;
     }
 
     /**
      * 包含此zip包中的data,obb,apk信息
      */
-    public static class ZipFileInfo{
-        private final ArrayList<String>entryPaths=new ArrayList<>();
-        long dataSize=0;
-        long obbSize=0;
-        long apkSize=0;
-        private ZipFileInfo (){}
+    public static class ZipFileInfo {
+        private final ArrayList<String> entryPaths = new ArrayList<>();
+        long dataSize = 0;
+        long obbSize = 0;
+        long apkSize = 0;
 
-        private void addEntry(String entryPath){
+        private ZipFileInfo() {
+        }
+
+        private void addEntry(String entryPath) {
             entryPaths.add(entryPath);
         }
 
         private void addDataSize(long dataSize) {
-            this.dataSize+= dataSize;
+            this.dataSize += dataSize;
         }
 
         private void addObbSize(long obbSize) {
-            this.obbSize+= obbSize;
+            this.obbSize += obbSize;
         }
 
-        private void addApkSize(long apkSize){
-            this.apkSize+=apkSize;
+        private void addApkSize(long apkSize) {
+            this.apkSize += apkSize;
         }
 
         public long getDataSize() {
@@ -139,7 +147,8 @@ public class ZipFileUtil {
             return apkSize;
         }
 
-        public @NonNull ArrayList<String> getEntryPaths() {
+        public @NonNull
+        ArrayList<String> getEntryPaths() {
             return entryPaths;
         }
 

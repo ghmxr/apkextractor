@@ -8,17 +8,21 @@
     app:cardElevation="3dp"
     app:cardCornerRadius="5dp"
     app:cardBackgroundColor="@color/colorCardArea">
+
     <LinearLayout
         android:id="@+id/item_app_root"
-        android:orientation="vertical" android:layout_width="match_parent"
+        android:orientation="vertical"
+        android:layout_width="match_parent"
         android:layout_height="match_parent">
+
         <ImageView
             android:id="@+id/item_app_icon"
             android:layout_width="45dp"
             android:layout_height="45dp"
             android:layout_gravity="center_horizontal"
             android:layout_marginTop="20dp"
-            tools:src="@mipmap/ic_launcher"/>
+            tools:src="@mipmap/ic_launcher" />
+
         <TextView
             android:id="@+id/item_app_title"
             android:layout_width="70dp"
@@ -30,6 +34,6 @@
             android:lines="2"
             android:ellipsize="end"
             android:gravity="center_horizontal"
-            tools:text="测试应用测试应用测试应用"/>
+            tools:text="测试应用测试应用测试应用" />
     </LinearLayout>
 </android.support.v7.widget.CardView>

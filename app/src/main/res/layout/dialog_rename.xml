@@ -4,6 +4,7 @@
     android:orientation="vertical"
     android:layout_width="match_parent"
     android:layout_height="wrap_content">
+
     <EditText
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -13,7 +14,8 @@
         android:layout_marginLeft="15dp"
         android:layout_marginRight="15dp"
         android:focusable="true"
-        android:hint="@string/hint_file_rename"/>
+        android:hint="@string/hint_file_rename" />
+
     <LinearLayout
         android:id="@+id/filename_warn"
         android:layout_width="wrap_content"
@@ -23,10 +25,12 @@
         android:orientation="horizontal"
         android:visibility="gone"
         tools:visibility="visible">
+
         <ImageView
             android:layout_width="14dp"
             android:layout_height="14dp"
-            android:src="@drawable/icon_warn"/>
+            android:src="@drawable/icon_warn" />
+
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -34,8 +38,9 @@
             android:layout_marginLeft="3dp"
             android:textSize="9sp"
             android:textColor="@color/colorWarnText"
-            android:text="@string/dialog_filename_rename_warn_no_variables"/>
+            android:text="@string/dialog_filename_rename_warn_no_variables" />
     </LinearLayout>
+
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -43,108 +48,124 @@
         android:layout_marginLeft="15dp"
         android:layout_marginTop="10dp"
         android:textColor="@color/colorFirstAttention"
-        android:text="@string/dialog_filename_variables"/>
+        android:text="@string/dialog_filename_variables" />
+
     <HorizontalScrollView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="5dp">
+
         <LinearLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:orientation="horizontal">
+
             <Button
                 android:id="@+id/filename_sequence_number"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 style="?android:attr/buttonStyleSmall"
                 android:layout_margin="5dp"
-                android:text="@string/dialog_filename_button_sequence_number"/>
+                android:text="@string/dialog_filename_button_sequence_number" />
+
             <Button
                 android:id="@+id/filename_connector"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 style="?android:attr/buttonStyleSmall"
                 android:layout_margin="5dp"
-                android:text="-"/>
+                android:text="-" />
+
             <Button
                 android:id="@+id/filename_underline"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 style="?android:attr/buttonStyleSmall"
                 android:layout_margin="5dp"
-                android:text="_"/>
+                android:text="_" />
+
             <Button
                 android:id="@+id/filename_appname"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 style="?android:attr/buttonStyleSmall"
                 android:layout_margin="5dp"
-                android:text="@string/dialog_filename_button_appname"/>
+                android:text="@string/dialog_filename_button_appname" />
+
             <Button
                 android:id="@+id/filename_packagename"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 style="?android:attr/buttonStyleSmall"
                 android:layout_margin="5dp"
-                android:text="@string/dialog_filename_button_packagename"/>
+                android:text="@string/dialog_filename_button_packagename" />
+
             <Button
                 android:id="@+id/filename_version"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 style="?android:attr/buttonStyleSmall"
                 android:layout_margin="5dp"
-                android:text="@string/dialog_filename_button_version"/>
+                android:text="@string/dialog_filename_button_version" />
+
             <Button
                 android:id="@+id/filename_versioncode"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 style="?android:attr/buttonStyleSmall"
                 android:layout_margin="5dp"
-                android:text="@string/dialog_filename_button_versioncode"/>
+                android:text="@string/dialog_filename_button_versioncode" />
+
             <Button
                 android:id="@+id/filename_year"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 style="?android:attr/buttonStyleSmall"
                 android:layout_margin="5dp"
-                android:text="@string/dialog_filename_button_year"/>
+                android:text="@string/dialog_filename_button_year" />
+
             <Button
                 android:id="@+id/filename_month"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 style="?android:attr/buttonStyleSmall"
                 android:layout_margin="5dp"
-                android:text="@string/dialog_filename_button_month"/>
+                android:text="@string/dialog_filename_button_month" />
+
             <Button
                 android:id="@+id/filename_day_of_month"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 style="?android:attr/buttonStyleSmall"
                 android:layout_margin="5dp"
-                android:text="@string/dialog_filename_button_day_of_month"/>
+                android:text="@string/dialog_filename_button_day_of_month" />
+
             <Button
                 android:id="@+id/filename_hour_of_day"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 style="?android:attr/buttonStyleSmall"
                 android:layout_margin="5dp"
-                android:text="@string/dialog_filename_button_hour_of_day"/>
+                android:text="@string/dialog_filename_button_hour_of_day" />
+
             <Button
                 android:id="@+id/filename_minute"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 style="?android:attr/buttonStyleSmall"
                 android:layout_margin="5dp"
-                android:text="@string/dialog_filename_button_minute"/>
+                android:text="@string/dialog_filename_button_minute" />
+
             <Button
                 android:id="@+id/filename_second"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 style="?android:attr/buttonStyleSmall"
                 android:layout_margin="5dp"
-                android:text="@string/dialog_filename_button_second"/>
+                android:text="@string/dialog_filename_button_second" />
         </LinearLayout>
     </HorizontalScrollView>
+
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -152,10 +173,11 @@
         android:layout_marginLeft="15dp"
         android:layout_marginTop="10dp"
         android:textColor="@color/colorFirstAttention"
-        android:text="@string/word_preview"/>
+        android:text="@string/word_preview" />
+
     <android.support.v7.widget.RecyclerView
         android:id="@+id/filename_result_recyclerview"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_margin="5dp"/>
+        android:layout_margin="5dp" />
 </LinearLayout>

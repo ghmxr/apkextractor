@@ -5,6 +5,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:orientation="vertical">
+
     <android.support.v7.widget.CardView
         android:id="@+id/detail_card_permissions"
         android:layout_width="match_parent"
@@ -18,10 +19,12 @@
         app:cardBackgroundColor="@color/colorCardArea"
         android:visibility="gone"
         tools:visibility="visible">
+
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:orientation="vertical">
+
             <RelativeLayout
                 android:id="@+id/detail_permission_area"
                 android:layout_width="match_parent"
@@ -30,6 +33,7 @@
                 android:focusable="true"
                 android:onClick="onClick"
                 android:background="?attr/selectableItemBackground">
+
                 <ImageView
                     android:id="@+id/detail_permission_area_arrow"
                     android:layout_width="15dp"
@@ -39,7 +43,8 @@
                     android:layout_centerVertical="true"
                     android:layout_alignParentLeft="true"
                     android:layout_marginLeft="15dp"
-                    android:src="@drawable/arrow"/>
+                    android:src="@drawable/arrow" />
+
                 <TextView
                     android:id="@+id/detail_permission_area_att"
                     android:layout_width="wrap_content"
@@ -49,14 +54,15 @@
                     android:layout_marginLeft="15dp"
                     android:textSize="16sp"
                     android:textColor="@color/colorHighLightText"
-                    tools:text="权限(0项)"/>
+                    tools:text="权限(0项)" />
             </RelativeLayout>
+
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="vertical"
                 android:id="@+id/detail_permission"
-                android:visibility="gone"/>
+                android:visibility="gone" />
         </LinearLayout>
     </android.support.v7.widget.CardView>
 
@@ -73,10 +79,12 @@
         app:cardBackgroundColor="@color/colorCardArea"
         android:visibility="gone"
         tools:visibility="visible">
+
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:orientation="vertical">
+
             <RelativeLayout
                 android:id="@+id/detail_activity_area"
                 android:layout_width="match_parent"
@@ -85,6 +93,7 @@
                 android:focusable="true"
                 android:onClick="onClick"
                 android:background="?attr/selectableItemBackground">
+
                 <ImageView
                     android:id="@+id/detail_activity_area_arrow"
                     android:layout_width="15dp"
@@ -94,7 +103,8 @@
                     android:layout_centerVertical="true"
                     android:layout_alignParentLeft="true"
                     android:layout_marginLeft="15dp"
-                    android:src="@drawable/arrow"/>
+                    android:src="@drawable/arrow" />
+
                 <TextView
                     android:id="@+id/detail_activity_area_att"
                     android:layout_width="wrap_content"
@@ -104,14 +114,15 @@
                     android:layout_marginLeft="15dp"
                     android:textSize="16sp"
                     android:textColor="@color/colorHighLightText"
-                    tools:text="Activity(0项)"/>
+                    tools:text="Activity(0项)" />
             </RelativeLayout>
+
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="vertical"
                 android:id="@+id/detail_activity"
-                android:visibility="gone"/>
+                android:visibility="gone" />
         </LinearLayout>
     </android.support.v7.widget.CardView>
 
@@ -128,10 +139,12 @@
         app:cardBackgroundColor="@color/colorCardArea"
         android:visibility="gone"
         tools:visibility="visible">
+
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:orientation="vertical">
+
             <RelativeLayout
                 android:id="@+id/detail_services_area"
                 android:layout_width="match_parent"
@@ -140,6 +153,7 @@
                 android:focusable="true"
                 android:onClick="onClick"
                 android:background="?attr/selectableItemBackground">
+
                 <ImageView
                     android:id="@+id/detail_service_area_arrow"
                     android:layout_width="15dp"
@@ -149,7 +163,8 @@
                     android:layout_centerVertical="true"
                     android:layout_alignParentLeft="true"
                     android:layout_marginLeft="15dp"
-                    android:src="@drawable/arrow"/>
+                    android:src="@drawable/arrow" />
+
                 <TextView
                     android:id="@+id/detail_service_area_att"
                     android:layout_width="wrap_content"
@@ -159,14 +174,15 @@
                     android:layout_marginLeft="15dp"
                     android:textSize="16sp"
                     android:textColor="@color/colorHighLightText"
-                    tools:text="服务(0项)"/>
+                    tools:text="服务(0项)" />
             </RelativeLayout>
+
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="vertical"
                 android:id="@+id/detail_service"
-                android:visibility="gone"/>
+                android:visibility="gone" />
         </LinearLayout>
     </android.support.v7.widget.CardView>
 
@@ -183,10 +199,12 @@
         app:cardBackgroundColor="@color/colorCardArea"
         android:visibility="gone"
         tools:visibility="visible">
+
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:orientation="vertical">
+
             <RelativeLayout
                 android:id="@+id/detail_receiver_area"
                 android:layout_width="match_parent"
@@ -195,6 +213,7 @@
                 android:focusable="true"
                 android:onClick="onClick"
                 android:background="?attr/selectableItemBackground">
+
                 <ImageView
                     android:id="@+id/detail_receiver_area_arrow"
                     android:layout_width="15dp"
@@ -204,7 +223,8 @@
                     android:layout_centerVertical="true"
                     android:layout_alignParentLeft="true"
                     android:layout_marginLeft="15dp"
-                    android:src="@drawable/arrow"/>
+                    android:src="@drawable/arrow" />
+
                 <TextView
                     android:id="@+id/detail_receiver_area_att"
                     android:layout_width="wrap_content"
@@ -214,14 +234,15 @@
                     android:layout_marginLeft="15dp"
                     android:textSize="16sp"
                     android:textColor="@color/colorHighLightText"
-                    tools:text="广播接收器(0项)"/>
+                    tools:text="广播接收器(0项)" />
             </RelativeLayout>
+
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="vertical"
                 android:id="@+id/detail_receiver"
-                android:visibility="gone"/>
+                android:visibility="gone" />
         </LinearLayout>
     </android.support.v7.widget.CardView>
 
@@ -238,10 +259,12 @@
         app:cardBackgroundColor="@color/colorCardArea"
         android:visibility="gone"
         tools:visibility="visible">
+
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:orientation="vertical">
+
             <RelativeLayout
                 android:id="@+id/detail_provider_area"
                 android:layout_width="match_parent"
@@ -250,6 +273,7 @@
                 android:focusable="true"
                 android:onClick="onClick"
                 android:background="?attr/selectableItemBackground">
+
                 <ImageView
                     android:id="@+id/detail_provider_area_arrow"
                     android:layout_width="15dp"
@@ -259,7 +283,8 @@
                     android:layout_centerVertical="true"
                     android:layout_alignParentLeft="true"
                     android:layout_marginLeft="15dp"
-                    android:src="@drawable/arrow"/>
+                    android:src="@drawable/arrow" />
+
                 <TextView
                     android:id="@+id/detail_provider_area_att"
                     android:layout_width="wrap_content"
@@ -269,14 +294,15 @@
                     android:layout_marginLeft="15dp"
                     android:textSize="16sp"
                     android:textColor="@color/colorHighLightText"
-                    tools:text="内容提供者(0项)"/>
+                    tools:text="内容提供者(0项)" />
             </RelativeLayout>
+
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="vertical"
                 android:id="@+id/detail_provider"
-                android:visibility="gone"/>
+                android:visibility="gone" />
         </LinearLayout>
     </android.support.v7.widget.CardView>
 
@@ -293,10 +319,12 @@
         app:cardBackgroundColor="@color/colorCardArea"
         android:visibility="gone"
         tools:visibility="visible">
+
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:orientation="vertical">
+
             <RelativeLayout
                 android:id="@+id/detail_static_loader_area"
                 android:layout_width="match_parent"
@@ -305,6 +333,7 @@
                 android:focusable="true"
                 android:onClick="onClick"
                 android:background="?attr/selectableItemBackground">
+
                 <ImageView
                     android:id="@+id/detail_static_loader_area_arrow"
                     android:layout_width="15dp"
@@ -314,7 +343,8 @@
                     android:layout_centerVertical="true"
                     android:layout_alignParentLeft="true"
                     android:layout_marginLeft="15dp"
-                    android:src="@drawable/arrow"/>
+                    android:src="@drawable/arrow" />
+
                 <TextView
                     android:id="@+id/detail_static_loader_area_att"
                     android:layout_width="wrap_content"
@@ -324,14 +354,15 @@
                     android:layout_marginLeft="15dp"
                     android:textSize="16sp"
                     android:textColor="@color/colorHighLightText"
-                    tools:text="自启接收器(0项)"/>
+                    tools:text="自启接收器(0项)" />
             </RelativeLayout>
+
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="vertical"
                 android:id="@+id/detail_static_loader"
-                android:visibility="gone"/>
+                android:visibility="gone" />
         </LinearLayout>
     </android.support.v7.widget.CardView>
 </LinearLayout>

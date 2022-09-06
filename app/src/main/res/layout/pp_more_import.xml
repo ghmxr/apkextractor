@@ -5,6 +5,7 @@
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
     tools:background="#99000000">
+
     <RelativeLayout
         android:id="@+id/popup_file_rename"
         android:layout_width="match_parent"
@@ -12,14 +13,16 @@
         android:clickable="true"
         android:focusable="true"
         android:background="?attr/selectableItemBackground">
+
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_margin="8dp"
             android:textSize="14sp"
             android:textColor="@color/colorHighLightTextDarkBackground"
-            android:text="@string/more_file_rename"/>
+            android:text="@string/more_file_rename" />
     </RelativeLayout>
+
     <RelativeLayout
         android:id="@+id/popup_share"
         android:layout_width="match_parent"
@@ -27,12 +30,13 @@
         android:clickable="true"
         android:focusable="true"
         android:background="?attr/selectableItemBackground">
+
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_margin="8dp"
             android:textSize="14sp"
             android:textColor="@color/colorHighLightTextDarkBackground"
-            android:text="@string/bottom_share"/>
+            android:text="@string/bottom_share" />
     </RelativeLayout>
 </LinearLayout>

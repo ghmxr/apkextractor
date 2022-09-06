@@ -160,7 +160,7 @@
 
     <string name="exception_title">提示</string>
     <string name="exception_message">下列文件导出异常，可能的异常包括存储空间不足，源文件被删除，写入路径不合法，或者没有写入权限等。\n异常信息如下：\n\n</string>
-    
+
     <string name="dialog_duplicate_title">重复文件</string>
     <string name="dialog_duplicate_msg">发现下列重复文件，是否覆盖？\n\n</string>
 

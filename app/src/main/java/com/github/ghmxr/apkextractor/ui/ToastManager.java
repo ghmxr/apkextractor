@@ -10,15 +10,15 @@ public class ToastManager {
 
     private static Toast toast;
 
-    public static void showToast(@NonNull final Context context, @NonNull final String content, final int length){
+    public static void showToast(@NonNull final Context context, @NonNull final String content, final int length) {
         Global.handler.post(new Runnable() {
             @Override
             public void run() {
-                if(toast!=null){
+                if (toast != null) {
                     toast.cancel();
-                    toast=null;
+                    toast = null;
                 }
-                toast=Toast.makeText(context,content,length);
+                toast = Toast.makeText(context, content, length);
                 toast.show();
             }
         });

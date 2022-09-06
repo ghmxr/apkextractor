@@ -16,102 +16,103 @@ public class UdpThread extends Thread {
 
     private static DatagramSocket datagramSocket;
 
-    private boolean workFlag=true;
+    private boolean workFlag = true;
     private final int portNumber;
-    private DatagramPacket datagramPacket=new DatagramPacket(new byte[65500],65500);
+    private DatagramPacket datagramPacket = new DatagramPacket(new byte[65500], 65500);
 
     private UdpThreadCallback callback;
 
-    public UdpThread(@NonNull Context context, @Nullable UdpThreadCallback callback) throws Exception{
+    public UdpThread(@NonNull Context context, @Nullable UdpThreadCallback callback) throws Exception {
         super();
-        this.callback=callback;
-        portNumber= SPUtil.getPortNumber(context);
+        this.callback = callback;
+        portNumber = SPUtil.getPortNumber(context);
         openUdpSocket(portNumber);
     }
 
     @Override
-    public void run(){
+    public void run() {
         super.run();
-        while (workFlag){
-            if(datagramSocket==null){
-                workFlag=false;
+        while (workFlag) {
+            if (datagramSocket == null) {
+                workFlag = false;
                 return;
             }
-            try{
+            try {
                 datagramSocket.receive(datagramPacket);
-                String ipMsgStr=new String(datagramPacket.getData(),0,datagramPacket.getLength());
-                Log.d("UDPReceived",ipMsgStr+" fromIP:"+datagramPacket.getAddress().getHostName()+" fromPost:"+datagramPacket.getPort());
-                final IpMessage ipMessage=new IpMessage(ipMsgStr);
-                if(callback!=null){
-                    callback.onIpMessageReceived(datagramPacket.getAddress().getHostAddress(),datagramPacket.getPort(),ipMessage);
+                String ipMsgStr = new String(datagramPacket.getData(), 0, datagramPacket.getLength());
+                Log.d("UDPReceived", ipMsgStr + " fromIP:" + datagramPacket.getAddress().getHostName() + " fromPost:" + datagramPacket.getPort());
+                final IpMessage ipMessage = new IpMessage(ipMsgStr);
+                if (callback != null) {
+                    callback.onIpMessageReceived(datagramPacket.getAddress().getHostAddress(), datagramPacket.getPort(), ipMessage);
                 }
                 datagramPacket.setLength(65500);
-            }catch (Exception e){
+            } catch (Exception e) {
                 e.printStackTrace();
-                workFlag=false;
+                workFlag = false;
                 return;
             }
         }
     }
 
-    public DatagramSocket getDatagramSocket(){
+    public DatagramSocket getDatagramSocket() {
         return datagramSocket;
     }
 
-    public void stopUdp(){
-        workFlag=false;
+    public void stopUdp() {
+        workFlag = false;
         interrupt();
         closeUdpSocket();
     }
 
-    private static void openUdpSocket(int portNumber) throws Exception{
-        if(datagramSocket!=null)datagramSocket.close();
-        datagramSocket=new DatagramSocket(portNumber);
+    private static void openUdpSocket(int portNumber) throws Exception {
+        if (datagramSocket != null) datagramSocket.close();
+        datagramSocket = new DatagramSocket(portNumber);
     }
 
-    public static void closeUdpSocket(){
-        if(datagramSocket!=null)datagramSocket.close();
-        datagramSocket=null;
+    public static void closeUdpSocket() {
+        if (datagramSocket != null) datagramSocket.close();
+        datagramSocket = null;
     }
 
-    public interface UdpThreadCallback{
-        void onIpMessageReceived(@NonNull String ip,int port,@NonNull IpMessage ipMessage);
+    public interface UdpThreadCallback {
+        void onIpMessageReceived(@NonNull String ip, int port, @NonNull IpMessage ipMessage);
     }
 
-    public static class UdpSendTask extends Thread{
+    public static class UdpSendTask extends Thread {
         private String ipMsgStr;
         private InetAddress targetInetAddress;
         private final int targetPort;
         private final UdpSendTaskCallback callback;
-        public UdpSendTask(@NonNull String ipMsgStr, @NonNull InetAddress targetAddress,int targetPort,@Nullable UdpSendTaskCallback callback){
-            this.ipMsgStr=ipMsgStr;
-            this.targetInetAddress=targetAddress;
-            this.targetPort =targetPort;
-            this.callback=callback;
+
+        public UdpSendTask(@NonNull String ipMsgStr, @NonNull InetAddress targetAddress, int targetPort, @Nullable UdpSendTaskCallback callback) {
+            this.ipMsgStr = ipMsgStr;
+            this.targetInetAddress = targetAddress;
+            this.targetPort = targetPort;
+            this.callback = callback;
         }
 
         @Override
-        public void run(){
-            try{
-                if(datagramSocket==null||datagramSocket.isClosed()){
+        public void run() {
+            try {
+                if (datagramSocket == null || datagramSocket.isClosed()) {
                     return;
                 }
-                byte[]sendBuffer=ipMsgStr.getBytes();
-                DatagramPacket datagramPacket=new DatagramPacket(sendBuffer,0,sendBuffer.length,targetInetAddress, targetPort);
+                byte[] sendBuffer = ipMsgStr.getBytes();
+                DatagramPacket datagramPacket = new DatagramPacket(sendBuffer, 0, sendBuffer.length, targetInetAddress, targetPort);
                 datagramSocket.send(datagramPacket);
-                Log.d("UDPSent",ipMsgStr+"  targetIP:"+datagramPacket.getAddress().getHostName()+" targetPort:"+datagramPacket.getPort());
-            }catch (Exception e){
+                Log.d("UDPSent", ipMsgStr + "  targetIP:" + datagramPacket.getAddress().getHostName() + " targetPort:" + datagramPacket.getPort());
+            } catch (Exception e) {
                 e.printStackTrace();
             }
-            try{
-                IpMessage ipMessage=new IpMessage(ipMsgStr);
-                if(callback!=null)callback.onUdpSentCompleted(ipMessage);
-            }catch (Exception e){
+            try {
+                IpMessage ipMessage = new IpMessage(ipMsgStr);
+                if (callback != null) callback.onUdpSentCompleted(ipMessage);
+            } catch (Exception e) {
                 e.printStackTrace();
             }
         }
 
-        public interface UdpSendTaskCallback{
+        public interface UdpSendTaskCallback {
             void onUdpSentCompleted(IpMessage ipMessage);
         }
     }

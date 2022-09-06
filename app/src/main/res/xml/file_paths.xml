@@ -2,5 +2,5 @@
 <paths>
     <external-path
         name="shares"
-        path="/"/>
+        path="/" />
 </paths>
