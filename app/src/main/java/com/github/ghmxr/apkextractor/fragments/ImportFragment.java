@@ -311,10 +311,17 @@ public class ImportFragment extends Fragment implements RefreshImportListTask.Re
         isRefreshing = true;
         if (getActivity() == null) return;
         isScrollable = false;
-        if (adapter != null) adapter.setData(null);
+//        if (adapter != null) adapter.setData(null);
+        if (adapter == null) adapter = new RecyclerViewAdapter<>(getActivity()
+                , recyclerView
+                , null
+                , SPUtil.getGlobalSharedPreferences(getActivity()).getInt(Constants.PREFERENCE_MAIN_PAGE_VIEW_MODE_IMPORT, Constants.PREFERENCE_MAIN_PAGE_VIEW_MODE_IMPORT_DEFAULT)
+                , this);
+        else adapter.setData(null);
+        recyclerView.setAdapter(adapter);
         swipeRefreshLayout.setRefreshing(true);
         viewGroup_no_content.setVisibility(View.GONE);
-        viewGroup_progress.setVisibility(View.VISIBLE);
+//        viewGroup_progress.setVisibility(View.VISIBLE);
         ViewGroup.LayoutParams layoutParams = viewGroup_progress.getLayoutParams();
         layoutParams.height = EnvironmentUtil.dp2px(getActivity(), 160);
         viewGroup_progress.setLayoutParams(layoutParams);
@@ -325,10 +332,13 @@ public class ImportFragment extends Fragment implements RefreshImportListTask.Re
     }
 
     @Override
-    public void onProgress(@NonNull FileItem fileItem) {
+    public void onProgress(@NonNull ImportItem importItem) {
         if (getActivity() == null) return;
-        if (progressTextView != null) {
+        /*if (progressTextView != null) {
             progressTextView.setText(getActivity().getResources().getString(R.string.att_scanning) + " " + fileItem.getPath());
+        }*/
+        if (adapter != null && !isSearchMode) {
+            adapter.addData(importItem);
         }
     }
 
@@ -337,14 +347,14 @@ public class ImportFragment extends Fragment implements RefreshImportListTask.Re
         isRefreshing = false;
         if (getActivity() == null) return;
         swipeRefreshLayout.setRefreshing(false);
-        swipeRefreshLayout.setEnabled(true);
-        if (adapter == null) adapter = new RecyclerViewAdapter<>(getActivity()
+        swipeRefreshLayout.setEnabled(!adapter.getIsMultiSelectMode());
+        /*if (adapter == null) adapter = new RecyclerViewAdapter<>(getActivity()
                 , recyclerView
                 , list
                 , SPUtil.getGlobalSharedPreferences(getActivity()).getInt(Constants.PREFERENCE_MAIN_PAGE_VIEW_MODE_IMPORT, Constants.PREFERENCE_MAIN_PAGE_VIEW_MODE_IMPORT_DEFAULT)
                 , this);
-        else adapter.setData(list);
-        recyclerView.setAdapter(adapter);
+        else adapter.setData(list);*/
+
         viewGroup_no_content.setVisibility(list.size() == 0 ? View.VISIBLE : View.GONE);
         viewGroup_progress.setVisibility(View.GONE);
         //if(isSearchMode)adapter.setData(null);
@@ -376,7 +386,9 @@ public class ImportFragment extends Fragment implements RefreshImportListTask.Re
     public void onMultiSelectModeOpened() {
         if (getActivity() == null) return;
         setViewVisibilityWithAnimation(card_multi_select, View.VISIBLE);
-        swipeRefreshLayout.setEnabled(false);
+        if (!swipeRefreshLayout.isRefreshing()) {
+            swipeRefreshLayout.setEnabled(false);
+        }
         EnvironmentUtil.hideInputMethod(getActivity());
         if (callback != null) callback.onItemLongClickedAndMultiSelectModeOpened(this);
     }
@@ -386,6 +398,9 @@ public class ImportFragment extends Fragment implements RefreshImportListTask.Re
         if (getActivity() == null) return;
         if (adapter == null) return;
         swipeRefreshLayout.setRefreshing(false);
+        if (isMultiSelectMode()) {
+            swipeRefreshLayout.setEnabled(false);
+        }
         adapter.setData(importItems);
         adapter.setHighlightKeyword(keyword);
     }
@@ -403,7 +418,7 @@ public class ImportFragment extends Fragment implements RefreshImportListTask.Re
                 swipeRefreshLayout.setEnabled(true);
                 if (isRefreshing) {
                     swipeRefreshLayout.setRefreshing(true);
-                    viewGroup_progress.setVisibility(View.VISIBLE);
+//                    viewGroup_progress.setVisibility(View.VISIBLE);
                 }
             }
         }
@@ -412,12 +427,8 @@ public class ImportFragment extends Fragment implements RefreshImportListTask.Re
         if (b) {
             adapter.setData(null);
         } else {
-            if (!isRefreshing) {
-                synchronized (Global.item_list) {
-                    adapter.setData(Global.item_list);
-                }
-            } else {
-                adapter.setData(null);
+            synchronized (Global.item_list) {
+                adapter.setData(Global.item_list);
             }
         }
         if (!b) adapter.setHighlightKeyword(null);

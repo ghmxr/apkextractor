@@ -7,10 +7,13 @@ import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
+import android.os.Parcel;
+import android.os.Parcelable;
 import android.support.annotation.NonNull;
 import android.text.TextUtils;
 
 import com.github.ghmxr.apkextractor.DisplayItem;
+import com.github.ghmxr.apkextractor.MyApplication;
 import com.github.ghmxr.apkextractor.R;
 import com.github.ghmxr.apkextractor.utils.EnvironmentUtil;
 import com.github.ghmxr.apkextractor.utils.FileUtil;
@@ -21,11 +24,11 @@ import java.io.File;
 /**
  * 单个应用项的所有信息
  */
-public class AppItem implements Comparable<AppItem>, DisplayItem {
+public class AppItem implements Comparable<AppItem>, DisplayItem, Parcelable {
 
     public static transient int sort_config = 0;
 
-    /*public static final Creator<AppItem> CREATOR=new Creator<AppItem>() {
+    public static final Creator<AppItem> CREATOR = new Creator<AppItem>() {
         @Override
         public AppItem createFromParcel(Parcel source) {
             return new AppItem(source);
@@ -35,29 +38,29 @@ public class AppItem implements Comparable<AppItem>, DisplayItem {
         public AppItem[] newArray(int size) {
             return new AppItem[size];
         }
-    };*/
+    };
 
-    private PackageInfo info;
+    private final PackageInfo info;
 
-    private FileItem fileItem;
+    private transient FileItem fileItem;
 
     /**
      * 程序名
      */
-    private String title;
+    private final String title;
     /**
      * 应用图标
      */
-    private Drawable drawable;
+    private final transient Drawable drawable;
 
     /**
      * 应用大小
      */
-    private long size;
+    private final long size;
 
-    private String installSource;
+    private final String installSource;
 
-    private String launchingClass;
+    private final String launchingClass;
 
     //private String[]signatureInfos;
 
@@ -127,21 +130,40 @@ public class AppItem implements Comparable<AppItem>, DisplayItem {
         this.title = wrapper.title;
         this.size = wrapper.size;
         this.info = wrapper.info;
+        this.fileItem = wrapper.fileItem;
         this.drawable = wrapper.drawable;
         this.installSource = wrapper.installSource;
         this.launchingClass = wrapper.launchingClass;
+        this.static_receivers_bundle = wrapper.static_receivers_bundle;
         this.exportData = flag_data;
         this.exportObb = flag_obb;
         //this.signatureInfos=wrapper.signatureInfos;
     }
 
-    /*private AppItem(Parcel in){
-        title=in.readString();
-        size=in.readLong();
-        info=in.readParcelable(PackageInfo.class.getClassLoader());
+    private AppItem(Parcel in) {
+        title = in.readString();
+        size = in.readLong();
+        installSource = in.readString();
+        launchingClass = in.readString();
+        info = in.readParcelable(PackageInfo.class.getClassLoader());
         //static_receivers=in.readHashMap(HashMap.class.getClassLoader());
-        static_receivers_bundle=in.readBundle(Bundle.class.getClassLoader());
-    }*/
+        static_receivers_bundle = in.readBundle(Bundle.class.getClassLoader());
+
+        assert info != null;
+        fileItem = new FileItem(info.applicationInfo.sourceDir);
+        drawable = MyApplication.getApplication().getPackageManager().getApplicationIcon(info.applicationInfo);
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeString(title);
+        dest.writeLong(size);
+        dest.writeString(installSource);
+        dest.writeString(launchingClass);
+        dest.writeParcelable(info, 0);
+        //dest.writeMap(static_receivers);
+        dest.writeBundle(static_receivers_bundle);
+    }
 
     @Override
     public Drawable getIconDrawable() {
@@ -239,19 +261,10 @@ public class AppItem implements Comparable<AppItem>, DisplayItem {
         return signatureInfos;
     }*/
 
-    /*@Override
+    @Override
     public int describeContents() {
         return 0;
     }
-
-    @Override
-    public void writeToParcel(Parcel dest, int flags) {
-        dest.writeString(title);
-        dest.writeLong(size);
-        dest.writeParcelable(info,0);
-        //dest.writeMap(static_receivers);
-        dest.writeBundle(static_receivers_bundle);
-    }*/
 
 
     public @NonNull

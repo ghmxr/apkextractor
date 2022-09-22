@@ -17,7 +17,7 @@ import java.util.Locale;
 public abstract class BaseActivity extends AppCompatActivity {
 
     /**
-     * @deprecated 使用传递包名的方式
+     *
      */
     public static final String EXTRA_PARCELED_APP_ITEM = "app_item";
 

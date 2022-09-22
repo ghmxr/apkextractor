@@ -58,6 +58,9 @@ public class RefreshImportListTask extends Thread {
                 fileItem = new FileItem(SPUtil.getInternalSavePath(context));
             }
         }
+        synchronized (Global.item_list) {
+            Global.item_list.clear();
+        }
         try {
             arrayList.addAll(getAllImportItemsFromPath(fileItem));
             if (!TextUtils.isEmpty(SPUtil.getExternalStorageUri(context)) && package_scope_value == Constants.PACKAGE_SCOPE_ALL) {
@@ -89,7 +92,8 @@ public class RefreshImportListTask extends Thread {
         try {
             if (fileItem == null) return arrayList;
             //File file=new File(fileItem.getPath());
-            if (!fileItem.isDirectory()) {
+            if (fileItem.isFile()) {
+                final ImportItem importItem = new ImportItem(context, fileItem);
                 if (fileItem.getPath().trim().toLowerCase().endsWith(".apk") || fileItem.getPath().trim().toLowerCase().endsWith(".zip")
                         || fileItem.getPath().trim().toLowerCase().endsWith(".xapk")
                         || fileItem.getPath().trim().toLowerCase().endsWith(SPUtil.getCompressingExtensionName(context).toLowerCase())) {
@@ -97,35 +101,21 @@ public class RefreshImportListTask extends Thread {
                         Global.handler.post(new Runnable() {
                             @Override
                             public void run() {
-                                callback.onProgress(fileItem);
+                                callback.onProgress(importItem);
                             }
                         });
                     }
-                    arrayList.add(new ImportItem(context, fileItem));
+                    arrayList.add(importItem);
+                    synchronized (Global.item_list) {
+                        Global.item_list.add(importItem);
+                    }
                 }
                 return arrayList;
             }
-            List<FileItem> fileItems = fileItem.listFileItems();
-            for (final FileItem fileItem1 : fileItems) {
-                if (fileItem1.isDirectory()) arrayList.addAll(getAllImportItemsFromPath(fileItem1));
-                else {
-                    if (fileItem1.getPath().trim().toLowerCase().endsWith(".apk") || fileItem1.getPath().trim().toLowerCase().endsWith(".zip")
-                            || fileItem1.getPath().trim().toLowerCase().endsWith(".xapk")
-                            || fileItem1.getPath().trim().toLowerCase().endsWith(SPUtil.getCompressingExtensionName(context).toLowerCase())) {
-                        try {
-                            if (callback != null) {
-                                Global.handler.post(new Runnable() {
-                                    @Override
-                                    public void run() {
-                                        callback.onProgress(fileItem1);
-                                    }
-                                });
-                            }
-                            arrayList.add(new ImportItem(context, fileItem1));
-                        } catch (Exception e) {
-                            e.printStackTrace();
-                        }
-                    }
+            if (fileItem.isDirectory()) {
+                List<FileItem> fileItems = fileItem.listFileItems();
+                for (final FileItem fileItem1 : fileItems) {
+                    arrayList.addAll(getAllImportItemsFromPath(fileItem1));
                 }
             }
         } catch (Exception e) {
@@ -137,7 +127,7 @@ public class RefreshImportListTask extends Thread {
     public interface RefreshImportListTaskCallback {
         void onRefreshStarted();
 
-        void onProgress(@NonNull FileItem fileItem);
+        void onProgress(@NonNull ImportItem importItem);
 
         void onRefreshCompleted(List<ImportItem> list);
     }

@@ -372,6 +372,7 @@ public class AppFragment extends Fragment implements View.OnClickListener, Refre
         if (getActivity() == null) return;
         Intent intent = new Intent(getActivity(), AppDetailActivity.class);
         intent.putExtra(BaseActivity.EXTRA_PACKAGE_NAME, appItem.getPackageName());
+        intent.putExtra(BaseActivity.EXTRA_PARCELED_APP_ITEM, appItem);
         ActivityOptionsCompat compat = ActivityOptionsCompat.makeSceneTransitionAnimation(getActivity(), new Pair<View, String>(viewHolder.icon, "icon"));
         try {
             ActivityCompat.startActivity(getActivity(), intent, compat.toBundle());

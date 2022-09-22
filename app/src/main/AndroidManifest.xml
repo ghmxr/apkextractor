@@ -27,7 +27,7 @@
         </activity>
         <activity
             android:name=".activities.AppDetailActivity"
-            android:label="Detail"
+            android:label=""
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
             android:name=".activities.SettingActivity"

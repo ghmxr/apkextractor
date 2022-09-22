@@ -92,6 +92,12 @@ public class FileItem implements Comparable<FileItem> {
         return "";
     }
 
+    public boolean isFile() {
+        if (documentFile != null) return documentFile.isFile();
+        if (file != null) return file.isFile();
+        return false;
+    }
+
     public boolean isDirectory() {
         if (documentFile != null) return documentFile.isDirectory();
         if (file != null) return file.isDirectory();

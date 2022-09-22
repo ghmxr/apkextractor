@@ -125,6 +125,17 @@ public class RecyclerViewAdapter<T extends DisplayItem> extends RecyclerView.Ada
         return mode;
     }
 
+    public void addData(T data) {
+        this.data.add(data);
+        boolean[] isSelected = this.isSelected == null ? new boolean[0] : this.isSelected;
+        this.isSelected = new boolean[this.data.size()];
+        if (this.isSelected.length > 0) {
+            System.arraycopy(isSelected, 0, this.isSelected, 0, isSelected.length);
+
+        }
+        notifyItemInserted(this.data.size() - 1);
+    }
+
     public void setData(@Nullable List<T> data) {
         this.data.clear();
         isMultiSelectMode = false;

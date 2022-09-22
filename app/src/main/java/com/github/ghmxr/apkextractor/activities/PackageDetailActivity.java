@@ -13,6 +13,8 @@ import android.support.annotation.NonNull;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.PermissionChecker;
+import android.support.v4.widget.NestedScrollView;
+import android.support.v7.app.ActionBar;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
@@ -87,7 +89,17 @@ public class PackageDetailActivity extends BaseActivity implements View.OnClickL
         Toolbar toolbar = findViewById(R.id.toolbar_package_detail);
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        getSupportActionBar().setTitle(String.valueOf(importItem.getItemName()));
+
+        NestedScrollView nestedScrollView = findViewById(R.id.nsv);
+        final ActionBar actionBar = getSupportActionBar();
+        actionBar.setTitle("");
+        nestedScrollView.setOnScrollChangeListener(new NestedScrollView.OnScrollChangeListener() {
+            @Override
+            public void onScrollChange(NestedScrollView nestedScrollView, int i, int i1, int i2, int i3) {
+//                Log.e("111","i="+i+",i1="+i1+",i2="+i2+",i3="+i3);
+                actionBar.setTitle(i1 > 0 ? String.valueOf(importItem.getItemName()) : "");
+            }
+        });
 
         cb_data = findViewById(R.id.package_detail_data);
         cb_obb = findViewById(R.id.package_detail_obb);

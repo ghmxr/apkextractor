@@ -110,7 +110,7 @@ public class ExportTask extends Thread {
                         outputStream = new FileOutputStream(new File(OutputUtil.getAbsoluteWritePath(context, item, "apk", i + 1)));
                     }
 
-                    postCallback2Listener(new Runnable() {
+                    Global.runOnUiThread(new Runnable() {
                         @Override
                         public void run() {
                             if (listener != null)
@@ -139,7 +139,7 @@ public class ExportTask extends Thread {
 				            	 msg_speed.what=BaseActivity.MESSAGE_COPYFILE_REFRESH_SPEED;
 				            	 msg_speed.obj=speed;
 				            	 BaseActivity.sendMessage(msg_speed);*/
-                            postCallback2Listener(new Runnable() {
+                            Global.runOnUiThread(new Runnable() {
                                 @Override
                                 public void run() {
                                     if (listener != null) listener.onExportSpeedUpdated(speed);
@@ -155,7 +155,7 @@ public class ExportTask extends Thread {
                             msg_progress.what=BaseActivity.MESSAGE_COPYFILE_REFRESH_PROGRESS;
                             msg_progress.obj=progressinfo;
                             BaseActivity.sendMessage(msg_progress);*/
-                            postCallback2Listener(new Runnable() {
+                            Global.runOnUiThread(new Runnable() {
                                 @Override
                                 public void run() {
                                     if (listener != null)
@@ -182,7 +182,7 @@ public class ExportTask extends Thread {
                         this.currentWritingPath = writePath;
                         outputStream = new FileOutputStream(new File(OutputUtil.getAbsoluteWritePath(context, item, SPUtil.getCompressingExtensionName(context), i + 1)));
                     }
-                    postCallback2Listener(new Runnable() {
+                    Global.runOnUiThread(new Runnable() {
                         @Override
                         public void run() {
                             if (listener != null)
@@ -234,7 +234,7 @@ public class ExportTask extends Thread {
         //更新导出文件到媒体库
         EnvironmentUtil.requestUpdatingMediaDatabase(context);
 
-        postCallback2Listener(new Runnable() {
+        Global.runOnUiThread(new Runnable() {
             @Override
             public void run() {
                 if (listener != null && !isInterrupted)
@@ -244,12 +244,6 @@ public class ExportTask extends Thread {
             }
         });
 
-    }
-
-
-    private void postCallback2Listener(Runnable runnable) {
-        if (listener == null || runnable == null) return;
-        Global.handler.post(runnable);
     }
 
 
@@ -319,7 +313,7 @@ public class ExportTask extends Thread {
                     if(currentPath.length()>90) currentPath="..."+currentPath.substring(currentPath.length()-90,currentPath.length());
                     msg_currentfile.obj=context.getResources().getString(R.string.copytask_zip_current)+currentPath;
                     BaseActivity.sendMessage(msg_currentfile);*/
-                    postCallback2Listener(new Runnable() {
+                    Global.runOnUiThread(new Runnable() {
                         @Override
                         public void run() {
                             if (listener != null)
@@ -339,7 +333,7 @@ public class ExportTask extends Thread {
                             msg_speed.obj=this.zipWriteLength_second;
                             BaseActivity.sendMessage(msg_speed);*/
                             final long zip_speed = zipWriteLength_second;
-                            postCallback2Listener(new Runnable() {
+                            Global.runOnUiThread(new Runnable() {
                                 @Override
                                 public void run() {
                                     if (listener != null) listener.onExportSpeedUpdated(zip_speed);
@@ -353,7 +347,7 @@ public class ExportTask extends Thread {
                             msg.what=Main.MESSAGE_COPYFILE_REFRESH_PROGRESS;
                             msg.obj=new Long[]{this.progress,this.total};
                             BaseActivity.sendMessage(msg);*/
-                            postCallback2Listener(new Runnable() {
+                            Global.runOnUiThread(new Runnable() {
                                 @Override
                                 public void run() {
                                     if (listener != null)

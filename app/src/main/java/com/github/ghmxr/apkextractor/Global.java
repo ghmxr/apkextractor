@@ -190,6 +190,7 @@ public class Global {
      * @param package_name 要定位的包名
      * @return 查询到的AppItem
      */
+    @Deprecated
     public static @Nullable
     AppItem getAppItemByPackageNameFromList(@NonNull List<AppItem> list, @NonNull String package_name) {
         for (AppItem item : list) {
@@ -201,6 +202,17 @@ public class Global {
             }
         }
         return null;
+    }
+
+    /**
+     * 使用主线程执行操作
+     */
+    public static void runOnUiThread(@NonNull Runnable action) {
+        if (Thread.currentThread() == Looper.getMainLooper().getThread()) {
+            action.run();
+        } else {
+            handler.post(action);
+        }
     }
 
     /**

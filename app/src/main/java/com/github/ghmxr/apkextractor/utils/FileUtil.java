@@ -18,8 +18,8 @@ public class FileUtil {
         try {
             if (file == null) return 0;
             if (!file.exists()) return 0;
-            if (!file.isDirectory()) return file.length();
-            else {
+            if (file.isFile()) return file.length();
+            if (file.isDirectory()) {
                 long total = 0;
                 File[] files = file.listFiles();
                 if (files == null || files.length == 0) return 0;
