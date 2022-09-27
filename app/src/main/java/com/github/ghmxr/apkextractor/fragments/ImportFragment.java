@@ -425,7 +425,7 @@ public class ImportFragment extends Fragment implements RefreshImportListTask.Re
                 swipeRefreshLayout.setEnabled(true);
                 if (isRefreshing) {
                     swipeRefreshLayout.setRefreshing(true);
-//                    viewGroup_progress.setVisibility(View.VISIBLE);
+                    viewGroup_progress.setVisibility(View.VISIBLE);
                 }
             }
         }
