@@ -16,6 +16,7 @@
     </android.support.v4.widget.SwipeRefreshLayout>
 
     <RelativeLayout
+        android:id="@+id/loading"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_centerVertical="true"
@@ -31,6 +32,7 @@
             style="?android:attr/progressBarStyleHorizontal" />
 
         <TextView
+            android:id="@+id/loading_text"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_below="@+id/loading_pg"
@@ -73,17 +75,19 @@
     </LinearLayout>
 
     <RelativeLayout
-        android:id="@+id/loading"
+        android:id="@+id/bottomBar"
         android:layout_width="match_parent"
         android:layout_height="60dp"
         android:background="#aa000000"
-        android:layout_alignParentBottom="true">
+        android:layout_alignParentBottom="true"
+        android:visibility="gone"
+        tools:visibility="visible">
 
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:maxLines="2"
-            android:id="@+id/loading_text"
+            android:id="@+id/bottomBarText"
             android:textColor="#fff"
             android:textSize="14sp"
             android:layout_marginHorizontal="10dp"

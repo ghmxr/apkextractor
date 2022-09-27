@@ -127,9 +127,9 @@ public class ImportFragment extends Fragment implements RefreshImportListTask.Re
         swipeRefreshLayout = view.findViewById(R.id.content_swipe);
         recyclerView = view.findViewById(R.id.content_recyclerview);
         viewGroup_no_content = view.findViewById(R.id.no_content_att);
-        viewGroup_progress = view.findViewById(R.id.loading);
+        viewGroup_progress = view.findViewById(R.id.bottomBar);
         progressBar = view.findViewById(R.id.loading_pg);
-        progressTextView = view.findViewById(R.id.loading_text);
+        progressTextView = view.findViewById(R.id.bottomBarText);
         card_multi_select = view.findViewById(R.id.import_card_multi_select);
         tv_multi_select_head = view.findViewById(R.id.import_card_att);
         btn_select = view.findViewById(R.id.import_select_all);
