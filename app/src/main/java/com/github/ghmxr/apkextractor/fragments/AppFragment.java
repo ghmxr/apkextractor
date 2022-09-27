@@ -212,10 +212,10 @@ public class AppFragment extends Fragment implements View.OnClickListener, Refre
                     swipeRefreshLayout.setRefreshing(false);
                     return;
                 }
-                if (adapter != null && adapter.getIsMultiSelectMode()) {
+                /*if (adapter != null && adapter.getIsMultiSelectMode()) {
                     swipeRefreshLayout.setRefreshing(false);
                     return;
-                }
+                }*/
                 setAndStartRefreshingTask();
             }
         });
@@ -437,15 +437,15 @@ public class AppFragment extends Fragment implements View.OnClickListener, Refre
         if (b) {
             if (card_normal != null) card_normal.setVisibility(View.GONE);
         } else {
-            setViewVisibilityWithAnimation(card_normal, View.VISIBLE);
+            if (!isMultiSelectMode()) setViewVisibilityWithAnimation(card_normal, View.VISIBLE);
             if (adapter != null) adapter.setHighlightKeyword(null);
         }
-        if (card_multi_select != null) card_multi_select.setVisibility(View.GONE);
+//        if (card_multi_select != null) card_multi_select.setVisibility(View.GONE);
         if (swipeRefreshLayout != null) {
             swipeRefreshLayout.setEnabled(!b);
         }
         if (adapter == null) return;
-        adapter.setMultiSelectMode(false);
+//        adapter.setMultiSelectMode(false);
         if (b) {
             adapter.setData(null);
         } else {
@@ -470,8 +470,8 @@ public class AppFragment extends Fragment implements View.OnClickListener, Refre
             searchAppItemTask = new SearchAppItemTask(Global.app_list, key, this);
         }
         adapter.setData(null);
-        adapter.setMultiSelectMode(false);
-        card_multi_select.setVisibility(View.GONE);
+//        adapter.setMultiSelectMode(false);
+//        card_multi_select.setVisibility(View.GONE);
         swipeRefreshLayout.setRefreshing(true);
         searchAppItemTask.start();
     }

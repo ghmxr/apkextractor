@@ -24,7 +24,7 @@ import java.io.File;
 /**
  * 单个应用项的所有信息
  */
-public class AppItem implements Comparable<AppItem>, DisplayItem, Parcelable {
+public class AppItem implements DisplayItem<AppItem>, Parcelable {
 
     public static transient int sort_config = 0;
 

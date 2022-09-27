@@ -22,7 +22,7 @@ import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
-public class ImportItem implements DisplayItem, Comparable<ImportItem> {
+public class ImportItem implements DisplayItem<ImportItem>, Comparable<ImportItem> {
 
     public enum ImportType {
         APK, ZIP

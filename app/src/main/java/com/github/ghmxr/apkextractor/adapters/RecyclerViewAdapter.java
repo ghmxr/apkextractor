@@ -20,16 +20,16 @@ import com.github.ghmxr.apkextractor.R;
 import com.github.ghmxr.apkextractor.utils.EnvironmentUtil;
 
 import java.util.ArrayList;
-import java.util.Arrays;
+import java.util.HashSet;
 import java.util.List;
 
-public class RecyclerViewAdapter<T extends DisplayItem> extends RecyclerView.Adapter<RecyclerViewAdapter.ViewHolder> {
+public class RecyclerViewAdapter<T extends DisplayItem<T>> extends RecyclerView.Adapter<RecyclerViewAdapter.ViewHolder> {
 
     private final Activity activity;
     private final RecyclerView recyclerView;
     private final ArrayList<T> data = new ArrayList<>();
     private final ListAdapterOperationListener<T> listener;
-    private boolean[] isSelected;
+    private final HashSet<T> selectedItems = new HashSet<>();
     private boolean isMultiSelectMode = false;
     private int mode;
     private String highlightKeyword = null;
@@ -73,11 +73,13 @@ public class RecyclerViewAdapter<T extends DisplayItem> extends RecyclerView.Ada
             viewHolder.right.setText(Formatter.formatFileSize(activity, item.getSize()));
             viewHolder.right.setVisibility(isMultiSelectMode ? View.GONE : View.VISIBLE);
             viewHolder.cb.setVisibility(isMultiSelectMode ? View.VISIBLE : View.GONE);
-            if (isMultiSelectMode)
-                viewHolder.cb.setChecked(isSelected[viewHolder.getAdapterPosition()]);
+            if (isMultiSelectMode) {
+//                viewHolder.cb.setChecked(isSelected[viewHolder.getAdapterPosition()]);
+                viewHolder.cb.setChecked(selectedItems.contains(item));
+            }
         } else if (viewHolder.getViewType() == 1) {
             if (isMultiSelectMode)
-                viewHolder.root.setBackgroundColor(activity.getResources().getColor(isSelected[viewHolder.getAdapterPosition()]
+                viewHolder.root.setBackgroundColor(activity.getResources().getColor(selectedItems.contains(item)
                         ? R.color.colorSelectedBackground
                         : R.color.colorCardArea));
             else
@@ -88,7 +90,12 @@ public class RecyclerViewAdapter<T extends DisplayItem> extends RecyclerView.Ada
             @Override
             public void onClick(View v) {
                 if (isMultiSelectMode) {
-                    isSelected[viewHolder.getAdapterPosition()] = !isSelected[viewHolder.getAdapterPosition()];
+//                    isSelected[viewHolder.getAdapterPosition()] = !isSelected[viewHolder.getAdapterPosition()];
+                    if (selectedItems.contains(item)) {
+                        selectedItems.remove(item);
+                    } else {
+                        selectedItems.add(item);
+                    }
                     if (listener != null)
                         listener.onMultiSelectItemChanged(getSelectedItems(), getSelectedFileLength());
                     notifyItemChanged(viewHolder.getAdapterPosition());
@@ -102,8 +109,10 @@ public class RecyclerViewAdapter<T extends DisplayItem> extends RecyclerView.Ada
         viewHolder.root.setOnLongClickListener(isMultiSelectMode ? null : new View.OnLongClickListener() {
             @Override
             public boolean onLongClick(View v) {
-                isSelected = new boolean[data.size()];
-                isSelected[viewHolder.getAdapterPosition()] = true;
+//                isSelected = new boolean[data.size()];
+                selectedItems.clear();
+//                isSelected[viewHolder.getAdapterPosition()] = true;
+                selectedItems.add(item);
                 isMultiSelectMode = true;
                 notifyDataSetChanged();
                 if (listener != null) {
@@ -125,21 +134,24 @@ public class RecyclerViewAdapter<T extends DisplayItem> extends RecyclerView.Ada
         return mode;
     }
 
-    public void addData(T data) {
+    public void updateData(T data, List<T> progress) {
+//        this.data.clear();
+//        this.data.add(Math.min(progress.indexOf(data), this.data.size()), data);
         this.data.add(data);
-        boolean[] isSelected = this.isSelected == null ? new boolean[0] : this.isSelected;
-        this.isSelected = new boolean[this.data.size()];
-        if (this.isSelected.length > 0) {
-            System.arraycopy(isSelected, 0, this.isSelected, 0, isSelected.length);
-
-        }
-        notifyItemInserted(this.data.size() - 1);
+//        notifyDataSetChanged();
+        notifyItemInserted(progress.indexOf(data));
     }
 
     public void setData(@Nullable List<T> data) {
+        setData(data, false);
+    }
+
+    public void setData(@Nullable List<T> data, boolean clear) {
         this.data.clear();
-        isMultiSelectMode = false;
-        isSelected = null;
+        if (clear) {
+            isMultiSelectMode = false;
+            selectedItems.clear();
+        }
         if (data != null) this.data.addAll(data);
         notifyDataSetChanged();
     }
@@ -151,6 +163,9 @@ public class RecyclerViewAdapter<T extends DisplayItem> extends RecyclerView.Ada
 
     public void setMultiSelectMode(boolean b) {
         this.isMultiSelectMode = b;
+        if (!b) {
+            selectedItems.clear();
+        }
         notifyDataSetChanged();
         if (listener != null) {
             if (b) listener.onMultiSelectModeOpened();
@@ -163,20 +178,22 @@ public class RecyclerViewAdapter<T extends DisplayItem> extends RecyclerView.Ada
     }
 
     public void setSelectAll(boolean b) {
-        if (!isMultiSelectMode || isSelected == null) return;
-        Arrays.fill(isSelected, b);
+        if (!isMultiSelectMode) return;
+        if (b) {
+            selectedItems.addAll(data);
+        } else {
+            selectedItems.clear();
+        }
         notifyDataSetChanged();
         if (listener != null)
             listener.onMultiSelectItemChanged(getSelectedItems(), getSelectedFileLength());
     }
 
     public void setToggleSelectAll() {
-        if (!isMultiSelectMode || isSelected == null) return;
-        for (boolean b : isSelected) {
-            if (!b) {
-                setSelectAll(true);
-                return;
-            }
+        if (!isMultiSelectMode) return;
+        if (selectedItems.size() != data.size()) {
+            setSelectAll(true);
+            return;
         }
         setSelectAll(false);
     }
@@ -186,19 +203,13 @@ public class RecyclerViewAdapter<T extends DisplayItem> extends RecyclerView.Ada
      */
     public @NonNull
     List<T> getSelectedItems() {
-        ArrayList<T> list_selected = new ArrayList<>();
-        if (isSelected == null || isSelected.length != data.size()) return list_selected;
-        for (int i = 0; i < data.size(); i++) {
-            if (isSelected[i]) list_selected.add(data.get(i));
-        }
-        return list_selected;
+        return new ArrayList<>(selectedItems);
     }
 
     private long getSelectedFileLength() {
-        long length = 0;
-        if (isSelected == null || isSelected.length != data.size()) return 0;
-        for (int i = 0; i < isSelected.length; i++) {
-            if (isSelected[i]) length += data.get(i).getSize();
+        long length = 0L;
+        for (T item : selectedItems) {
+            length += item.getSize();
         }
         return length;
     }

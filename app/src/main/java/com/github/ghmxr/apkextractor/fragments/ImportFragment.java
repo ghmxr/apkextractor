@@ -1,6 +1,7 @@
 package com.github.ghmxr.apkextractor.fragments;
 
 import android.Manifest;
+import android.annotation.SuppressLint;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -19,9 +20,9 @@ import android.support.v4.util.Pair;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.CardView;
+import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.RecyclerView;
 import android.text.format.Formatter;
-import android.util.TypedValue;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -317,28 +318,30 @@ public class ImportFragment extends Fragment implements RefreshImportListTask.Re
                 , null
                 , SPUtil.getGlobalSharedPreferences(getActivity()).getInt(Constants.PREFERENCE_MAIN_PAGE_VIEW_MODE_IMPORT, Constants.PREFERENCE_MAIN_PAGE_VIEW_MODE_IMPORT_DEFAULT)
                 , this);
-        else adapter.setData(null);
+        else adapter.setData(null, true);
         recyclerView.setAdapter(adapter);
         swipeRefreshLayout.setRefreshing(true);
         viewGroup_no_content.setVisibility(View.GONE);
-//        viewGroup_progress.setVisibility(View.VISIBLE);
-        ViewGroup.LayoutParams layoutParams = viewGroup_progress.getLayoutParams();
+        viewGroup_progress.setVisibility(View.VISIBLE);
+        /*ViewGroup.LayoutParams layoutParams = viewGroup_progress.getLayoutParams();
         layoutParams.height = EnvironmentUtil.dp2px(getActivity(), 160);
         viewGroup_progress.setLayoutParams(layoutParams);
         progressTextView.setText(getActivity().getResources().getString(R.string.att_scanning));
         progressTextView.setTextSize(TypedValue.COMPLEX_UNIT_SP, 14);
-        progressBar.setIndeterminate(true);
+        progressBar.setIndeterminate(true);*/
         card_multi_select.setVisibility(View.GONE);
     }
 
+    @SuppressLint("SetTextI18n")
     @Override
-    public void onProgress(@NonNull ImportItem importItem) {
+    public void onProgress(@NonNull ImportItem importItem, @NonNull List<ImportItem> progress) {
         if (getActivity() == null) return;
-        /*if (progressTextView != null) {
-            progressTextView.setText(getActivity().getResources().getString(R.string.att_scanning) + " " + fileItem.getPath());
-        }*/
+        if (progressTextView != null) {
+            progressTextView.setText(getActivity().getResources().getString(R.string.att_scanning) + " " + importItem.getFileItem().getPath());
+        }
+        recyclerView.setItemAnimator(null);
         if (adapter != null && !isSearchMode) {
-            adapter.addData(importItem);
+            adapter.updateData(importItem, progress);
         }
     }
 
@@ -354,9 +357,13 @@ public class ImportFragment extends Fragment implements RefreshImportListTask.Re
                 , SPUtil.getGlobalSharedPreferences(getActivity()).getInt(Constants.PREFERENCE_MAIN_PAGE_VIEW_MODE_IMPORT, Constants.PREFERENCE_MAIN_PAGE_VIEW_MODE_IMPORT_DEFAULT)
                 , this);
         else adapter.setData(list);*/
+        if (adapter != null && !isSearchMode) {
+            adapter.setData(list, false);
+        }
 
         viewGroup_no_content.setVisibility(list.size() == 0 ? View.VISIBLE : View.GONE);
         viewGroup_progress.setVisibility(View.GONE);
+        recyclerView.setItemAnimator(new DefaultItemAnimator());
         //if(isSearchMode)adapter.setData(null);
     }
 
@@ -407,7 +414,7 @@ public class ImportFragment extends Fragment implements RefreshImportListTask.Re
 
     public void setSearchMode(boolean b) {
         this.isSearchMode = b;
-        if (card_multi_select != null) card_multi_select.setVisibility(View.GONE);
+//        if (card_multi_select != null) card_multi_select.setVisibility(View.GONE);
         if (swipeRefreshLayout != null) {
             //swipeRefreshLayout.setEnabled(!b);
             if (b) {
@@ -423,7 +430,7 @@ public class ImportFragment extends Fragment implements RefreshImportListTask.Re
             }
         }
         if (adapter == null) return;
-        adapter.setMultiSelectMode(false);
+//        adapter.setMultiSelectMode(false);
         if (b) {
             adapter.setData(null);
         } else {
@@ -445,8 +452,8 @@ public class ImportFragment extends Fragment implements RefreshImportListTask.Re
             searchPackageTask = new SearchPackageTask(Global.item_list, key, this);
         }
         adapter.setData(null);
-        adapter.setMultiSelectMode(false);
-        card_multi_select.setVisibility(View.GONE);
+//        adapter.setMultiSelectMode(false);
+//        card_multi_select.setVisibility(View.GONE);
         swipeRefreshLayout.setRefreshing(true);
         searchPackageTask.start();
     }
@@ -471,8 +478,11 @@ public class ImportFragment extends Fragment implements RefreshImportListTask.Re
     }
 
     public void sortGlobalListAndRefresh(int value) {
-        closeMultiSelectMode();
         ImportItem.sort_config = value;
+        if (isRefreshing) {
+            return;
+        }
+        closeMultiSelectMode();
         if (adapter != null) adapter.setData(null);
         swipeRefreshLayout.setRefreshing(true);
         new Thread(new Runnable() {
@@ -523,10 +533,10 @@ public class ImportFragment extends Fragment implements RefreshImportListTask.Re
                     swipeRefreshLayout.setRefreshing(false);
                     return;
                 }
-                if (adapter != null && adapter.getIsMultiSelectMode()) {
+                /*if (adapter != null && adapter.getIsMultiSelectMode()) {
                     swipeRefreshLayout.setRefreshing(false);
                     return;
-                }
+                }*/
                 new RefreshImportListTask(getActivity(), ImportFragment.this).start();
             }
         });

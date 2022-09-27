@@ -2,7 +2,7 @@ package com.github.ghmxr.apkextractor;
 
 import android.graphics.drawable.Drawable;
 
-public interface DisplayItem {
+public interface DisplayItem<T> extends Comparable<T> {
     /**
      * @return 项目图标
      */

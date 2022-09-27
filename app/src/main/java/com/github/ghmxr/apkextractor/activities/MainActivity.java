@@ -356,6 +356,10 @@ public class MainActivity extends BaseActivity implements View.OnClickListener, 
             drawerLayout.closeDrawers();
             return;
         }
+        if (isSearchMode) {
+            closeSearchMode();
+            return;
+        }
         switch (currentSelection) {
             default:
                 break;
@@ -373,10 +377,6 @@ public class MainActivity extends BaseActivity implements View.OnClickListener, 
                 }
             }
             break;
-        }
-        if (isSearchMode) {
-            closeSearchMode();
-            return;
         }
         finish();
     }
