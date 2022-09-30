@@ -325,7 +325,7 @@ public class ExportTask extends Thread {
                         zos.write(buffer, 0, length);
                         this.progress += length;
                         this.zipWriteLength_second += length;
-                        Long endTime = System.currentTimeMillis();
+                        long endTime = System.currentTimeMillis();
                         if (endTime - this.zipTime > 1000) {
                             this.zipTime = endTime;
                             /*Message msg_speed=new Message();
