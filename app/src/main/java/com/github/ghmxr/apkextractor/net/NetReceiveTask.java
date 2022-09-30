@@ -297,6 +297,20 @@ public class NetReceiveTask implements UdpThread.UdpThreadCallback {
                 total += fileItem.length;
             }
 
+            try {
+                //初始化File导出路径
+                if (!SPUtil.getIsSaved2ExternalStorage(context)) {
+                    File export_path = new File(SPUtil.getInternalSavePath(context));
+                    if (!export_path.exists()) {
+                        export_path.mkdirs();
+                    }
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
+                error_info.append(e);
+                error_info.append("\n\n");
+            }
+
             for (int i = 0; i < receiveFileItems.size(); i++) {
                 if (isInterrupted) return;
                 final ReceiveFileItem receiveFileItem = receiveFileItems.get(i);
@@ -326,7 +340,6 @@ public class NetReceiveTask implements UdpThread.UdpThreadCallback {
                         outputStream = OutputUtil.getOutputStreamForDocumentFile(context,
                                 writingDocumentFile);//documentFile接口在根据文件名创建文件时，如果文件名已存在会自动加后缀
                         writingFileItemThisLoop = new FileItem(context, writingDocumentFile);
-                        currentWritingFileItem = writingFileItemThisLoop;
                     } else {
                         File destinationFile = new File(SPUtil.getInternalSavePath(context) + "/" + fileName);
                         int count = 1;
@@ -336,8 +349,8 @@ public class NetReceiveTask implements UdpThread.UdpThreadCallback {
                         }
                         outputStream = new FileOutputStream(destinationFile);
                         writingFileItemThisLoop = new FileItem(destinationFile);
-                        currentWritingFileItem = writingFileItemThisLoop;
                     }
+                    currentWritingFileItem = writingFileItemThisLoop;
                     final String fileNameOfMessage = fileName;
                     if (callback != null) Global.handler.post(new Runnable() {
                         @Override

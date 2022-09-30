@@ -167,8 +167,6 @@ public class ExportTask extends Thread {
                     out.flush();
                     in.close();
                     out.close();
-                    write_paths.add(currentWritingFile);
-                    if (!isInterrupted) currentWritingFile = null;
                 } else {
                     OutputStream outputStream;
                     if (isExternal) {
@@ -205,9 +203,9 @@ public class ExportTask extends Thread {
                     }
                     zos.flush();
                     zos.close();
-                    write_paths.add(currentWritingFile);
-                    if (!isInterrupted) currentWritingFile = null;
                 }
+                write_paths.add(currentWritingFile);
+                if (!isInterrupted) currentWritingFile = null;
 
 
             } catch (Exception e) {
