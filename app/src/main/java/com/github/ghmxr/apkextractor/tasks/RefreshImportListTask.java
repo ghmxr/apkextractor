@@ -41,7 +41,7 @@ public class RefreshImportListTask extends Thread {
 
     @Override
     public void run() {
-        final ArrayList<ImportItem> arrayList = new ArrayList<>();
+        final ArrayList<ImportItem> arrayList;
         if (callback != null) Global.handler.post(new Runnable() {
             @Override
             public void run() {
@@ -70,7 +70,7 @@ public class RefreshImportListTask extends Thread {
             ImportItem.sort_config = SPUtil.getGlobalSharedPreferences(context).getInt(Constants.PREFERENCE_SORT_CONFIG_IMPORT_ITEMS, 0);
         }
         try {
-            arrayList.addAll(getAllImportItemsFromPath(fileItem));
+            arrayList = new ArrayList<>(getAllImportItemsFromPath(fileItem));
             if (!TextUtils.isEmpty(SPUtil.getExternalStorageUri(context)) && package_scope_value == Constants.PACKAGE_SCOPE_ALL) {
                 arrayList.addAll(getAllImportItemsFromPath(new FileItem(context, Uri.parse(SPUtil.getExternalStorageUri(context)), SPUtil.getSaveSegment(context))));
             }
@@ -88,6 +88,7 @@ public class RefreshImportListTask extends Thread {
         }
         HashTask.clearResultCache();
         GetSignatureInfoTask.clearCache();
+        GetApkLibraryTask.clearOutsidePackageCache();
         refreshImportListTask = null;
         if (callback != null) {
             Global.handler.post(new Runnable() {

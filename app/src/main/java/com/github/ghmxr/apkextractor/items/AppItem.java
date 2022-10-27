@@ -6,7 +6,6 @@ import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.graphics.drawable.Drawable;
-import android.os.Bundle;
 import android.os.Parcel;
 import android.os.Parcelable;
 import android.support.annotation.NonNull;
@@ -66,8 +65,6 @@ public class AppItem implements DisplayItem<AppItem>, Parcelable {
 
     //private HashMap<String, List<String>> static_receivers;
 
-    private Bundle static_receivers_bundle;
-
     //仅当构造ExportTask时用
     public transient boolean exportData = false;
     public transient boolean exportObb = false;
@@ -116,7 +113,6 @@ public class AppItem implements DisplayItem<AppItem>, Parcelable {
             e.printStackTrace();
         }
         this.launchingClass = launchingClass;
-        this.static_receivers_bundle = EnvironmentUtil.getStaticRegisteredReceiversOfBundleTypeForPackageName(context, info.packageName);
     }
 
     /**
@@ -134,7 +130,6 @@ public class AppItem implements DisplayItem<AppItem>, Parcelable {
         this.drawable = wrapper.drawable;
         this.installSource = wrapper.installSource;
         this.launchingClass = wrapper.launchingClass;
-        this.static_receivers_bundle = wrapper.static_receivers_bundle;
         this.exportData = flag_data;
         this.exportObb = flag_obb;
         //this.signatureInfos=wrapper.signatureInfos;
@@ -147,7 +142,6 @@ public class AppItem implements DisplayItem<AppItem>, Parcelable {
         launchingClass = in.readString();
         info = in.readParcelable(PackageInfo.class.getClassLoader());
         //static_receivers=in.readHashMap(HashMap.class.getClassLoader());
-        static_receivers_bundle = in.readBundle(Bundle.class.getClassLoader());
 
         assert info != null;
         fileItem = new FileItem(info.applicationInfo.sourceDir);
@@ -162,7 +156,6 @@ public class AppItem implements DisplayItem<AppItem>, Parcelable {
         dest.writeString(launchingClass);
         dest.writeParcelable(info, 0);
         //dest.writeMap(static_receivers);
-        dest.writeBundle(static_receivers_bundle);
     }
 
     @Override
@@ -267,10 +260,6 @@ public class AppItem implements DisplayItem<AppItem>, Parcelable {
     }
 
 
-    public @NonNull
-    Bundle getStaticReceiversBundle() {
-        return static_receivers_bundle;
-    }
 
     /**
      * 排序模式。

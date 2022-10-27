@@ -37,7 +37,7 @@ public class RefreshInstalledListTask extends Thread {
     public void run() {
         PackageManager manager = context.getApplicationContext().getPackageManager();
         SharedPreferences settings = SPUtil.getGlobalSharedPreferences(context);
-        int flag = 0;
+        /*int flag = 0;
         if (settings.getBoolean(Constants.PREFERENCE_LOAD_PERMISSIONS, Constants.PREFERENCE_LOAD_PERMISSIONS_DEFAULT))
             flag |= PackageManager.GET_PERMISSIONS;
         if (settings.getBoolean(Constants.PREFERENCE_LOAD_ACTIVITIES, Constants.PREFERENCE_LOAD_ACTIVITIES_DEFAULT))
@@ -49,11 +49,10 @@ public class RefreshInstalledListTask extends Thread {
         if (settings.getBoolean(Constants.PREFERENCE_LOAD_SERVICES, Constants.PREFERENCE_LOAD_SERVICES_DEFAULT))
             flag |= PackageManager.GET_SERVICES;
         if (settings.getBoolean(Constants.PREFERENCE_LOAD_PROVIDERS, Constants.PREFERENCE_LOAD_PROVIDERS_DEFAULT))
-            flag |= PackageManager.GET_PROVIDERS;
-        final List<PackageInfo> list = new ArrayList<>();
+            flag |= PackageManager.GET_PROVIDERS;*/
+        final List<PackageInfo> list;
         synchronized (RefreshInstalledListTask.class) {//加锁是在多线程请求已安装列表时PackageManager可能会抛异常 ParceledListSlice: Failure retrieving array;
-            list.clear();
-            list.addAll(manager.getInstalledPackages(flag));
+            list = new ArrayList<>(manager.getInstalledPackages(0));
         }
         Global.handler.post(new Runnable() {
             @Override
@@ -83,6 +82,7 @@ public class RefreshInstalledListTask extends Thread {
             Global.app_list.addAll(list_sum);//向全局list保存一个引用
         }
         GetSignatureInfoTask.clearCache();
+        GetApkLibraryTask.clearOutsidePackageCache();
         Global.handler.post(new Runnable() {
             @Override
             public void run() {

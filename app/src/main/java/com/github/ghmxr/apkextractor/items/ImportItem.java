@@ -1,7 +1,7 @@
 package com.github.ghmxr.apkextractor.items;
 
 import android.content.Context;
-import android.content.SharedPreferences;
+import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.graphics.drawable.Drawable;
@@ -10,7 +10,6 @@ import android.os.Build;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
-import com.github.ghmxr.apkextractor.Constants;
 import com.github.ghmxr.apkextractor.DisplayItem;
 import com.github.ghmxr.apkextractor.R;
 import com.github.ghmxr.apkextractor.utils.EnvironmentUtil;
@@ -70,7 +69,7 @@ public class ImportItem implements DisplayItem<ImportItem>, Comparable<ImportIte
             PackageManager packageManager = context.getApplicationContext().getPackageManager();
             if (fileItem.isFileInstance()) {
                 try {
-                    int flag = 0;
+                    /*int flag = 0;
                     final SharedPreferences settings = SPUtil.getGlobalSharedPreferences(context);
                     if (settings.getBoolean(Constants.PREFERENCE_LOAD_PERMISSIONS, Constants.PREFERENCE_LOAD_PERMISSIONS_DEFAULT))
                         flag |= PackageManager.GET_PERMISSIONS;
@@ -83,12 +82,15 @@ public class ImportItem implements DisplayItem<ImportItem>, Comparable<ImportIte
                     if (settings.getBoolean(Constants.PREFERENCE_LOAD_SERVICES, Constants.PREFERENCE_LOAD_SERVICES_DEFAULT))
                         flag |= PackageManager.GET_SERVICES;
                     if (settings.getBoolean(Constants.PREFERENCE_LOAD_PROVIDERS, Constants.PREFERENCE_LOAD_PROVIDERS_DEFAULT))
-                        flag |= PackageManager.GET_PROVIDERS;
-                    packageInfo = packageManager.getPackageArchiveInfo(fileItem.getPath(), flag);
+                        flag |= PackageManager.GET_PROVIDERS;*/
+                    packageInfo = packageManager.getPackageArchiveInfo(fileItem.getPath(), 0);
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
                 if (packageInfo != null) {
+                    if (packageInfo.applicationInfo == null) {
+                        packageInfo.applicationInfo = new ApplicationInfo();
+                    }
                     packageInfo.applicationInfo.sourceDir = fileItem.getPath();
                     packageInfo.applicationInfo.publicSourceDir = fileItem.getPath();
                     drawable = packageInfo.applicationInfo.loadIcon(packageManager);

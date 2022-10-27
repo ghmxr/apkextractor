@@ -125,6 +125,7 @@ public class GetApkLibraryTask extends Thread {
     }
 
     public static void clearOutsidePackageCache() {
+        caches_installed.clear();
         caches_outside_package.clear();
     }
 

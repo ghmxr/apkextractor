@@ -2,17 +2,18 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:clickable="true"
-    android:focusable="true"
-    android:background="?attr/selectableItemBackground">
+    xmlns:tools="http://schemas.android.com/tools">
 
     <TextView
         android:id="@+id/static_loader_name"
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:textSize="15sp"
+        android:paddingVertical="10dp"
+        android:gravity="center_vertical"
         android:textColor="@color/colorHighLightText"
-        android:layout_marginTop="10dp"
+        android:background="?attr/selectableItemBackground"
+        tools:text="android.app.activity"
         android:layout_marginLeft="15dp" />
 
     <LinearLayout

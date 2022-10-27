@@ -49,11 +49,11 @@
                     android:id="@+id/detail_permission_area_att"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_toRightOf="@+id/detail_permission_area_arrow"
                     android:layout_centerVertical="true"
                     android:layout_marginLeft="15dp"
-                    android:textSize="16sp"
+                    android:layout_toRightOf="@+id/detail_permission_area_arrow"
                     android:textColor="@color/colorHighLightText"
+                    android:textSize="16sp"
                     tools:text="权限(0项)" />
             </RelativeLayout>
 
@@ -62,6 +62,12 @@
                 android:layout_height="wrap_content"
                 android:orientation="vertical"
                 android:id="@+id/detail_permission"
+                android:visibility="gone" />
+
+            <android.support.v7.widget.RecyclerView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:id="@+id/rv_permission"
                 android:visibility="gone" />
         </LinearLayout>
     </android.support.v7.widget.CardView>
@@ -109,11 +115,11 @@
                     android:id="@+id/detail_activity_area_att"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_toRightOf="@+id/detail_activity_area_arrow"
                     android:layout_centerVertical="true"
                     android:layout_marginLeft="15dp"
-                    android:textSize="16sp"
+                    android:layout_toRightOf="@+id/detail_activity_area_arrow"
                     android:textColor="@color/colorHighLightText"
+                    android:textSize="16sp"
                     tools:text="Activity(0项)" />
             </RelativeLayout>
 
@@ -122,6 +128,12 @@
                 android:layout_height="wrap_content"
                 android:orientation="vertical"
                 android:id="@+id/detail_activity"
+                android:visibility="gone" />
+
+            <android.support.v7.widget.RecyclerView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:id="@+id/rv_activity"
                 android:visibility="gone" />
         </LinearLayout>
     </android.support.v7.widget.CardView>
@@ -169,11 +181,11 @@
                     android:id="@+id/detail_service_area_att"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_toRightOf="@+id/detail_service_area_arrow"
                     android:layout_centerVertical="true"
                     android:layout_marginLeft="15dp"
-                    android:textSize="16sp"
+                    android:layout_toRightOf="@+id/detail_service_area_arrow"
                     android:textColor="@color/colorHighLightText"
+                    android:textSize="16sp"
                     tools:text="服务(0项)" />
             </RelativeLayout>
 
@@ -182,6 +194,12 @@
                 android:layout_height="wrap_content"
                 android:orientation="vertical"
                 android:id="@+id/detail_service"
+                android:visibility="gone" />
+
+            <android.support.v7.widget.RecyclerView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:id="@+id/rv_service"
                 android:visibility="gone" />
         </LinearLayout>
     </android.support.v7.widget.CardView>
@@ -229,11 +247,11 @@
                     android:id="@+id/detail_receiver_area_att"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_toRightOf="@+id/detail_receiver_area_arrow"
                     android:layout_centerVertical="true"
                     android:layout_marginLeft="15dp"
-                    android:textSize="16sp"
+                    android:layout_toRightOf="@+id/detail_receiver_area_arrow"
                     android:textColor="@color/colorHighLightText"
+                    android:textSize="16sp"
                     tools:text="广播接收器(0项)" />
             </RelativeLayout>
 
@@ -242,6 +260,12 @@
                 android:layout_height="wrap_content"
                 android:orientation="vertical"
                 android:id="@+id/detail_receiver"
+                android:visibility="gone" />
+
+            <android.support.v7.widget.RecyclerView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:id="@+id/rv_receiver"
                 android:visibility="gone" />
         </LinearLayout>
     </android.support.v7.widget.CardView>
@@ -303,6 +327,12 @@
                 android:orientation="vertical"
                 android:id="@+id/detail_provider"
                 android:visibility="gone" />
+
+            <android.support.v7.widget.RecyclerView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:id="@+id/rv_provider"
+                android:visibility="gone" />
         </LinearLayout>
     </android.support.v7.widget.CardView>
 
@@ -362,6 +392,12 @@
                 android:layout_height="wrap_content"
                 android:orientation="vertical"
                 android:id="@+id/detail_static_loader"
+                android:visibility="gone" />
+
+            <android.support.v7.widget.RecyclerView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:id="@+id/rv_static_loader"
                 android:visibility="gone" />
         </LinearLayout>
     </android.support.v7.widget.CardView>

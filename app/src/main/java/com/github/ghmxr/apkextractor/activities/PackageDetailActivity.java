@@ -145,7 +145,7 @@ public class PackageDetailActivity extends BaseActivity implements View.OnClickL
                     }
                 }).start();
             }
-            new GetPackageInfoViewTask(this, importItem.getPackageInfo(), new Bundle(), (AssemblyView) findViewById(R.id.package_detail_assemble), new GetPackageInfoViewTask.CompletedCallback() {
+            new GetPackageInfoViewTask(this, importItem.getPackageInfo(), (AssemblyView) findViewById(R.id.package_detail_assemble), new GetPackageInfoViewTask.CompletedCallback() {
                 @Override
                 public void onViewsCreated() {
                     findViewById(R.id.package_detail_card_pg).setVisibility(View.GONE);

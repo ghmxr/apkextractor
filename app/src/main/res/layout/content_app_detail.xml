@@ -1038,7 +1038,8 @@
         <com.github.ghmxr.apkextractor.ui.AssemblyView
             android:id="@+id/app_detail_assembly"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content" />
+            android:layout_height="wrap_content"
+            android:visibility="gone" />
 
         <ProgressBar
             android:id="@+id/app_detail_card_pg"
@@ -1047,7 +1048,7 @@
             style="?android:attr/progressBarStyleLarge"
             android:layout_gravity="center_horizontal"
             android:layout_marginTop="30dp"
-            android:visibility="gone" />
+            android:visibility="visible" />
     </LinearLayout>
 
 </android.support.v4.widget.NestedScrollView>

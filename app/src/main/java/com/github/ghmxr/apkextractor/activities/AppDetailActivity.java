@@ -144,9 +144,10 @@ public class AppDetailActivity extends BaseActivity implements View.OnClickListe
 
         getDataObbSizeAndFillView();
 
-        new GetPackageInfoViewTask(this, appItem.getPackageInfo(), appItem.getStaticReceiversBundle(), (AssemblyView) findViewById(R.id.app_detail_assembly), new GetPackageInfoViewTask.CompletedCallback() {
+        new GetPackageInfoViewTask(this, appItem.getPackageInfo(), (AssemblyView) findViewById(R.id.app_detail_assembly), new GetPackageInfoViewTask.CompletedCallback() {
             @Override
             public void onViewsCreated() {
+                findViewById(R.id.app_detail_assembly).setVisibility(View.VISIBLE);
                 findViewById(R.id.app_detail_card_pg).setVisibility(View.GONE);
             }
         }).start();

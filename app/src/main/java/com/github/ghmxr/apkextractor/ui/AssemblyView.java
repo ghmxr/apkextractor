@@ -1,38 +1,48 @@
 package com.github.ghmxr.apkextractor.ui;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
+import android.content.pm.ComponentInfo;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.transition.TransitionManager;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.util.AttributeSet;
+import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.github.ghmxr.apkextractor.R;
+import com.github.ghmxr.apkextractor.tasks.GetPackageInfoViewTask;
+
+import java.util.List;
 
 public class AssemblyView extends LinearLayout implements View.OnClickListener {
 
-    private LinearLayout linearLayout_permission;
-    private LinearLayout linearLayout_activity;
-    private LinearLayout linearLayout_receiver;
-    private LinearLayout linearLayout_loader;
-    private LinearLayout linearLayout_service;
-    private LinearLayout linearLayout_provider;
+    private final RecyclerView rv_permission;
+    private final RecyclerView rv_activity;
+    private final RecyclerView rv_service;
+    private final RecyclerView rv_provider;
+    private final RecyclerView rv_receiver;
+    private final RecyclerView rv_static_loader;
 
-    private ImageView permission_arrow;
-    private ImageView activity_arrow;
-    private ImageView receiver_arrow;
-    private ImageView loader_arrow;
-    private ImageView service_arrow;
-    private ImageView provider_arrow;
+    private final ImageView permission_arrow;
+    private final ImageView activity_arrow;
+    private final ImageView receiver_arrow;
+    private final ImageView loader_arrow;
+    private final ImageView service_arrow;
+    private final ImageView provider_arrow;
 
-    private TextView tv_permission;
-    private TextView tv_activity;
-    private TextView tv_receiver;
-    private TextView tv_loader;
-    private TextView tv_service;
-    private TextView tv_provider;
+    private final TextView tv_permission;
+    private final TextView tv_activity;
+    private final TextView tv_receiver;
+    private final TextView tv_loader;
+    private final TextView tv_service;
+    private final TextView tv_provider;
 
     public AssemblyView(Context context) {
         this(context, null);
@@ -45,12 +55,14 @@ public class AssemblyView extends LinearLayout implements View.OnClickListener {
     public AssemblyView(Context context, @Nullable AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
         inflate(context, R.layout.layout_card_assembly, this);
-        linearLayout_permission = findViewById(R.id.detail_permission);
-        linearLayout_activity = findViewById(R.id.detail_activity);
-        linearLayout_receiver = findViewById(R.id.detail_receiver);
-        linearLayout_loader = findViewById(R.id.detail_static_loader);
-        linearLayout_service = findViewById(R.id.detail_service);
-        linearLayout_provider = findViewById(R.id.detail_provider);
+
+        rv_permission = findViewById(R.id.rv_permission);
+        rv_activity = findViewById(R.id.rv_activity);
+        rv_service = findViewById(R.id.rv_service);
+        rv_provider = findViewById(R.id.rv_provider);
+        rv_receiver = findViewById(R.id.rv_receiver);
+        rv_static_loader = findViewById(R.id.rv_static_loader);
+
         tv_permission = findViewById(R.id.detail_permission_area_att);
         tv_activity = findViewById(R.id.detail_activity_area_att);
         tv_receiver = findViewById(R.id.detail_receiver_area_att);
@@ -64,6 +76,13 @@ public class AssemblyView extends LinearLayout implements View.OnClickListener {
         service_arrow = findViewById(R.id.detail_service_area_arrow);
         provider_arrow = findViewById(R.id.detail_provider_area_arrow);
 
+        rv_permission.setLayoutManager(new LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false));
+        rv_activity.setLayoutManager(new LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false));
+        rv_service.setLayoutManager(new LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false));
+        rv_provider.setLayoutManager(new LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false));
+        rv_static_loader.setLayoutManager(new LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false));
+        rv_receiver.setLayoutManager(new LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false));
+
         findViewById(R.id.detail_permission_area).setOnClickListener(this);
         findViewById(R.id.detail_activity_area).setOnClickListener(this);
         findViewById(R.id.detail_receiver_area).setOnClickListener(this);
@@ -76,73 +95,73 @@ public class AssemblyView extends LinearLayout implements View.OnClickListener {
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.detail_permission_area: {
-                if (linearLayout_permission.getVisibility() == View.VISIBLE) {
+                if (rv_permission.getVisibility() == View.VISIBLE) {
                     permission_arrow.setRotation(0);
-                    linearLayout_permission.setVisibility(View.GONE);
+                    rv_permission.setVisibility(View.GONE);
                     TransitionManager.beginDelayedTransition(this);
                 } else {
                     findViewById(R.id.detail_permission_area_arrow).setRotation(90);
-                    linearLayout_permission.setVisibility(View.VISIBLE);
+                    rv_permission.setVisibility(View.VISIBLE);
                     TransitionManager.beginDelayedTransition(this);
                 }
             }
             break;
             case R.id.detail_activity_area: {
-                if (linearLayout_activity.getVisibility() == View.VISIBLE) {
+                if (rv_activity.getVisibility() == View.VISIBLE) {
                     activity_arrow.setRotation(0);
-                    linearLayout_activity.setVisibility(View.GONE);
+                    rv_activity.setVisibility(View.GONE);
                     TransitionManager.beginDelayedTransition(this);
                 } else {
                     activity_arrow.setRotation(90);
-                    linearLayout_activity.setVisibility(View.VISIBLE);
+                    rv_activity.setVisibility(View.VISIBLE);
                     TransitionManager.beginDelayedTransition(this);
                 }
             }
             break;
             case R.id.detail_receiver_area: {
-                if (linearLayout_receiver.getVisibility() == View.VISIBLE) {
+                if (rv_receiver.getVisibility() == View.VISIBLE) {
                     receiver_arrow.setRotation(0);
-                    linearLayout_receiver.setVisibility(View.GONE);
+                    rv_receiver.setVisibility(View.GONE);
                     TransitionManager.beginDelayedTransition(this);
                 } else {
                     receiver_arrow.setRotation(90);
-                    linearLayout_receiver.setVisibility(View.VISIBLE);
+                    rv_receiver.setVisibility(View.VISIBLE);
                     TransitionManager.beginDelayedTransition(this);
                 }
             }
             break;
             case R.id.detail_static_loader_area: {
-                if (linearLayout_loader.getVisibility() == View.VISIBLE) {
+                if (rv_static_loader.getVisibility() == View.VISIBLE) {
                     loader_arrow.setRotation(0);
-                    linearLayout_loader.setVisibility(View.GONE);
+                    rv_static_loader.setVisibility(View.GONE);
                     TransitionManager.beginDelayedTransition(this);
                 } else {
                     loader_arrow.setRotation(90);
-                    linearLayout_loader.setVisibility(View.VISIBLE);
+                    rv_static_loader.setVisibility(View.VISIBLE);
                     TransitionManager.beginDelayedTransition(this);
                 }
             }
             break;
             case R.id.detail_services_area: {
-                if (linearLayout_service.getVisibility() == View.VISIBLE) {
+                if (rv_service.getVisibility() == View.VISIBLE) {
                     service_arrow.setRotation(0);
-                    linearLayout_service.setVisibility(View.GONE);
+                    rv_service.setVisibility(View.GONE);
                     TransitionManager.beginDelayedTransition(this);
                 } else {
                     service_arrow.setRotation(90);
-                    linearLayout_service.setVisibility(View.VISIBLE);
+                    rv_service.setVisibility(View.VISIBLE);
                     TransitionManager.beginDelayedTransition(this);
                 }
             }
             break;
             case R.id.detail_provider_area: {
-                if (linearLayout_provider.getVisibility() == View.VISIBLE) {
+                if (rv_provider.getVisibility() == View.VISIBLE) {
                     provider_arrow.setRotation(0);
-                    linearLayout_provider.setVisibility(View.GONE);
+                    rv_provider.setVisibility(View.GONE);
                     TransitionManager.beginDelayedTransition(this);
                 } else {
                     provider_arrow.setRotation(90);
-                    linearLayout_provider.setVisibility(View.VISIBLE);
+                    rv_provider.setVisibility(View.VISIBLE);
                     TransitionManager.beginDelayedTransition(this);
                 }
             }
@@ -150,57 +169,142 @@ public class AssemblyView extends LinearLayout implements View.OnClickListener {
         }
     }
 
-    public LinearLayout getLinearLayout_permission() {
-        return linearLayout_permission;
+    @SuppressLint("SetTextI18n")
+    public <T extends ComponentInfo> void setPermissionInfo(@NonNull List<GetPackageInfoViewTask.AssembleItem<T>> data) {
+        findViewById(R.id.detail_card_permissions).setVisibility(VISIBLE);
+        tv_permission.setText(getContext().getResources().getString(R.string.activity_detail_permissions)
+                + "(" + data.size() + getContext().getResources().getString(R.string.unit_item) + ")");
+        rv_permission.setAdapter(new AssembleListViewAdapter<>(data));
     }
 
-    public LinearLayout getLinearLayout_activity() {
-        return linearLayout_activity;
+    @SuppressLint("SetTextI18n")
+    public <T extends ComponentInfo> void setActivityInfo(@NonNull List<GetPackageInfoViewTask.AssembleItem<T>> data) {
+        findViewById(R.id.detail_card_activities).setVisibility(View.VISIBLE);
+        tv_activity.setText(getContext().getResources().getString(R.string.activity_detail_activities)
+                + "(" + data.size() + getContext().getResources().getString(R.string.unit_item) + ")");
+        rv_activity.setAdapter(new AssembleListViewAdapter<>(data));
+
     }
 
-    public LinearLayout getLinearLayout_receiver() {
-        return linearLayout_receiver;
+    @SuppressLint("SetTextI18n")
+    public <T extends ComponentInfo> void setReceiverInfo(@NonNull List<GetPackageInfoViewTask.AssembleItem<T>> data) {
+        findViewById(R.id.detail_card_receivers).setVisibility(View.VISIBLE);
+        tv_receiver.setText(getContext().getResources().getString(R.string.activity_detail_receivers)
+                + "(" + data.size() + getContext().getResources().getString(R.string.unit_item) + ")");
+        rv_receiver.setAdapter(new AssembleListViewAdapter<>(data));
+
     }
 
-    public LinearLayout getLinearLayout_loader() {
-        return linearLayout_loader;
+    @SuppressLint("SetTextI18n")
+    public <T extends ComponentInfo> void setServiceInfo(@NonNull List<GetPackageInfoViewTask.AssembleItem<T>> data) {
+        findViewById(R.id.detail_card_services).setVisibility(View.VISIBLE);
+        tv_service.setText(getContext().getResources().getString(R.string.activity_detail_services)
+                + "(" + data.size() + getContext().getResources().getString(R.string.unit_item) + ")");
+        rv_service.setAdapter(new AssembleListViewAdapter<>(data));
+
     }
 
-    public LinearLayout getLinearLayout_service() {
-        return linearLayout_service;
+    @SuppressLint("SetTextI18n")
+    public <T extends ComponentInfo> void setProviderInfo(@NonNull List<GetPackageInfoViewTask.AssembleItem<T>> data) {
+        findViewById(R.id.detail_card_providers).setVisibility(View.VISIBLE);
+        tv_provider.setText(getContext().getResources().getString(R.string.activity_detail_providers)
+                + "(" + data.size() + getContext().getResources().getString(R.string.unit_item) + ")");
+        rv_provider.setAdapter(new AssembleListViewAdapter<>(data));
+
     }
 
-    public LinearLayout getLinearLayout_provider() {
-        return linearLayout_provider;
-    }
-
-    public TextView getTv_service() {
-        return tv_service;
-    }
-
-    public TextView getTv_provider() {
-        return tv_provider;
-    }
-
-    public TextView getTv_permission() {
-        return tv_permission;
-    }
-
-    public TextView getTv_activity() {
-        return tv_activity;
-    }
-
-    public TextView getTv_receiver() {
-        return tv_receiver;
-    }
-
-    public TextView getTv_loader() {
-        return tv_loader;
+    @SuppressLint("SetTextI18n")
+    public void setStaticReceiverInfo(@NonNull List<GetPackageInfoViewTask.StaticLoaderItem> data) {
+        findViewById(R.id.detail_card_static_loaders).setVisibility(VISIBLE);
+        tv_loader.setText(getContext().getResources().getString(R.string.activity_detail_static_loaders)
+                + "(" + data.size() + getContext().getResources().getString(R.string.unit_item) + ")");
+        rv_static_loader.setAdapter(new StaticLoaderListAdapter(data));
     }
 
     public boolean getIsExpanded() {
-        return linearLayout_activity.getVisibility() == VISIBLE || linearLayout_permission.getVisibility() == VISIBLE
-                || linearLayout_receiver.getVisibility() == VISIBLE || linearLayout_loader.getVisibility() == VISIBLE
-                || linearLayout_service.getVisibility() == VISIBLE || linearLayout_provider.getVisibility() == VISIBLE;
+        return rv_activity.getVisibility() == VISIBLE || rv_permission.getVisibility() == VISIBLE
+                || rv_receiver.getVisibility() == VISIBLE || rv_static_loader.getVisibility() == VISIBLE
+                || rv_service.getVisibility() == VISIBLE || rv_provider.getVisibility() == VISIBLE;
+    }
+
+    private static class AssembleListViewAdapter<T extends ComponentInfo> extends RecyclerView.Adapter<AssembleViewHolder> {
+
+        private final List<GetPackageInfoViewTask.AssembleItem<T>> data;
+
+        public AssembleListViewAdapter(List<GetPackageInfoViewTask.AssembleItem<T>> data) {
+            this.data = data;
+        }
+
+        @NonNull
+        @Override
+        public AssembleViewHolder onCreateViewHolder(@NonNull ViewGroup viewGroup, int i) {
+            return new AssembleViewHolder(LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.item_single_textview, viewGroup, false));
+        }
+
+        @Override
+        public void onBindViewHolder(@NonNull AssembleViewHolder assembleViewHolder, int i) {
+            final GetPackageInfoViewTask.AssembleItem<T> info = data.get(i);
+            assembleViewHolder.tv.setText(info.item.name);
+            assembleViewHolder.root.setOnClickListener(info.clickAction);
+            assembleViewHolder.root.setOnLongClickListener(info.longClickAction);
+        }
+
+        @Override
+        public int getItemCount() {
+            return data == null ? 0 : data.size();
+        }
+    }
+
+    private class StaticLoaderListAdapter extends RecyclerView.Adapter<StaticLoaderViewHolder> {
+        private final List<GetPackageInfoViewTask.StaticLoaderItem> data;
+
+        public StaticLoaderListAdapter(List<GetPackageInfoViewTask.StaticLoaderItem> data) {
+            this.data = data;
+        }
+
+        @NonNull
+        @Override
+        public StaticLoaderViewHolder onCreateViewHolder(@NonNull ViewGroup viewGroup, int i) {
+            return new StaticLoaderViewHolder(LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.item_static_loader, viewGroup, false));
+        }
+
+        @Override
+        public void onBindViewHolder(@NonNull StaticLoaderViewHolder staticLoaderViewHolder, int i) {
+            final GetPackageInfoViewTask.StaticLoaderItem item = data.get(i);
+            staticLoaderViewHolder.tv_name.setText(item.name);
+            staticLoaderViewHolder.tv_name.setOnClickListener(item.clickAction);
+            staticLoaderViewHolder.linearLayout.removeAllViews();
+            for (GetPackageInfoViewTask.StaticLoaderItem.IntentFilterItem intentFilterItem : item.intentFilterItems) {
+                staticLoaderViewHolder.linearLayout.addView(intentFilterItem.intentFilterView);
+            }
+        }
+
+        @Override
+        public int getItemCount() {
+            return data == null ? 0 : data.size();
+        }
+    }
+
+
+    private static class AssembleViewHolder extends RecyclerView.ViewHolder {
+        View root;
+        TextView tv;
+
+        public AssembleViewHolder(@NonNull View itemView) {
+            super(itemView);
+            root = itemView.findViewById(R.id.singleTextRoot);
+            tv = itemView.findViewById(R.id.item_textview);
+        }
+    }
+
+    private static class StaticLoaderViewHolder extends RecyclerView.ViewHolder {
+        TextView tv_name;
+        LinearLayout linearLayout;
+
+        public StaticLoaderViewHolder(@NonNull View itemView) {
+            super(itemView);
+            tv_name = itemView.findViewById(R.id.static_loader_name);
+            linearLayout = itemView.findViewById(R.id.static_loader_intents);
+        }
     }
 }

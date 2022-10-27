@@ -7,14 +7,14 @@ import com.github.ghmxr.apkextractor.items.FileItem;
 import com.github.ghmxr.apkextractor.utils.EnvironmentUtil;
 import com.github.ghmxr.apkextractor.utils.FileUtil;
 
-import java.util.HashMap;
+import java.util.concurrent.ConcurrentHashMap;
 
 public class HashTask extends Thread {
 
-    private static final HashMap<FileItem, String> md5_cache = new HashMap<>();
-    private static final HashMap<FileItem, String> sha1_cache = new HashMap<>();
-    private static final HashMap<FileItem, String> sha256_cache = new HashMap<>();
-    private static final HashMap<FileItem, String> crc32_cache = new HashMap<>();
+    private static final ConcurrentHashMap<String, String> md5_cache = new ConcurrentHashMap<>();
+    private static final ConcurrentHashMap<String, String> sha1_cache = new ConcurrentHashMap<>();
+    private static final ConcurrentHashMap<String, String> sha256_cache = new ConcurrentHashMap<>();
+    private static final ConcurrentHashMap<String, String> crc32_cache = new ConcurrentHashMap<>();
 
     private final FileItem fileItem;
     private final HashType hashType;
@@ -36,62 +36,54 @@ public class HashTask extends Thread {
         String result = null;
         switch (hashType) {
             case MD5: {
-                synchronized (md5_cache) {
-                    if (md5_cache.get(fileItem) != null) {
-                        result = md5_cache.get(fileItem);
-                    } else {
-                        try {
-                            result = EnvironmentUtil.hashMD5Value(fileItem.getInputStream());
-                            md5_cache.put(fileItem, result);
-                        } catch (Exception e) {
-                            e.printStackTrace();
-                        }
+                if (md5_cache.get(fileItem.getPath()) != null) {
+                    result = md5_cache.get(fileItem.getPath());
+                } else {
+                    try {
+                        result = EnvironmentUtil.hashMD5Value(fileItem.getInputStream());
+                        md5_cache.put(fileItem.getPath(), result);
+                    } catch (Exception e) {
+                        e.printStackTrace();
                     }
                 }
             }
             break;
             case SHA1: {
-                synchronized (sha1_cache) {
-                    if (sha1_cache.get(fileItem) != null) {
-                        result = sha1_cache.get(fileItem);
-                    } else {
-                        try {
-                            result = EnvironmentUtil.hashSHA1Value(fileItem.getInputStream());
-                            sha1_cache.put(fileItem, result);
-                        } catch (Exception e) {
-                            e.printStackTrace();
-                        }
+                if (sha1_cache.get(fileItem.getPath()) != null) {
+                    result = sha1_cache.get(fileItem.getPath());
+                } else {
+                    try {
+                        result = EnvironmentUtil.hashSHA1Value(fileItem.getInputStream());
+                        sha1_cache.put(fileItem.getPath(), result);
+                    } catch (Exception e) {
+                        e.printStackTrace();
                     }
                 }
 
             }
             break;
             case SHA256: {
-                synchronized (sha256_cache) {
-                    if (sha256_cache.get(fileItem) != null) {
-                        result = sha256_cache.get(fileItem);
-                    } else {
-                        try {
-                            result = EnvironmentUtil.hashSHA256Value(fileItem.getInputStream());
-                            sha256_cache.put(fileItem, result);
-                        } catch (Exception e) {
-                            e.printStackTrace();
-                        }
+                if (sha256_cache.get(fileItem.getPath()) != null) {
+                    result = sha256_cache.get(fileItem.getPath());
+                } else {
+                    try {
+                        result = EnvironmentUtil.hashSHA256Value(fileItem.getInputStream());
+                        sha256_cache.put(fileItem.getPath(), result);
+                    } catch (Exception e) {
+                        e.printStackTrace();
                     }
                 }
             }
             break;
             case CRC32: {
-                synchronized (crc32_cache) {
-                    if (crc32_cache.get(fileItem) != null) {
-                        result = crc32_cache.get(fileItem);
-                    } else {
-                        try {
-                            result = Integer.toHexString((int) FileUtil.getCRC32FromInputStream(fileItem.getInputStream()).getValue());
-                            crc32_cache.put(fileItem, result);
-                        } catch (Exception e) {
-                            e.printStackTrace();
-                        }
+                if (crc32_cache.get(fileItem.getPath()) != null) {
+                    result = crc32_cache.get(fileItem.getPath());
+                } else {
+                    try {
+                        result = Integer.toHexString((int) FileUtil.getCRC32FromInputStream(fileItem.getInputStream()).getValue());
+                        crc32_cache.put(fileItem.getPath(), result);
+                    } catch (Exception e) {
+                        e.printStackTrace();
                     }
                 }
             }
