@@ -171,6 +171,7 @@ public class SettingActivity extends BaseActivity implements View.OnClickListene
                 final CheckBox cb_hash = dialogView.findViewById(R.id.loading_file_hash);
                 final CheckBox cb_service = dialogView.findViewById(R.id.loading_services);
                 final CheckBox cb_provider = dialogView.findViewById(R.id.loading_providers);
+                final CheckBox cb_native = dialogView.findViewById(R.id.loading_native_libraries);
                 cb_permissions.setChecked(settings.getBoolean(Constants.PREFERENCE_LOAD_PERMISSIONS, Constants.PREFERENCE_LOAD_PERMISSIONS_DEFAULT));
                 cb_activities.setChecked(settings.getBoolean(Constants.PREFERENCE_LOAD_ACTIVITIES, Constants.PREFERENCE_LOAD_ACTIVITIES_DEFAULT));
                 cb_receivers.setChecked(settings.getBoolean(Constants.PREFERENCE_LOAD_RECEIVERS, Constants.PREFERENCE_LOAD_RECEIVERS_DEFAULT));
@@ -179,6 +180,7 @@ public class SettingActivity extends BaseActivity implements View.OnClickListene
                 cb_hash.setChecked(settings.getBoolean(Constants.PREFERENCE_LOAD_FILE_HASH, Constants.PREFERENCE_LOAD_FILE_HASH_DEFAULT));
                 cb_service.setChecked(settings.getBoolean(Constants.PREFERENCE_LOAD_SERVICES, Constants.PREFERENCE_LOAD_SERVICES_DEFAULT));
                 cb_provider.setChecked(settings.getBoolean(Constants.PREFERENCE_LOAD_PROVIDERS, Constants.PREFERENCE_LOAD_PROVIDERS_DEFAULT));
+                cb_native.setChecked(settings.getBoolean(Constants.PREFERENCE_LOAD_NATIVE_FILE, Constants.PREFERENCE_LOAD_NATIVE_FILE_DEFAULT));
                 new AlertDialog.Builder(this).setTitle(getResources().getString(R.string.activity_settings_loading_options))
                         .setView(dialogView)
                         .setPositiveButton(getResources().getString(R.string.dialog_button_confirm), new DialogInterface.OnClickListener() {
@@ -192,6 +194,7 @@ public class SettingActivity extends BaseActivity implements View.OnClickListene
                                 editor.putBoolean(Constants.PREFERENCE_LOAD_FILE_HASH, cb_hash.isChecked());
                                 editor.putBoolean(Constants.PREFERENCE_LOAD_SERVICES, cb_service.isChecked());
                                 editor.putBoolean(Constants.PREFERENCE_LOAD_PROVIDERS, cb_provider.isChecked());
+                                editor.putBoolean(Constants.PREFERENCE_LOAD_NATIVE_FILE, cb_native.isChecked());
                                 editor.apply();
                                 refreshSettingValues();
                                 setResult(RESULT_OK);

@@ -274,36 +274,36 @@ public class ExportTask extends Thread {
     private void writeZip(final File file, String parent, ZipOutputStream zos, final int zip_level) {
         if (file == null || parent == null || zos == null) return;
         if (isInterrupted) return;
-        if (file.exists()) {
-            if (file.isDirectory()) {
-                parent += file.getName() + File.separator;
-                File[] files = file.listFiles();
-                if (files.length > 0) {
-                    for (File f : files) {
-                        writeZip(f, parent, zos, zip_level);
-                    }
-                } else {
-                    try {
-                        zos.putNextEntry(new ZipEntry(parent));
-                    } catch (IOException e) {
-                        e.printStackTrace();
-                    }
+        if (!file.exists()) return;
+        if (file.isDirectory()) {
+            parent += file.getName() + File.separator;
+            File[] files = file.listFiles();
+            if (files.length > 0) {
+                for (File f : files) {
+                    writeZip(f, parent, zos, zip_level);
                 }
             } else {
                 try {
-                    FileInputStream in = new FileInputStream(file);
-                    ZipEntry zipentry = new ZipEntry(parent + file.getName());
+                    zos.putNextEntry(new ZipEntry(parent));
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+        } else if (file.isFile()) {
+            try {
+                FileInputStream in = new FileInputStream(file);
+                ZipEntry zipentry = new ZipEntry(parent + file.getName());
 
-                    if (zip_level == Constants.ZIP_LEVEL_STORED) {
-                        zipentry.setMethod(ZipOutputStream.STORED);
-                        zipentry.setCompressedSize(file.length());
-                        zipentry.setSize(file.length());
-                        zipentry.setCrc(FileUtil.getCRC32FromFile(file).getValue());
-                    }
+                if (zip_level == Constants.ZIP_LEVEL_STORED) {
+                    zipentry.setMethod(ZipOutputStream.STORED);
+                    zipentry.setCompressedSize(file.length());
+                    zipentry.setSize(file.length());
+                    zipentry.setCrc(FileUtil.getCRC32FromFile(file).getValue());
+                }
 
-                    zos.putNextEntry(zipentry);
-                    byte[] buffer = new byte[1024];
-                    int length;
+                zos.putNextEntry(zipentry);
+                byte[] buffer = new byte[1024];
+                int length;
 
                     /*Message msg_currentfile = new Message();
                     msg_currentfile.what=BaseActivity.MESSAGE_COPYFILE_CURRENTFILE;
@@ -311,55 +311,54 @@ public class ExportTask extends Thread {
                     if(currentPath.length()>90) currentPath="..."+currentPath.substring(currentPath.length()-90,currentPath.length());
                     msg_currentfile.obj=context.getResources().getString(R.string.copytask_zip_current)+currentPath;
                     BaseActivity.sendMessage(msg_currentfile);*/
-                    Global.runOnUiThread(new Runnable() {
-                        @Override
-                        public void run() {
-                            if (listener != null)
-                                listener.onExportZipProgressUpdated(file.getAbsolutePath());
-                        }
-                    });
+                Global.runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        if (listener != null)
+                            listener.onExportZipProgressUpdated(file.getAbsolutePath());
+                    }
+                });
 
-                    while ((length = in.read(buffer)) != -1 && !isInterrupted) {
-                        zos.write(buffer, 0, length);
-                        this.progress += length;
-                        this.zipWriteLength_second += length;
-                        long endTime = System.currentTimeMillis();
-                        if (endTime - this.zipTime > 1000) {
-                            this.zipTime = endTime;
+                while ((length = in.read(buffer)) != -1 && !isInterrupted) {
+                    zos.write(buffer, 0, length);
+                    this.progress += length;
+                    this.zipWriteLength_second += length;
+                    long endTime = System.currentTimeMillis();
+                    if (endTime - this.zipTime > 1000) {
+                        this.zipTime = endTime;
                             /*Message msg_speed=new Message();
                             msg_speed.what=BaseActivity.MESSAGE_COPYFILE_REFRESH_SPEED;
                             msg_speed.obj=this.zipWriteLength_second;
                             BaseActivity.sendMessage(msg_speed);*/
-                            final long zip_speed = zipWriteLength_second;
-                            Global.runOnUiThread(new Runnable() {
-                                @Override
-                                public void run() {
-                                    if (listener != null) listener.onExportSpeedUpdated(zip_speed);
-                                }
-                            });
-                            this.zipWriteLength_second = 0;
-                        }
-                        if (this.progress - progress_check_zip > 100 * 1024) {
-                            progress_check_zip = this.progress;
+                        final long zip_speed = zipWriteLength_second;
+                        Global.runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+                                if (listener != null) listener.onExportSpeedUpdated(zip_speed);
+                            }
+                        });
+                        this.zipWriteLength_second = 0;
+                    }
+                    if (this.progress - progress_check_zip > 100 * 1024) {
+                        progress_check_zip = this.progress;
                             /*Message msg=new Message();
                             msg.what=Main.MESSAGE_COPYFILE_REFRESH_PROGRESS;
                             msg.obj=new Long[]{this.progress,this.total};
                             BaseActivity.sendMessage(msg);*/
-                            Global.runOnUiThread(new Runnable() {
-                                @Override
-                                public void run() {
-                                    if (listener != null)
-                                        listener.onExportProgressUpdated(progress, total, file.getAbsolutePath());
-                                }
-                            });
-                        }
-
+                        Global.runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+                                if (listener != null)
+                                    listener.onExportProgressUpdated(progress, total, file.getAbsolutePath());
+                            }
+                        });
                     }
-                    zos.flush();
-                    in.close();
-                } catch (Exception e) {
-                    e.printStackTrace();
+
                 }
+                zos.flush();
+                in.close();
+            } catch (Exception e) {
+                e.printStackTrace();
             }
         }
     }

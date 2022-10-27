@@ -16,6 +16,7 @@ import android.net.DhcpInfo;
 import android.net.Uri;
 import android.net.wifi.WifiInfo;
 import android.net.wifi.WifiManager;
+import android.os.Build;
 import android.os.Bundle;
 import android.provider.MediaStore;
 import android.support.annotation.ColorInt;
@@ -33,6 +34,7 @@ import android.widget.Toast;
 
 import com.github.ghmxr.apkextractor.Constants;
 import com.github.ghmxr.apkextractor.R;
+import com.github.ghmxr.apkextractor.tasks.GetApkLibraryTask;
 import com.github.ghmxr.apkextractor.ui.ToastManager;
 
 import java.io.BufferedInputStream;
@@ -673,6 +675,50 @@ public class EnvironmentUtil {
 
     public static int dp2px(@NonNull Context context, int dp) {
         return (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, dp, context.getResources().getDisplayMetrics());
+    }
+
+    @Nullable
+    public static GetApkLibraryTask.LibraryInfo.LibraryType getShowingLibraryType(@NonNull GetApkLibraryTask.LibraryInfo libraryInfo) {
+        if (Build.VERSION.SDK_INT >= 21) {
+            final String[] supported64BitAbis = Build.SUPPORTED_64_BIT_ABIS;
+            if (supported64BitAbis != null) {
+                for (String s : supported64BitAbis) {
+                    for (GetApkLibraryTask.LibraryInfo.LibraryType type : libraryInfo.libraries.keySet()) {
+                        try {
+                            if (type.getName().equalsIgnoreCase(s)) return type;
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                        }
+
+                    }
+                }
+            }
+            final String[] supportedAbis = Build.SUPPORTED_ABIS;
+            if (supportedAbis != null) {
+                for (String s : supportedAbis) {
+                    for (GetApkLibraryTask.LibraryInfo.LibraryType type : libraryInfo.libraries.keySet()) {
+                        try {
+                            if (type.getName().equalsIgnoreCase(s)) return type;
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                        }
+                    }
+                }
+            }
+        } else {
+            final String[] supportedAbis = new String[]{Build.CPU_ABI, Build.CPU_ABI2};
+            for (String s : supportedAbis) {
+                for (GetApkLibraryTask.LibraryInfo.LibraryType type : libraryInfo.libraries.keySet()) {
+                    try {
+                        if (type.getName().equalsIgnoreCase(s)) return type;
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+                }
+            }
+        }
+
+        return null;
     }
 
     /*public static String getBroadCastIpAddress(@NonNull Context context){

@@ -612,6 +612,11 @@
             android:visibility="gone"
             tools:visibility="visible" />
 
+        <com.github.ghmxr.apkextractor.ui.LibraryView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/libraryView" />
+
         <TextView
             android:id="@+id/package_detail_hash_att"
             android:layout_width="wrap_content"

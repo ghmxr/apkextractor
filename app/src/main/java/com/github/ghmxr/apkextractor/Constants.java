@@ -102,6 +102,8 @@ public class Constants {
      */
     public static final String PREFERENCE_LOAD_FILE_HASH = "load_file_hash";
 
+    public static final String PREFERENCE_LOAD_NATIVE_FILE = "load_native_file";
+
     /**
      * stands for a int value
      */
@@ -125,6 +127,7 @@ public class Constants {
     public static final boolean PREFERENCE_LOAD_STATIC_LOADERS_DEFAULT = false;
     public static final boolean PREFERENCE_LOAD_APK_SIGNATURE_DEFAULT = true;
     public static final boolean PREFERENCE_LOAD_FILE_HASH_DEFAULT = true;
+    public static final boolean PREFERENCE_LOAD_NATIVE_FILE_DEFAULT = true;
 
 
     public static final int SHARE_MODE_DIRECT = -1;

@@ -37,7 +37,7 @@ public class ZipFileUtil {
             Enumeration entries = zipFile.entries();
             while (entries.hasMoreElements()) {
                 ZipEntry zipEntry = (ZipEntry) entries.nextElement();
-                String entryPath = zipEntry.getName().replaceAll("\\*", "/");
+                String entryPath = zipEntry.getName().replace("\\", "/");
                 if ((entryPath.toLowerCase().startsWith("android/data")) && !zipEntry.isDirectory()) {
                     zipFileInfo.addEntry(entryPath);
                     zipFileInfo.addDataSize(zipEntry.getSize());
@@ -68,7 +68,7 @@ public class ZipFileUtil {
             ZipInputStream zipInputStream = new ZipInputStream(inputStream);
             ZipEntry zipEntry = zipInputStream.getNextEntry();
             while (zipEntry != null) {
-                String entryPath = zipEntry.getName().replaceAll("\\*", "/");
+                String entryPath = zipEntry.getName().replace("\\", "/");
                 if ((entryPath.toLowerCase().startsWith("android/data")) && !zipEntry.isDirectory()) {
                     zipFileInfo.addEntry(entryPath);
                     long total_this_file = 0;

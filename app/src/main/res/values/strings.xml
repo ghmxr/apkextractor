@@ -75,6 +75,8 @@
     <string name="activity_detail_signature_sha1">SHA1</string>
     <string name="activity_detail_signature_sha256">SHA256</string>
 
+    <string name="activity_detail_native_library">本地库</string>
+
     <string name="activity_detail_hash_head">文件哈希值</string>
     <string name="activity_detail_hash_md5">MD5</string>
     <string name="activity_detail_hash_sha1">SHA1</string>
@@ -195,6 +197,7 @@
     <string name="dialog_loading_selection_static_loaders">自启接收器(会拖慢加载速度)</string>
     <string name="dialog_loading_selection_signature">APK签名</string>
     <string name="dialog_loading_selection_file_hash">文件哈希值</string>
+    <string name="dialog_loading_selection_native_files">本地库</string>
 
     <string name="dialog_sort_default">默认</string>
     <string name="dialog_sort_ascending_name">按名称升序（从A到Z）</string>

@@ -92,15 +92,17 @@
         tools:visibility="visible">
 
         <TextView
+            android:id="@+id/bottomBarText"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:layout_marginHorizontal="10dp"
+            android:ellipsize="middle"
+            android:lineSpacingExtra="2dp"
+            android:gravity="center_vertical"
             android:maxLines="2"
-            android:id="@+id/bottomBarText"
             android:textColor="#fff"
             android:textSize="14sp"
-            android:layout_marginHorizontal="10dp"
-            android:layout_centerVertical="true"
-            android:ellipsize="middle"
-            tools:text="正在扫描...\n/storage/emulated/0/storage/emulated/0/storage/emulated/0/storage/emulated/0" />
+            tools:text="正在扫描\nstorage/emulated/0/storage/emulated/0/storage/emulated/0" />
     </RelativeLayout>
 </RelativeLayout>

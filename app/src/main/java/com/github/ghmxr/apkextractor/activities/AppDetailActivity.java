@@ -40,6 +40,7 @@ import com.github.ghmxr.apkextractor.tasks.GetPackageInfoViewTask;
 import com.github.ghmxr.apkextractor.tasks.GetSignatureInfoTask;
 import com.github.ghmxr.apkextractor.tasks.HashTask;
 import com.github.ghmxr.apkextractor.ui.AssemblyView;
+import com.github.ghmxr.apkextractor.ui.LibraryView;
 import com.github.ghmxr.apkextractor.ui.SignatureView;
 import com.github.ghmxr.apkextractor.ui.ToastManager;
 import com.github.ghmxr.apkextractor.utils.FileUtil;
@@ -131,6 +132,15 @@ public class AppDetailActivity extends BaseActivity implements View.OnClickListe
         ((TextView) findViewById(R.id.app_detail_installer_name_value)).setText(appItem.getInstallSource());
         ((TextView) findViewById(R.id.app_detail_uid)).setText(String.valueOf(appItem.getPackageInfo().applicationInfo.uid));
         ((TextView) findViewById(R.id.app_detail_launcher_value)).setText(appItem.getLaunchingClass());
+
+        if (SPUtil.getGlobalSharedPreferences(this).getBoolean(Constants.PREFERENCE_LOAD_NATIVE_FILE, Constants.PREFERENCE_LOAD_NATIVE_FILE_DEFAULT)) {
+            try {
+                LibraryView libraryView = (LibraryView) findViewById(R.id.libraryView);
+                libraryView.setLibrary(appItem);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
 
         getDataObbSizeAndFillView();
 

@@ -62,6 +62,8 @@
     <string name="activity_detail_nothing_checked">Please check the options to install</string>
     <string name="activity_detail_wait_loading">Please wait while the package is being reading, and it may take some time</string>
 
+    <string name="activity_detail_native_library">Native Libraries</string>
+
     <string name="activity_detail_signature_head">Signature Info</string>
     <string name="activity_detail_signature_issuer">Signature issuer</string>
     <string name="activity_detail_signature_subject">Signature owner</string>
@@ -181,6 +183,7 @@
     <string name="dialog_loading_selection_static_loaders">Auto start receivers(will take more time while loading)</string>
     <string name="dialog_loading_selection_signature">APK Signature</string>
     <string name="dialog_loading_selection_file_hash">Hash values</string>
+    <string name="dialog_loading_selection_native_files">Native Libraries</string>
 
     <string name="dialog_sort_default">Default</string>
     <string name="dialog_sort_ascending_name">Ascending by name(A→Z)</string>

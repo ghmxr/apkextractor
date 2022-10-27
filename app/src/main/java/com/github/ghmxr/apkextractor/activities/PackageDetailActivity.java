@@ -35,6 +35,7 @@ import com.github.ghmxr.apkextractor.tasks.GetPackageInfoViewTask;
 import com.github.ghmxr.apkextractor.tasks.GetSignatureInfoTask;
 import com.github.ghmxr.apkextractor.tasks.HashTask;
 import com.github.ghmxr.apkextractor.ui.AssemblyView;
+import com.github.ghmxr.apkextractor.ui.LibraryView;
 import com.github.ghmxr.apkextractor.ui.SignatureView;
 import com.github.ghmxr.apkextractor.ui.ToastManager;
 import com.github.ghmxr.apkextractor.utils.EnvironmentUtil;
@@ -151,6 +152,15 @@ public class PackageDetailActivity extends BaseActivity implements View.OnClickL
                     findViewById(R.id.package_detail_assemble).setVisibility(View.VISIBLE);
                 }
             }).start();
+
+            if (SPUtil.getGlobalSharedPreferences(this).getBoolean(Constants.PREFERENCE_LOAD_NATIVE_FILE, Constants.PREFERENCE_LOAD_NATIVE_FILE_DEFAULT)) {
+                try {
+                    LibraryView libraryView = (LibraryView) findViewById(R.id.libraryView);
+                    libraryView.setLibrary(importItem);
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
         }
 
         if (SPUtil.getGlobalSharedPreferences(this).getBoolean(Constants.PREFERENCE_LOAD_FILE_HASH, Constants.PREFERENCE_LOAD_FILE_HASH_DEFAULT)) {

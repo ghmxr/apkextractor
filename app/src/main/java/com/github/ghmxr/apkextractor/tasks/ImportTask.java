@@ -65,7 +65,7 @@ public class ImportTask extends Thread {
                 ZipEntry zipEntry = zipInputStream.getNextEntry();
                 while (zipEntry != null && !isInterrupted) {
                     try {
-                        String entryPath = zipEntry.getName().replaceAll("\\*", "/");
+                        String entryPath = zipEntry.getName().replace("\\", "/");
                         if ((entryPath.toLowerCase().startsWith("android/data")) && !zipEntry.isDirectory() && importItem.importData) {
                             unZipToFile(zipInputStream, entryPath);
                         } else if ((entryPath.toLowerCase().startsWith("android/obb")) && !zipEntry.isDirectory() && importItem.importObb) {

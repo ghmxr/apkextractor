@@ -8,6 +8,7 @@ import android.support.annotation.Nullable;
 import android.support.v4.provider.DocumentFile;
 import android.text.TextUtils;
 
+import com.github.ghmxr.apkextractor.MyApplication;
 import com.github.ghmxr.apkextractor.utils.DocumentFileUtil;
 import com.github.ghmxr.apkextractor.utils.EnvironmentUtil;
 import com.github.ghmxr.apkextractor.utils.PinyinUtil;
@@ -26,7 +27,6 @@ import java.util.List;
 public class FileItem implements Comparable<FileItem> {
 
     public static int sort_config = 0;
-    private Context context;
     private File file = null;
     private DocumentFile documentFile = null;
     private Uri contentUri = null;
@@ -34,9 +34,13 @@ public class FileItem implements Comparable<FileItem> {
     /**
      * 构造一个documentFile实例的FileItem
      */
+    @Deprecated
     public FileItem(@NonNull Context context, @NonNull Uri treeUri, @Nullable String segments) throws Exception {
-        this.context = context;
-        DocumentFile documentFile = DocumentFile.fromTreeUri(context, treeUri);
+        this(treeUri, segments);
+    }
+
+    public FileItem(@NonNull Uri treeUri, @Nullable String segments) throws Exception {
+        DocumentFile documentFile = DocumentFile.fromTreeUri(MyApplication.getApplication(), treeUri);
         if (documentFile == null) throw new Exception("Can not get documentFile by the treeUri");
         this.documentFile = DocumentFileUtil.getDocumentFileBySegments(documentFile, segments);
     }
@@ -48,8 +52,12 @@ public class FileItem implements Comparable<FileItem> {
         this.file = new File(path);
     }
 
+    @Deprecated
     public FileItem(@NonNull Context context, @NonNull DocumentFile documentFile) {
-        this.context = context;
+        this(documentFile);
+    }
+
+    public FileItem(@NonNull DocumentFile documentFile) {
         this.documentFile = documentFile;
     }
 
@@ -58,26 +66,30 @@ public class FileItem implements Comparable<FileItem> {
         this.file = file;
     }
 
+    @Deprecated
     public FileItem(@NonNull Context context, @NonNull Uri contentUri) {
-        this.context = context;
+        this(contentUri);
+    }
+
+    public FileItem(@NonNull Uri contentUri) {
         this.contentUri = contentUri;
     }
 
     public String getName() {
         if (documentFile != null) return documentFile.getName();
         if (file != null) return file.getName();
-        if (context != null && contentUri != null) {
+        if (contentUri != null) {
             if (ContentResolver.SCHEME_FILE.equalsIgnoreCase(contentUri.getScheme())) {
                 return contentUri.getLastPathSegment();
             }
-            String nameQueried = EnvironmentUtil.getFileNameFromContentUri(context, contentUri);
+            String nameQueried = EnvironmentUtil.getFileNameFromContentUri(MyApplication.getApplication(), contentUri);
             if (!TextUtils.isEmpty(nameQueried)) return nameQueried;
-            String pathQueried = EnvironmentUtil.getFilePathFromContentUri(context, contentUri);
+            String pathQueried = EnvironmentUtil.getFilePathFromContentUri(MyApplication.getApplication(), contentUri);
             if (pathQueried != null && !TextUtils.isEmpty(pathQueried)) {
                 return new File(pathQueried).getName();
             }
             try {
-                DocumentFile documentFile = DocumentFile.fromSingleUri(context, contentUri);
+                DocumentFile documentFile = DocumentFile.fromSingleUri(MyApplication.getApplication(), contentUri);
                 if (documentFile != null) {
                     String fileName = documentFile.getName();
                     if (!TextUtils.isEmpty(fileName)) {
@@ -190,8 +202,8 @@ public class FileItem implements Comparable<FileItem> {
             return true;
         }
         if (isShareUriInstance()) {
-            if (context != null && contentUri != null) {
-                return !TextUtils.isEmpty(EnvironmentUtil.getFilePathFromContentUri(context, contentUri));
+            if (contentUri != null) {
+                return !TextUtils.isEmpty(EnvironmentUtil.getFilePathFromContentUri(MyApplication.getApplication(), contentUri));
             }
         }
         return false;
@@ -208,11 +220,11 @@ public class FileItem implements Comparable<FileItem> {
             if (index <= uriPath.length()) return "external/" + uriPath.substring(index);
         }
         if (file != null) return file.getAbsolutePath();
-        if (context != null && contentUri != null) {
+        if (contentUri != null) {
             if (ContentResolver.SCHEME_FILE.equalsIgnoreCase(contentUri.getScheme())) {
                 return contentUri.getPath();
             }
-            String path = EnvironmentUtil.getFilePathFromContentUri(context, contentUri);
+            String path = EnvironmentUtil.getFilePathFromContentUri(MyApplication.getApplication(), contentUri);
             if (!TextUtils.isEmpty(path)) return path;
             return contentUri.toString();
         }
@@ -232,7 +244,7 @@ public class FileItem implements Comparable<FileItem> {
             try {
                 DocumentFile[] documentFiles = documentFile.listFiles();
                 for (DocumentFile documentFile : documentFiles) {
-                    arrayList.add(new FileItem(context, documentFile));
+                    arrayList.add(new FileItem(documentFile));
                     //Log.e("DFile",documentFile.getClass().getName());
                 }
             } catch (Exception e) {
@@ -256,11 +268,11 @@ public class FileItem implements Comparable<FileItem> {
         try {
             if (documentFile != null) return documentFile.length();
             if (file != null) return file.length();
-            if (contentUri != null && context != null) {
+            if (contentUri != null) {
                 if (ContentResolver.SCHEME_FILE.equalsIgnoreCase(contentUri.getScheme())) {
                     return new File(contentUri.getPath()).length();
                 }
-                String length = EnvironmentUtil.getFileLengthFromContentUri(context, contentUri);
+                String length = EnvironmentUtil.getFileLengthFromContentUri(MyApplication.getApplication(), contentUri);
                 if (length != null && !TextUtils.isEmpty(length)) return Long.parseLong(length);
                 InputStream inputStream = getInputStream();
                 int available = inputStream.available();
@@ -290,7 +302,7 @@ public class FileItem implements Comparable<FileItem> {
             if (parent != null) return new FileItem(parent);
         } else if (documentFile != null) {
             DocumentFile parent = documentFile.getParentFile();
-            if (parent != null) return new FileItem(context, parent);
+            if (parent != null) return new FileItem(parent);
         }
         return null;
     }
@@ -302,23 +314,23 @@ public class FileItem implements Comparable<FileItem> {
 
     public InputStream getInputStream() throws Exception {
         if (documentFile != null)
-            return context.getContentResolver().openInputStream(documentFile.getUri());
+            return MyApplication.getApplication().getContentResolver().openInputStream(documentFile.getUri());
         if (file != null) return new FileInputStream(file);
-        if (contentUri != null && context != null) {
+        if (contentUri != null) {
             if (ContentResolver.SCHEME_FILE.equalsIgnoreCase(contentUri.getScheme())) {
-                return new FileInputStream(new File(contentUri.getPath()));
+                return new FileInputStream(contentUri.getPath());
             }
-            return context.getContentResolver().openInputStream(contentUri);
+            return MyApplication.getApplication().getContentResolver().openInputStream(contentUri);
         }
         return null;
     }
 
     public OutputStream getOutputStream() throws Exception {
         if (documentFile != null)
-            return context.getContentResolver().openOutputStream(documentFile.getUri());
+            return MyApplication.getApplication().getContentResolver().openOutputStream(documentFile.getUri());
         if (file != null) return new FileOutputStream(file);
-        if (contentUri != null && context != null)
-            return context.getContentResolver().openOutputStream(contentUri);
+        if (contentUri != null)
+            return MyApplication.getApplication().getContentResolver().openOutputStream(contentUri);
         return null;
     }
 
