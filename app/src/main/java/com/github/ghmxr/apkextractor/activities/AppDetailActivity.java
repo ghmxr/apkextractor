@@ -15,6 +15,7 @@ import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.PermissionChecker;
@@ -100,13 +101,31 @@ public class AppDetailActivity extends BaseActivity implements View.OnClickListe
 //        getSupportActionBar().setTitle(appItem.getAppName());
 
 //        ((CollapsingToolbarLayout)findViewById(R.id.coll)).
-        NestedScrollView nestedScrollView = findViewById(R.id.nsv);
+        final NestedScrollView nestedScrollView = findViewById(R.id.nsv);
+        final FloatingActionButton floatingActionButton = findViewById(R.id.toTop);
         final ActionBar actionBar = getSupportActionBar();
         nestedScrollView.setOnScrollChangeListener(new NestedScrollView.OnScrollChangeListener() {
+            int old_y;
+
             @Override
             public void onScrollChange(NestedScrollView nestedScrollView, int i, int i1, int i2, int i3) {
 //                Log.e("111","i="+i+",i1="+i1+",i2="+i2+",i3="+i3);
                 actionBar.setTitle(i1 > 0 ? appItem.getAppName() : "");
+                if (i1 > old_y && old_y > 1500) {
+                    floatingActionButton.show();
+                } else {
+                    floatingActionButton.hide();
+                }
+                old_y = i1;
+            }
+
+
+        });
+
+        floatingActionButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                nestedScrollView.smoothScrollTo(0, 0);
             }
         });
 

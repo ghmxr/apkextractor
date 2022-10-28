@@ -255,7 +255,7 @@ public class AssemblyView extends LinearLayout implements View.OnClickListener {
         }
     }
 
-    private class StaticLoaderListAdapter extends RecyclerView.Adapter<StaticLoaderViewHolder> {
+    private static class StaticLoaderListAdapter extends RecyclerView.Adapter<StaticLoaderViewHolder> {
         private final List<GetPackageInfoViewTask.StaticLoaderItem> data;
 
         public StaticLoaderListAdapter(List<GetPackageInfoViewTask.StaticLoaderItem> data) {

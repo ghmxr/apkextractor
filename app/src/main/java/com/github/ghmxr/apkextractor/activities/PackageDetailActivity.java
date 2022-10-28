@@ -10,6 +10,7 @@ import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.PermissionChecker;
@@ -91,14 +92,29 @@ public class PackageDetailActivity extends BaseActivity implements View.OnClickL
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
-        NestedScrollView nestedScrollView = findViewById(R.id.nsv);
+        final NestedScrollView nestedScrollView = findViewById(R.id.nsv);
+        final FloatingActionButton floatingActionButton = findViewById(R.id.toTop);
         final ActionBar actionBar = getSupportActionBar();
         actionBar.setTitle("");
         nestedScrollView.setOnScrollChangeListener(new NestedScrollView.OnScrollChangeListener() {
+            int old_y;
+
             @Override
             public void onScrollChange(NestedScrollView nestedScrollView, int i, int i1, int i2, int i3) {
 //                Log.e("111","i="+i+",i1="+i1+",i2="+i2+",i3="+i3);
                 actionBar.setTitle(i1 > 0 ? String.valueOf(importItem.getItemName()) : "");
+                if (i1 > old_y && old_y > 1500) {
+                    floatingActionButton.show();
+                } else {
+                    floatingActionButton.hide();
+                }
+                old_y = i1;
+            }
+        });
+        floatingActionButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                nestedScrollView.smoothScrollTo(0, 0);
             }
         });
 
@@ -145,6 +161,7 @@ public class PackageDetailActivity extends BaseActivity implements View.OnClickL
                     }
                 }).start();
             }
+            findViewById(R.id.package_detail_card_pg).setVisibility(View.VISIBLE);
             new GetPackageInfoViewTask(this, importItem.getPackageInfo(), (AssemblyView) findViewById(R.id.package_detail_assemble), new GetPackageInfoViewTask.CompletedCallback() {
                 @Override
                 public void onViewsCreated() {

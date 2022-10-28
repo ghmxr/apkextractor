@@ -311,7 +311,9 @@
 
     <string name="language_follow_system">follow system</string>
 
-    <string name="dialog_about_message">\n(Translated by machine)This is a small tool for Android platform to quickly query, export (extract) or share locally installed apps.
+    <string name="dialog_about_message">\n(Translated by machine)
+        \n<b>Due to permission problem, the functions of data and obb are unavailable on Android 11 or HarmonyOS 3.0 or upper versions</b>\n\n
+        This is a small tool for Android platform to quickly query, export (extract) or share locally installed apps.
         It supports to package the data and OBB data in the external storage of the corresponding app into a ZIP format compressed file
         (mainly for some game applications containing data and OBB data). At the same time, it supports the import of ZIP format compression package containing
         data and OBB data to the device. The application supports the export and import of data, and the contents of OBB data compression package are:\n\n
@@ -372,6 +374,7 @@ Through the sharing function of this app, you can share the app or installation 
     <string name="word_keep_screen_on">keep screen on</string>
     <string name="activity_settings_port_unknown">invalid number</string>
     <string name="action_ap">AP settings</string>
+    <string name="action_back_to_top">Back to top</string>
     <string name="action_file_info">File info</string>
     <string name="dialog_compress_extension_empty">type in a valid extension name</string>
     <string name="activity_settings_extension">Compressed ExtName</string>

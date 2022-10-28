@@ -70,4 +70,15 @@
         android:background="@color/colorTitle"
         app:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar" />
 
+    <android.support.design.widget.FloatingActionButton
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:fabSize="mini"
+        android:contentDescription="@string/action_ap"
+        android:src="@drawable/ic_top"
+        android:id="@+id/toTop"
+        android:layout_gravity="end|bottom"
+        android:visibility="gone"
+        android:layout_margin="20dp" />
+
 </android.support.design.widget.CoordinatorLayout>

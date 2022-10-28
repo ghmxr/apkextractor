@@ -11,6 +11,7 @@
     <string name="action_name_descend">名称降序(Z→A)</string>
     <string name="action_help">帮助</string>
     <string name="action_ap">热点配置</string>
+    <string name="action_back_to_top">返回顶部</string>
     <string name="action_file_info">文件信息</string>
     <string name="nav_file_receive">接收文件</string>
     <string name="nav_about">关于</string>
@@ -362,7 +363,8 @@
     <string name="language_chinese" translatable="false">简体中文</string>
     <string name="language_english" translatable="false">English</string>
 
-    <string name="dialog_about_message">\n这是一个Android平台快速查询、导出(提取)或者分享本地已安装APP的小工具，支持将对应APP外置存储中的Data，Obb数据一并打包成zip格式压缩文件
+    <string name="dialog_about_message">\n<b>提示：因权限问题，使用Android 11或HarmonyOS3.0及以上版本的系统暂无法使用data和obb功能</b>\n\n
+        这是一个Android平台快速查询、导出(提取)或者分享本地已安装APP的小工具，支持将对应APP外置存储中的Data，Obb数据一并打包成zip格式压缩文件
         (主要针对部分含有Data，Obb数据的游戏应用)。同时支持将包含Data，Obb数据的zip格式压缩包导入到设备。本应用支持导出和导入的包含data,obb数据的压缩包内容为：\n\n
 
         Android/data/\n
@@ -372,10 +374,13 @@
         通过本应用的分享功能，可以将APP或者安装包分享给对方。本应用的局域网分享功能同时支持分享本地外置存储中的任何一个文件，通过文件管理器或其他应用
         分享时选择本应用即可直接发送给对方，接收端接收到的文件将会保存至导出路径。\n\n
 
-   <b>Build 13 更新日志：</b> \n
-    <b>新增：安装包批量重命名功能；</b>\n
-    <b>变动：扫描安装包当前进度的展示；</b>\n
-    <b>修复部分已知问题。</b>\n\n
+   <b>Build 14 更新日志：</b> \n
+    <b>新增：so本地库的预览；</b>\n
+    <b>修复：在某些情况下应用列表读取不全的问题；</b>\n
+    <b>修复：首次接收文件时未初始化路径导致的接收异常；</b>\n
+    <b>修改：安装包界面边扫描边展示；</b>\n
+    <b>变动：界面滚动条和返回顶部；</b>\n
+    <b>变动：搜索模式多项选择后返回不会清除选择结果；</b>\n\n
 
         开源地址:\n
          https://github.com/ghmxr/apkextractor \n\n
