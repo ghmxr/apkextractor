@@ -68,6 +68,7 @@ public class SettingActivity extends BaseActivity implements View.OnClickListene
         findViewById(R.id.settings_extension_area).setOnClickListener(this);
         findViewById(R.id.settings_package_scope_area).setOnClickListener(this);
         findViewById(R.id.settings_package_name_separator_area).setOnClickListener(this);
+        findViewById(R.id.settings_package_exclude_area).setOnClickListener(this);
         refreshSettingValues();
 
         if (bundle != null) {
@@ -430,6 +431,13 @@ public class SettingActivity extends BaseActivity implements View.OnClickListene
                         .show();
             }
             break;
+            case R.id.settings_package_exclude_area: {
+                CheckBox cb = findViewById(R.id.filter_out_package);
+                cb.toggle();
+                settings.edit().putBoolean(Constants.PREFERENCE_EXCLUDE_INVALID_PACKAGE, cb.isChecked()).apply();
+                sendBroadcast(new Intent(Constants.ACTION_REFRESH_IMPORT_ITEMS_LIST));
+            }
+            break;
         }
     }
 
@@ -539,6 +547,7 @@ public class SettingActivity extends BaseActivity implements View.OnClickListene
             break;
         }
         ((TextView) findViewById(R.id.settings_package_name_separator_value)).setText(settings.getString(Constants.PREFERENCE_COPYING_PACKAGE_NAME_SEPARATOR, Constants.PREFERENCE_COPYING_PACKAGE_NAME_SEPARATOR_DEFAULT));
+        ((CheckBox) findViewById(R.id.filter_out_package)).setChecked(settings.getBoolean(Constants.PREFERENCE_EXCLUDE_INVALID_PACKAGE, Constants.PREFERENCE_EXCLUDE_INVALID_PACKAGE_DEFAULT));
     }
 
     @Override

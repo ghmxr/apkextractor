@@ -134,12 +134,12 @@ public class RecyclerViewAdapter<T extends DisplayItem<T>> extends RecyclerView.
         return mode;
     }
 
-    public void updateData(T data, List<T> progress) {
+    public void updateData(T data) {
 //        this.data.clear();
 //        this.data.add(Math.min(progress.indexOf(data), this.data.size()), data);
         this.data.add(data);
 //        notifyDataSetChanged();
-        notifyItemInserted(progress.indexOf(data));
+        notifyItemInserted(Math.max(0, this.data.indexOf(data)));
     }
 
     public void setData(@Nullable List<T> data) {

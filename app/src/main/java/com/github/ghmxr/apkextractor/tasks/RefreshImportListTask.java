@@ -12,6 +12,7 @@ import com.github.ghmxr.apkextractor.items.FileItem;
 import com.github.ghmxr.apkextractor.items.ImportItem;
 import com.github.ghmxr.apkextractor.utils.SPUtil;
 import com.github.ghmxr.apkextractor.utils.StorageUtil;
+import com.github.ghmxr.apkextractor.utils.ZipFileUtil;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -25,10 +26,13 @@ public class RefreshImportListTask extends Thread {
     private boolean isInterrupted = false;
     @SuppressLint("StaticFieldLeak")
     private static RefreshImportListTask refreshImportListTask;
+    final boolean exclude_invalid_package;
 
     public RefreshImportListTask(Context context, RefreshImportListTaskCallback callback) {
         this.context = context;
         this.callback = callback;
+        exclude_invalid_package = SPUtil.getGlobalSharedPreferences(context)
+                .getBoolean(Constants.PREFERENCE_EXCLUDE_INVALID_PACKAGE, Constants.PREFERENCE_EXCLUDE_INVALID_PACKAGE_DEFAULT);
         //boolean isExternal= SPUtil.getIsSaved2ExternalStorage(context);
         /*if(isExternal){
             try{
@@ -109,26 +113,40 @@ public class RefreshImportListTask extends Thread {
                 final ImportItem importItem = new ImportItem(context, fileItem);
                 if (fileItem.getPath().trim().toLowerCase().endsWith(".apk") || fileItem.getPath().trim().toLowerCase().endsWith(".zip")
                         || fileItem.getPath().trim().toLowerCase().endsWith(".xapk")
-                        || fileItem.getPath().trim().toLowerCase().endsWith(SPUtil.getCompressingExtensionName(context).toLowerCase())) {
+                        || fileItem.getPath().trim().toLowerCase().endsWith("." + SPUtil.getCompressingExtensionName(context).toLowerCase())) {
                     if (isInterrupted) {
                         throw new RuntimeException("task is interrupted");
                     }
-                    arrayList.add(importItem);
+                    boolean canAdd = true;
+                    if (exclude_invalid_package) {
+                        if (fileItem.getPath().trim().toLowerCase().endsWith(".zip")
+                                || fileItem.getPath().trim().toLowerCase().endsWith(".xapk")
+                                || fileItem.getPath().trim().toLowerCase().endsWith("." + SPUtil.getCompressingExtensionName(context).toLowerCase())) {
+                            ZipFileUtil.ZipFileInfo zipFileInfo = ZipFileUtil.getZipFileInfoOfImportItem(importItem);
+                            if (zipFileInfo == null || (zipFileInfo.getApkSize() == 0 && zipFileInfo.getDataSize() == 0 && zipFileInfo.getObbSize() == 0)) {
+                                canAdd = false;
+                            }
+                        }
+                    }
+                    if (canAdd) arrayList.add(importItem);
 //                    SystemClock.sleep(1500);
-                    final ArrayList<ImportItem> container = new ArrayList<>();
+//                    final ArrayList<ImportItem> container = new ArrayList<>();
                     synchronized (Global.item_list) {
                         if (!isInterrupted) {
-                            Global.item_list.add(importItem);
+                            if (canAdd) {
+                                Global.item_list.add(importItem);
+                            }
 //                            Collections.sort(Global.item_list);
-                            container.addAll(Global.item_list);
+//                            container.addAll(Global.item_list);
                         }
                     }
                     final CountDownLatch countDownLatch = new CountDownLatch(1);
+                    final boolean fCanAdd = canAdd;
                     if (callback != null) {
                         Global.handler.post(new Runnable() {
                             @Override
                             public void run() {
-                                callback.onProgress(importItem, container);
+                                callback.onProgress(fCanAdd, importItem);
                                 countDownLatch.countDown();
                             }
                         });
@@ -168,7 +186,7 @@ public class RefreshImportListTask extends Thread {
     public interface RefreshImportListTaskCallback {
         void onRefreshStarted();
 
-        void onProgress(@NonNull ImportItem scannedItem, @NonNull List<ImportItem> progress);
+        void onProgress(boolean canAdd, @NonNull ImportItem scannedItem);
 
         void onRefreshCompleted(List<ImportItem> list);
     }

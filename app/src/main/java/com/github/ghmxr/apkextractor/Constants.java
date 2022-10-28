@@ -121,10 +121,10 @@ public class Constants {
 
     public static final boolean PREFERENCE_LOAD_PERMISSIONS_DEFAULT = true;
     public static final boolean PREFERENCE_LOAD_ACTIVITIES_DEFAULT = true;
-    public static final boolean PREFERENCE_LOAD_RECEIVERS_DEFAULT = false;
-    public static final boolean PREFERENCE_LOAD_SERVICES_DEFAULT = false;
-    public static final boolean PREFERENCE_LOAD_PROVIDERS_DEFAULT = false;
-    public static final boolean PREFERENCE_LOAD_STATIC_LOADERS_DEFAULT = false;
+    public static final boolean PREFERENCE_LOAD_RECEIVERS_DEFAULT = true;
+    public static final boolean PREFERENCE_LOAD_SERVICES_DEFAULT = true;
+    public static final boolean PREFERENCE_LOAD_PROVIDERS_DEFAULT = true;
+    public static final boolean PREFERENCE_LOAD_STATIC_LOADERS_DEFAULT = true;
     public static final boolean PREFERENCE_LOAD_APK_SIGNATURE_DEFAULT = true;
     public static final boolean PREFERENCE_LOAD_FILE_HASH_DEFAULT = true;
     public static final boolean PREFERENCE_LOAD_NATIVE_FILE_DEFAULT = true;
@@ -186,4 +186,10 @@ public class Constants {
      */
     public static final String PREFERENCE_COPYING_PACKAGE_NAME_SEPARATOR = "copying_package_name_separator";
     public static final String PREFERENCE_COPYING_PACKAGE_NAME_SEPARATOR_DEFAULT = ",";
+
+    /**
+     * 扫描时过滤掉不包含data,obb,apk的包文件
+     */
+    public static final String PREFERENCE_EXCLUDE_INVALID_PACKAGE = "exclude_invalid_package";
+    public static final boolean PREFERENCE_EXCLUDE_INVALID_PACKAGE_DEFAULT = true;
 }

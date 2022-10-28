@@ -379,4 +379,6 @@ Through the sharing function of this app, you can share the app or installation 
     <string name="dialog_compress_extension_empty">type in a valid extension name</string>
     <string name="activity_settings_extension">Compressed ExtName</string>
     <string name="dialog_compress_extension_att">*this option only changes the extension of the compressed exporting files, but will not change the content of zip itself</string>
+    <string name="activity_settings_package_exclude">Filter out packages</string>
+    <string name="activity_settings_package_exclude_description">filter out compressed packages without data, obb or apk</string>
 </resources>

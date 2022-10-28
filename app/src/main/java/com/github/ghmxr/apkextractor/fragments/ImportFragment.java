@@ -20,7 +20,6 @@ import android.support.v4.util.Pair;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.CardView;
-import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.RecyclerView;
 import android.text.format.Formatter;
 import android.view.LayoutInflater;
@@ -334,14 +333,14 @@ public class ImportFragment extends Fragment implements RefreshImportListTask.Re
 
     @SuppressLint("SetTextI18n")
     @Override
-    public void onProgress(@NonNull ImportItem importItem, @NonNull List<ImportItem> progress) {
+    public void onProgress(boolean canAdd, @NonNull ImportItem importItem) {
         if (getActivity() == null) return;
         if (progressTextView != null) {
             progressTextView.setText(getActivity().getResources().getString(R.string.att_scanning) + " " + importItem.getFileItem().getPath());
         }
-        recyclerView.setItemAnimator(null);
-        if (adapter != null && !isSearchMode) {
-            adapter.updateData(importItem, progress);
+//        recyclerView.setItemAnimator(null);
+        if (adapter != null && !isSearchMode && canAdd) {
+            adapter.updateData(importItem);
         }
     }
 
@@ -363,7 +362,7 @@ public class ImportFragment extends Fragment implements RefreshImportListTask.Re
 
         viewGroup_no_content.setVisibility(list.size() == 0 ? View.VISIBLE : View.GONE);
         viewGroup_progress.setVisibility(View.GONE);
-        recyclerView.setItemAnimator(new DefaultItemAnimator());
+//        recyclerView.setItemAnimator(new DefaultItemAnimator());
         //if(isSearchMode)adapter.setData(null);
     }
 

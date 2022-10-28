@@ -89,6 +89,8 @@
     <string name="activity_settings_rules">导出规则</string>
     <string name="activity_settings_share_mode">分享模式</string>
     <string name="activity_settings_package_scope">安装包范围</string>
+    <string name="activity_settings_package_exclude">安装包过滤</string>
+    <string name="activity_settings_package_exclude_description">过滤无data,obb,apk内容的压缩包</string>
     <string name="activity_settings_extension">压缩包扩展名</string>
     <string name="activity_settings_night_mode">夜间模式</string>
     <string name="activity_settings_loading_options">读取项</string>
@@ -363,7 +365,7 @@
     <string name="language_chinese" translatable="false">简体中文</string>
     <string name="language_english" translatable="false">English</string>
 
-    <string name="dialog_about_message">\n<b>提示：因权限问题，使用Android 11或HarmonyOS3.0及以上版本的系统暂无法使用data和obb功能</b>\n\n
+    <string name="dialog_about_message">\n<b>提示：因权限问题，使用Android 11或HarmonyOS 3.0及以上版本的系统暂无法使用data和obb功能</b>\n\n
         这是一个Android平台快速查询、导出(提取)或者分享本地已安装APP的小工具，支持将对应APP外置存储中的Data，Obb数据一并打包成zip格式压缩文件
         (主要针对部分含有Data，Obb数据的游戏应用)。同时支持将包含Data，Obb数据的zip格式压缩包导入到设备。本应用支持导出和导入的包含data,obb数据的压缩包内容为：\n\n
 
@@ -376,6 +378,7 @@
 
    <b>Build 14 更新日志：</b> \n
     <b>新增：so本地库的预览；</b>\n
+    <b>新增：无效压缩包过滤选项；</b>\n
     <b>修复：在某些情况下应用列表读取不全的问题；</b>\n
     <b>修复：首次接收文件时未初始化路径导致的接收异常；</b>\n
     <b>修改：安装包界面边扫描边展示；</b>\n
