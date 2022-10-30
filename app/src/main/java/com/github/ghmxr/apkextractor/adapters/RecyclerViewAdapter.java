@@ -1,5 +1,6 @@
 package com.github.ghmxr.apkextractor.adapters;
 
+import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.graphics.Color;
 import android.support.annotation.NonNull;
@@ -20,6 +21,7 @@ import com.github.ghmxr.apkextractor.R;
 import com.github.ghmxr.apkextractor.utils.EnvironmentUtil;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
 
@@ -142,10 +144,24 @@ public class RecyclerViewAdapter<T extends DisplayItem<T>> extends RecyclerView.
         notifyItemInserted(Math.max(0, this.data.indexOf(data)));
     }
 
+    public void removeItem(T item) {
+        final int index = data.indexOf(item);
+        this.data.remove(item);
+        notifyItemRemoved(Math.max(0, index));
+    }
+
+    @SuppressLint("NotifyDataSetChanged")
+    public void removeItems(Collection<T> collection) {
+        if (collection == null) return;
+        this.data.removeAll(collection);
+        notifyDataSetChanged();
+    }
+
     public void setData(@Nullable List<T> data) {
         setData(data, false);
     }
 
+    @SuppressLint("NotifyDataSetChanged")
     public void setData(@Nullable List<T> data, boolean clear) {
         this.data.clear();
         if (clear) {
@@ -156,11 +172,13 @@ public class RecyclerViewAdapter<T extends DisplayItem<T>> extends RecyclerView.
         notifyDataSetChanged();
     }
 
+    @SuppressLint("NotifyDataSetChanged")
     public void setHighlightKeyword(String keyword) {
         this.highlightKeyword = keyword;
         notifyDataSetChanged();
     }
 
+    @SuppressLint("NotifyDataSetChanged")
     public void setMultiSelectMode(boolean b) {
         this.isMultiSelectMode = b;
         if (!b) {
@@ -177,6 +195,7 @@ public class RecyclerViewAdapter<T extends DisplayItem<T>> extends RecyclerView.
         return isMultiSelectMode;
     }
 
+    @SuppressLint("NotifyDataSetChanged")
     public void setSelectAll(boolean b) {
         if (!isMultiSelectMode) return;
         if (b) {
@@ -214,6 +233,7 @@ public class RecyclerViewAdapter<T extends DisplayItem<T>> extends RecyclerView.
         return length;
     }
 
+    @SuppressLint("NotifyDataSetChanged")
     public void setLayoutManagerAndView(int mode) {
         if (mode == 1) {
             GridLayoutManager gridLayoutManager = new GridLayoutManager(activity, 4);

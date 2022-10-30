@@ -477,7 +477,7 @@ public class AppFragment extends Fragment implements View.OnClickListener, Refre
     }
 
     public void sortGlobalListAndRefresh(int value) {
-        closeMultiSelectMode();
+//        closeMultiSelectMode();
         AppItem.sort_config = value;
         if (adapter != null) adapter.setData(null);
         swipeRefreshLayout.setRefreshing(true);
@@ -507,6 +507,11 @@ public class AppFragment extends Fragment implements View.OnClickListener, Refre
     public void setViewMode(int mode) {
         if (adapter == null) return;
         adapter.setLayoutManagerAndView(mode);
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
     }
 
     private void setAndStartRefreshingTask() {

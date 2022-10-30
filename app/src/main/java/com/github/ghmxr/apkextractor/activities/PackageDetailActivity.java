@@ -349,9 +349,15 @@ public class PackageDetailActivity extends BaseActivity implements View.OnClickL
                                 @Override
                                 public void onClick(DialogInterface dialog, int which) {
                                     try {
-                                        importItem.getFileItem().delete();
-                                        finish();
-                                        sendBroadcast(new Intent(Constants.ACTION_REFRESH_IMPORT_ITEMS_LIST));
+                                        if (importItem.getFileItem().delete()) {
+                                            Intent intent = new Intent();
+                                            intent.putExtra(EXTRA_IMPORT_ITEM_PATH, importItem.getFileItem().getPath());
+                                            setResult(RESULT_OK, intent);
+                                            finish();
+                                        } else {
+                                            ToastManager.showToast(PackageDetailActivity.this, "Delete failed", Toast.LENGTH_SHORT);
+                                        }
+//                                        sendBroadcast(new Intent(Constants.ACTION_REFRESH_IMPORT_ITEMS_LIST));
                                     } catch (Exception e) {
                                         e.printStackTrace();
                                     }

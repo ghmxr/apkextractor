@@ -298,8 +298,11 @@ public class MainActivity extends BaseActivity implements View.OnClickListener, 
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         switch (requestCode) {
-            default:
-                break;
+            default: {
+                appFragment.onActivityResult(requestCode, resultCode, data);
+                importFragment.onActivityResult(requestCode, resultCode, data);
+            }
+            break;
             case REQUEST_CODE_SETTINGS: {
                 if (resultCode == RESULT_OK) {
                     //recreate();

@@ -2,6 +2,7 @@ package com.github.ghmxr.apkextractor.fragments;
 
 import android.Manifest;
 import android.annotation.SuppressLint;
+import android.app.Activity;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -21,6 +22,7 @@ import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
+import android.text.TextUtils;
 import android.text.format.Formatter;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -48,6 +50,8 @@ import com.github.ghmxr.apkextractor.utils.SPUtil;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashSet;
+import java.util.Iterator;
 import java.util.List;
 
 public class ImportFragment extends Fragment implements RefreshImportListTask.RefreshImportListTaskCallback, RecyclerViewAdapter.ListAdapterOperationListener<ImportItem>
@@ -68,6 +72,8 @@ public class ImportFragment extends Fragment implements RefreshImportListTask.Re
     private boolean isSearchMode = false;
 
     private OperationCallback callback;
+
+    public static final int REQUEST_CODE_PACKAGE_DETAIL = 101;
 
     private final RecyclerView.OnScrollListener onScrollListener = new RecyclerView.OnScrollListener() {
         @Override
@@ -233,16 +239,26 @@ public class ImportFragment extends Fragment implements RefreshImportListTask.Re
                                 }
                                 try {
                                     List<ImportItem> importItems = adapter.getSelectedItems();
+                                    HashSet<ImportItem> deleted = new HashSet<>();
                                     for (ImportItem importItem : importItems) {
                                         FileItem fileItem = importItem.getFileItem();
                                         try {
-                                            fileItem.delete();
+                                            if (fileItem.delete()) deleted.add(importItem);
                                         } catch (Exception e) {
                                             e.printStackTrace();
                                         }
                                     }
                                     closeMultiSelectMode();
-                                    getActivity().sendBroadcast(new Intent(Constants.ACTION_REFRESH_IMPORT_ITEMS_LIST));
+//                                    getActivity().sendBroadcast(new Intent(Constants.ACTION_REFRESH_IMPORT_ITEMS_LIST));
+                                    if (adapter != null) {
+                                        adapter.removeItems(deleted);
+                                    }
+                                    synchronized (Global.item_list) {
+                                        List<ImportItem> globalList = Global.item_list;
+                                        globalList.removeAll(deleted);
+                                    }
+
+
                                     getActivity().sendBroadcast(new Intent(Constants.ACTION_REFRESH_AVAILIBLE_STORAGE));
                                 } catch (Exception e) {
                                     e.printStackTrace();
@@ -374,7 +390,7 @@ public class ImportFragment extends Fragment implements RefreshImportListTask.Re
         intent.putExtra(PackageDetailActivity.EXTRA_IMPORT_ITEM_PATH, importItem.getFileItem().getPath());
         ActivityOptionsCompat compat = ActivityOptionsCompat.makeSceneTransitionAnimation(getActivity(), new Pair<View, String>(viewHolder.icon, "icon"));
         try {
-            ActivityCompat.startActivity(getActivity(), intent, compat.toBundle());
+            ActivityCompat.startActivityForResult(getActivity(), intent, REQUEST_CODE_PACKAGE_DETAIL, compat.toBundle());
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -440,6 +456,26 @@ public class ImportFragment extends Fragment implements RefreshImportListTask.Re
         if (!b) adapter.setHighlightKeyword(null);
     }
 
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == REQUEST_CODE_PACKAGE_DETAIL && resultCode == Activity.RESULT_OK && data != null) {
+            String packagePath = data.getStringExtra(PackageDetailActivity.EXTRA_IMPORT_ITEM_PATH);
+            synchronized (Global.item_list) {
+                List<ImportItem> importItems = Global.item_list;
+                ImportItem deleted;
+                Iterator<ImportItem> itemIterator = importItems.iterator();
+                while (itemIterator.hasNext()) {
+                    deleted = itemIterator.next();
+                    if (TextUtils.equals(deleted.getFileItem().getPath(), packagePath)) {
+                        itemIterator.remove();
+                        adapter.removeItem(deleted);
+                    }
+                }
+            }
+        }
+    }
+
     private SearchPackageTask searchPackageTask;
 
     public void updateSearchModeKeywords(@NonNull String key) {
@@ -481,7 +517,7 @@ public class ImportFragment extends Fragment implements RefreshImportListTask.Re
         if (isRefreshing) {
             return;
         }
-        closeMultiSelectMode();
+//        closeMultiSelectMode();
         if (adapter != null) adapter.setData(null);
         swipeRefreshLayout.setRefreshing(true);
         new Thread(new Runnable() {

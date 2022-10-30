@@ -11,6 +11,7 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
 import com.github.ghmxr.apkextractor.DisplayItem;
+import com.github.ghmxr.apkextractor.MyApplication;
 import com.github.ghmxr.apkextractor.R;
 import com.github.ghmxr.apkextractor.utils.EnvironmentUtil;
 import com.github.ghmxr.apkextractor.utils.PinyinUtil;
@@ -29,7 +30,7 @@ public class ImportItem implements DisplayItem<ImportItem>, Comparable<ImportIte
 
     public static int sort_config = 0;
 
-    private Context context;
+//    private Context context;
 
     private FileItem fileItem;
     private long length;
@@ -49,7 +50,7 @@ public class ImportItem implements DisplayItem<ImportItem>, Comparable<ImportIte
 
     public ImportItem(@NonNull Context context, @NonNull FileItem fileItem) {
         this.fileItem = fileItem;
-        this.context = context;
+//        this.context = context;
         version_name = context.getResources().getString(R.string.word_unknown);
         version_code = context.getResources().getString(R.string.word_unknown);
         minSdkVersion = context.getResources().getString(R.string.word_unknown);
@@ -117,7 +118,7 @@ public class ImportItem implements DisplayItem<ImportItem>, Comparable<ImportIte
         this.drawable = wrapper.drawable;
         this.version_name = wrapper.version_name;
         this.fileItem = wrapper.fileItem;
-        this.context = wrapper.context;
+//        this.context = wrapper.context;
         this.importType = wrapper.importType;
         this.length = wrapper.length;
         this.lastModified = wrapper.lastModified;
@@ -212,7 +213,7 @@ public class ImportItem implements DisplayItem<ImportItem>, Comparable<ImportIte
             return fileItem.getDocumentFile().getUri();
         }
         if (fileItem.isFileInstance()) {
-            return EnvironmentUtil.getUriForFileByFileProvider(context, fileItem.getFile());
+            return EnvironmentUtil.getUriForFileByFileProvider(MyApplication.getApplication(), fileItem.getFile());
         }
         if (fileItem.isShareUriInstance()) {
             return fileItem.getContentUri();

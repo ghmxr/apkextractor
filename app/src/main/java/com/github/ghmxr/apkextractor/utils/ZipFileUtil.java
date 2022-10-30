@@ -34,7 +34,7 @@ public class ZipFileUtil {
     ZipFileInfo getZipFileInfoOfZipFile(ZipFile zipFile) {
         ZipFileInfo zipFileInfo = new ZipFileInfo();
         try {
-            Enumeration entries = zipFile.entries();
+            Enumeration<?> entries = zipFile.entries();
             while (entries.hasMoreElements()) {
                 ZipEntry zipEntry = (ZipEntry) entries.nextElement();
                 String entryPath = zipEntry.getName().replace("\\", "/");
