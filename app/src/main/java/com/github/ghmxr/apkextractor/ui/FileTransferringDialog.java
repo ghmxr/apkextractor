@@ -1,8 +1,9 @@
 package com.github.ghmxr.apkextractor.ui;
 
 import android.content.Context;
-import android.support.annotation.NonNull;
 import android.text.format.Formatter;
+
+import androidx.annotation.NonNull;
 
 import java.text.DecimalFormat;
 

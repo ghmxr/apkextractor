@@ -7,7 +7,7 @@
 
     <include layout="@layout/page_content" />
 
-    <android.support.v7.widget.CardView
+    <androidx.cardview.widget.CardView
         android:id="@+id/export_card"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -63,9 +63,9 @@
                     android:text="@string/main_card_show_system_app" />
             </LinearLayout>
         </RelativeLayout>
-    </android.support.v7.widget.CardView>
+    </androidx.cardview.widget.CardView>
 
-    <android.support.v7.widget.CardView
+    <androidx.cardview.widget.CardView
         android:id="@+id/export_card_multi_select"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -155,5 +155,5 @@
                     android:ellipsize="end" />
             </LinearLayout>
         </RelativeLayout>
-    </android.support.v7.widget.CardView>
+    </androidx.cardview.widget.CardView>
 </RelativeLayout>

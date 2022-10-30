@@ -6,14 +6,15 @@ import android.content.ClipboardManager;
 import android.content.Context;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
-import android.support.annotation.NonNull;
-import android.support.design.widget.Snackbar;
 import android.view.View;
+
+import androidx.annotation.NonNull;
 
 import com.github.ghmxr.apkextractor.Global;
 import com.github.ghmxr.apkextractor.R;
 import com.github.ghmxr.apkextractor.ui.SignatureView;
 import com.github.ghmxr.apkextractor.utils.EnvironmentUtil;
+import com.google.android.material.snackbar.Snackbar;
 
 import java.util.concurrent.ConcurrentHashMap;
 

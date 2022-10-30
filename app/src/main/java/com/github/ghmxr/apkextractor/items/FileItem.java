@@ -3,10 +3,11 @@ package com.github.ghmxr.apkextractor.items;
 import android.content.ContentResolver;
 import android.content.Context;
 import android.net.Uri;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
-import android.support.v4.provider.DocumentFile;
 import android.text.TextUtils;
+
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.documentfile.provider.DocumentFile;
 
 import com.github.ghmxr.apkextractor.MyApplication;
 import com.github.ghmxr.apkextractor.utils.DocumentFileUtil;
