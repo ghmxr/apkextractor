@@ -37,7 +37,7 @@ import com.github.ghmxr.apkextractor.utils.ZipFileUtil;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.concurrent.CopyOnWriteArrayList;
+import java.util.Vector;
 
 public class Global {
 
@@ -49,12 +49,12 @@ public class Global {
     /**
      * 用于持有对读取出的list的引用
      */
-    public static final List<AppItem> app_list = new CopyOnWriteArrayList<>();
+    public static final List<AppItem> app_list = new Vector<>();
 
     /**
      * 导出目录下的文件list引用
      */
-    public static final List<ImportItem> item_list = new CopyOnWriteArrayList<>();
+    public static final List<ImportItem> item_list = new Vector<>();
 
     public static void showRequestingWritePermissionSnackBar(@NonNull final Activity activity) {
         Snackbar snackbar = Snackbar.make(activity.findViewById(android.R.id.content), activity.getResources().getString(R.string.permission_write), Snackbar.LENGTH_SHORT);

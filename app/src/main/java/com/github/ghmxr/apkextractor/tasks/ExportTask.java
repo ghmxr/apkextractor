@@ -10,6 +10,7 @@ import com.github.ghmxr.apkextractor.Constants;
 import com.github.ghmxr.apkextractor.Global;
 import com.github.ghmxr.apkextractor.items.AppItem;
 import com.github.ghmxr.apkextractor.items.FileItem;
+import com.github.ghmxr.apkextractor.items.ImportItem;
 import com.github.ghmxr.apkextractor.utils.EnvironmentUtil;
 import com.github.ghmxr.apkextractor.utils.FileUtil;
 import com.github.ghmxr.apkextractor.utils.OutputUtil;
@@ -24,6 +25,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
@@ -232,13 +234,22 @@ public class ExportTask extends Thread {
         //更新导出文件到媒体库
         EnvironmentUtil.requestUpdatingMediaDatabase(context);
 
+        //向全局列表添加导出实例
+        ArrayList<ImportItem> exported = new ArrayList<>();
+        for (FileItem fileItem : write_paths) {
+            exported.add(new ImportItem(fileItem));
+        }
+        Global.item_list.addAll(exported);
+        Collections.sort(Global.item_list);
+
         Global.runOnUiThread(new Runnable() {
             @Override
             public void run() {
                 if (listener != null && !isInterrupted)
                     listener.onExportTaskFinished(write_paths, error_message.toString());
-                context.sendBroadcast(new Intent(Constants.ACTION_REFRESH_IMPORT_ITEMS_LIST));
+//                context.sendBroadcast(new Intent(Constants.ACTION_REFRESH_IMPORT_ITEMS_LIST));
                 context.sendBroadcast(new Intent(Constants.ACTION_REFRESH_AVAILIBLE_STORAGE));
+                context.sendBroadcast(new Intent(Constants.ACTION_REFILL_IMPORT_LIST));
             }
         });
 

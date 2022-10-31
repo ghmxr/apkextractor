@@ -114,6 +114,14 @@ public class ImportFragment extends Fragment implements RefreshImportListTask.Re
                 if (getActivity() == null) return;
                 new RefreshImportListTask(getActivity(), ImportFragment.this).start();
             }
+            if (Constants.ACTION_REFILL_IMPORT_LIST.equalsIgnoreCase(intent.getAction())) {
+                if (adapter != null) {
+                    adapter.setData(Global.item_list);
+                    if (viewGroup_no_content != null) {
+                        viewGroup_no_content.setVisibility(adapter.getItemCount() == 0 ? View.VISIBLE : View.GONE);
+                    }
+                }
+            }
         }
     };
 
@@ -152,6 +160,7 @@ public class ImportFragment extends Fragment implements RefreshImportListTask.Re
         try {
             IntentFilter intentFilter = new IntentFilter();
             intentFilter.addAction(Constants.ACTION_REFRESH_IMPORT_ITEMS_LIST);
+            intentFilter.addAction(Constants.ACTION_REFILL_IMPORT_LIST);
             if (getActivity() != null) getActivity().registerReceiver(receiver, intentFilter);
         } catch (Exception e) {
             e.printStackTrace();
@@ -253,7 +262,7 @@ public class ImportFragment extends Fragment implements RefreshImportListTask.Re
                                     if (adapter != null) {
                                         adapter.removeItems(deleted);
                                         if (viewGroup_no_content != null) {
-                                            viewGroup_no_content.setVisibility(adapter.getData().size() == 0 ? View.VISIBLE : View.GONE);
+                                            viewGroup_no_content.setVisibility(adapter.getItemCount() == 0 ? View.VISIBLE : View.GONE);
                                         }
                                     }
 

@@ -49,9 +49,10 @@ public class ImportItem implements DisplayItem<ImportItem>, Comparable<ImportIte
     public transient boolean importObb = false;
     public transient boolean importApk = false;
 
-    public ImportItem(@NonNull Context context, @NonNull FileItem fileItem) {
+    public ImportItem(@NonNull FileItem fileItem) {
         this.fileItem = fileItem;
 //        this.context = context;
+        final Context context = MyApplication.getApplication();
         version_name = context.getResources().getString(R.string.word_unknown);
         version_code = context.getResources().getString(R.string.word_unknown);
         minSdkVersion = context.getResources().getString(R.string.word_unknown);

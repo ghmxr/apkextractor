@@ -64,7 +64,7 @@ public class PackageDetailActivity extends BaseActivity implements View.OnClickL
                 finish();
                 return;
             }
-            importItem = new ImportItem(this, new FileItem(this, uri));
+            importItem = new ImportItem(new FileItem(this, uri));
             if ("apk".equalsIgnoreCase(EnvironmentUtil.getFileExtensionName(importItem.getFileItem().getName()))) {
                 ToastManager.showToast(this, getResources().getString(R.string.activity_package_detail_apk_attention), Toast.LENGTH_SHORT);
                 finish();

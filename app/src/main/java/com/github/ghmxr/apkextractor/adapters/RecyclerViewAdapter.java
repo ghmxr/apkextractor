@@ -172,10 +172,6 @@ public class RecyclerViewAdapter<T extends DisplayItem<T>> extends RecyclerView.
         notifyDataSetChanged();
     }
 
-    public ArrayList<T> getData() {
-        return data;
-    }
-
     @SuppressLint("NotifyDataSetChanged")
     public void setHighlightKeyword(String keyword) {
         this.highlightKeyword = keyword;

@@ -23,6 +23,8 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.OutputStream;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
@@ -40,6 +42,8 @@ public class ImportTask extends Thread {
     private long speed_bytes = 0;
     private long speed_check_time = 0;
     private final boolean isExternal;
+    private ImportItem currentWritingApk;
+    private final LinkedList<ImportItem> apkItems = new LinkedList<>();
 
     private final StringBuilder error_info = new StringBuilder();
 
@@ -113,7 +117,12 @@ public class ImportTask extends Thread {
                             }
                             bufferedOutputStream.flush();
                             bufferedOutputStream.close();
-                            if (!isInterrupted) currentWrtingFileItem = null;
+                            currentWritingApk = new ImportItem(currentWrtingFileItem);
+                            apkItems.add(currentWritingApk);
+                            if (!isInterrupted) {
+                                currentWrtingFileItem = null;
+                                currentWritingApk = null;
+                            }
                         }
                         if (!isInterrupted) zipEntry = zipInputStream.getNextEntry();
                         else break;
@@ -125,6 +134,9 @@ public class ImportTask extends Thread {
                         error_info.append("\n\n");
                         try {
                             currentWrtingFileItem.delete();
+                            if (currentWritingApk != null) {
+                                apkItems.remove(currentWritingApk);
+                            }
                         } catch (Exception ee) {
                         }
                     }
@@ -144,29 +156,39 @@ public class ImportTask extends Thread {
                 if (currentWrtingFileItem != null) {
                     currentWrtingFileItem.delete();
                 }
+                if (currentWritingApk != null) {
+                    apkItems.remove(currentWritingApk);
+                }
             } catch (Exception e) {
                 e.printStackTrace();
             }
-        } else if (callback != null) Global.handler.post(new Runnable() {
-            @Override
-            public void run() {
-                callback.onImportTaskFinished(error_info.toString());
-                context.sendBroadcast(new Intent(Constants.ACTION_REFRESH_IMPORT_ITEMS_LIST));
-                context.sendBroadcast(new Intent(Constants.ACTION_REFRESH_AVAILIBLE_STORAGE));
-                try {
-                    if (importItemArrayList.size() == 1 && apkUri != null && error_info.toString().trim().length() == 0) {
-                        Intent intent = new Intent(Intent.ACTION_VIEW);
-                        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                        intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
-                        intent.setDataAndType(apkUri, "application/vnd.android.package-archive");
-                        context.startActivity(intent);
+        } else {
+            //向全局列表添加本次导出的apk的引用内容，以避免重新刷新递归扫描
+            Global.item_list.addAll(apkItems);
+            Collections.sort(Global.item_list);
+
+            if (callback != null) Global.handler.post(new Runnable() {
+                @Override
+                public void run() {
+                    callback.onImportTaskFinished(error_info.toString());
+//                context.sendBroadcast(new Intent(Constants.ACTION_REFRESH_IMPORT_ITEMS_LIST));
+                    context.sendBroadcast(new Intent(Constants.ACTION_REFRESH_AVAILIBLE_STORAGE));
+                    context.sendBroadcast(new Intent(Constants.ACTION_REFILL_IMPORT_LIST));
+                    try {
+                        if (importItemArrayList.size() == 1 && apkUri != null && error_info.toString().trim().length() == 0) {
+                            Intent intent = new Intent(Intent.ACTION_VIEW);
+                            intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                            intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
+                            intent.setDataAndType(apkUri, "application/vnd.android.package-archive");
+                            context.startActivity(intent);
+                        }
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                        ToastManager.showToast(context, e.toString(), Toast.LENGTH_SHORT);
                     }
-                } catch (Exception e) {
-                    e.printStackTrace();
-                    ToastManager.showToast(context, e.toString(), Toast.LENGTH_SHORT);
                 }
-            }
-        });
+            });
+        }
     }
 
     private void unZipToFile(ZipInputStream zipInputStream, String entryPath) throws Exception {

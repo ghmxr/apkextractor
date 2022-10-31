@@ -156,6 +156,7 @@ public class Constants {
     public static final String ACTION_REFRESH_APP_LIST = "com.github.ghmxr.apkextractor.refresh_applist";
     public static final String ACTION_REFRESH_IMPORT_ITEMS_LIST = "com.github.ghmxr.apkextractor.refresh_import_items_list";
     public static final String ACTION_REFRESH_AVAILIBLE_STORAGE = "com.github.ghmxr.apkextractor.refresh_storage";
+    public static final String ACTION_REFILL_IMPORT_LIST = "com.github.ghmxr.apkextractor.refill_import_list";
 
     /**
      * 绑定的端口号，1024~65535之间，int值

@@ -106,7 +106,7 @@ public class RefreshImportListTask extends Thread {
             if (fileItem == null) return arrayList;
             //File file=new File(fileItem.getPath());
             if (fileItem.isFile()) {
-                final ImportItem importItem = new ImportItem(context, fileItem);
+                final ImportItem importItem = new ImportItem(fileItem);
                 if (fileItem.getPath().trim().toLowerCase().endsWith(".apk") || fileItem.getPath().trim().toLowerCase().endsWith(".zip")
                         || fileItem.getPath().trim().toLowerCase().endsWith(".xapk")
                         || fileItem.getPath().trim().toLowerCase().endsWith("." + SPUtil.getCompressingExtensionName(context).toLowerCase())) {
