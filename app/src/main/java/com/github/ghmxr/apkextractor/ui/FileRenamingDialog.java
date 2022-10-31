@@ -248,7 +248,7 @@ public class FileRenamingDialog extends AlertDialog implements View.OnClickListe
         final ImportItem importItem = importItems.get(position);
         final PackageInfo packageInfo = importItem.getPackageInfo();
         String value = editText.getText().toString();
-        value = value.replace(Constants.FONT_APP_NAME, packageInfo != null ? EnvironmentUtil.getAppNameByPackageName(getContext(), packageInfo.packageName) : "");
+        value = value.replace(Constants.FONT_APP_NAME, packageInfo != null ? importItem.getApkLabel() : "");
         value = value.replace(Constants.FONT_APP_PACKAGE_NAME, packageInfo != null ? String.valueOf(packageInfo.packageName) : "");
         value = value.replace(Constants.FONT_APP_VERSIONNAME, packageInfo != null ? String.valueOf(packageInfo.versionName) : "");
         value = value.replace(Constants.FONT_APP_VERSIONCODE, packageInfo != null ? String.valueOf(packageInfo.versionCode) : "");

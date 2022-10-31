@@ -42,6 +42,7 @@ public class ImportItem implements DisplayItem<ImportItem>, Comparable<ImportIte
     private String version_code = "";
     private String minSdkVersion = "";
     private String targetSdkVersion = "";
+    private String apkLabel = "";
     private long lastModified;
 
     public transient boolean importData = false;
@@ -95,6 +96,7 @@ public class ImportItem implements DisplayItem<ImportItem>, Comparable<ImportIte
                     packageInfo.applicationInfo.sourceDir = fileItem.getPath();
                     packageInfo.applicationInfo.publicSourceDir = fileItem.getPath();
                     drawable = packageInfo.applicationInfo.loadIcon(packageManager);
+                    apkLabel = String.valueOf(packageInfo.applicationInfo.loadLabel(packageManager));
                     version_name = packageInfo.versionName;
                     version_code = String.valueOf(packageInfo.versionCode);
                     if (Build.VERSION.SDK_INT > 23) {
@@ -192,6 +194,10 @@ public class ImportItem implements DisplayItem<ImportItem>, Comparable<ImportIte
 
     public Drawable getItemIconDrawable() {
         return drawable;
+    }
+
+    public String getApkLabel() {
+        return apkLabel;
     }
 
     public FileItem getFileItem() {

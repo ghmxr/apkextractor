@@ -252,12 +252,12 @@ public class ImportFragment extends Fragment implements RefreshImportListTask.Re
 //                                    getActivity().sendBroadcast(new Intent(Constants.ACTION_REFRESH_IMPORT_ITEMS_LIST));
                                     if (adapter != null) {
                                         adapter.removeItems(deleted);
-                                    }
-                                    synchronized (Global.item_list) {
-                                        List<ImportItem> globalList = Global.item_list;
-                                        globalList.removeAll(deleted);
+                                        if (viewGroup_no_content != null) {
+                                            viewGroup_no_content.setVisibility(adapter.getData().size() == 0 ? View.VISIBLE : View.GONE);
+                                        }
                                     }
 
+                                    Global.item_list.removeAll(deleted);
 
                                     getActivity().sendBroadcast(new Intent(Constants.ACTION_REFRESH_AVAILIBLE_STORAGE));
                                 } catch (Exception e) {
@@ -449,9 +449,7 @@ public class ImportFragment extends Fragment implements RefreshImportListTask.Re
         if (b) {
             adapter.setData(null);
         } else {
-            synchronized (Global.item_list) {
-                adapter.setData(Global.item_list);
-            }
+            adapter.setData(Global.item_list);
         }
         if (!b) adapter.setHighlightKeyword(null);
     }
@@ -461,16 +459,14 @@ public class ImportFragment extends Fragment implements RefreshImportListTask.Re
         super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == REQUEST_CODE_PACKAGE_DETAIL && resultCode == Activity.RESULT_OK && data != null) {
             String packagePath = data.getStringExtra(PackageDetailActivity.EXTRA_IMPORT_ITEM_PATH);
-            synchronized (Global.item_list) {
-                List<ImportItem> importItems = Global.item_list;
-                ImportItem deleted;
-                Iterator<ImportItem> itemIterator = importItems.iterator();
-                while (itemIterator.hasNext()) {
-                    deleted = itemIterator.next();
-                    if (TextUtils.equals(deleted.getFileItem().getPath(), packagePath)) {
-                        itemIterator.remove();
-                        adapter.removeItem(deleted);
-                    }
+            List<ImportItem> importItems = Global.item_list;
+            ImportItem deleted;
+            Iterator<ImportItem> itemIterator = importItems.iterator();
+            while (itemIterator.hasNext()) {
+                deleted = itemIterator.next();
+                if (TextUtils.equals(deleted.getFileItem().getPath(), packagePath)) {
+                    itemIterator.remove();
+                    adapter.removeItem(deleted);
                 }
             }
         }
@@ -483,9 +479,7 @@ public class ImportFragment extends Fragment implements RefreshImportListTask.Re
         if (adapter == null) return;
         if (!isSearchMode) return;
         if (searchPackageTask != null) searchPackageTask.setInterrupted();
-        synchronized (Global.item_list) {
-            searchPackageTask = new SearchPackageTask(Global.item_list, key, this);
-        }
+        searchPackageTask = new SearchPackageTask(Global.item_list, key, this);
         adapter.setData(null);
 //        adapter.setMultiSelectMode(false);
 //        card_multi_select.setVisibility(View.GONE);
@@ -523,16 +517,12 @@ public class ImportFragment extends Fragment implements RefreshImportListTask.Re
         new Thread(new Runnable() {
             @Override
             public void run() {
-                synchronized (Global.item_list) {
-                    Collections.sort(Global.item_list);
-                }
+                Collections.sort(Global.item_list);
                 Global.handler.post(new Runnable() {
                     @Override
                     public void run() {
                         if (adapter != null) {
-                            synchronized (Global.item_list) {
-                                adapter.setData(Global.item_list);
-                            }
+                            adapter.setData(Global.item_list);
                         }
                         swipeRefreshLayout.setRefreshing(false);
                     }

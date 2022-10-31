@@ -67,9 +67,7 @@ public class RefreshImportListTask extends Thread {
                 fileItem = new FileItem(SPUtil.getInternalSavePath(context));
             }
         }
-        synchronized (Global.item_list) {
-            Global.item_list.clear();
-        }
+        Global.item_list.clear();
         if (!isInterrupted) {
             ImportItem.sort_config = SPUtil.getGlobalSharedPreferences(context).getInt(Constants.PREFERENCE_SORT_CONFIG_IMPORT_ITEMS, 0);
         }
@@ -86,10 +84,8 @@ public class RefreshImportListTask extends Thread {
             return;
         }
         if (isInterrupted) return;
-        synchronized (Global.item_list) {
-            Global.item_list.clear();
-            Global.item_list.addAll(arrayList);
-        }
+        Global.item_list.clear();
+        Global.item_list.addAll(arrayList);
         HashTask.clearResultCache();
         GetSignatureInfoTask.clearCache();
         GetApkLibraryTask.clearOutsidePackageCache();
@@ -131,14 +127,12 @@ public class RefreshImportListTask extends Thread {
                     if (canAdd) arrayList.add(importItem);
 //                    SystemClock.sleep(1500);
 //                    final ArrayList<ImportItem> container = new ArrayList<>();
-                    synchronized (Global.item_list) {
-                        if (!isInterrupted) {
-                            if (canAdd) {
-                                Global.item_list.add(importItem);
-                            }
+                    if (!isInterrupted) {
+                        if (canAdd) {
+                            Global.item_list.add(importItem);
+                        }
 //                            Collections.sort(Global.item_list);
 //                            container.addAll(Global.item_list);
-                        }
                     }
                     final CountDownLatch countDownLatch = new CountDownLatch(1);
                     final boolean fCanAdd = canAdd;

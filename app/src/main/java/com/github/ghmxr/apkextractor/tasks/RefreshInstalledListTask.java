@@ -77,10 +77,8 @@ public class RefreshInstalledListTask extends Thread {
         if (isInterrupted) return;
         AppItem.sort_config = settings.getInt(Constants.PREFERENCE_SORT_CONFIG, 0);
         Collections.sort(list_sum);
-        synchronized (Global.app_list) {
-            Global.app_list.clear();
-            Global.app_list.addAll(list_sum);//向全局list保存一个引用
-        }
+        Global.app_list.clear();
+        Global.app_list.addAll(list_sum);//向全局list保存一个引用
         GetSignatureInfoTask.clearCache();
         GetApkLibraryTask.clearOutsidePackageCache();
         Global.handler.post(new Runnable() {

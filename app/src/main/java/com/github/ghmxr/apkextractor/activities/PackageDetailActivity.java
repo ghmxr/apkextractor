@@ -73,9 +73,7 @@ public class PackageDetailActivity extends BaseActivity implements View.OnClickL
         } else {
             try {
                 //importItem= Global.item_list.get(getIntent().getIntExtra(EXTRA_IMPORT_ITEM_POSITION,-1));
-                synchronized (Global.item_list) {
-                    importItem = Global.getImportItemByFileItemPath(Global.item_list, getIntent().getStringExtra(EXTRA_IMPORT_ITEM_PATH));
-                }
+                importItem = Global.getImportItemByFileItemPath(Global.item_list, getIntent().getStringExtra(EXTRA_IMPORT_ITEM_PATH));
             } catch (Exception e) {
                 e.printStackTrace();
                 ToastManager.showToast(this, getResources().getString(R.string.activity_package_detail_blank), Toast.LENGTH_SHORT);
@@ -124,6 +122,7 @@ public class PackageDetailActivity extends BaseActivity implements View.OnClickL
         ((ImageView) findViewById(R.id.package_icon)).setImageDrawable(importItem.getIconDrawable());
         ((TextView) findViewById(R.id.package_detail_name)).setText(importItem.getFileItem().getName());
         ((TextView) findViewById(R.id.package_detail_package_name)).setText(importItem.getPackageInfo() != null ? String.valueOf(importItem.getPackageInfo().packageName) : getResources().getString(R.string.word_unknown));
+        ((TextView) findViewById(R.id.package_detail_app_name)).setText(TextUtils.isEmpty(importItem.getApkLabel()) ? getResources().getString(R.string.word_unknown) : importItem.getApkLabel());
         ((TextView) findViewById(R.id.package_detail_version_name_title)).setText(importItem.getVersionName());
         ((TextView) findViewById(R.id.package_detail_file_name)).setText(importItem.getFileItem().getName());
         ((TextView) findViewById(R.id.package_detail_size)).setText(Formatter.formatFileSize(this, importItem.getSize()));
@@ -141,6 +140,7 @@ public class PackageDetailActivity extends BaseActivity implements View.OnClickL
         if (importItem.getImportType() == ImportItem.ImportType.ZIP) {
             findViewById(R.id.package_detail_version_name_title).setVisibility(View.GONE);
             findViewById(R.id.package_detail_package_name_area).setVisibility(View.GONE);
+            findViewById(R.id.package_detail_app_name_area).setVisibility(View.GONE);
             findViewById(R.id.package_detail_version_name_area).setVisibility(View.GONE);
             findViewById(R.id.package_detail_version_code_area).setVisibility(View.GONE);
             findViewById(R.id.package_detail_minimum_api_area).setVisibility(View.GONE);
@@ -424,6 +424,14 @@ public class PackageDetailActivity extends BaseActivity implements View.OnClickL
             break;
             case R.id.package_detail_path_area: {
                 clip2ClipboardAndShowSnackbar(((TextView) findViewById(R.id.package_detail_path)).getText().toString());
+            }
+            break;
+            case R.id.package_detail_package_name_area: {
+                clip2ClipboardAndShowSnackbar(((TextView) findViewById(R.id.package_detail_package_name)).getText().toString());
+            }
+            break;
+            case R.id.package_detail_app_name_area: {
+                clip2ClipboardAndShowSnackbar(((TextView) findViewById(R.id.package_detail_app_name)).getText().toString());
             }
             break;
         }

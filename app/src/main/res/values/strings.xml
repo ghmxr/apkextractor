@@ -46,6 +46,7 @@
     <string name="activity_detail_market">在应用商店查看</string>
     <string name="activity_detail_uninstall">卸载</string>
     <string name="activity_detail_package_name">应用包名</string>
+    <string name="activity_detail_app_label">应用名</string>
     <string name="activity_detail_version_name">版本名</string>
     <string name="activity_detail_version_code">版本号</string>
     <string name="activity_detail_package_size">应用包大小</string>
@@ -381,6 +382,7 @@
     <b>新增：无效压缩包过滤选项；</b>\n
     <b>修复：在某些情况下应用列表读取不全的问题；</b>\n
     <b>修复：首次接收文件时未初始化路径导致的接收异常；</b>\n
+    <b>修复：批量重命名时变量“?N”无法读取APK应用名称的问题；</b>\n
     <b>修改：安装包界面边扫描边展示；</b>\n
     <b>变动：界面滚动条和返回顶部；</b>\n
     <b>变动：删除安装包后不再强制刷新列表；</b>\n

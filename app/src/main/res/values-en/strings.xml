@@ -43,6 +43,7 @@
     <string name="activity_detail_market">View on market</string>
     <string name="activity_detail_uninstall">Uninstall</string>
     <string name="activity_detail_package_name">Package name</string>
+    <string name="activity_detail_app_label">App name</string>
     <string name="activity_detail_version_name">Version name</string>
     <string name="activity_detail_version_code">Version code</string>
     <string name="activity_detail_package_size">Package size</string>
