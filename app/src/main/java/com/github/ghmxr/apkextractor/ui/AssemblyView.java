@@ -23,6 +23,13 @@ import java.util.List;
 
 public class AssemblyView extends LinearLayout implements View.OnClickListener {
 
+    private LinearLayout linearLayout_permission;
+    private LinearLayout linearLayout_activity;
+    private LinearLayout linearLayout_receiver;
+    private LinearLayout linearLayout_loader;
+    private LinearLayout linearLayout_service;
+    private LinearLayout linearLayout_provider;
+
     private final RecyclerView rv_permission;
     private final RecyclerView rv_activity;
     private final RecyclerView rv_service;
@@ -55,6 +62,13 @@ public class AssemblyView extends LinearLayout implements View.OnClickListener {
     public AssemblyView(Context context, @Nullable AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
         inflate(context, R.layout.layout_card_assembly, this);
+
+        linearLayout_permission = findViewById(R.id.detail_permission);
+        linearLayout_activity = findViewById(R.id.detail_activity);
+        linearLayout_receiver = findViewById(R.id.detail_receiver);
+        linearLayout_loader = findViewById(R.id.detail_static_loader);
+        linearLayout_service = findViewById(R.id.detail_service);
+        linearLayout_provider = findViewById(R.id.detail_provider);
 
         rv_permission = findViewById(R.id.rv_permission);
         rv_activity = findViewById(R.id.rv_activity);
@@ -97,11 +111,13 @@ public class AssemblyView extends LinearLayout implements View.OnClickListener {
             case R.id.detail_permission_area: {
                 if (rv_permission.getVisibility() == View.VISIBLE) {
                     permission_arrow.setRotation(0);
-                    rv_permission.setVisibility(View.GONE);
+                    linearLayout_permission.setVisibility(View.GONE);
+//                    rv_permission.setVisibility(View.GONE);
                     TransitionManager.beginDelayedTransition(this);
                 } else {
                     findViewById(R.id.detail_permission_area_arrow).setRotation(90);
-                    rv_permission.setVisibility(View.VISIBLE);
+                    linearLayout_permission.setVisibility(View.VISIBLE);
+//                    rv_permission.setVisibility(View.VISIBLE);
                     TransitionManager.beginDelayedTransition(this);
                 }
             }
@@ -109,11 +125,13 @@ public class AssemblyView extends LinearLayout implements View.OnClickListener {
             case R.id.detail_activity_area: {
                 if (rv_activity.getVisibility() == View.VISIBLE) {
                     activity_arrow.setRotation(0);
-                    rv_activity.setVisibility(View.GONE);
+                    linearLayout_activity.setVisibility(View.GONE);
+//                    rv_activity.setVisibility(View.GONE);
                     TransitionManager.beginDelayedTransition(this);
                 } else {
                     activity_arrow.setRotation(90);
-                    rv_activity.setVisibility(View.VISIBLE);
+                    linearLayout_activity.setVisibility(View.VISIBLE);
+//                    rv_activity.setVisibility(View.VISIBLE);
                     TransitionManager.beginDelayedTransition(this);
                 }
             }
@@ -121,11 +139,13 @@ public class AssemblyView extends LinearLayout implements View.OnClickListener {
             case R.id.detail_receiver_area: {
                 if (rv_receiver.getVisibility() == View.VISIBLE) {
                     receiver_arrow.setRotation(0);
-                    rv_receiver.setVisibility(View.GONE);
+                    linearLayout_receiver.setVisibility(View.GONE);
+//                    rv_receiver.setVisibility(View.GONE);
                     TransitionManager.beginDelayedTransition(this);
                 } else {
                     receiver_arrow.setRotation(90);
-                    rv_receiver.setVisibility(View.VISIBLE);
+                    linearLayout_receiver.setVisibility(View.VISIBLE);
+//                    rv_receiver.setVisibility(View.VISIBLE);
                     TransitionManager.beginDelayedTransition(this);
                 }
             }
@@ -133,11 +153,13 @@ public class AssemblyView extends LinearLayout implements View.OnClickListener {
             case R.id.detail_static_loader_area: {
                 if (rv_static_loader.getVisibility() == View.VISIBLE) {
                     loader_arrow.setRotation(0);
-                    rv_static_loader.setVisibility(View.GONE);
+                    linearLayout_loader.setVisibility(View.GONE);
+//                    rv_static_loader.setVisibility(View.GONE);
                     TransitionManager.beginDelayedTransition(this);
                 } else {
                     loader_arrow.setRotation(90);
-                    rv_static_loader.setVisibility(View.VISIBLE);
+                    linearLayout_loader.setVisibility(View.VISIBLE);
+//                    rv_static_loader.setVisibility(View.VISIBLE);
                     TransitionManager.beginDelayedTransition(this);
                 }
             }
@@ -145,11 +167,13 @@ public class AssemblyView extends LinearLayout implements View.OnClickListener {
             case R.id.detail_services_area: {
                 if (rv_service.getVisibility() == View.VISIBLE) {
                     service_arrow.setRotation(0);
-                    rv_service.setVisibility(View.GONE);
+                    linearLayout_service.setVisibility(View.GONE);
+//                    rv_service.setVisibility(View.GONE);
                     TransitionManager.beginDelayedTransition(this);
                 } else {
                     service_arrow.setRotation(90);
-                    rv_service.setVisibility(View.VISIBLE);
+                    linearLayout_service.setVisibility(View.VISIBLE);
+//                    rv_service.setVisibility(View.VISIBLE);
                     TransitionManager.beginDelayedTransition(this);
                 }
             }
@@ -157,16 +181,42 @@ public class AssemblyView extends LinearLayout implements View.OnClickListener {
             case R.id.detail_provider_area: {
                 if (rv_provider.getVisibility() == View.VISIBLE) {
                     provider_arrow.setRotation(0);
-                    rv_provider.setVisibility(View.GONE);
+                    linearLayout_provider.setVisibility(View.GONE);
+//                    rv_provider.setVisibility(View.GONE);
                     TransitionManager.beginDelayedTransition(this);
                 } else {
                     provider_arrow.setRotation(90);
-                    rv_provider.setVisibility(View.VISIBLE);
+                    linearLayout_provider.setVisibility(View.VISIBLE);
+//                    rv_provider.setVisibility(View.VISIBLE);
                     TransitionManager.beginDelayedTransition(this);
                 }
             }
             break;
         }
+    }
+
+    public LinearLayout getLinearLayout_permission() {
+        return linearLayout_permission;
+    }
+
+    public LinearLayout getLinearLayout_activity() {
+        return linearLayout_activity;
+    }
+
+    public LinearLayout getLinearLayout_receiver() {
+        return linearLayout_receiver;
+    }
+
+    public LinearLayout getLinearLayout_loader() {
+        return linearLayout_loader;
+    }
+
+    public LinearLayout getLinearLayout_service() {
+        return linearLayout_service;
+    }
+
+    public LinearLayout getLinearLayout_provider() {
+        return linearLayout_provider;
     }
 
     @SuppressLint("SetTextI18n")
@@ -175,6 +225,16 @@ public class AssemblyView extends LinearLayout implements View.OnClickListener {
         tv_permission.setText(getContext().getResources().getString(R.string.activity_detail_permissions)
                 + "(" + data.size() + getContext().getResources().getString(R.string.unit_item) + ")");
         rv_permission.setAdapter(new AssembleListViewAdapter<>(data));
+    }
+
+    @SuppressLint("SetTextI18n")
+    public void setPermissionInfoToAllViews(@NonNull List<View> permissionViews) {
+        for (View view : permissionViews) {
+            linearLayout_permission.addView(view);
+        }
+        tv_permission.setText(getContext().getResources().getString(R.string.activity_detail_permissions)
+                + "(" + permissionViews.size() + getContext().getResources().getString(R.string.unit_item) + ")");
+        findViewById(R.id.detail_card_permissions).setVisibility(View.VISIBLE);
     }
 
     @SuppressLint("SetTextI18n")
@@ -187,12 +247,32 @@ public class AssemblyView extends LinearLayout implements View.OnClickListener {
     }
 
     @SuppressLint("SetTextI18n")
+    public void setActivityInfoToAllViews(@NonNull List<View> activityViews) {
+        for (View view : activityViews) {
+            linearLayout_activity.addView(view);
+        }
+        tv_activity.setText(getContext().getResources().getString(R.string.activity_detail_activities)
+                + "(" + activityViews.size() + getContext().getResources().getString(R.string.unit_item) + ")");
+        findViewById(R.id.detail_card_activities).setVisibility(View.VISIBLE);
+    }
+
+    @SuppressLint("SetTextI18n")
     public <T extends ComponentInfo> void setReceiverInfo(@NonNull List<GetPackageInfoViewTask.AssembleItem<T>> data) {
         findViewById(R.id.detail_card_receivers).setVisibility(View.VISIBLE);
         tv_receiver.setText(getContext().getResources().getString(R.string.activity_detail_receivers)
                 + "(" + data.size() + getContext().getResources().getString(R.string.unit_item) + ")");
         rv_receiver.setAdapter(new AssembleListViewAdapter<>(data));
 
+    }
+
+    @SuppressLint("SetTextI18n")
+    public void setReceiverInfoToAllViews(@NonNull List<View> receiverViews) {
+        for (View view : receiverViews) {
+            linearLayout_activity.addView(view);
+        }
+        tv_receiver.setText(getContext().getResources().getString(R.string.activity_detail_receivers)
+                + "(" + receiverViews.size() + getContext().getResources().getString(R.string.unit_item) + ")");
+        findViewById(R.id.detail_card_receivers).setVisibility(View.VISIBLE);
     }
 
     @SuppressLint("SetTextI18n")
@@ -205,6 +285,16 @@ public class AssemblyView extends LinearLayout implements View.OnClickListener {
     }
 
     @SuppressLint("SetTextI18n")
+    public void setServiceInfoToAllViews(@NonNull List<View> serviceViews) {
+        for (View view : serviceViews) {
+            linearLayout_service.addView(view);
+        }
+        tv_service.setText(getContext().getResources().getString(R.string.activity_detail_services)
+                + "(" + serviceViews.size() + getContext().getResources().getString(R.string.unit_item) + ")");
+        findViewById(R.id.detail_card_services).setVisibility(View.VISIBLE);
+    }
+
+    @SuppressLint("SetTextI18n")
     public <T extends ComponentInfo> void setProviderInfo(@NonNull List<GetPackageInfoViewTask.AssembleItem<T>> data) {
         findViewById(R.id.detail_card_providers).setVisibility(View.VISIBLE);
         tv_provider.setText(getContext().getResources().getString(R.string.activity_detail_providers)
@@ -214,11 +304,31 @@ public class AssemblyView extends LinearLayout implements View.OnClickListener {
     }
 
     @SuppressLint("SetTextI18n")
+    public void setProviderInfoToAllViews(@NonNull List<View> providerViews) {
+        for (View view : providerViews) {
+            linearLayout_provider.addView(view);
+        }
+        tv_provider.setText(getContext().getResources().getString(R.string.activity_detail_providers)
+                + "(" + providerViews.size() + getContext().getResources().getString(R.string.unit_item) + ")");
+        findViewById(R.id.detail_card_providers).setVisibility(View.VISIBLE);
+    }
+
+    @SuppressLint("SetTextI18n")
     public void setStaticReceiverInfo(@NonNull List<GetPackageInfoViewTask.StaticLoaderItem> data) {
         findViewById(R.id.detail_card_static_loaders).setVisibility(VISIBLE);
         tv_loader.setText(getContext().getResources().getString(R.string.activity_detail_static_loaders)
                 + "(" + data.size() + getContext().getResources().getString(R.string.unit_item) + ")");
         rv_static_loader.setAdapter(new StaticLoaderListAdapter(data));
+    }
+
+    @SuppressLint("SetTextI18n")
+    public void setStaticReceiverToAllViews(@NonNull List<View> staticReceiverViews) {
+        for (View view : staticReceiverViews) {
+            linearLayout_loader.addView(view);
+        }
+        tv_loader.setText(getContext().getResources().getString(R.string.activity_detail_static_loaders)
+                + "(" + staticReceiverViews.size() + getContext().getResources().getString(R.string.unit_item) + ")");
+        findViewById(R.id.detail_card_static_loaders).setVisibility(View.VISIBLE);
     }
 
     public boolean getIsExpanded() {

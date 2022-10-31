@@ -141,53 +141,35 @@ public class GetPackageInfoViewTask extends Thread {
         final ArrayList<StaticLoaderItem> staticLoaderItems = new ArrayList<>();
 
 
-        /*final ArrayList<View> permission_child_views = new ArrayList<>();
+        final ArrayList<View> permission_child_views = new ArrayList<>();
         final ArrayList<View> activity_child_views = new ArrayList<>();
         final ArrayList<View> receiver_child_views = new ArrayList<>();
         final ArrayList<View> loaders_child_views = new ArrayList<>();
         final ArrayList<View> service_child_views = new ArrayList<>();
-        final ArrayList<View> provider_child_views = new ArrayList<>();*/
+        final ArrayList<View> provider_child_views = new ArrayList<>();
 
         if (permissions != null && get_permissions) {
             for (final String s : permissions) {
                 if (s == null) continue;
-                permissionData.add(new AssembleItem<>(new AssembleItem.StringComponent(s), new View.OnClickListener() {
+                /*permissionData.add(new AssembleItem<>(new AssembleItem.StringComponent(s), new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
                         clip2ClipboardAndShowSnackbar(s);
                     }
-                }));
-               /* permission_child_views.add(getSingleItemView(assemblyView.getLinearLayout_permission(), s, new View.OnClickListener() {
+                }));*/
+
+                permission_child_views.add(getSingleItemView(assemblyView.getLinearLayout_permission(), s, new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
                         clip2ClipboardAndShowSnackbar(s);
                     }
-                }, null));*/
+                }, null));
             }
         }
         if (activities != null && get_activities) {
             for (final ActivityInfo info : activities) {
                 if (info == null) continue;
-                activityData.add(new AssembleItem<>(info, new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        clip2ClipboardAndShowSnackbar(info.name);
-                    }
-                }, new View.OnLongClickListener() {
-                    @Override
-                    public boolean onLongClick(View v) {
-                        try {
-                            Intent intent = new Intent();
-                            intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                            intent.setClassName(info.packageName, info.name);
-                            activity.startActivity(intent);
-                        } catch (Exception e) {
-                            ToastManager.showToast(activity, e.toString(), Toast.LENGTH_SHORT);
-                        }
-                        return true;
-                    }
-                }));
-               /* activity_child_views.add(getSingleItemView(assemblyView.getLinearLayout_activity(), info.name, new View.OnClickListener() {
+                /*activityData.add(new AssembleItem<>(info, new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
                         clip2ClipboardAndShowSnackbar(info.name);
@@ -206,48 +188,49 @@ public class GetPackageInfoViewTask extends Thread {
                         return true;
                     }
                 }));*/
+                activity_child_views.add(getSingleItemView(assemblyView.getLinearLayout_activity(), info.name, new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        clip2ClipboardAndShowSnackbar(info.name);
+                    }
+                }, new View.OnLongClickListener() {
+                    @Override
+                    public boolean onLongClick(View v) {
+                        try {
+                            Intent intent = new Intent();
+                            intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                            intent.setClassName(info.packageName, info.name);
+                            activity.startActivity(intent);
+                        } catch (Exception e) {
+                            ToastManager.showToast(activity, e.toString(), Toast.LENGTH_SHORT);
+                        }
+                        return true;
+                    }
+                }));
             }
         }
         if (receivers != null && get_receivers) {
             for (final ActivityInfo activityInfo : receivers) {
                 if (activityInfo == null) continue;
-                receiverData.add(new AssembleItem<>(activityInfo, new View.OnClickListener() {
+                /*receiverData.add(new AssembleItem<>(activityInfo, new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
                         clip2ClipboardAndShowSnackbar(activityInfo.name);
                     }
-                }));
-                /*receiver_child_views.add(getSingleItemView(assemblyView.getLinearLayout_receiver(), activityInfo.name, new View.OnClickListener() {
+                }));*/
+                receiver_child_views.add(getSingleItemView(assemblyView.getLinearLayout_receiver(), activityInfo.name, new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
                         clip2ClipboardAndShowSnackbar(activityInfo.name);
                     }
-                }, null));*/
+                }, null));
             }
         }
 
         if (services != null && get_services) {
             for (final ServiceInfo serviceInfo : services) {
                 if (serviceInfo == null) continue;
-                serviceData.add(new AssembleItem<>(serviceInfo, new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        clip2ClipboardAndShowSnackbar(serviceInfo.name);
-                    }
-                }, new View.OnLongClickListener() {
-                    @Override
-                    public boolean onLongClick(View v) {
-                        try {
-                            Intent intent = new Intent();
-                            intent.setClassName(serviceInfo.packageName, serviceInfo.name);
-                            activity.startService(intent);
-                        } catch (Exception e) {
-                            ToastManager.showToast(activity, e.toString(), Toast.LENGTH_SHORT);
-                        }
-                        return true;
-                    }
-                }));
-                /*service_child_views.add(getSingleItemView(assemblyView.getLinearLayout_service(), serviceInfo.name, new View.OnClickListener() {
+                /*serviceData.add(new AssembleItem<>(serviceInfo, new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
                         clip2ClipboardAndShowSnackbar(serviceInfo.name);
@@ -265,40 +248,58 @@ public class GetPackageInfoViewTask extends Thread {
                         return true;
                     }
                 }));*/
+                service_child_views.add(getSingleItemView(assemblyView.getLinearLayout_service(), serviceInfo.name, new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        clip2ClipboardAndShowSnackbar(serviceInfo.name);
+                    }
+                }, new View.OnLongClickListener() {
+                    @Override
+                    public boolean onLongClick(View v) {
+                        try {
+                            Intent intent = new Intent();
+                            intent.setClassName(serviceInfo.packageName, serviceInfo.name);
+                            activity.startService(intent);
+                        } catch (Exception e) {
+                            ToastManager.showToast(activity, e.toString(), Toast.LENGTH_SHORT);
+                        }
+                        return true;
+                    }
+                }));
             }
         }
 
         if (providers != null && get_providers) {
             for (final ProviderInfo providerInfo : providers) {
                 if (providerInfo == null) continue;
-                providerData.add(new AssembleItem<>(providerInfo, new View.OnClickListener() {
+                /*providerData.add(new AssembleItem<>(providerInfo, new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
                         clip2ClipboardAndShowSnackbar(providerInfo.name);
                     }
-                }));
-                /*provider_child_views.add(getSingleItemView(assemblyView.getLinearLayout_provider(), providerInfo.name, new View.OnClickListener() {
+                }));*/
+                provider_child_views.add(getSingleItemView(assemblyView.getLinearLayout_provider(), providerInfo.name, new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
                         clip2ClipboardAndShowSnackbar(providerInfo.name);
                     }
-                }, null));*/
+                }, null));
             }
         }
 
         final Set<String> keys = static_receiver_bundle.keySet();
         if (get_static_loaders) {
             for (final String s : keys) {
-                StaticLoaderItem staticLoaderItem = new StaticLoaderItem();
+                /*StaticLoaderItem staticLoaderItem = new StaticLoaderItem();
                 staticLoaderItem.name = s;
                 staticLoaderItem.clickAction = new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
                         clip2ClipboardAndShowSnackbar(s);
                     }
-                };
+                };*/
                 //////////////
-                /*View static_loader_item_view = LayoutInflater.from(activity).inflate(R.layout.item_static_loader, assemblyView.getLinearLayout_loader(), false);
+                View static_loader_item_view = LayoutInflater.from(activity).inflate(R.layout.item_static_loader, assemblyView.getLinearLayout_loader(), false);
                 ((TextView) static_loader_item_view.findViewById(R.id.static_loader_name)).setText(s);
                 static_loader_item_view.findViewById(R.id.static_loader_name).setOnClickListener(new View.OnClickListener() {
                     @Override
@@ -306,36 +307,42 @@ public class GetPackageInfoViewTask extends Thread {
                         clip2ClipboardAndShowSnackbar(s);
                     }
                 });
-                ViewGroup filter_views = static_loader_item_view.findViewById(R.id.static_loader_intents);*/
+                ViewGroup filter_views = static_loader_item_view.findViewById(R.id.static_loader_intents);
                 ////////////
                 List<String> filters = static_receiver_bundle.getStringArrayList(s);
                 if (filters == null) continue;
                 for (final String filter : filters) {
                     if (filter == null) continue;
-                    StaticLoaderItem.IntentFilterItem intentFilterItem = new StaticLoaderItem.IntentFilterItem();
+                    /*StaticLoaderItem.IntentFilterItem intentFilterItem = new StaticLoaderItem.IntentFilterItem();
                     intentFilterItem.actionName = filter;
                     intentFilterItem.clickAction = new View.OnClickListener() {
                         @Override
                         public void onClick(View v) {
                             clip2ClipboardAndShowSnackbar(filter);
                         }
-                    };
+                    };*/
                     ////////////////
                     View itemView = LayoutInflater.from(activity).inflate(R.layout.item_single_textview, null, false);
                     ((TextView) itemView.findViewById(R.id.item_textview)).setText(filter);
-                    itemView.setOnClickListener(intentFilterItem.clickAction);
-                    intentFilterItem.intentFilterView = itemView;
-//                    filter_views.addView(itemView);
-                    staticLoaderItem.intentFilterItems.add(intentFilterItem);
+                    itemView.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            clip2ClipboardAndShowSnackbar(filter);
+                        }
+                    });
+//                    intentFilterItem.intentFilterView = itemView;
+                    filter_views.addView(itemView);
+//                    staticLoaderItem.intentFilterItems.add(intentFilterItem);
                 }
-                staticLoaderItems.add(staticLoaderItem);
-//                loaders_child_views.add(static_loader_item_view);
+//                staticLoaderItems.add(staticLoaderItem);
+                loaders_child_views.add(static_loader_item_view);
             }
         }
 
         Global.runOnUiThread(new Runnable() {
             @Override
             public void run() {
+                //使用填充所有view到viewGroup的方法
                 if (get_permissions) {
                     /*for (View view : permission_child_views)
                         assemblyView.getLinearLayout_permission().addView(view);
@@ -343,7 +350,8 @@ public class GetPackageInfoViewTask extends Thread {
                     att_permission.setText(activity.getResources().getString(R.string.activity_detail_permissions)
                             + "(" + permission_child_views.size() + activity.getResources().getString(R.string.unit_item) + ")");
                     assemblyView.findViewById(R.id.detail_card_permissions).setVisibility(View.VISIBLE);*/
-                    assemblyView.setPermissionInfo(permissionData);
+//                    assemblyView.setPermissionInfo(permissionData);
+                    assemblyView.setPermissionInfoToAllViews(permission_child_views);
                 }
                 if (get_activities) {
                     /*for (View view : activity_child_views)
@@ -353,6 +361,7 @@ public class GetPackageInfoViewTask extends Thread {
                             + "(" + activity_child_views.size() + activity.getResources().getString(R.string.unit_item) + ")");
                     assemblyView.findViewById(R.id.detail_card_activities).setVisibility(View.VISIBLE);*/
                     assemblyView.setActivityInfo(activityData);
+                    assemblyView.setActivityInfoToAllViews(activity_child_views);
                 }
                 if (get_receivers) {
                     /*for (View view : receiver_child_views)
@@ -360,7 +369,8 @@ public class GetPackageInfoViewTask extends Thread {
                     TextView att_receiver = assemblyView.getTv_receiver();
                     att_receiver.setText(activity.getResources().getString(R.string.activity_detail_receivers) + "(" + receiver_child_views.size() + activity.getResources().getString(R.string.unit_item) + ")");
                     assemblyView.findViewById(R.id.detail_card_receivers).setVisibility(View.VISIBLE);*/
-                    assemblyView.setReceiverInfo(receiverData);
+//                    assemblyView.setReceiverInfo(receiverData);
+                    assemblyView.setReceiverInfoToAllViews(receiver_child_views);
                 }
                 if (get_static_loaders) {
                     /*for (View view : loaders_child_views)
@@ -368,7 +378,8 @@ public class GetPackageInfoViewTask extends Thread {
                     TextView att_static_loader = assemblyView.getTv_loader();
                     att_static_loader.setText(activity.getResources().getString(R.string.activity_detail_static_loaders) + "(" + keys.size() + activity.getResources().getString(R.string.unit_item) + ")");
                     assemblyView.findViewById(R.id.detail_card_static_loaders).setVisibility(View.VISIBLE);*/
-                    assemblyView.setStaticReceiverInfo(staticLoaderItems);
+//                    assemblyView.setStaticReceiverInfo(staticLoaderItems);
+                    assemblyView.setStaticReceiverToAllViews(loaders_child_views);
                 }
                 if (get_services) {
                     /*for (View view : service_child_views)
@@ -376,7 +387,8 @@ public class GetPackageInfoViewTask extends Thread {
                     TextView att_service = assemblyView.getTv_service();
                     att_service.setText(activity.getResources().getString(R.string.activity_detail_services) + "(" + service_child_views.size() + activity.getResources().getString(R.string.unit_item) + ")");
                     assemblyView.findViewById(R.id.detail_card_services).setVisibility(View.VISIBLE);*/
-                    assemblyView.setServiceInfo(serviceData);
+//                    assemblyView.setServiceInfo(serviceData);
+                    assemblyView.setServiceInfoToAllViews(service_child_views);
                 }
                 if (get_providers) {
                     /*for (View view : provider_child_views)
@@ -384,7 +396,8 @@ public class GetPackageInfoViewTask extends Thread {
                     TextView att_providers = assemblyView.getTv_provider();
                     att_providers.setText(activity.getResources().getString(R.string.activity_detail_providers) + "(" + provider_child_views.size() + activity.getResources().getString(R.string.unit_item) + ")");
                     assemblyView.findViewById(R.id.detail_card_providers).setVisibility(View.VISIBLE);*/
-                    assemblyView.setProviderInfo(providerData);
+//                    assemblyView.setProviderInfo(providerData);
+                    assemblyView.setProviderInfoToAllViews(provider_child_views);
                 }
                 callback.onViewsCreated();
             }
