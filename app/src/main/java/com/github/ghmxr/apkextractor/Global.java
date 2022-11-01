@@ -36,6 +36,9 @@ import com.github.ghmxr.apkextractor.utils.ZipFileUtil;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashSet;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Vector;
 
@@ -54,7 +57,34 @@ public class Global {
     /**
      * 导出目录下的文件list引用
      */
-    public static final List<ImportItem> item_list = new Vector<>();
+    public static final List<ImportItem> item_list = new ImportItemVector();
+
+    private static class ImportItemVector extends Vector<ImportItem> {
+
+        /**
+         * 重写此集合实现类addAll方法来去除重复添加的同path的元素
+         */
+        @Override
+        public synchronized boolean addAll(Collection<? extends ImportItem> c) {
+            HashSet<ImportItem> hashSet = new HashSet<>(c);
+            Iterator<ImportItem> iterator = hashSet.iterator();
+            ImportItem importItem;
+            while (iterator.hasNext()) {
+                importItem = iterator.next();
+                for (Object o : elementData) {
+                    try {
+                        if (((ImportItem) o).getFileItem().getPath().equalsIgnoreCase(importItem.getFileItem().getPath())) {
+                            iterator.remove();
+                        }
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+                }
+
+            }
+            return super.addAll(hashSet);
+        }
+    }
 
     public static void showRequestingWritePermissionSnackBar(@NonNull final Activity activity) {
         Snackbar snackbar = Snackbar.make(activity.findViewById(android.R.id.content), activity.getResources().getString(R.string.permission_write), Snackbar.LENGTH_SHORT);
