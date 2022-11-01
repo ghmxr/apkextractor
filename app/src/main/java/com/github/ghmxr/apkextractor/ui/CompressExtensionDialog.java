@@ -16,8 +16,10 @@ import com.github.ghmxr.apkextractor.utils.EnvironmentUtil;
 
 public class CompressExtensionDialog extends AlertDialog implements DialogInterface.OnClickListener, View.OnClickListener {
 
-    private RadioButton ra_zip, ra_xapk, ra_custom;
-    private EditText editText;
+    private final RadioButton ra_zip;
+    private final RadioButton ra_xapk;
+    private final RadioButton ra_custom;
+    private final EditText editText;
     private String extension;
     private final OnConfirmedCallback callback;
 

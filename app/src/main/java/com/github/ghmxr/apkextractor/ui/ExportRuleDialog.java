@@ -24,11 +24,12 @@ import java.util.Calendar;
 public class ExportRuleDialog extends AlertDialog implements View.OnClickListener, DialogInterface.OnClickListener {
 
 
-    private EditText edit_apk, edit_zip;
-    private TextView preview;
-    private Spinner spinner;
+    private final EditText edit_apk;
+    private final EditText edit_zip;
+    private final TextView preview;
+    private final Spinner spinner;
 
-    private SharedPreferences settings;
+    private final SharedPreferences settings;
 
     /**
      * 编辑导出规则的UI，确定后会保存至SharedPreferences中

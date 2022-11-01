@@ -32,7 +32,7 @@ import java.util.zip.ZipOutputStream;
 
 public class ExportTask extends Thread {
 
-    private Context context;
+    private final Context context;
     private final List<AppItem> list;
     private ExportProgressListener listener;
     /**

@@ -112,7 +112,7 @@ public class ImportFragment extends Fragment implements RefreshImportListTask.Re
         public void onReceive(Context context, Intent intent) {
             if (Constants.ACTION_REFRESH_IMPORT_ITEMS_LIST.equalsIgnoreCase(intent.getAction())) {
                 if (getActivity() == null) return;
-                new RefreshImportListTask(getActivity(), ImportFragment.this).start();
+                new RefreshImportListTask(ImportFragment.this).start();
             }
             if (Constants.ACTION_REFILL_IMPORT_LIST.equalsIgnoreCase(intent.getAction())) {
                 if (adapter != null) {
@@ -318,7 +318,7 @@ public class ImportFragment extends Fragment implements RefreshImportListTask.Re
                                         }
                                     })
                                     .show();
-                            new RefreshImportListTask(getActivity(), ImportFragment.this).start();
+                            new RefreshImportListTask(ImportFragment.this).start();
                         } else {
                             closeMultiSelectMode();
                         }
@@ -571,10 +571,10 @@ public class ImportFragment extends Fragment implements RefreshImportListTask.Re
                     swipeRefreshLayout.setRefreshing(false);
                     return;
                 }*/
-                new RefreshImportListTask(getActivity(), ImportFragment.this).start();
+                new RefreshImportListTask(ImportFragment.this).start();
             }
         });
-        new RefreshImportListTask(getActivity(), ImportFragment.this).start();
+        new RefreshImportListTask(ImportFragment.this).start();
     }
 
     private void setViewVisibilityWithAnimation(View view, int visibility) {

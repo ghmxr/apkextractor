@@ -16,8 +16,8 @@ import com.github.ghmxr.apkextractor.utils.SPUtil;
 
 public class ImportItemSortConfigDialog extends AlertDialog implements View.OnClickListener {
 
-    private SortConfigDialogCallback callback;
-    private SharedPreferences settings;
+    private final SortConfigDialogCallback callback;
+    private final SharedPreferences settings;
 
     public ImportItemSortConfigDialog(@NonNull Context context, @Nullable SortConfigDialogCallback callback) {
         super(context);

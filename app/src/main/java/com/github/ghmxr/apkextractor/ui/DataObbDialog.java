@@ -23,12 +23,12 @@ import java.util.List;
 public class DataObbDialog extends AlertDialog implements View.OnClickListener {
 
     private final View view;
-    private DialogDataObbConfirmedCallback callback;
+    private final DialogDataObbConfirmedCallback callback;
     private final List<AppItem> list = new ArrayList<>();
     private final List<AppItem> list_data_controllable = new ArrayList<>();
     private final List<AppItem> list_obb_controllable = new ArrayList<>();
-    private CheckBox cb_data;
-    private CheckBox cb_obb;
+    private final CheckBox cb_data;
+    private final CheckBox cb_obb;
 
     /**
      * @param export_list 传递进来的AppItem可为源数据，初始Data和Obb导出值为false

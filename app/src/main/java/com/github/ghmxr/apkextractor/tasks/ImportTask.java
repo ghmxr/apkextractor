@@ -32,7 +32,7 @@ import java.util.zip.ZipInputStream;
 public class ImportTask extends Thread {
 
     private final ArrayList<ImportItem> importItemArrayList = new ArrayList<>();
-    private Context context;
+    private final Context context;
     private volatile boolean isInterrupted = false;
     //private ArrayList<String>write_paths=new ArrayList<>();
     private String currentWritePath;
@@ -47,7 +47,7 @@ public class ImportTask extends Thread {
 
     private final StringBuilder error_info = new StringBuilder();
 
-    private ImportTaskCallback callback;
+    private final ImportTaskCallback callback;
     private Uri apkUri;
     private int apk_num = 0;
 

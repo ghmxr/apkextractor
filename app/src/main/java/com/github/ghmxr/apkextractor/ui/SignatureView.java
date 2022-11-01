@@ -13,23 +13,23 @@ public class SignatureView extends LinearLayout {
 
     private final ViewGroup root;
 
-    private TextView tv_sub_value;
-    private TextView tv_iss_value;
-    private TextView tv_serial_value;
-    private TextView tv_start;
-    private TextView tv_end;
-    private TextView tv_md5;
-    private TextView tv_sha1;
-    private TextView tv_sha256;
+    private final TextView tv_sub_value;
+    private final TextView tv_iss_value;
+    private final TextView tv_serial_value;
+    private final TextView tv_start;
+    private final TextView tv_end;
+    private final TextView tv_md5;
+    private final TextView tv_sha1;
+    private final TextView tv_sha256;
 
-    private LinearLayout linearLayout_sub;
-    private LinearLayout linearLayout_iss;
-    private LinearLayout linearLayout_serial;
-    private LinearLayout linearLayout_start;
-    private LinearLayout linearLayout_end;
-    private LinearLayout linearLayout_md5;
-    private LinearLayout linearLayout_sha1;
-    private LinearLayout linearLayout_sha256;
+    private final LinearLayout linearLayout_sub;
+    private final LinearLayout linearLayout_iss;
+    private final LinearLayout linearLayout_serial;
+    private final LinearLayout linearLayout_start;
+    private final LinearLayout linearLayout_end;
+    private final LinearLayout linearLayout_md5;
+    private final LinearLayout linearLayout_sha1;
+    private final LinearLayout linearLayout_sha256;
 
 
     public SignatureView(Context context) {

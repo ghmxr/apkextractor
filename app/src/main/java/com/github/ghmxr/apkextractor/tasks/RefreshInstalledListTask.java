@@ -5,11 +5,11 @@ import android.content.SharedPreferences;
 import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
-import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
 import com.github.ghmxr.apkextractor.Constants;
 import com.github.ghmxr.apkextractor.Global;
+import com.github.ghmxr.apkextractor.MyApplication;
 import com.github.ghmxr.apkextractor.items.AppItem;
 import com.github.ghmxr.apkextractor.utils.SPUtil;
 
@@ -21,14 +21,14 @@ import java.util.List;
  * 刷新已安装的应用列表
  */
 public class RefreshInstalledListTask extends Thread {
-    private Context context;
+    private final Context context;
     private final boolean flag_system;
-    private RefreshInstalledListTaskCallback listener;
-    private List<AppItem> list_sum = new ArrayList<>();
+    private final RefreshInstalledListTaskCallback listener;
+    private final List<AppItem> list_sum = new ArrayList<>();
     private volatile boolean isInterrupted = false;
 
-    public RefreshInstalledListTask(@NonNull Context context, @Nullable RefreshInstalledListTaskCallback callback) {
-        this.context = context;
+    public RefreshInstalledListTask(@Nullable RefreshInstalledListTaskCallback callback) {
+        this.context = MyApplication.getApplication();
         this.flag_system = SPUtil.getGlobalSharedPreferences(context).getBoolean(Constants.PREFERENCE_SHOW_SYSTEM_APP, Constants.PREFERENCE_SHOW_SYSTEM_APP_DEFAULT);
         this.listener = callback;
     }

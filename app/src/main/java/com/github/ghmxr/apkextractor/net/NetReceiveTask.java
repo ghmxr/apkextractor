@@ -27,8 +27,8 @@ import java.util.List;
 
 public class NetReceiveTask implements UdpThread.UdpThreadCallback {
 
-    private Context context;
-    private UdpThread udpThread;
+    private final Context context;
+    private final UdpThread udpThread;
     private final String deviceName;
 
     private String senderIp = null;

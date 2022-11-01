@@ -509,7 +509,7 @@ public class AppFragment extends Fragment implements View.OnClickListener, Refre
     private void setAndStartRefreshingTask() {
         if (getActivity() == null) return;
         if (refreshInstalledListTask != null) refreshInstalledListTask.setInterrupted();
-        refreshInstalledListTask = new RefreshInstalledListTask(getActivity(), this);
+        refreshInstalledListTask = new RefreshInstalledListTask(this);
         swipeRefreshLayout.setRefreshing(true);
         recyclerView.setAdapter(null);
         cb_sys.setEnabled(false);

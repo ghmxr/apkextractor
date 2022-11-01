@@ -8,6 +8,7 @@ import android.text.TextUtils;
 
 import com.github.ghmxr.apkextractor.Constants;
 import com.github.ghmxr.apkextractor.Global;
+import com.github.ghmxr.apkextractor.MyApplication;
 import com.github.ghmxr.apkextractor.items.FileItem;
 import com.github.ghmxr.apkextractor.items.ImportItem;
 import com.github.ghmxr.apkextractor.utils.SPUtil;
@@ -17,10 +18,9 @@ import com.github.ghmxr.apkextractor.utils.ZipFileUtil;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import java.util.concurrent.CountDownLatch;
 
 public class RefreshImportListTask extends Thread {
-    private Context context;
+    private final Context context;
     //private FileItem fileItem;
     private final RefreshImportListTaskCallback callback;
     private boolean isInterrupted = false;
@@ -28,8 +28,8 @@ public class RefreshImportListTask extends Thread {
     private static RefreshImportListTask refreshImportListTask;
     final boolean exclude_invalid_package;
 
-    public RefreshImportListTask(Context context, RefreshImportListTaskCallback callback) {
-        this.context = context;
+    public RefreshImportListTask(RefreshImportListTaskCallback callback) {
+        this.context = MyApplication.getApplication();
         this.callback = callback;
         exclude_invalid_package = SPUtil.getGlobalSharedPreferences(context)
                 .getBoolean(Constants.PREFERENCE_EXCLUDE_INVALID_PACKAGE, Constants.PREFERENCE_EXCLUDE_INVALID_PACKAGE_DEFAULT);
@@ -134,18 +134,18 @@ public class RefreshImportListTask extends Thread {
 //                            Collections.sort(Global.item_list);
 //                            container.addAll(Global.item_list);
                     }
-                    final CountDownLatch countDownLatch = new CountDownLatch(1);
+//                    final CountDownLatch countDownLatch = new CountDownLatch(1);
                     final boolean fCanAdd = canAdd;
                     if (callback != null) {
                         Global.handler.post(new Runnable() {
                             @Override
                             public void run() {
                                 callback.onProgress(fCanAdd, importItem);
-                                countDownLatch.countDown();
+//                                countDownLatch.countDown();
                             }
                         });
                     }
-                    countDownLatch.await();
+//                    countDownLatch.await();
                 }
                 return arrayList;
             }

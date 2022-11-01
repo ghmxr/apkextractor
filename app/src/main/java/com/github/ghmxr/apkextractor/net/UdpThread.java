@@ -17,16 +17,14 @@ public class UdpThread extends Thread {
     private static DatagramSocket datagramSocket;
 
     private boolean workFlag = true;
-    private final int portNumber;
-    private DatagramPacket datagramPacket = new DatagramPacket(new byte[65500], 65500);
+    private final DatagramPacket datagramPacket = new DatagramPacket(new byte[65500], 65500);
 
-    private UdpThreadCallback callback;
+    private final UdpThreadCallback callback;
 
     public UdpThread(@NonNull Context context, @Nullable UdpThreadCallback callback) throws Exception {
         super();
         this.callback = callback;
-        portNumber = SPUtil.getPortNumber(context);
-        openUdpSocket(portNumber);
+        openUdpSocket(SPUtil.getPortNumber(context));
     }
 
     @Override

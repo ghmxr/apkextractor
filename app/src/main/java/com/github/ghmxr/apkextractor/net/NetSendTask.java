@@ -24,8 +24,8 @@ import java.util.List;
 public class NetSendTask implements UdpThread.UdpThreadCallback {
 
     private static ServerSocket serverSocket;
-    private Context context;
-    private UdpThread udpThread;
+    private final Context context;
+    private final UdpThread udpThread;
     //private final String deviceName;
     private final HashMap<String, DeviceItem> onlineDevices = new HashMap<>();
     //private final ArrayList<FileItem>sendFiles=new ArrayList<>();

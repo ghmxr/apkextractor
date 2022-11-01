@@ -16,7 +16,7 @@ public class TranslucentBehavior extends CoordinatorLayout.Behavior<Toolbar> {
      * 标题栏的高度
      */
     private int mToolbarHeight = 0;
-    private Context context;
+    private final Context context;
 
     public TranslucentBehavior(Context context, AttributeSet attrs) {
         super(context, attrs);

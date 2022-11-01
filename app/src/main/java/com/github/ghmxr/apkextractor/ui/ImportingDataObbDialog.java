@@ -26,11 +26,10 @@ public class ImportingDataObbDialog extends AlertDialog implements View.OnClickL
     private final List<ImportItem> list_data_controllable = new ArrayList<>();
     private final List<ImportItem> list_obb_controllable = new ArrayList<>();
     private final List<ImportItem> list_apk_controllable = new ArrayList<>();
-    private CheckBox cb_data;
-    private CheckBox cb_obb;
-    private CheckBox cb_apk;
-    private TextView tv_att;
-    private ImportDialogDataObbConfirmedCallback callback;
+    private final CheckBox cb_data;
+    private final CheckBox cb_obb;
+    private final CheckBox cb_apk;
+    private final ImportDialogDataObbConfirmedCallback callback;
 
     private final ArrayList<ZipFileUtil.ZipFileInfo> zipFileInfos = new ArrayList<>();
 
@@ -46,7 +45,7 @@ public class ImportingDataObbDialog extends AlertDialog implements View.OnClickL
         view = LayoutInflater.from(context).inflate(R.layout.dialog_data_obb, null);
         cb_data = view.findViewById(R.id.dialog_checkbox_data);
         cb_obb = view.findViewById(R.id.dialog_checkbox_obb);
-        tv_att = view.findViewById(R.id.data_obb_att);
+        TextView tv_att = view.findViewById(R.id.data_obb_att);
         cb_apk = view.findViewById(R.id.dialog_checkbox_apk);
         cb_apk.setVisibility(View.VISIBLE);
         setView(view);

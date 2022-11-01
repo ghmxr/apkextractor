@@ -15,9 +15,9 @@ import java.util.List;
 public class GetImportLengthAndDuplicateInfoTask extends Thread {
 
     //private Context context;
-    private List<ZipFileUtil.ZipFileInfo> zipFileInfos;
-    private List<ImportItem> importItems;
-    private GetImportLengthAndDuplicateInfoCallback callback;
+    private final List<ZipFileUtil.ZipFileInfo> zipFileInfos;
+    private final List<ImportItem> importItems;
+    private final GetImportLengthAndDuplicateInfoCallback callback;
     private volatile boolean isInterrupted = false;
 
     public GetImportLengthAndDuplicateInfoTask(@NonNull List<ImportItem> importItems

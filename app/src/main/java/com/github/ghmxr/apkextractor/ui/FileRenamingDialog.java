@@ -32,10 +32,10 @@ import java.util.List;
 
 public class FileRenamingDialog extends AlertDialog implements View.OnClickListener, TextWatcher {
 
-    private List<ImportItem> importItems;
-    private EditText editText;
-    private RecyclerView recyclerView;
-    private ViewGroup vg_warn;
+    private final List<ImportItem> importItems;
+    private final EditText editText;
+    private final RecyclerView recyclerView;
+    private final ViewGroup vg_warn;
     private final CompletedCallback callback;
 
     private boolean isAllApk = true;
