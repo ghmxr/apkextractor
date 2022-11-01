@@ -72,6 +72,7 @@ public class Global {
             while (iterator.hasNext()) {
                 importItem = iterator.next();
                 for (Object o : elementData) {
+                    if (o == null) continue;
                     try {
                         if (((ImportItem) o).getFileItem().getPath().equalsIgnoreCase(importItem.getFileItem().getPath())) {
                             iterator.remove();
