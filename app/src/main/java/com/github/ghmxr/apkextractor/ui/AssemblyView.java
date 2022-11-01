@@ -332,9 +332,9 @@ public class AssemblyView extends LinearLayout implements View.OnClickListener {
     }
 
     public boolean getIsExpanded() {
-        return rv_activity.getVisibility() == VISIBLE || rv_permission.getVisibility() == VISIBLE
-                || rv_receiver.getVisibility() == VISIBLE || rv_static_loader.getVisibility() == VISIBLE
-                || rv_service.getVisibility() == VISIBLE || rv_provider.getVisibility() == VISIBLE;
+        return linearLayout_activity.getVisibility() == VISIBLE || linearLayout_permission.getVisibility() == VISIBLE
+                || linearLayout_receiver.getVisibility() == VISIBLE || linearLayout_loader.getVisibility() == VISIBLE
+                || linearLayout_service.getVisibility() == VISIBLE || linearLayout_provider.getVisibility() == VISIBLE;
     }
 
     private static class AssembleListViewAdapter<T extends ComponentInfo> extends RecyclerView.Adapter<AssembleViewHolder> {
