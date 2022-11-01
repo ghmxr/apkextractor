@@ -360,7 +360,7 @@ public class GetPackageInfoViewTask extends Thread {
                     att_activity.setText(activity.getResources().getString(R.string.activity_detail_activities)
                             + "(" + activity_child_views.size() + activity.getResources().getString(R.string.unit_item) + ")");
                     assemblyView.findViewById(R.id.detail_card_activities).setVisibility(View.VISIBLE);*/
-                    assemblyView.setActivityInfo(activityData);
+//                    assemblyView.setActivityInfo(activityData);
                     assemblyView.setActivityInfoToAllViews(activity_child_views);
                 }
                 if (get_receivers) {

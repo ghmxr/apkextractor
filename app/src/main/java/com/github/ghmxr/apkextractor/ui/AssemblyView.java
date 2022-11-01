@@ -268,7 +268,7 @@ public class AssemblyView extends LinearLayout implements View.OnClickListener {
     @SuppressLint("SetTextI18n")
     public void setReceiverInfoToAllViews(@NonNull List<View> receiverViews) {
         for (View view : receiverViews) {
-            linearLayout_activity.addView(view);
+            linearLayout_receiver.addView(view);
         }
         tv_receiver.setText(getContext().getResources().getString(R.string.activity_detail_receivers)
                 + "(" + receiverViews.size() + getContext().getResources().getString(R.string.unit_item) + ")");
