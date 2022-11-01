@@ -23,12 +23,12 @@ import java.util.List;
 
 public class AssemblyView extends LinearLayout implements View.OnClickListener {
 
-    private LinearLayout linearLayout_permission;
-    private LinearLayout linearLayout_activity;
-    private LinearLayout linearLayout_receiver;
-    private LinearLayout linearLayout_loader;
-    private LinearLayout linearLayout_service;
-    private LinearLayout linearLayout_provider;
+    private final LinearLayout linearLayout_permission;
+    private final LinearLayout linearLayout_activity;
+    private final LinearLayout linearLayout_receiver;
+    private final LinearLayout linearLayout_loader;
+    private final LinearLayout linearLayout_service;
+    private final LinearLayout linearLayout_provider;
 
     private final RecyclerView rv_permission;
     private final RecyclerView rv_activity;
@@ -109,7 +109,7 @@ public class AssemblyView extends LinearLayout implements View.OnClickListener {
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.detail_permission_area: {
-                if (rv_permission.getVisibility() == View.VISIBLE) {
+                if (linearLayout_permission.getVisibility() == View.VISIBLE) {
                     permission_arrow.setRotation(0);
                     linearLayout_permission.setVisibility(View.GONE);
 //                    rv_permission.setVisibility(View.GONE);
@@ -123,7 +123,7 @@ public class AssemblyView extends LinearLayout implements View.OnClickListener {
             }
             break;
             case R.id.detail_activity_area: {
-                if (rv_activity.getVisibility() == View.VISIBLE) {
+                if (linearLayout_activity.getVisibility() == View.VISIBLE) {
                     activity_arrow.setRotation(0);
                     linearLayout_activity.setVisibility(View.GONE);
 //                    rv_activity.setVisibility(View.GONE);
@@ -137,7 +137,7 @@ public class AssemblyView extends LinearLayout implements View.OnClickListener {
             }
             break;
             case R.id.detail_receiver_area: {
-                if (rv_receiver.getVisibility() == View.VISIBLE) {
+                if (linearLayout_receiver.getVisibility() == View.VISIBLE) {
                     receiver_arrow.setRotation(0);
                     linearLayout_receiver.setVisibility(View.GONE);
 //                    rv_receiver.setVisibility(View.GONE);
@@ -151,7 +151,7 @@ public class AssemblyView extends LinearLayout implements View.OnClickListener {
             }
             break;
             case R.id.detail_static_loader_area: {
-                if (rv_static_loader.getVisibility() == View.VISIBLE) {
+                if (linearLayout_loader.getVisibility() == View.VISIBLE) {
                     loader_arrow.setRotation(0);
                     linearLayout_loader.setVisibility(View.GONE);
 //                    rv_static_loader.setVisibility(View.GONE);
@@ -165,7 +165,7 @@ public class AssemblyView extends LinearLayout implements View.OnClickListener {
             }
             break;
             case R.id.detail_services_area: {
-                if (rv_service.getVisibility() == View.VISIBLE) {
+                if (linearLayout_service.getVisibility() == View.VISIBLE) {
                     service_arrow.setRotation(0);
                     linearLayout_service.setVisibility(View.GONE);
 //                    rv_service.setVisibility(View.GONE);
@@ -179,7 +179,7 @@ public class AssemblyView extends LinearLayout implements View.OnClickListener {
             }
             break;
             case R.id.detail_provider_area: {
-                if (rv_provider.getVisibility() == View.VISIBLE) {
+                if (linearLayout_provider.getVisibility() == View.VISIBLE) {
                     provider_arrow.setRotation(0);
                     linearLayout_provider.setVisibility(View.GONE);
 //                    rv_provider.setVisibility(View.GONE);
