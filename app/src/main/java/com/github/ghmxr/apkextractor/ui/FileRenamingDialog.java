@@ -147,7 +147,12 @@ public class FileRenamingDialog extends AlertDialog implements View.OnClickListe
                     final String initialName = importItem.getFileItem().getName();
                     final String newName = getPreviewRenamedFileName(i);
                     try {
-                        importItem.getFileItem().renameTo(newName);
+                        if (!importItem.renameFileItemTo(newName)) {
+                            errorBuilder.append(initialName);
+                            errorBuilder.append(":");
+                            errorBuilder.append("renaming failed for returning value is false");
+                            errorBuilder.append("\n\n");
+                        }
                     } catch (Exception e) {
                         e.printStackTrace();
                         errorBuilder.append(initialName);
@@ -307,7 +312,7 @@ public class FileRenamingDialog extends AlertDialog implements View.OnClickListe
     }
 
     private static class ViewHolder extends RecyclerView.ViewHolder {
-        private TextView textView;
+        private final TextView textView;
 
         ViewHolder(@NonNull TextView textView) {
             super(textView);

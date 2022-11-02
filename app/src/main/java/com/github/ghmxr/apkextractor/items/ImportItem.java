@@ -206,6 +206,27 @@ public class ImportItem implements DisplayItem<ImportItem>, Comparable<ImportIte
     }
 
     /**
+     * 重命名导入项的文件名
+     *
+     * @param newName 文件名，对应的是原始路径下
+     * @throws Exception 重命名可能抛的异常
+     */
+    public boolean renameFileItemTo(String newName) throws Exception {
+        final boolean success = fileItem.renameTo(newName);
+        if (success) {
+            //将packageInfo的path更改为新重命名完成的path否则将无法获取包的信息
+            if (packageInfo != null) {
+                if (packageInfo.applicationInfo == null) {
+                    packageInfo.applicationInfo = new ApplicationInfo();
+                }
+                packageInfo.applicationInfo.sourceDir = fileItem.getPath();
+                packageInfo.applicationInfo.publicSourceDir = fileItem.getPath();
+            }
+        }
+        return success;
+    }
+
+    /**
      * 当本项目为zip包时的输入流
      */
     public @Nullable

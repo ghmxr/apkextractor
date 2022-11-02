@@ -318,10 +318,9 @@ public class ImportFragment extends Fragment implements RefreshImportListTask.Re
                                         }
                                     })
                                     .show();
-                            new RefreshImportListTask(ImportFragment.this).start();
-                        } else {
-                            closeMultiSelectMode();
+//                            new RefreshImportListTask(ImportFragment.this).start();
                         }
+                        sortGlobalListAndRefresh(ImportItem.sort_config);
                     }
                 }).show();
             }
