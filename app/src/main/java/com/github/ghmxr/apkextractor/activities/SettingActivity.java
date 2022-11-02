@@ -499,6 +499,10 @@ public class SettingActivity extends BaseActivity implements View.OnClickListene
             if (!read_options.equals("")) read_options += ",";
             read_options += getResources().getString(R.string.activity_detail_providers);
         }
+        if (settings.getBoolean(Constants.PREFERENCE_LOAD_NATIVE_FILE, Constants.PREFERENCE_LOAD_NATIVE_FILE_DEFAULT)) {
+            if (!read_options.equals("")) read_options += ",";
+            read_options += getResources().getString(R.string.activity_detail_native_library);
+        }
         if (settings.getBoolean(Constants.PREFERENCE_LOAD_STATIC_LOADERS, Constants.PREFERENCE_LOAD_STATIC_LOADERS_DEFAULT)) {
             if (!read_options.equals("")) read_options += ",";
             read_options += getResources().getString(R.string.activity_detail_static_loaders);
