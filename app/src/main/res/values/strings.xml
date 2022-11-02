@@ -119,7 +119,7 @@
     <string name="activity_folder_selector_blank_folder">没有文件夹</string>
     <string name="activity_folder_selector_external_title">外置存储</string>
     <string name="activity_folder_selector_external_message">请在左侧边栏中选择一个外置存储，然后点击“选择”来授权读取外置存储</string>
-    <string name="activity_folder_selector_external_error">没有选择到一个正确的外置存储根目录上，请确定是否选择了正确的外置存储后点击了“选择”</string>
+    <string name="activity_folder_selector_external_error">可能没有选择到外置存储的路径上，请确认是否使用此路径作为外置存储路径</string>
     <string name="activity_attention_select_folder">请选择文件夹</string>
 
     <string name="share_mode_direct">直接分享</string>

@@ -241,15 +241,7 @@ public class FolderSelectorActivity extends BaseActivity {
     }
 
     private void showSelectingErrorDialog() {
-        new AlertDialog.Builder(this)
-                .setTitle(getResources().getString(R.string.activity_folder_selector_external_title))
-                .setMessage(getResources().getString(R.string.activity_folder_selector_external_error))
-                .setPositiveButton(getResources().getString(R.string.dialog_button_confirm), new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                    }
-                })
-                .show();
+
 
     }
 
@@ -363,28 +355,47 @@ public class FolderSelectorActivity extends BaseActivity {
     }
 
     @Override
-    @TargetApi(19)
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == 1 && resultCode == RESULT_OK) {
             if (data == null) return;
-            Uri uri = data.getData();
+            final Uri uri = data.getData();
             if (uri == null) return;
             String uri_value = uri.getPath();
             if (uri_value == null) return;
-            if (!uri_value.endsWith(":") || uri_value.contains("primary")) {
+            if (uri_value.toLowerCase().contains("primary:")) {
                 // ToastManager.showToast(this,"Please select an available external storage",Toast.LENGTH_SHORT);
-                showSelectingErrorDialog();
-                return;
+                new AlertDialog.Builder(this)
+                        .setTitle(getResources().getString(R.string.activity_folder_selector_external_title))
+                        .setMessage(getResources().getString(R.string.activity_folder_selector_external_error))
+                        .setPositiveButton(getResources().getString(R.string.dialog_button_confirm), new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                takeUriAndRefresh(uri);
+                            }
+                        })
+                        .setNegativeButton(getResources().getString(R.string.action_cancel), new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+
+                            }
+                        })
+                        .show();
+            } else {
+                takeUriAndRefresh(uri);
             }
-            getContentResolver().takePersistableUriPermission(uri, Intent.FLAG_GRANT_WRITE_URI_PERMISSION | Intent.FLAG_GRANT_READ_URI_PERMISSION);
-            SPUtil.getGlobalSharedPreferences(this).edit().putString(Constants.PREFERENCE_SAVE_PATH_URI, uri.toString()).apply();
-            item_others.setVisibility(View.VISIBLE);
-            try {
-                refreshList(new FileItem(this, uri, null));
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
+        }
+    }
+
+    private void takeUriAndRefresh(Uri uri) {
+        if (Build.VERSION.SDK_INT < 19) return;
+        getContentResolver().takePersistableUriPermission(uri, Intent.FLAG_GRANT_WRITE_URI_PERMISSION | Intent.FLAG_GRANT_READ_URI_PERMISSION);
+        SPUtil.getGlobalSharedPreferences(this).edit().putString(Constants.PREFERENCE_SAVE_PATH_URI, uri.toString()).apply();
+        item_others.setVisibility(View.VISIBLE);
+        try {
+            refreshList(new FileItem(this, uri, null));
+        } catch (Exception e) {
+            e.printStackTrace();
         }
     }
 

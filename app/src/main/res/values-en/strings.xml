@@ -98,8 +98,8 @@
     <string name="activity_folder_selector_blank_folder">No folders to show</string>
     <string name="activity_folder_selector_external_title">External storage</string>
     <string name="activity_folder_selector_external_message">Select an external storage at the left side, then directly click \"select\".</string>
-    <string name="activity_folder_selector_external_error">It is not selected to a root path of an external storage, ensure you have selected an external
-     storage at the left side then directly clicked "select"</string>
+    <string name="activity_folder_selector_external_error">It is probably not selected to an external storage path, click confirm to continue use this path as
+    external storage path</string>
     <string name="activity_attention_select_folder">Please select a folder</string>
 
     <string name="share_mode_direct">Share directly</string>
