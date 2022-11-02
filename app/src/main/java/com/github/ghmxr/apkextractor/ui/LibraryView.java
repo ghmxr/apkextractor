@@ -82,8 +82,9 @@ public class LibraryView extends RelativeLayout {
             @Override
             public void onApkLibraryGet(GetApkLibraryTask.LibraryInfo libraryInfo) {
                 loadingView.setVisibility(GONE);
-                if (libraryInfo.getAllLibraryNames().isEmpty()) {
+                if (libraryInfo == null || libraryInfo.getAllLibraryNames().isEmpty()) {
                     setVisibility(GONE);
+                    return;
                 } else {
                     recyclerView.setAdapter(new LibraryViewListAdapter(libraryInfo));
                 }
