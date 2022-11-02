@@ -137,8 +137,9 @@ public class RecyclerViewAdapter<T extends DisplayItem<T>> extends RecyclerView.
     }
 
     public void updateData(T data) {
-//        this.data.clear();
-//        this.data.add(Math.min(progress.indexOf(data), this.data.size()), data);
+        if (this.data.contains(data)) {
+            return;
+        }
         this.data.add(data);
 //        notifyDataSetChanged();
         notifyItemInserted(Math.max(0, this.data.indexOf(data)));

@@ -32,8 +32,8 @@ public class ImportItem implements DisplayItem<ImportItem>, Comparable<ImportIte
 
 //    private Context context;
 
-    private FileItem fileItem;
-    private long length;
+    private final FileItem fileItem;
+    private final long length;
     private ImportType importType = ImportType.ZIP;
 
     private PackageInfo packageInfo;
@@ -43,7 +43,7 @@ public class ImportItem implements DisplayItem<ImportItem>, Comparable<ImportIte
     private String minSdkVersion = "";
     private String targetSdkVersion = "";
     private String apkLabel = "";
-    private long lastModified;
+    private final long lastModified;
 
     public transient boolean importData = false;
     public transient boolean importObb = false;
@@ -288,5 +288,22 @@ public class ImportItem implements DisplayItem<ImportItem>, Comparable<ImportIte
             break;
         }
         return 0;
+    }
+
+    @NonNull
+    @Override
+    public String toString() {
+        if (fileItem != null) {
+            return fileItem.toString();
+        }
+        return super.toString();
+    }
+
+    @Override
+    public boolean equals(@Nullable Object obj) {
+        if (obj instanceof ImportItem) {
+            return toString().equalsIgnoreCase(((ImportItem) obj).toString());
+        }
+        return super.equals(obj);
     }
 }

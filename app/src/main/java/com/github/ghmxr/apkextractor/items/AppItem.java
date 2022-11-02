@@ -41,7 +41,7 @@ public class AppItem implements DisplayItem<AppItem>, Parcelable {
 
     private final PackageInfo info;
 
-    private transient FileItem fileItem;
+    private final transient FileItem fileItem;
 
     /**
      * 程序名

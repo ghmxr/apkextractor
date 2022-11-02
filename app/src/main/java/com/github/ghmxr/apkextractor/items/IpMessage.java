@@ -12,7 +12,7 @@ import java.util.List;
 
 public class IpMessage {
     private String version;
-    private String packageNumber;
+    private final String packageNumber;
     private String deviceName = Constants.PREFERENCE_DEVICE_NAME_DEFAULT;
     private int command = -1;
     private String additionalMessage = "null";

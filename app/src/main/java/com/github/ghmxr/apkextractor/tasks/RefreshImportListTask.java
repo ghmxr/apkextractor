@@ -72,38 +72,40 @@ public class RefreshImportListTask extends Thread {
             ImportItem.sort_config = SPUtil.getGlobalSharedPreferences(context).getInt(Constants.PREFERENCE_SORT_CONFIG_IMPORT_ITEMS, 0);
         }
         try {
-            arrayList = new ArrayList<>(getAllImportItemsFromPath(fileItem));
+            getAllImportItemsFromPath(fileItem);
             if (!TextUtils.isEmpty(SPUtil.getExternalStorageUri(context)) && package_scope_value == Constants.PACKAGE_SCOPE_ALL) {
-                arrayList.addAll(getAllImportItemsFromPath(new FileItem(context, Uri.parse(SPUtil.getExternalStorageUri(context)), SPUtil.getSaveSegment(context))));
+                getAllImportItemsFromPath(new FileItem(context, Uri.parse(SPUtil.getExternalStorageUri(context)), SPUtil.getSaveSegment(context)));
             }
             if (!isInterrupted) {
-                Collections.sort(arrayList);
+                Collections.sort(Global.item_list);
             }
         } catch (Exception e) {
             e.printStackTrace();
             return;
         }
-        if (isInterrupted) return;
+        /*if (isInterrupted) return;
         Global.item_list.clear();
-        Global.item_list.addAll(arrayList);
+        Global.item_list.addAll(arrayList);*/
         HashTask.clearResultCache();
         GetSignatureInfoTask.clearCache();
         GetApkLibraryTask.clearOutsidePackageCache();
-        refreshImportListTask = null;
+        synchronized (RefreshImportListTask.class) {
+            refreshImportListTask = null;
+        }
         if (callback != null) {
             Global.handler.post(new Runnable() {
                 @Override
                 public void run() {
-                    callback.onRefreshCompleted(arrayList);
+                    callback.onRefreshCompleted(Global.item_list);
                 }
             });
         }
     }
 
-    private ArrayList<ImportItem> getAllImportItemsFromPath(final FileItem fileItem) {
-        ArrayList<ImportItem> arrayList = new ArrayList<>();
+    private void getAllImportItemsFromPath(final FileItem fileItem) {
+//        ArrayList<ImportItem> arrayList = new ArrayList<>();
         try {
-            if (fileItem == null) return arrayList;
+            if (fileItem == null) return;
             //File file=new File(fileItem.getPath());
             if (fileItem.isFile()) {
                 final ImportItem importItem = new ImportItem(fileItem);
@@ -111,6 +113,7 @@ public class RefreshImportListTask extends Thread {
                         || fileItem.getPath().trim().toLowerCase().endsWith(".xapk")
                         || fileItem.getPath().trim().toLowerCase().endsWith("." + SPUtil.getCompressingExtensionName(context).toLowerCase())) {
                     if (isInterrupted) {
+//                        Global.item_list.clear();
                         throw new RuntimeException("task is interrupted");
                     }
                     boolean canAdd = true;
@@ -124,7 +127,7 @@ public class RefreshImportListTask extends Thread {
                             }
                         }
                     }
-                    if (canAdd) arrayList.add(importItem);
+//                    if (canAdd) arrayList.add(importItem);
 //                    SystemClock.sleep(1500);
 //                    final ArrayList<ImportItem> container = new ArrayList<>();
                     if (!isInterrupted) {
@@ -147,33 +150,37 @@ public class RefreshImportListTask extends Thread {
                     }
 //                    countDownLatch.await();
                 }
-                return arrayList;
+                return;
             }
             if (fileItem.isDirectory()) {
                 List<FileItem> fileItems = fileItem.listFileItems();
                 for (final FileItem fileItem1 : fileItems) {
                     if (isInterrupted) {
+//                        Global.item_list.clear();
                         throw new RuntimeException("task interrupted");
                     }
-                    arrayList.addAll(getAllImportItemsFromPath(fileItem1));
+                    getAllImportItemsFromPath(fileItem1);
                 }
             }
         } catch (Exception e) {
             e.printStackTrace();
         }
-        return arrayList;
+//        return arrayList;
     }
 
-    public void setInterrupted() {
+    private void setInterrupted() {
         this.isInterrupted = true;
+        Global.item_list.clear();
     }
 
     @Override
-    public synchronized void start() {
-        if (refreshImportListTask != null) {
-            refreshImportListTask.setInterrupted();
+    public void start() {
+        synchronized (RefreshImportListTask.class) {
+            if (refreshImportListTask != null) {
+                refreshImportListTask.setInterrupted();
+            }
+            refreshImportListTask = this;
         }
-        refreshImportListTask = this;
         super.start();
     }
 

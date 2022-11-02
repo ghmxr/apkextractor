@@ -61,6 +61,14 @@ public class Global {
 
     private static class ImportItemVector extends Vector<ImportItem> {
 
+        @Override
+        public synchronized boolean add(ImportItem importItem) {
+            if (contains(importItem)) {
+                return false;
+            }
+            return super.add(importItem);
+        }
+
         /**
          * 重写此集合实现类addAll方法来去除重复添加的同path的元素
          */
@@ -71,15 +79,8 @@ public class Global {
             ImportItem importItem;
             while (iterator.hasNext()) {
                 importItem = iterator.next();
-                for (Object o : elementData) {
-                    if (o == null) continue;
-                    try {
-                        if (((ImportItem) o).getFileItem().getPath().equalsIgnoreCase(importItem.getFileItem().getPath())) {
-                            iterator.remove();
-                        }
-                    } catch (Exception e) {
-                        e.printStackTrace();
-                    }
+                if (contains(importItem)) {
+                    iterator.remove();
                 }
 
             }

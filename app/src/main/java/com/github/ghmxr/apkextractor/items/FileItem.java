@@ -386,6 +386,7 @@ public class FileItem implements Comparable<FileItem> {
     String toString() {
         if (documentFile != null) return documentFile.getUri().toString();
         if (file != null) return file.getAbsolutePath();
+        if (contentUri != null) return contentUri.toString();
         return super.toString();
     }
 }
