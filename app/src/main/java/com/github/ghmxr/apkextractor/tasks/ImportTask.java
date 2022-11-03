@@ -124,8 +124,7 @@ public class ImportTask extends Thread {
                                 currentWritingApk = null;
                             }
                         }
-                        if (!isInterrupted) zipEntry = zipInputStream.getNextEntry();
-                        else break;
+
                     } catch (Exception e) {
                         e.printStackTrace();
                         error_info.append(currentWritePath);
@@ -140,6 +139,9 @@ public class ImportTask extends Thread {
                         } catch (Exception ee) {
                         }
                     }
+
+                    if (!isInterrupted) zipEntry = zipInputStream.getNextEntry();
+                    else break;
                 }
                 zipInputStream.close();
             } catch (Exception e) {
@@ -192,13 +194,13 @@ public class ImportTask extends Thread {
     }
 
     private void unZipToFile(ZipInputStream zipInputStream, String entryPath) throws Exception {
-        File folder = new File(StorageUtil.getMainExternalStoragePath() + "/" + entryPath.substring(0, entryPath.lastIndexOf("/")));
-        if (!folder.exists()) folder.mkdirs();
         String writePath = StorageUtil.getMainExternalStoragePath() + "/" + entryPath;
         File writeFile = new File(writePath);
-        OutputStream outputStream = new BufferedOutputStream(new FileOutputStream(writeFile));
         currentWritePath = writePath;
         currentWrtingFileItem = new FileItem(writeFile);
+        File folder = new File(StorageUtil.getMainExternalStoragePath() + "/" + entryPath.substring(0, entryPath.lastIndexOf("/")));
+        if (!folder.exists()) folder.mkdirs();
+        OutputStream outputStream = new BufferedOutputStream(new FileOutputStream(writeFile));
         byte[] buffer = new byte[1024];
         int len;
         while ((len = zipInputStream.read(buffer)) != -1 && !isInterrupted) {
