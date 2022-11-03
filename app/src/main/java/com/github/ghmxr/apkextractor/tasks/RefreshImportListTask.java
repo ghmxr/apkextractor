@@ -116,6 +116,14 @@ public class RefreshImportListTask extends Thread {
 //                        Global.item_list.clear();
                         throw new RuntimeException("task is interrupted");
                     }
+                    if (callback != null) {
+                        Global.handler.post(new Runnable() {
+                            @Override
+                            public void run() {
+                                callback.onProgress(false, importItem);
+                            }
+                        });
+                    }
                     boolean canAdd = true;
                     if (exclude_invalid_package) {
                         if (fileItem.getPath().trim().toLowerCase().endsWith(".zip")
