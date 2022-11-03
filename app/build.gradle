@@ -6,8 +6,8 @@ android {
         applicationId "com.github.ghmxr.apkextractor"
         minSdkVersion 14
         targetSdkVersion 23
-        versionCode 13
-        versionName "Build 14(Preview)"
+        versionCode 14
+        versionName "Build 14"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
     }
     buildTypes {
