@@ -339,7 +339,7 @@
         <RelativeLayout
             android:id="@+id/settings_loading_options_area"
             android:layout_width="match_parent"
-            android:layout_height="65dp"
+            android:layout_height="wrap_content"
             android:clickable="true"
             android:focusable="true"
             android:background="?attr/selectableItemBackground">
@@ -350,6 +350,7 @@
                 android:orientation="vertical"
                 android:layout_alignParentLeft="true"
                 android:layout_centerVertical="true"
+                android:paddingVertical="10dp"
                 android:layout_marginLeft="15dp"
                 android:layout_marginRight="30dp">
 
