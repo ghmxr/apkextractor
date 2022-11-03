@@ -15,10 +15,10 @@ import com.github.ghmxr.apkextractor.R;
 
 public abstract class ProgressDialog extends AlertDialog {
 
-    ProgressBar progressBar;
-    TextView att;
-    TextView att_left;
-    TextView att_right;
+    final ProgressBar progressBar;
+    final TextView att;
+    final TextView att_left;
+    final TextView att_right;
 
     public ProgressDialog(@NonNull Context context, @NonNull String title) {
         super(context);

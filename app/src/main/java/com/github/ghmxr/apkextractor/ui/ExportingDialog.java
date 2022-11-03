@@ -14,6 +14,7 @@ public class ExportingDialog extends ProgressDialog {
     public ExportingDialog(@NonNull Context context) {
         super(context, context.getResources().getString(R.string.dialog_export_title));
         att.setText(context.getResources().getString(R.string.dialog_wait));
+        progressBar.setIndeterminate(true);
     }
 
     public void setProgressOfApp(int current, int total, @NonNull AppItem item, @NonNull String write_path) {
@@ -25,6 +26,9 @@ public class ExportingDialog extends ProgressDialog {
     public void setProgressOfWriteBytes(long current, long total) {
         if (current < 0) return;
         if (current > total) return;
+        if (progressBar.isIndeterminate()) {
+            progressBar.setIndeterminate(false);
+        }
         progressBar.setMax((int) (total / 1024));
         progressBar.setProgress((int) (current / 1024));
         DecimalFormat dm = new DecimalFormat("#.00");

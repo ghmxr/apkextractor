@@ -14,7 +14,7 @@ public class ImportingDialog extends ProgressDialog {
     public ImportingDialog(@NonNull Context context, long total) {
         super(context, context.getResources().getString(R.string.dialog_import_title));
         this.total = total;
-        progressBar.setMax((int) (total / 1024));
+        progressBar.setIndeterminate(true);
         setCancelable(false);
     }
 
@@ -23,6 +23,10 @@ public class ImportingDialog extends ProgressDialog {
     }
 
     public void setProgress(long progress) {
+        if (progressBar.isIndeterminate()) {
+            progressBar.setIndeterminate(false);
+        }
+        progressBar.setMax((int) (total / 1024));
         progressBar.setProgress((int) (progress / 1024));
         DecimalFormat dm = new DecimalFormat("#.00");
         int percent = (int) (Double.valueOf(dm.format((double) progress / total)) * 100);
