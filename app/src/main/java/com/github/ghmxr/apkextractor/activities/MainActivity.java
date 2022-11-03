@@ -118,7 +118,11 @@ public class MainActivity extends BaseActivity implements View.OnClickListener, 
                 edit_search.setText("");
             }
         });
-        getSupportActionBar().setCustomView(view);
+        try {
+            getSupportActionBar().setCustomView(view);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
 
         viewPager.setAdapter(new MyPagerAdapter(this, getSupportFragmentManager(), appFragment, importFragment));
         tabLayout.setupWithViewPager(viewPager, true);
