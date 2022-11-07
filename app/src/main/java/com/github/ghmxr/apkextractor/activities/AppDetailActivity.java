@@ -161,7 +161,7 @@ public class AppDetailActivity extends BaseActivity implements View.OnClickListe
             }
         }
 
-        getDataObbSizeAndFillView();
+//        getDataObbSizeAndFillView();
 
         new GetPackageInfoViewTask(this, appItem.getPackageInfo(), (AssemblyView) findViewById(R.id.app_detail_assembly), new GetPackageInfoViewTask.CompletedCallback() {
             @Override
@@ -246,6 +246,12 @@ public class AppDetailActivity extends BaseActivity implements View.OnClickListe
     protected void onRestoreInstanceState(Bundle savedInstanceState) {
         super.onRestoreInstanceState(savedInstanceState);
         appItem = savedInstanceState.getParcelable("appItem");
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        getDataObbSizeAndFillView();
     }
 
     private void getDataObbSizeAndFillView() {
