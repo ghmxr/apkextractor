@@ -82,6 +82,7 @@ public class RefreshInstalledListTask extends Thread {
         Global.app_list.addAll(list_sum);//向全局list保存一个引用
         GetSignatureInfoTask.clearCache();
         GetApkLibraryTask.clearOutsidePackageCache();
+        GetDataObbTask.clearDataObbSizeCache();
         Global.handler.post(new Runnable() {
             @Override
             public void run() {

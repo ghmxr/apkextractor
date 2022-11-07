@@ -65,6 +65,12 @@ public class OutputUtil {
         return DocumentFileUtil.getDocumentFileBySegments(DocumentFile.fromTreeUri(context, Uri.parse(SPUtil.getExternalStorageUri(context))), segments);
     }
 
+    public static DocumentFile getDataDocumentFileForEntry(String entry) throws Exception {
+        DocumentFileUtil.getDocumentFileBySegments(DocumentFileUtil.getDataDocumentFile(), entry);
+//        return MyApplication.getApplication().getContentResolver().openOutputStream();
+        return null;
+    }
+
     /**
      * 为一个AppItem获取一个写入的文件名，例如example.apk
      */

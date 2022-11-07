@@ -268,6 +268,7 @@ public class PackageDetailActivity extends BaseActivity implements View.OnClickL
                     }
                 }
             }).start();
+            EnvironmentUtil.checkAndShowGrantDialog(this);
         }
 
     }

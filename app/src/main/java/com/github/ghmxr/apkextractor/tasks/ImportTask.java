@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Build;
+import android.text.TextUtils;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -14,6 +15,7 @@ import com.github.ghmxr.apkextractor.Global;
 import com.github.ghmxr.apkextractor.items.FileItem;
 import com.github.ghmxr.apkextractor.items.ImportItem;
 import com.github.ghmxr.apkextractor.ui.ToastManager;
+import com.github.ghmxr.apkextractor.utils.DocumentFileUtil;
 import com.github.ghmxr.apkextractor.utils.EnvironmentUtil;
 import com.github.ghmxr.apkextractor.utils.OutputUtil;
 import com.github.ghmxr.apkextractor.utils.SPUtil;
@@ -100,9 +102,13 @@ public class ImportTask extends Thread {
                                     apk_num++;
                                     writeFile = new File(SPUtil.getInternalSavePath(context) + "/" + getApkFileNameWithNum(fileName));
                                 }
-                                outputStream = new FileOutputStream(writeFile);
                                 currentWritePath = writeFile.getAbsolutePath();
                                 currentWrtingFileItem = new FileItem(writeFile);
+                                File export_path = new File(SPUtil.getInternalSavePath(context));
+                                if (!export_path.exists()) {
+                                    export_path.mkdirs();
+                                }
+                                outputStream = new FileOutputStream(writeFile);
                                 if (Build.VERSION.SDK_INT <= 23) apkUri = Uri.fromFile(writeFile);
                                 else
                                     apkUri = EnvironmentUtil.getUriForFileByFileProvider(context, writeFile);
@@ -199,9 +205,29 @@ public class ImportTask extends Thread {
         File writeFile = new File(writePath);
         currentWritePath = writePath;
         currentWrtingFileItem = new FileItem(writeFile);
-        File folder = new File(StorageUtil.getMainExternalStoragePath() + "/" + entryPath.substring(0, entryPath.lastIndexOf("/")));
-        if (!folder.exists()) folder.mkdirs();
-        OutputStream outputStream = new BufferedOutputStream(new FileOutputStream(writeFile));
+
+        OutputStream outputStream;
+        if (Build.VERSION.SDK_INT < 30) {
+            File folder = new File(StorageUtil.getMainExternalStoragePath() + "/" + entryPath.substring(0, entryPath.lastIndexOf("/")));
+            if (!folder.exists()) folder.mkdirs();
+            outputStream = new BufferedOutputStream(new FileOutputStream(writeFile));
+        } else {
+            final String formattedEntryPath = entryPath.toLowerCase();
+            DocumentFile writingParentDocumentFile = null;
+            String segments = null;
+            if (formattedEntryPath.startsWith("android/data/")) {
+                segments = entryPath.substring("android/data/".length(), entryPath.lastIndexOf("/"));
+                writingParentDocumentFile = DocumentFileUtil.getDataDocumentFile();
+            }
+            if (formattedEntryPath.startsWith("android/obb/")) {
+                segments = entryPath.substring("android/obb/".length(), entryPath.lastIndexOf("/"));
+                writingParentDocumentFile = DocumentFileUtil.getObbDocumentFile();
+            }
+            if (writingParentDocumentFile == null || TextUtils.isEmpty(segments)) return;
+            outputStream = OutputUtil.getOutputStreamForDocumentFile(context, DocumentFileUtil.getDocumentFileBySegments(writingParentDocumentFile, segments)
+                    .createFile("", entryPath.substring(entryPath.lastIndexOf("/") + 1)));
+        }
+
         byte[] buffer = new byte[1024];
         int len;
         while ((len = zipInputStream.read(buffer)) != -1 && !isInterrupted) {

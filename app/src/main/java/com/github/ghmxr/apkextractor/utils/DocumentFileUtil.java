@@ -9,6 +9,8 @@ import androidx.annotation.Nullable;
 import androidx.documentfile.provider.DocumentFile;
 
 import com.github.ghmxr.apkextractor.Constants;
+import com.github.ghmxr.apkextractor.Global;
+import com.github.ghmxr.apkextractor.MyApplication;
 import com.github.ghmxr.apkextractor.R;
 
 public class DocumentFileUtil {
@@ -75,4 +77,47 @@ public class DocumentFileUtil {
         return "";
     }
 
+    public static boolean canReadDataPathByDocumentFile() {
+        try {
+            return getDataDocumentFile().canRead();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return false;
+    }
+
+    public static boolean canWriteDataPathByDocumentFile() {
+        try {
+            return getDataDocumentFile().canWrite();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return false;
+    }
+
+    public static boolean canReadObbPathByDocumentFile() {
+        try {
+            return getObbDocumentFile().canRead();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return false;
+    }
+
+    public static boolean canWriteObbPathByDocumentFile() {
+        try {
+            return getObbDocumentFile().canWrite();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return false;
+    }
+
+    public static DocumentFile getDataDocumentFile() {
+        return DocumentFile.fromTreeUri(MyApplication.getApplication(), Uri.parse(Global.URI_DATA));
+    }
+
+    public static DocumentFile getObbDocumentFile() {
+        return DocumentFile.fromTreeUri(MyApplication.getApplication(), Uri.parse(Global.URI_OBB));
+    }
 }

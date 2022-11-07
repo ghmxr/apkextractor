@@ -193,4 +193,6 @@ public class Constants {
      */
     public static final String PREFERENCE_EXCLUDE_INVALID_PACKAGE = "exclude_invalid_package";
     public static final boolean PREFERENCE_EXCLUDE_INVALID_PACKAGE_DEFAULT = true;
+
+    public static final String PREFERENCE_SHOW_GRANT_DIALOG = "show_grant_dialog";
 }

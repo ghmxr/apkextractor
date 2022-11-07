@@ -63,6 +63,9 @@
                 <data android:mimeType="*/*" />
             </intent-filter>
         </activity>
+        <activity
+            android:name=".activities.GrantActivity"
+            android:theme="@style/CommonTheme" />
 
         <provider
             android:authorities="com.github.ghmxr.apkextractor.FileProvider"

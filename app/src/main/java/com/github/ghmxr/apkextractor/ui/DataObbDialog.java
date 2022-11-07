@@ -1,5 +1,6 @@
 package com.github.ghmxr.apkextractor.ui;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.text.format.Formatter;
@@ -11,13 +12,10 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
 
-import com.github.ghmxr.apkextractor.Global;
 import com.github.ghmxr.apkextractor.R;
 import com.github.ghmxr.apkextractor.items.AppItem;
-import com.github.ghmxr.apkextractor.utils.FileUtil;
-import com.github.ghmxr.apkextractor.utils.StorageUtil;
+import com.github.ghmxr.apkextractor.tasks.GetDataObbTask;
 
-import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -66,39 +64,24 @@ public class DataObbDialog extends AlertDialog implements View.OnClickListener {
     public void show() {
         super.show();
         getButton(AlertDialog.BUTTON_POSITIVE).setOnClickListener(null);
-        new Thread(new Runnable() {
+        new GetDataObbTask(list, new GetDataObbTask.DataObbSizeGetCallback() {
+            @SuppressLint("SetTextI18n")
             @Override
-            public void run() {
-                synchronized (DataObbDialog.this) {
-                    long data = 0, obb = 0;
-                    for (AppItem item : list) {
-                        long data_item = FileUtil.getFileOrFolderSize(new File(StorageUtil.getMainExternalStoragePath() + "/android/data/" + item.getPackageName()));
-                        long obb_item = FileUtil.getFileOrFolderSize(new File(StorageUtil.getMainExternalStoragePath() + "/android/obb/" + item.getPackageName()));
-                        data += data_item;
-                        obb += obb_item;
-                        if (data_item > 0) list_data_controllable.add(item);
-                        if (obb_item > 0) list_obb_controllable.add(item);
-                    }
-                    final long data_total = data;
-                    final long obb_total = obb;
-                    Global.handler.post(new Runnable() {
-                        @Override
-                        public void run() {
-                            if (data_total == 0 && obb_total == 0) {
-                                cancel();
-                                if (callback != null) callback.onDialogDataObbConfirmed(list);
-                                return;
-                            }
-                            view.findViewById(R.id.dialog_data_obb_wait_area).setVisibility(View.GONE);
-                            view.findViewById(R.id.dialog_data_obb_show_area).setVisibility(View.VISIBLE);
-                            cb_data.setEnabled(data_total > 0);
-                            cb_obb.setEnabled(obb_total > 0);
-                            cb_data.setText("Data(" + Formatter.formatFileSize(getContext(), data_total) + ")");
-                            cb_obb.setText("Obb(" + Formatter.formatFileSize(getContext(), obb_total) + ")");
-                            getButton(AlertDialog.BUTTON_POSITIVE).setOnClickListener(DataObbDialog.this);
-                        }
-                    });
+            public void onDataObbSizeGet(List<AppItem> containsData, List<AppItem> containsObb, GetDataObbTask.DataObbSizeInfo dataObbSizeInfo) {
+                list_data_controllable.addAll(containsData);
+                list_obb_controllable.addAll(containsObb);
+                if (dataObbSizeInfo.data == 0 && dataObbSizeInfo.obb == 0) {
+                    cancel();
+                    if (callback != null) callback.onDialogDataObbConfirmed(list);
+                    return;
                 }
+                view.findViewById(R.id.dialog_data_obb_wait_area).setVisibility(View.GONE);
+                view.findViewById(R.id.dialog_data_obb_show_area).setVisibility(View.VISIBLE);
+                cb_data.setEnabled(dataObbSizeInfo.data > 0);
+                cb_obb.setEnabled(dataObbSizeInfo.obb > 0);
+                cb_data.setText("Data(" + Formatter.formatFileSize(getContext(), dataObbSizeInfo.data) + ")");
+                cb_obb.setText("Obb(" + Formatter.formatFileSize(getContext(), dataObbSizeInfo.obb) + ")");
+                getButton(AlertDialog.BUTTON_POSITIVE).setOnClickListener(DataObbDialog.this);
             }
         }).start();
     }

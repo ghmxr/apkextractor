@@ -1,10 +1,14 @@
 package com.github.ghmxr.apkextractor.tasks;
 
+import android.os.Build;
+
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.documentfile.provider.DocumentFile;
 
 import com.github.ghmxr.apkextractor.Global;
 import com.github.ghmxr.apkextractor.items.ImportItem;
+import com.github.ghmxr.apkextractor.utils.DocumentFileUtil;
 import com.github.ghmxr.apkextractor.utils.StorageUtil;
 import com.github.ghmxr.apkextractor.utils.ZipFileUtil;
 
@@ -84,12 +88,29 @@ public class GetImportLengthAndDuplicateInfoTask extends Thread {
                             stringBuilder.append("\n\n");
                         }
                     }*/
-                    File exportWritingTarget = new File(StorageUtil.getMainExternalStoragePath() + "/" + s);
-                    if (exportWritingTarget.exists()) {
-                        //stringBuilder.append(exportWritingTarget.getAbsolutePath());
-                        //stringBuilder.append("\n\n");
-                        duplication_infos.add(exportWritingTarget.getAbsolutePath());
+                    if (Build.VERSION.SDK_INT < 30) {
+                        File exportWritingTarget = new File(StorageUtil.getMainExternalStoragePath() + "/" + s);
+                        if (exportWritingTarget.exists()) {
+                            //stringBuilder.append(exportWritingTarget.getAbsolutePath());
+                            //stringBuilder.append("\n\n");
+                            duplication_infos.add(exportWritingTarget.getAbsolutePath());
+                        }
+                    } else {
+                        DocumentFile targetFile = null;
+                        String fileName = s.substring(s.lastIndexOf("/") + 1);
+                        if (s.toLowerCase().startsWith("android/data/")) {
+                            targetFile = DocumentFileUtil.getDocumentFileBySegments(DocumentFileUtil.getDataDocumentFile()
+                                    , s.substring("android/data/".length(), s.lastIndexOf("/"))).findFile(fileName);
+                        }
+                        if (s.toLowerCase().startsWith("android/obb/")) {
+                            targetFile = DocumentFileUtil.getDocumentFileBySegments(DocumentFileUtil.getObbDocumentFile()
+                                    , s.substring("android/obb/".length(), s.lastIndexOf("/"))).findFile(fileName);
+                        }
+                        if (targetFile != null) {
+                            duplication_infos.add(targetFile.getUri().getPath());
+                        }
                     }
+
                 }
             } catch (Exception e) {
                 e.printStackTrace();

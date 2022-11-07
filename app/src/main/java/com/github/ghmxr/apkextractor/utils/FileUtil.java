@@ -2,9 +2,12 @@ package com.github.ghmxr.apkextractor.utils;
 
 import androidx.annotation.NonNull;
 
+import com.github.ghmxr.apkextractor.items.FileItem;
+
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.InputStream;
+import java.util.List;
 import java.util.zip.CRC32;
 
 public class FileUtil {
@@ -32,6 +35,26 @@ public class FileUtil {
             e.printStackTrace();
         }
         return 0;
+    }
+
+    public static long getFileItemSize(FileItem fileItem) {
+        if (fileItem == null) return 0L;
+        try {
+            if (fileItem.isFile()) {
+                return fileItem.length();
+            }
+            if (fileItem.isDirectory()) {
+                List<FileItem> fileItems = fileItem.listFileItems();
+                long size = 0L;
+                for (FileItem fileItem1 : fileItems) {
+                    size += getFileItemSize(fileItem1);
+                }
+                return size;
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return 0L;
     }
 
     /**

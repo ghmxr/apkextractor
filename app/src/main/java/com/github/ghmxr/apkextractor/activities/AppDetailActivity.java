@@ -36,6 +36,7 @@ import com.github.ghmxr.apkextractor.Constants;
 import com.github.ghmxr.apkextractor.Global;
 import com.github.ghmxr.apkextractor.R;
 import com.github.ghmxr.apkextractor.items.AppItem;
+import com.github.ghmxr.apkextractor.tasks.GetDataObbTask;
 import com.github.ghmxr.apkextractor.tasks.GetPackageInfoViewTask;
 import com.github.ghmxr.apkextractor.tasks.GetSignatureInfoTask;
 import com.github.ghmxr.apkextractor.tasks.HashTask;
@@ -43,14 +44,12 @@ import com.github.ghmxr.apkextractor.ui.AssemblyView;
 import com.github.ghmxr.apkextractor.ui.LibraryView;
 import com.github.ghmxr.apkextractor.ui.SignatureView;
 import com.github.ghmxr.apkextractor.ui.ToastManager;
-import com.github.ghmxr.apkextractor.utils.FileUtil;
+import com.github.ghmxr.apkextractor.utils.EnvironmentUtil;
 import com.github.ghmxr.apkextractor.utils.OutputUtil;
 import com.github.ghmxr.apkextractor.utils.SPUtil;
-import com.github.ghmxr.apkextractor.utils.StorageUtil;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.snackbar.Snackbar;
 
-import java.io.File;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -233,6 +232,8 @@ public class AppDetailActivity extends BaseActivity implements View.OnClickListe
         } catch (Exception e) {
             e.printStackTrace();
         }
+
+        EnvironmentUtil.checkAndShowGrantDialog(AppDetailActivity.this);
     }
 
     @Override
@@ -248,22 +249,15 @@ public class AppDetailActivity extends BaseActivity implements View.OnClickListe
     }
 
     private void getDataObbSizeAndFillView() {
-        new Thread(new Runnable() {
+        new GetDataObbTask(appItem, new GetDataObbTask.DataObbSizeGetCallback() {
             @Override
-            public void run() {
-                final long data = FileUtil.getFileOrFolderSize(new File(StorageUtil.getMainExternalStoragePath() + "/android/data/" + appItem.getPackageName()));
-                final long obb = FileUtil.getFileOrFolderSize(new File(StorageUtil.getMainExternalStoragePath() + "/android/obb/" + appItem.getPackageName()));
-                Global.handler.post(new Runnable() {
-                    @Override
-                    public void run() {
-                        findViewById(R.id.app_detail_export_progress_bar).setVisibility(View.GONE);
-                        cb_data.setText("Data:" + Formatter.formatFileSize(AppDetailActivity.this, data));
-                        cb_obb.setText("Obb:" + Formatter.formatFileSize(AppDetailActivity.this, obb));
-                        cb_data.setEnabled(data > 0);
-                        cb_obb.setEnabled(obb > 0);
-                        findViewById(R.id.app_detail_export_checkboxes).setVisibility(View.VISIBLE);
-                    }
-                });
+            public void onDataObbSizeGet(List<AppItem> containsData, List<AppItem> containsObb, GetDataObbTask.DataObbSizeInfo dataObbSizeInfo) {
+                findViewById(R.id.app_detail_export_progress_bar).setVisibility(View.GONE);
+                cb_data.setText("Data:" + Formatter.formatFileSize(AppDetailActivity.this, dataObbSizeInfo.data));
+                cb_obb.setText("Obb:" + Formatter.formatFileSize(AppDetailActivity.this, dataObbSizeInfo.obb));
+                cb_data.setEnabled(dataObbSizeInfo.data > 0);
+                cb_obb.setEnabled(dataObbSizeInfo.obb > 0);
+                findViewById(R.id.app_detail_export_checkboxes).setVisibility(View.VISIBLE);
             }
         }).start();
     }

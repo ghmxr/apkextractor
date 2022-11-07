@@ -89,6 +89,23 @@
     <string name="activity_settings_night_mode">Night mode</string>
     <string name="activity_settings_loading_options">Loading options</string>
     <string name="activity_settings_about">About</string>
+    <string name="activity_settings_grant">R/W Permission</string>
+    <string name="activity_settings_grant_att">grant reading/writing data and obb permissions</string>
+    <string name="dialog_grant_attention_title">Attention</string>
+
+    <string name="activity_grant_data">Grant data</string>
+    <string name="activity_grant_obb">Grant obb</string>
+
+    <string name="dialog_grant_attention_data">Will start granting reading/writing data permission, please check if the current path of the system file-managing app is "StorageRoot/Android/data" and click "confirm"</string>
+    <string name="dialog_grant_attention_obb">Will start granting reading/writing obb permission, please check if the current path of the system file-managing app is "StorageRoot/Android/obb" and click "confirm"</string>
+    <string name="dialog_grant_warn">You might selected a wrong path of data/obb, continue?</string>
+    <string name="dialog_grant_toast_data">Check the current data path and click "use this folder"</string>
+    <string name="dialog_grant_toast_obb">Check the current obb path and click "use this folder"</string>
+    <string name="dialog_grant_no_need">It is no need to do this operation for the current version of Android, if you can normally see the size of data and obb of an app and importing data and obb, continue?</string>
+    <string name="dialog_grant_first_use">It has no permission to use data or obb path, jump to grant page?</string>
+
+    <string name="permission_granted">granted</string>
+    <string name="permission_denied">denied</string>
 
     <string name="activity_folder_selector_title">Selecting path</string>
     <string name="activity_folder_selector_select_storage">Selecting storage</string>

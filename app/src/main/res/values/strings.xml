@@ -93,6 +93,8 @@
     <string name="activity_settings_package_exclude">安装包过滤</string>
     <string name="activity_settings_package_exclude_description">过滤无data,obb,apk内容的压缩包</string>
     <string name="activity_settings_extension">压缩包扩展名</string>
+    <string name="activity_settings_grant">读写授权</string>
+    <string name="activity_settings_grant_att">读写存储data,obb授权</string>
     <string name="activity_settings_night_mode">夜间模式</string>
     <string name="activity_settings_loading_options">读取项</string>
     <string name="activity_settings_port_number">端口号</string>
@@ -110,6 +112,20 @@
     <string name="activity_settings_package_name_separator">包名分隔内容</string>
     <string name="activity_settings_language" translatable="false">Language</string>
     <string name="activity_settings_about">关于</string>
+
+    <string name="dialog_grant_attention_title">提示</string>
+    <string name="activity_grant_data">data授权</string>
+    <string name="activity_grant_obb">obb授权</string>
+
+    <string name="dialog_grant_no_need">当前Android版本无需使用此方式来访问data或者obb，如果能够正常查看data/obb大小或者导入data/obb数据无需此操作，是否继续？</string>
+    <string name="dialog_grant_attention_data">即将开始授权data目录读写权限，请在打开的系统文件管理器检查是否为“根存储/Android/data”目录并点击“使用此文件夹”来授权</string>
+    <string name="dialog_grant_attention_obb">即将开始授权obb目录读写权限，请在打开的系统文件管理器检查是否为“根存储/Android/obb”目录并点击“使用此文件夹”来授权</string>
+    <string name="dialog_grant_warn">可能没有选择到正确的data/obb目录下，是否继续？</string>
+    <string name="dialog_grant_toast_data">检查当前data路径并点击“使用此文件夹”</string>
+    <string name="dialog_grant_toast_obb">检查当前obb路径并点击“使用此文件夹”</string>
+    <string name="permission_granted">已授权</string>
+    <string name="permission_denied">未授权</string>
+    <string name="dialog_grant_first_use">当前未获取到访问data或obb数据的权限，是否跳转至授权页？</string>
 
     <string name="activity_folder_selector_title">选择路径</string>
     <string name="activity_folder_selector_select_storage">选择存储</string>

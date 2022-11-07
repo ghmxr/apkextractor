@@ -89,6 +89,9 @@ public class Global {
         }
     }
 
+    public static final String URI_DATA = "content://com.android.externalstorage.documents/tree/primary%3AAndroid%2Fdata";
+    public static final String URI_OBB = "content://com.android.externalstorage.documents/tree/primary%3AAndroid%2Fobb";
+
     public static void showRequestingWritePermissionSnackBar(@NonNull final Activity activity) {
         Snackbar snackbar = Snackbar.make(activity.findViewById(android.R.id.content), activity.getResources().getString(R.string.permission_write), Snackbar.LENGTH_SHORT);
         snackbar.setAction(activity.getResources().getString(R.string.permission_grant), new View.OnClickListener() {

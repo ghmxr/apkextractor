@@ -70,6 +70,16 @@ public class SettingActivity extends BaseActivity implements View.OnClickListene
         findViewById(R.id.settings_package_scope_area).setOnClickListener(this);
         findViewById(R.id.settings_package_name_separator_area).setOnClickListener(this);
         findViewById(R.id.settings_package_exclude_area).setOnClickListener(this);
+        View grantArea = findViewById(R.id.settings_grant_area);
+        if (Build.VERSION.SDK_INT >= 26) {
+            grantArea.setVisibility(View.VISIBLE);
+        }
+        grantArea.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                startActivity(new Intent(SettingActivity.this, GrantActivity.class));
+            }
+        });
         refreshSettingValues();
 
         if (bundle != null) {
