@@ -475,8 +475,11 @@ public class ImportFragment extends Fragment implements RefreshImportListTask.Re
                 deleted = itemIterator.next();
                 if (TextUtils.equals(deleted.getFileItem().getPath(), packagePath)) {
                     itemIterator.remove();
-                    adapter.removeItem(deleted);
+                    if (adapter != null) adapter.removeItem(deleted);
                 }
+            }
+            if (viewGroup_no_content != null && adapter != null) {
+                viewGroup_no_content.setVisibility(adapter.getItemCount() == 0 ? View.VISIBLE : View.GONE);
             }
         }
     }
