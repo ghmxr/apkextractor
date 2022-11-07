@@ -1,6 +1,6 @@
 package com.github.ghmxr.apkextractor;
 
-import android.support.v7.app.AppCompatDelegate;
+import androidx.appcompat.app.AppCompatDelegate;
 
 import com.github.ghmxr.apkextractor.utils.StorageUtil;
 

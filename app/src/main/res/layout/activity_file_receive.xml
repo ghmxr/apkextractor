@@ -25,7 +25,7 @@
             android:layout_marginRight="15dp"
             android:layout_centerVertical="true">
 
-            <android.support.v7.widget.AppCompatCheckBox
+            <androidx.appcompat.widget.AppCompatCheckBox
                 android:id="@+id/activity_file_receive_apmode"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -33,7 +33,7 @@
         </LinearLayout>
     </RelativeLayout>
 
-    <android.support.v7.widget.RecyclerView
+    <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/activity_file_receive_recyclerview"
         android:layout_width="match_parent"
         android:layout_height="match_parent"

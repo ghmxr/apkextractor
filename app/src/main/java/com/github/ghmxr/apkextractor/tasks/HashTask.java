@@ -1,6 +1,6 @@
 package com.github.ghmxr.apkextractor.tasks;
 
-import android.support.annotation.NonNull;
+import androidx.annotation.NonNull;
 
 import com.github.ghmxr.apkextractor.Global;
 import com.github.ghmxr.apkextractor.items.FileItem;

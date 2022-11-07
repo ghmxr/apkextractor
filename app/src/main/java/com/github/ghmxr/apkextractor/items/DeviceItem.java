@@ -1,6 +1,6 @@
 package com.github.ghmxr.apkextractor.items;
 
-import android.support.annotation.NonNull;
+import androidx.annotation.NonNull;
 
 public class DeviceItem {
     private String deviceName;

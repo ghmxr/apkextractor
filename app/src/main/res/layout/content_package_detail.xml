@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.v4.widget.NestedScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.core.widget.NestedScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:id="@+id/nsv"
@@ -19,7 +19,7 @@
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toTopOf="parent">
 
-        <android.support.v7.widget.CardView
+        <androidx.cardview.widget.CardView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginLeft="8dp"
@@ -195,9 +195,9 @@
 
             </LinearLayout>
 
-        </android.support.v7.widget.CardView>
+        </androidx.cardview.widget.CardView>
 
-        <android.support.v7.widget.CardView
+        <androidx.cardview.widget.CardView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginLeft="8dp"
@@ -624,7 +624,7 @@
                 </RelativeLayout>
             </LinearLayout>
 
-        </android.support.v7.widget.CardView>
+        </androidx.cardview.widget.CardView>
 
         <TextView
             android:id="@+id/package_detail_signature_head"
@@ -669,7 +669,7 @@
             android:visibility="gone"
             android:text="@string/activity_detail_hash_head" />
 
-        <android.support.v7.widget.CardView
+        <androidx.cardview.widget.CardView
             android:id="@+id/package_detail_hash"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -720,7 +720,7 @@
                         android:visibility="gone"
                         tools:text="28" />
 
-                    <android.support.v4.widget.ContentLoadingProgressBar
+                    <androidx.core.widget.ContentLoadingProgressBar
                         android:id="@+id/detail_hash_md5_pg"
                         android:layout_width="20dp"
                         android:layout_height="20dp"
@@ -766,7 +766,7 @@
                         android:visibility="gone"
                         tools:text="28" />
 
-                    <android.support.v4.widget.ContentLoadingProgressBar
+                    <androidx.core.widget.ContentLoadingProgressBar
                         android:id="@+id/detail_hash_sha1_pg"
                         android:layout_width="20dp"
                         android:layout_height="20dp"
@@ -812,7 +812,7 @@
                         android:visibility="gone"
                         tools:text="28" />
 
-                    <android.support.v4.widget.ContentLoadingProgressBar
+                    <androidx.core.widget.ContentLoadingProgressBar
                         android:id="@+id/detail_hash_sha256_pg"
                         android:layout_width="20dp"
                         android:layout_height="20dp"
@@ -858,7 +858,7 @@
                         android:visibility="gone"
                         tools:text="28" />
 
-                    <android.support.v4.widget.ContentLoadingProgressBar
+                    <androidx.core.widget.ContentLoadingProgressBar
                         android:id="@+id/detail_hash_crc32_pg"
                         android:layout_width="20dp"
                         android:layout_height="20dp"
@@ -867,7 +867,7 @@
                         style="?android:attr/progressBarStyleSmall" />
                 </LinearLayout>
             </LinearLayout>
-        </android.support.v7.widget.CardView>
+        </androidx.cardview.widget.CardView>
 
         <com.github.ghmxr.apkextractor.ui.AssemblyView
             android:id="@+id/package_detail_assemble"
@@ -886,4 +886,4 @@
             tools:visibility="visible" />
     </LinearLayout>
 
-</android.support.v4.widget.NestedScrollView>
+</androidx.core.widget.NestedScrollView>
