@@ -1,13 +1,13 @@
 apply plugin: 'com.android.application'
 
 android {
-    compileSdkVersion 28
+    compileSdkVersion 31
     defaultConfig {
         applicationId "com.github.ghmxr.apkextractor"
         minSdkVersion 14
         targetSdkVersion 23
         versionCode 14
-        versionName "Build 14"
+        versionName "Build 15(Preview)"
 //        testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
     }
     buildTypes {

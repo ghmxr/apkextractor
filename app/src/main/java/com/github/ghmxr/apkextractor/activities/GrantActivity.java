@@ -17,6 +17,7 @@ import androidx.documentfile.provider.DocumentFile;
 
 import com.github.ghmxr.apkextractor.Global;
 import com.github.ghmxr.apkextractor.R;
+import com.github.ghmxr.apkextractor.tasks.GetDataObbTask;
 import com.github.ghmxr.apkextractor.ui.ToastManager;
 import com.github.ghmxr.apkextractor.utils.DocumentFileUtil;
 
@@ -166,6 +167,7 @@ public class GrantActivity extends BaseActivity {
     private void takePersistPermission(Uri uri) {
         if (Build.VERSION.SDK_INT >= 19) {
             getContentResolver().takePersistableUriPermission(uri, Intent.FLAG_GRANT_WRITE_URI_PERMISSION | Intent.FLAG_GRANT_READ_URI_PERMISSION);
+            GetDataObbTask.clearDataObbSizeCache();
         }
     }
 
