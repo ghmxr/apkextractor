@@ -13,13 +13,13 @@ import com.github.ghmxr.apkextractor.utils.StorageUtil;
 
 import java.io.File;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Vector;
+import java.util.concurrent.ConcurrentHashMap;
 
 public class GetDataObbTask extends Thread {
 
-    private static final HashMap<String, DataObbSizeInfo> cache_data_obb_size = new HashMap<>();
+    private static final ConcurrentHashMap<String, DataObbSizeInfo> cache_data_obb_size = new ConcurrentHashMap<>();
 
     public static class DataObbSizeInfo {
         public final long data;
