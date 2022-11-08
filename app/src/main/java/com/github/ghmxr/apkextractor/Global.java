@@ -360,7 +360,7 @@ public class Global {
         } else {
             ArrayList<FileItem> arrayList = new ArrayList<>();
             for (AppItem item : items) {
-                arrayList.add(new FileItem(new File(item.getSourcePath())));
+                arrayList.add(FileItem.createFileItemInstance(new File(item.getSourcePath())));
             }
             new ShareSelectionDialog(activity, arrayList).show();
         }

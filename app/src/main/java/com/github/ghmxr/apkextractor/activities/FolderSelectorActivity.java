@@ -91,7 +91,7 @@ public class FolderSelectorActivity extends BaseActivity {
         findViewById(R.id.item_internal).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                refreshList(new FileItem(StorageUtil.getMainExternalStoragePath()));
+                refreshList(FileItem.createFileItemInstance(StorageUtil.getMainExternalStoragePath()));
             }
         });
         findViewById(R.id.item_external).setOnClickListener(new View.OnClickListener() {
@@ -100,7 +100,7 @@ public class FolderSelectorActivity extends BaseActivity {
                 if (Build.VERSION.SDK_INT >= 21) {
                     if (DocumentFileUtil.canWrite2ExternalStorage(FolderSelectorActivity.this)) {
                         try {
-                            refreshList(new FileItem(FolderSelectorActivity.this, Uri.parse(SPUtil.getExternalStorageUri(FolderSelectorActivity.this)), null));
+                            refreshList(FileItem.createFileItemInstance(Uri.parse(SPUtil.getExternalStorageUri(FolderSelectorActivity.this)), null));
                         } catch (Exception e) {
                             e.printStackTrace();
                             restore2DefaultStoragePath();
@@ -114,7 +114,7 @@ public class FolderSelectorActivity extends BaseActivity {
                     List<String> storages = StorageUtil.getAvailableStoragePaths(FolderSelectorActivity.this);
                     ArrayList<FileItem> arrayList = new ArrayList<>();
                     for (String s : storages) {
-                        arrayList.add(new FileItem(s));
+                        arrayList.add(FileItem.createFileItemInstance(s));
                     }
                     listView.setVisibility(View.VISIBLE);
                     group_storages.setVisibility(View.GONE);
@@ -137,18 +137,18 @@ public class FolderSelectorActivity extends BaseActivity {
         if (external) {
             try {
                 String segments = SPUtil.getSaveSegment(this);
-                fileItem = new FileItem(this, Uri.parse(SPUtil.getExternalStorageUri(this)), segments);
+                fileItem = FileItem.createFileItemInstance(Uri.parse(SPUtil.getExternalStorageUri(this)), segments);
                 if (segments != null) this.segments.addAll(Arrays.asList(segments.split("/")));
                 else this.segments.clear();
                 current_storage_path = DocumentFile.fromTreeUri(this, Uri.parse(SPUtil.getExternalStorageUri(this))).getUri().getPath();
             } catch (Exception e) {
                 e.printStackTrace();
                 ToastManager.showToast(this, "Initializing external storage error", Toast.LENGTH_SHORT);
-                fileItem = new FileItem(StorageUtil.getMainExternalStoragePath());
+                fileItem = FileItem.createFileItemInstance(StorageUtil.getMainExternalStoragePath());
                 current_storage_path = StorageUtil.getMainExternalStoragePath();
             }
         } else {
-            fileItem = new FileItem(settings.getString(Constants.PREFERENCE_SAVE_PATH, Constants.PREFERENCE_SAVE_PATH_DEFAULT));
+            fileItem = FileItem.createFileItemInstance(settings.getString(Constants.PREFERENCE_SAVE_PATH, Constants.PREFERENCE_SAVE_PATH_DEFAULT));
             try {
                 if (fileItem.exists() && !fileItem.isDirectory()) fileItem.delete();
                 if (!fileItem.exists()) fileItem.mkdirs();
@@ -247,7 +247,7 @@ public class FolderSelectorActivity extends BaseActivity {
     }
 
     private void restore2DefaultStoragePath() {
-        fileItem = new FileItem(StorageUtil.getMainExternalStoragePath());
+        fileItem = FileItem.createFileItemInstance(StorageUtil.getMainExternalStoragePath());
         current_storage_path = StorageUtil.getMainExternalStoragePath();
         refreshList(fileItem);
     }
@@ -330,7 +330,7 @@ public class FolderSelectorActivity extends BaseActivity {
                             if (fileItem.isDocumentFile()) {
                                 fileItem.createDirectory(s);
                             } else {
-                                FileItem fileItem = new FileItem(FolderSelectorActivity.this.fileItem.getPath() + File.separator + s);
+                                FileItem fileItem = FileItem.createFileItemInstance(FolderSelectorActivity.this.fileItem.getPath() + File.separator + s);
                                 fileItem.mkdirs();
                             }
                         } catch (Exception e) {
@@ -394,7 +394,7 @@ public class FolderSelectorActivity extends BaseActivity {
         SPUtil.getGlobalSharedPreferences(this).edit().putString(Constants.PREFERENCE_SAVE_PATH_URI, uri.toString()).apply();
         item_others.setVisibility(View.VISIBLE);
         try {
-            refreshList(new FileItem(this, uri, null));
+            refreshList(FileItem.createFileItemInstance(uri, null));
         } catch (Exception e) {
             e.printStackTrace();
         }

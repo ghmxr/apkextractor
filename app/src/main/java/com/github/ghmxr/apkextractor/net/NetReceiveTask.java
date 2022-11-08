@@ -340,7 +340,7 @@ public class NetReceiveTask implements UdpThread.UdpThreadCallback {
                         DocumentFile writingDocumentFile = OutputUtil.getExportPathDocumentFile(context).createFile("application/x-zip-compressed", fileName);
                         outputStream = OutputUtil.getOutputStreamForDocumentFile(context,
                                 writingDocumentFile);//documentFile接口在根据文件名创建文件时，如果文件名已存在会自动加后缀
-                        writingFileItemThisLoop = new FileItem(context, writingDocumentFile);
+                        writingFileItemThisLoop = FileItem.createFileItemInstance(writingDocumentFile);
                     } else {
                         File destinationFile = new File(SPUtil.getInternalSavePath(context) + "/" + fileName);
                         int count = 1;
@@ -349,7 +349,7 @@ public class NetReceiveTask implements UdpThread.UdpThreadCallback {
                             destinationFile = new File(SPUtil.getInternalSavePath(context) + "/" + fileName);
                         }
                         outputStream = new FileOutputStream(destinationFile);
-                        writingFileItemThisLoop = new FileItem(destinationFile);
+                        writingFileItemThisLoop = FileItem.createFileItemInstance(destinationFile);
                     }
                     currentWritingFileItem = writingFileItemThisLoop;
                     final String fileNameOfMessage = fileName;

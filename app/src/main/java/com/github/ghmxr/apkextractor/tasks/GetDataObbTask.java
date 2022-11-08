@@ -100,14 +100,14 @@ public class GetDataObbTask extends Thread {
         } else {
             if (DocumentFileUtil.canReadDataPathByDocumentFile()) {
                 try {
-                    data = FileUtil.getFileItemSize(new FileItem(DocumentFileUtil.getDocumentFileBySegments(DocumentFileUtil.getDataDocumentFile(), "" + item.getPackageName())));
+                    data = FileUtil.getFileItemSize(FileItem.createFileItemInstance(DocumentFileUtil.getDocumentFileBySegments(DocumentFileUtil.getDataDocumentFile(), "" + item.getPackageName())));
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
             }
             if (DocumentFileUtil.canReadObbPathByDocumentFile()) {
                 try {
-                    obb = FileUtil.getFileItemSize(new FileItem(DocumentFileUtil.getDocumentFileBySegments(DocumentFileUtil.getObbDocumentFile(), "" + item.getPackageName())));
+                    obb = FileUtil.getFileItemSize(FileItem.createFileItemInstance(DocumentFileUtil.getDocumentFileBySegments(DocumentFileUtil.getObbDocumentFile(), "" + item.getPackageName())));
                 } catch (Exception e) {
                     e.printStackTrace();
                 }

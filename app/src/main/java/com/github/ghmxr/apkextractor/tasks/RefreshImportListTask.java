@@ -56,16 +56,16 @@ public class RefreshImportListTask extends Thread {
         final int package_scope_value = SPUtil.getGlobalSharedPreferences(context).getInt(Constants.PREFERENCE_PACKAGE_SCOPE, Constants.PREFERENCE_PACKAGE_SCOPE_DEFAULT);
         FileItem fileItem = null;
         if (package_scope_value == Constants.PACKAGE_SCOPE_ALL) {
-            fileItem = new FileItem(StorageUtil.getMainExternalStoragePath());
+            fileItem = FileItem.createFileItemInstance(StorageUtil.getMainExternalStoragePath());
         } else if (package_scope_value == Constants.PACKAGE_SCOPE_EXPORTING_PATH) {
             if (SPUtil.getIsSaved2ExternalStorage(context)) {
                 try {
-                    fileItem = new FileItem(context, Uri.parse(SPUtil.getExternalStorageUri(context)), SPUtil.getSaveSegment(context));
+                    fileItem = FileItem.createFileItemInstance(Uri.parse(SPUtil.getExternalStorageUri(context)), SPUtil.getSaveSegment(context));
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
             } else {
-                fileItem = new FileItem(SPUtil.getInternalSavePath(context));
+                fileItem = FileItem.createFileItemInstance(SPUtil.getInternalSavePath(context));
             }
         }
         Global.item_list.clear();
@@ -75,7 +75,7 @@ public class RefreshImportListTask extends Thread {
         try {
             getAllImportItemsFromPath(fileItem);
             if (!TextUtils.isEmpty(SPUtil.getExternalStorageUri(context)) && package_scope_value == Constants.PACKAGE_SCOPE_ALL) {
-                getAllImportItemsFromPath(new FileItem(context, Uri.parse(SPUtil.getExternalStorageUri(context)), SPUtil.getSaveSegment(context)));
+                getAllImportItemsFromPath(FileItem.createFileItemInstance(Uri.parse(SPUtil.getExternalStorageUri(context)), SPUtil.getSaveSegment(context)));
             }
             if (!isInterrupted) {
                 Collections.sort(Global.item_list);

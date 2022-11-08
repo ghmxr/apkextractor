@@ -79,7 +79,7 @@ public class AppItem implements DisplayItem<AppItem>, Parcelable {
     public AppItem(@NonNull Context context, @NonNull PackageInfo info) {
         PackageManager packageManager = context.getApplicationContext().getPackageManager();
         this.info = info;
-        this.fileItem = new FileItem(new File(info.applicationInfo.sourceDir));
+        this.fileItem = FileItem.createFileItemInstance(new File(info.applicationInfo.sourceDir));
         this.title = packageManager.getApplicationLabel(info.applicationInfo).toString();
         this.size = FileUtil.getFileOrFolderSize(new File(info.applicationInfo.sourceDir));
         this.drawable = packageManager.getApplicationIcon(info.applicationInfo);
@@ -145,7 +145,7 @@ public class AppItem implements DisplayItem<AppItem>, Parcelable {
         //static_receivers=in.readHashMap(HashMap.class.getClassLoader());
 
         assert info != null;
-        fileItem = new FileItem(info.applicationInfo.sourceDir);
+        fileItem = FileItem.createFileItemInstance(info.applicationInfo.sourceDir);
         drawable = MyApplication.getApplication().getPackageManager().getApplicationIcon(info.applicationInfo);
     }
 

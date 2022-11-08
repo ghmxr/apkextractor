@@ -73,9 +73,9 @@ public class FileSendActivity extends BaseActivity implements NetSendTask.NetSen
             Uri uri = getIntent().getParcelableExtra(Intent.EXTRA_STREAM);
             if (uri != null) {
                 if ("file".equalsIgnoreCase(uri.getScheme())) {
-                    sendingFiles.add(new FileItem(new File(uri.getPath())));
+                    sendingFiles.add(FileItem.createFileItemInstance(new File(uri.getPath())));
                 } else {
-                    sendingFiles.add(new FileItem(this, uri));
+                    sendingFiles.add(FileItem.createFileItemInstance(uri));
                 }
             }
         }
@@ -85,9 +85,9 @@ public class FileSendActivity extends BaseActivity implements NetSendTask.NetSen
             if (uris != null) {
                 for (Uri uri : uris) {
                     if ("file".equalsIgnoreCase(uri.getScheme())) {
-                        sendingFiles.add(new FileItem(new File(uri.getPath())));
+                        sendingFiles.add(FileItem.createFileItemInstance(new File(uri.getPath())));
                     } else {
-                        sendingFiles.add(new FileItem(this, uri));
+                        sendingFiles.add(FileItem.createFileItemInstance(uri));
                     }
                 }
             }

@@ -93,7 +93,7 @@ public class ImportTask extends Thread {
                                 outputStream = OutputUtil.getOutputStreamForDocumentFile(context
                                         , writeDocumentFile);
                                 currentWritePath = SPUtil.getDisplayingExportPath(context) + "/" + writeFileName;
-                                currentWrtingFileItem = new FileItem(context, writeDocumentFile);
+                                currentWrtingFileItem = FileItem.createFileItemInstance(writeDocumentFile);
                                 apkUri = writeDocumentFile.getUri();
                             } else {
                                 String writePath = SPUtil.getInternalSavePath(context) + "/" + getApkFileNameWithNum(fileName);
@@ -103,7 +103,7 @@ public class ImportTask extends Thread {
                                     writeFile = new File(SPUtil.getInternalSavePath(context) + "/" + getApkFileNameWithNum(fileName));
                                 }
                                 currentWritePath = writeFile.getAbsolutePath();
-                                currentWrtingFileItem = new FileItem(writeFile);
+                                currentWrtingFileItem = FileItem.createFileItemInstance(writeFile);
                                 File export_path = new File(SPUtil.getInternalSavePath(context));
                                 if (!export_path.exists()) {
                                     export_path.mkdirs();
@@ -204,7 +204,7 @@ public class ImportTask extends Thread {
         String writePath = StorageUtil.getMainExternalStoragePath() + "/" + entryPath;
         File writeFile = new File(writePath);
         currentWritePath = writePath;
-        currentWrtingFileItem = new FileItem(writeFile);
+        currentWrtingFileItem = FileItem.createFileItemInstance(writeFile);
 
         OutputStream outputStream;
         if (Build.VERSION.SDK_INT < 30) {

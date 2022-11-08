@@ -103,12 +103,12 @@ public class ExportTask extends Thread {
                     OutputStream outputStream;
                     if (isExternal) {
                         DocumentFile documentFile = OutputUtil.getWritingDocumentFileForAppItem(context, item, "apk", i + 1);
-                        this.currentWritingFile = new FileItem(context, documentFile);
+                        this.currentWritingFile = FileItem.createFileItemInstance(documentFile);
                         this.currentWritingPath = SPUtil.getDisplayingExportPath(context) + "/" + documentFile.getName();
                         outputStream = OutputUtil.getOutputStreamForDocumentFile(context, documentFile);
                     } else {
                         String writePath = OutputUtil.getAbsoluteWritePath(context, item, "apk", i + 1);
-                        this.currentWritingFile = new FileItem(writePath);
+                        this.currentWritingFile = FileItem.createFileItemInstance(writePath);
                         this.currentWritingPath = writePath;
                         outputStream = new FileOutputStream(new File(OutputUtil.getAbsoluteWritePath(context, item, "apk", i + 1)));
                     }
@@ -174,12 +174,12 @@ public class ExportTask extends Thread {
                     OutputStream outputStream;
                     if (isExternal) {
                         DocumentFile documentFile = OutputUtil.getWritingDocumentFileForAppItem(context, item, SPUtil.getCompressingExtensionName(context), i + 1);
-                        this.currentWritingFile = new FileItem(context, documentFile);
+                        this.currentWritingFile = FileItem.createFileItemInstance(documentFile);
                         this.currentWritingPath = SPUtil.getDisplayingExportPath(context) + "/" + documentFile.getName();
                         outputStream = OutputUtil.getOutputStreamForDocumentFile(context, documentFile);
                     } else {
                         String writePath = OutputUtil.getAbsoluteWritePath(context, item, SPUtil.getCompressingExtensionName(context), i + 1);
-                        this.currentWritingFile = new FileItem(writePath);
+                        this.currentWritingFile = FileItem.createFileItemInstance(writePath);
                         this.currentWritingPath = writePath;
                         outputStream = new FileOutputStream(new File(OutputUtil.getAbsoluteWritePath(context, item, SPUtil.getCompressingExtensionName(context), i + 1)));
                     }
