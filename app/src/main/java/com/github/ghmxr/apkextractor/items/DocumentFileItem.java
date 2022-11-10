@@ -21,7 +21,7 @@ public final class DocumentFileItem extends FileItem {
     protected DocumentFileItem(Uri treeUri, String segments) throws Exception {
         DocumentFile documentFile = DocumentFile.fromTreeUri(MyApplication.getApplication(), treeUri);
         if (documentFile == null) throw new Exception("Can not get documentFile by the treeUri");
-        this.documentFile = DocumentFileUtil.getDocumentFileBySegments(documentFile, segments);
+        this.documentFile = DocumentFileUtil.getDocumentFileBySegments(documentFile, segments, false);
     }
 
     protected DocumentFileItem(DocumentFile documentFile) {

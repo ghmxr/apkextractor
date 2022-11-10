@@ -34,7 +34,7 @@ public class OutputUtil {
         DocumentFile parent = getExportPathDocumentFile(context);
         DocumentFile documentFile = parent.findFile(writingFileName);
         if (documentFile != null && documentFile.exists()) documentFile.delete();
-        return parent.createFile(extension.toLowerCase().equals("apk") ? "application/vnd.android.package-archive" : "application/x-zip-compressed", writingFileName);
+        return parent.createFile("apk".equalsIgnoreCase(extension) ? "application/vnd.android.package-archive" : "application/x-zip-compressed", writingFileName);
     }
 
     /*public static @Nullable DocumentFile getWritingDocumentFileForFileName(@NonNull Context context,@NonNull String fileName) throws Exception{
@@ -62,7 +62,11 @@ public class OutputUtil {
      */
     public static DocumentFile getExportPathDocumentFile(@NonNull Context context) throws Exception {
         String segments = SPUtil.getSaveSegment(context);
-        return DocumentFileUtil.getDocumentFileBySegments(DocumentFile.fromTreeUri(context, Uri.parse(SPUtil.getExternalStorageUri(context))), segments);
+        DocumentFile documentFile = DocumentFile.fromTreeUri(context, Uri.parse(SPUtil.getExternalStorageUri(context)));
+        if (documentFile == null || !documentFile.canWrite()) {
+            throw new RuntimeException("Exporting path invalid or can not write to it, please check");
+        }
+        return DocumentFileUtil.getDocumentFileBySegments(documentFile, segments);
     }
 
     /**

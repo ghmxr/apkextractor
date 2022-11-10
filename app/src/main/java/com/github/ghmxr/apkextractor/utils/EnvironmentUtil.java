@@ -1,5 +1,6 @@
 package com.github.ghmxr.apkextractor.utils;
 
+import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.ComponentName;
 import android.content.Context;
@@ -514,6 +515,7 @@ public class EnvironmentUtil {
         return queryResultByContentResolver(context, contentUri, MediaStore.Files.FileColumns.SIZE);
     }
 
+    @SuppressLint("Range")
     private static @Nullable
     String queryResultByContentResolver(@NonNull Context context, @NonNull Uri contentUri, @NonNull String selection) {
         try {

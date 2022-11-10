@@ -97,14 +97,18 @@ public class GetImportLengthAndDuplicateInfoTask extends Thread {
                         }
                     } else {
                         DocumentFile targetFile = null;
-                        String fileName = s.substring(s.lastIndexOf("/") + 1);
-                        if (s.toLowerCase().startsWith("android/data/")) {
-                            targetFile = DocumentFileUtil.getDocumentFileBySegments(DocumentFileUtil.getDataDocumentFile()
-                                    , s.substring("android/data/".length(), s.lastIndexOf("/"))).findFile(fileName);
-                        }
-                        if (s.toLowerCase().startsWith("android/obb/")) {
-                            targetFile = DocumentFileUtil.getDocumentFileBySegments(DocumentFileUtil.getObbDocumentFile()
-                                    , s.substring("android/obb/".length(), s.lastIndexOf("/"))).findFile(fileName);
+                        try {
+                            String fileName = s.substring(s.lastIndexOf("/") + 1);
+                            if (s.toLowerCase().startsWith("android/data/")) {
+                                targetFile = DocumentFileUtil.getDocumentFileBySegments(DocumentFileUtil.getDataDocumentFile()
+                                        , s.substring("android/data/".length(), s.lastIndexOf("/")), false).findFile(fileName);
+                            }
+                            if (s.toLowerCase().startsWith("android/obb/")) {
+                                targetFile = DocumentFileUtil.getDocumentFileBySegments(DocumentFileUtil.getObbDocumentFile()
+                                        , s.substring("android/obb/".length(), s.lastIndexOf("/")), false).findFile(fileName);
+                            }
+                        } catch (Exception e) {
+                            e.printStackTrace();
                         }
                         if (targetFile != null) {
                             duplication_infos.add(targetFile.getUri().getPath());

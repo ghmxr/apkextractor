@@ -44,13 +44,7 @@ public final class StandardFileItem extends FileItem {
 
     @Override
     public boolean renameTo(@NonNull String newName) throws Exception {
-        final String path = file.getParent();
-        final File destFile;
-        if (path == null) {
-            destFile = new File("/" + newName);
-        } else {
-            destFile = new File(path + "/" + newName);
-        }
+        final File destFile = new File(file.getParentFile(), newName);
         if (destFile.exists()) {
             throw new Exception(destFile.getAbsolutePath() + " already exists");
         }

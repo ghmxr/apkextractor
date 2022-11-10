@@ -16,7 +16,6 @@ import com.github.ghmxr.apkextractor.utils.SPUtil;
 import com.github.ghmxr.apkextractor.utils.StorageUtil;
 import com.github.ghmxr.apkextractor.utils.ZipFileUtil;
 
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
@@ -46,7 +45,6 @@ public class RefreshImportListTask extends Thread {
 
     @Override
     public void run() {
-        final ArrayList<ImportItem> arrayList;
         if (callback != null) Global.handler.post(new Runnable() {
             @Override
             public void run() {
@@ -74,15 +72,25 @@ public class RefreshImportListTask extends Thread {
         }
         try {
             getAllImportItemsFromPath(fileItem);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return;
+        }
+
+        try {
             if (!TextUtils.isEmpty(SPUtil.getExternalStorageUri(context)) && package_scope_value == Constants.PACKAGE_SCOPE_ALL) {
                 getAllImportItemsFromPath(FileItem.createFileItemInstance(Uri.parse(SPUtil.getExternalStorageUri(context)), SPUtil.getSaveSegment(context)));
             }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        try {
             if (!isInterrupted) {
                 Collections.sort(Global.item_list);
             }
         } catch (Exception e) {
             e.printStackTrace();
-            return;
         }
         /*if (isInterrupted) return;
         Global.item_list.clear();

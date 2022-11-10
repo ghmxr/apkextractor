@@ -120,6 +120,7 @@ public abstract class FileItem implements Comparable<FileItem> {
     }
 
     @NonNull
+    @Override
     public abstract String toString();
 
     public static FileItem createFileItemInstance(String path) {

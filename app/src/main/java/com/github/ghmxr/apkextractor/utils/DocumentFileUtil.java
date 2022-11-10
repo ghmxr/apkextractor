@@ -15,18 +15,28 @@ import com.github.ghmxr.apkextractor.R;
 
 public class DocumentFileUtil {
 
+
     /**
      * 通过segment片段定位到parent的指定文件夹，如果没有则尝试创建
      */
-    public static @NonNull
-    DocumentFile getDocumentFileBySegments(@NonNull DocumentFile parent, @Nullable String segment) throws Exception {
+    @NonNull
+    public static DocumentFile getDocumentFileBySegments(@NonNull DocumentFile parent, @Nullable String segment) throws Exception {
+        return getDocumentFileBySegments(parent, segment, true);
+    }
+
+    /**
+     * 通过segment片段定位到parent的指定文件夹
+     */
+    @NonNull
+    public static DocumentFile getDocumentFileBySegments(@NonNull DocumentFile parent, @Nullable String segment, boolean create) throws Exception {
         if (segment == null) return parent;
         String[] segments = segment.split("/");
         DocumentFile documentFile = parent;
         for (int i = 0; i < segments.length; i++) {
             DocumentFile lookup = documentFile.findFile(segments[i]);
             if (lookup == null) {
-                lookup = documentFile.createDirectory(segments[i]);
+                if (create) lookup = documentFile.createDirectory(segments[i]);
+                else throw new Exception("can not find path " + segment);
             }
             if (lookup == null) {
                 throw new Exception("Can not create folder " + segments[i]);
