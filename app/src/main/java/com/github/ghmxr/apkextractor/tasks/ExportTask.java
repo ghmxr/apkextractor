@@ -371,7 +371,7 @@ public class ExportTask extends Thread {
                     BaseActivity.sendMessage(msg_currentfile);*/
                 final String display_path;
                 if (fileItem.isDocumentFile()) {
-                    display_path = fileItem.getDocumentFile().getUri().getPath();
+                    display_path = DocumentFileUtil.getDisplayExportingPathForDataObbDocumentFile(fileItem.getDocumentFile());
                 } else {
                     display_path = fileItem.getPath();
                 }

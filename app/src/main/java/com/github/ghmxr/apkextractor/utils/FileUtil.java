@@ -40,6 +40,9 @@ public class FileUtil {
     public static long getFileItemSize(FileItem fileItem) {
         if (fileItem == null) return 0L;
         try {
+            if (!fileItem.exists()) {
+                return 0L;
+            }
             if (fileItem.isFile()) {
                 return fileItem.length();
             }

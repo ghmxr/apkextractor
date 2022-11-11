@@ -67,6 +67,7 @@ public class ImportTask extends Thread {
         super.run();
         for (ImportItem importItem : importItemArrayList) {
             if (isInterrupted) break;
+            boolean clearedCache = false;
             try {
                 ZipInputStream zipInputStream = new ZipInputStream(importItem.getZipInputStream());
                 ZipEntry zipEntry = zipInputStream.getNextEntry();
@@ -75,8 +76,14 @@ public class ImportTask extends Thread {
                         String entryPath = zipEntry.getName().replace("\\", "/");
                         if ((entryPath.toLowerCase().startsWith("android/data")) && !zipEntry.isDirectory() && importItem.importData) {
                             unZipToFile(zipInputStream, entryPath);
+                            if (!clearedCache) {
+                                clearedCache = clearDataObbCacheForEntryPath(entryPath);
+                            }
                         } else if ((entryPath.toLowerCase().startsWith("android/obb")) && !zipEntry.isDirectory() && importItem.importObb) {
                             unZipToFile(zipInputStream, entryPath);
+                            if (!clearedCache) {
+                                clearedCache = clearDataObbCacheForEntryPath(entryPath);
+                            }
                         } else if ((entryPath.toLowerCase().endsWith(".apk")) && !zipEntry.isDirectory() && !entryPath.contains("/") && importItem.importApk) {
                             OutputStream outputStream;
                             final String fileName = entryPath.substring(entryPath.lastIndexOf("/") + 1);
@@ -202,12 +209,11 @@ public class ImportTask extends Thread {
 
     private void unZipToFile(ZipInputStream zipInputStream, String entryPath) throws Exception {
         String writePath = StorageUtil.getMainExternalStoragePath() + "/" + entryPath;
-        File writeFile = new File(writePath);
         currentWritePath = writePath;
-        currentWrtingFileItem = FileItem.createFileItemInstance(writeFile);
-
         OutputStream outputStream;
         if (Build.VERSION.SDK_INT < 30) {
+            File writeFile = new File(writePath);
+            currentWrtingFileItem = FileItem.createFileItemInstance(writeFile);
             File folder = new File(StorageUtil.getMainExternalStoragePath() + "/" + entryPath.substring(0, entryPath.lastIndexOf("/")));
             if (!folder.exists()) folder.mkdirs();
             outputStream = new BufferedOutputStream(new FileOutputStream(writeFile));
@@ -224,8 +230,24 @@ public class ImportTask extends Thread {
                 writingParentDocumentFile = DocumentFileUtil.getObbDocumentFile();
             }
             if (writingParentDocumentFile == null || TextUtils.isEmpty(segments)) return;
-            outputStream = OutputUtil.getOutputStreamForDocumentFile(context, DocumentFileUtil.getDocumentFileBySegments(writingParentDocumentFile, segments)
-                    .createFile("", entryPath.substring(entryPath.lastIndexOf("/") + 1)));
+
+            final String fileName = entryPath.substring(entryPath.lastIndexOf("/") + 1);
+
+            DocumentFile check_documentFile = DocumentFileUtil.getDocumentFileBySegments(writingParentDocumentFile, segments)
+                    .findFile(fileName);
+            if (check_documentFile != null) {
+                check_documentFile.delete();
+            }
+
+            DocumentFile writingDocumentFile = DocumentFileUtil.getDocumentFileBySegments(writingParentDocumentFile, segments)
+                    .createFile("", fileName);
+
+            if (writingDocumentFile == null) {
+                throw new RuntimeException("Can not obtain DocumentFile instance for " + DocumentFileUtil.getDisplayExportingPathForDataObbDocumentFile(writingParentDocumentFile) + "/" + segments);
+            }
+//            currentWritePath = DocumentFileUtil.getDisplayExportingPathForDataObbDocumentFile(writingDocumentFile);
+            currentWrtingFileItem = FileItem.createFileItemInstance(writingDocumentFile);
+            outputStream = OutputUtil.getOutputStreamForDocumentFile(context, writingDocumentFile);
         }
 
         byte[] buffer = new byte[1024];
@@ -239,6 +261,24 @@ public class ImportTask extends Thread {
         outputStream.flush();
         outputStream.close();
         if (!isInterrupted) currentWrtingFileItem = null;
+    }
+
+    private boolean clearDataObbCacheForEntryPath(String entryPath) {
+        try {
+            String replaced_entry_path = null;
+            if (entryPath.toLowerCase().startsWith("android/data/")) {
+                replaced_entry_path = entryPath.substring("android/data/".length());
+            } else if (entryPath.toLowerCase().startsWith("android/obb/")) {
+                replaced_entry_path = entryPath.substring("android/obb/".length());
+            }
+            if (replaced_entry_path == null || !replaced_entry_path.contains("/")) return false;
+            final String packageName = replaced_entry_path.substring(0, replaced_entry_path.indexOf("/"));
+            GetDataObbTask.removeDataObbSizeCache(packageName);
+            return true;
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return false;
     }
 
     private void checkProgressAndPostToCallback() {

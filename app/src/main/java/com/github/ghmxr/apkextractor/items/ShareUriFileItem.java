@@ -63,7 +63,7 @@ public final class ShareUriFileItem extends FileItem {
 
     @Override
     public boolean exists() {
-        return false;
+        return length() > 0L;
     }
 
     @Override

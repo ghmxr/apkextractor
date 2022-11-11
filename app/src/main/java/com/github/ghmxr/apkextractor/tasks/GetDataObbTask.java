@@ -92,6 +92,15 @@ public class GetDataObbTask extends Thread {
         cache_data_obb_size.clear();
     }
 
+    public static DataObbSizeInfo removeDataObbSizeCache(String packageName) {
+        for (String key : cache_data_obb_size.keySet()) {
+            if (key != null && key.equalsIgnoreCase(packageName)) {
+                return cache_data_obb_size.remove(key);
+            }
+        }
+        return null;
+    }
+
     private DataObbSizeInfo getDataObbSizeInfo(AppItem item) {
         long data = 0, obb = 0;
         if (Build.VERSION.SDK_INT < 30) {
