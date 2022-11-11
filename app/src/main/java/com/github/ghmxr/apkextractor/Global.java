@@ -32,7 +32,6 @@ import com.github.ghmxr.apkextractor.ui.ToastManager;
 import com.github.ghmxr.apkextractor.utils.DocumentFileUtil;
 import com.github.ghmxr.apkextractor.utils.OutputUtil;
 import com.github.ghmxr.apkextractor.utils.SPUtil;
-import com.github.ghmxr.apkextractor.utils.ZipFileUtil;
 import com.google.android.material.snackbar.Snackbar;
 
 import java.io.File;
@@ -196,10 +195,6 @@ public class Global {
             @Override
             public void onExportProgressUpdated(long current, long total, String write_path) {
                 dialog.setProgressOfWriteBytes(current, total);
-            }
-
-            @Override
-            public void onExportZipProgressUpdated(String write_path) {
                 dialog.setProgressOfCurrentZipFile(write_path);
             }
 
@@ -369,28 +364,42 @@ public class Global {
     public static void showImportingDataObbDialog(@NonNull final Activity activity, @NonNull List<ImportItem> importItems, @Nullable final ImportTaskFinishedCallback callback) {
         new ImportingDataObbDialog(activity, importItems, new ImportingDataObbDialog.ImportDialogDataObbConfirmedCallback() {
             @Override
-            public void onImportingDataObbConfirmed(@NonNull final List<ImportItem> importItems2, @NonNull List<ZipFileUtil.ZipFileInfo> zipFileInfos) {
-                showCheckingDuplicationDialogAndStartImporting(activity, importItems2, zipFileInfos, callback);
+            public void onImportingDataObbConfirmed(@NonNull final List<ImportItem> importItems2) {
+                showCheckingDuplicationDialogAndStartImporting(activity, importItems2, callback);
             }
         }).show();
     }
+
+    private static long checkDuplicateTimeStamp = 0L;
 
     /**
      * 展示查重对话框，启动导入流程
      */
     public static void showCheckingDuplicationDialogAndStartImporting(@NonNull final Activity activity,
                                                                       @NonNull final List<ImportItem> importItems,
-                                                                      @NonNull final List<ZipFileUtil.ZipFileInfo> zipFileInfos,
                                                                       @Nullable final ImportTaskFinishedCallback callback) {
         final AlertDialog dialog_duplication_wait = new AlertDialog.Builder(activity)
                 .setTitle(activity.getResources().getString(R.string.dialog_wait))
                 .setView(LayoutInflater.from(activity).inflate(R.layout.dialog_duplication_file, null))
                 .setNegativeButton(activity.getResources().getString(R.string.dialog_button_cancel), null)
+                .setPositiveButton(activity.getResources().getString(R.string.action_continue), null)
                 .setCancelable(false)
                 .show();
-        final GetImportLengthAndDuplicateInfoTask infoTask = new GetImportLengthAndDuplicateInfoTask(importItems, zipFileInfos, new GetImportLengthAndDuplicateInfoTask.GetImportLengthAndDuplicateInfoCallback() {
+        final GetImportLengthAndDuplicateInfoTask.GetImportLengthAndDuplicateInfoCallback getImportLengthAndDuplicateInfoCallback = new GetImportLengthAndDuplicateInfoTask.GetImportLengthAndDuplicateInfoCallback() {
+            long total = 0L;
+            boolean canCallImport = false;
+
             @Override
-            public void onCheckingFinished(@NonNull List<String> duplication_infos, long total) {
+            public void onTotalLengthChecked(long total) {
+                this.total = total;
+                canCallImport = true;
+                dialog_duplication_wait.getButton(AlertDialog.BUTTON_POSITIVE).setEnabled(true);
+            }
+
+            @Override
+            public void onCheckingFinished(@NonNull List<String> duplication_infos) {
+                if (!canCallImport) return;
+                canCallImport = false;
                 dialog_duplication_wait.cancel();
                 final ImportingDialog importingDialog = new ImportingDialog(activity, total);
                 final ImportTask.ImportTaskCallback importTaskCallback = new ImportTask.ImportTaskCallback() {
@@ -461,8 +470,8 @@ public class Global {
                             .show();
                 }
             }
-        });
-        infoTask.start();
+        };
+        final GetImportLengthAndDuplicateInfoTask infoTask = new GetImportLengthAndDuplicateInfoTask(importItems, getImportLengthAndDuplicateInfoCallback);
         dialog_duplication_wait.getButton(AlertDialog.BUTTON_NEGATIVE).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -470,6 +479,20 @@ public class Global {
                 infoTask.setInterrupted();
             }
         });
+        dialog_duplication_wait.getButton(AlertDialog.BUTTON_POSITIVE).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                final long current = System.currentTimeMillis();
+                if (current - checkDuplicateTimeStamp > 3000L) {
+                    checkDuplicateTimeStamp = current;
+                    ToastManager.showToast(activity, activity.getResources().getString(R.string.toast_import_check_duplication_continue), Toast.LENGTH_SHORT);
+                } else {
+                    getImportLengthAndDuplicateInfoCallback.onCheckingFinished(new ArrayList<String>());
+                }
+            }
+        });
+        dialog_duplication_wait.getButton(AlertDialog.BUTTON_POSITIVE).setEnabled(false);
+        infoTask.start();
     }
 
     public interface ImportTaskFinishedCallback {

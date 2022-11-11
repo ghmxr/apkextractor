@@ -17,6 +17,7 @@ import com.github.ghmxr.apkextractor.R;
 import com.github.ghmxr.apkextractor.utils.EnvironmentUtil;
 import com.github.ghmxr.apkextractor.utils.PinyinUtil;
 import com.github.ghmxr.apkextractor.utils.SPUtil;
+import com.github.ghmxr.apkextractor.utils.ZipFileUtil;
 
 import java.io.InputStream;
 import java.text.DateFormat;
@@ -45,6 +46,7 @@ public class ImportItem implements DisplayItem<ImportItem>, Comparable<ImportIte
     private String targetSdkVersion = "";
     private String apkLabel = "";
     private final long lastModified;
+    private ZipFileUtil.ZipFileInfo zipFileInfo;
 
     public transient boolean importData = false;
     public transient boolean importObb = false;
@@ -126,6 +128,7 @@ public class ImportItem implements DisplayItem<ImportItem>, Comparable<ImportIte
         this.importType = wrapper.importType;
         this.length = wrapper.length;
         this.lastModified = wrapper.lastModified;
+        this.zipFileInfo = wrapper.getZipFileInfo();
         this.importData = importData;
         this.importObb = importObb;
         this.importApk = importApk;
@@ -259,6 +262,14 @@ public class ImportItem implements DisplayItem<ImportItem>, Comparable<ImportIte
     Uri getUriFromFile() {
         if (fileItem.isFileInstance()) return Uri.fromFile(fileItem.getFile());
         return null;
+    }
+
+    public ZipFileUtil.ZipFileInfo getZipFileInfo() {
+        return zipFileInfo;
+    }
+
+    public void setZipFileInfo(ZipFileUtil.ZipFileInfo zipFileInfo) {
+        this.zipFileInfo = zipFileInfo;
     }
 
     @Override

@@ -134,14 +134,12 @@ public class RefreshImportListTask extends Thread {
                         });
                     }
                     boolean canAdd = true;
-                    if (exclude_invalid_package) {
-                        if (fileItem.getPath().trim().toLowerCase().endsWith(".zip")
-                                || fileItem.getPath().trim().toLowerCase().endsWith(".xapk")
-                                || fileItem.getPath().trim().toLowerCase().endsWith("." + SPUtil.getCompressingExtensionName(context).toLowerCase())) {
-                            ZipFileUtil.ZipFileInfo zipFileInfo = ZipFileUtil.getZipFileInfoOfImportItem(importItem);
-                            if (zipFileInfo == null || (zipFileInfo.getApkSize() == 0 && zipFileInfo.getDataSize() == 0 && zipFileInfo.getObbSize() == 0)) {
-                                canAdd = false;
-                            }
+                    if (fileItem.getPath().trim().toLowerCase().endsWith(".zip")
+                            || fileItem.getPath().trim().toLowerCase().endsWith(".xapk")
+                            || fileItem.getPath().trim().toLowerCase().endsWith("." + SPUtil.getCompressingExtensionName(context).toLowerCase())) {
+                        ZipFileUtil.ZipFileInfo zipFileInfo = ZipFileUtil.getZipFileInfoOfImportItem(importItem);
+                        if (exclude_invalid_package && (zipFileInfo == null || (zipFileInfo.getApkSize() == 0 && zipFileInfo.getDataSize() == 0 && zipFileInfo.getObbSize() == 0))) {
+                            canAdd = false;
                         }
                     }
 //                    if (canAdd) arrayList.add(importItem);

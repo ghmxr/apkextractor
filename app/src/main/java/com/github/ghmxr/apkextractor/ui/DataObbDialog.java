@@ -18,6 +18,7 @@ import com.github.ghmxr.apkextractor.tasks.GetDataObbTask;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 public class DataObbDialog extends AlertDialog implements View.OnClickListener {
 
@@ -67,7 +68,7 @@ public class DataObbDialog extends AlertDialog implements View.OnClickListener {
         new GetDataObbTask(list, new GetDataObbTask.DataObbSizeGetCallback() {
             @SuppressLint("SetTextI18n")
             @Override
-            public void onDataObbSizeGet(List<AppItem> containsData, List<AppItem> containsObb, GetDataObbTask.DataObbSizeInfo dataObbSizeInfo) {
+            public void onDataObbSizeGet(List<AppItem> containsData, List<AppItem> containsObb, Map<AppItem, GetDataObbTask.DataObbSizeInfo> map, GetDataObbTask.DataObbSizeInfo dataObbSizeInfo) {
                 list_data_controllable.addAll(containsData);
                 list_obb_controllable.addAll(containsObb);
                 if (dataObbSizeInfo.data == 0 && dataObbSizeInfo.obb == 0) {

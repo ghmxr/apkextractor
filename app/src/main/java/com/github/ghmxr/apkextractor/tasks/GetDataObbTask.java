@@ -13,7 +13,9 @@ import com.github.ghmxr.apkextractor.utils.StorageUtil;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Vector;
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -36,7 +38,7 @@ public class GetDataObbTask extends Thread {
     private final DataObbSizeGetCallback callback;
 
     public interface DataObbSizeGetCallback {
-        void onDataObbSizeGet(List<AppItem> containsData, List<AppItem> containsObb, DataObbSizeInfo dataObbSizeInfo);
+        void onDataObbSizeGet(List<AppItem> containsData, List<AppItem> containsObb, Map<AppItem, DataObbSizeInfo> mapInfo, DataObbSizeInfo dataObbSizeInfo);
     }
 
     public GetDataObbTask(List<AppItem> appItems, DataObbSizeGetCallback callback) {
@@ -57,6 +59,7 @@ public class GetDataObbTask extends Thread {
         long data = 0L, obb = 0L;
         final ArrayList<AppItem> containsDataCollection = new ArrayList<>();
         final ArrayList<AppItem> containsObbCollection = new ArrayList<>();
+        final HashMap<AppItem, DataObbSizeInfo> hashMap = new HashMap<>();
         for (AppItem item : list) {
             if (isInterrupted) return;
             DataObbSizeInfo dataObbSizeInfo = cache_data_obb_size.get(item.getPackageName());
@@ -64,6 +67,7 @@ public class GetDataObbTask extends Thread {
                 dataObbSizeInfo = getDataObbSizeInfo(item);
                 cache_data_obb_size.put(item.getPackageName(), dataObbSizeInfo);
             }
+            hashMap.put(item, dataObbSizeInfo);
             if (dataObbSizeInfo.data > 0) {
                 containsDataCollection.add(item);
             }
@@ -78,7 +82,7 @@ public class GetDataObbTask extends Thread {
             @Override
             public void run() {
                 if (callback != null) {
-                    callback.onDataObbSizeGet(containsDataCollection, containsObbCollection, info);
+                    callback.onDataObbSizeGet(containsDataCollection, containsObbCollection, hashMap, info);
                 }
             }
         });

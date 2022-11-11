@@ -1,7 +1,6 @@
 package com.github.ghmxr.apkextractor.utils;
 
 import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 
 import com.github.ghmxr.apkextractor.items.FileItem;
 import com.github.ghmxr.apkextractor.items.ImportItem;
@@ -15,19 +14,21 @@ import java.util.zip.ZipInputStream;
 
 public class ZipFileUtil {
 
-    public static @Nullable
-    ZipFileInfo getZipFileInfoOfImportItem(@NonNull ImportItem importItem) {
+    @NonNull
+    public static ZipFileInfo getZipFileInfoOfImportItem(@NonNull ImportItem importItem) {
         FileItem fileItem = importItem.getFileItem();
+        ZipFileInfo zipFileInfo = null;
         try {
             if (fileItem.isDocumentFile() || fileItem.isShareUriInstance()) {
-                return getZipFileInfoOfZipInputStream(fileItem.getInputStream());
+                zipFileInfo = getZipFileInfoOfZipInputStream(fileItem.getInputStream());
             } else if (fileItem.isFileInstance()) {
-                return getZipFileInfoOfZipFile(new ZipFile(fileItem.getFile()));
+                zipFileInfo = getZipFileInfoOfZipFile(new ZipFile(fileItem.getFile()));
             }
+            importItem.setZipFileInfo(zipFileInfo);
         } catch (Exception e) {
             e.printStackTrace();
         }
-        return null;
+        return zipFileInfo != null ? zipFileInfo : new ZipFileInfo();
     }
 
     private static @NonNull

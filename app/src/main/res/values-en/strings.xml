@@ -6,6 +6,7 @@
     <string name="action_view">View mode</string>
     <string name="action_confirm">Confirm</string>
     <string name="action_cancel">@android:string/cancel</string>
+    <string name="action_continue">continue</string>
     <string name="action_new_folder">New folder</string>
     <string name="action_name_ascend">Ascending by name(A→Z)</string>
     <string name="action_name_descend">Descending by name(Z→A)</string>
@@ -18,6 +19,8 @@
 
     <string name="permission_write">Need to grant the permission of reading/writing external storage</string>
     <string name="permission_grant">Grant</string>
+
+    <string name="toast_import_check_duplication_continue">Click again to confirm continue, will overwrite the files already exist</string>
 
     <string name="main_card_show_system_app">Show system apps</string>
     <string name="main_card_remaining_storage">Remaining space</string>
@@ -150,7 +153,7 @@
     <string name="dialog_import_duplicate_more"> more files</string>
 
     <string name="dialog_import_title">Importing</string>
-    <string name="dialog_import_msg">Decompressing to </string>
+    <string name="dialog_import_msg">Decompressing to :</string>
 
     <string name="dialog_import_delete_title">Deleting files</string>
     <string name="dialog_import_delete_message">Confirm to delete the files selected ?</string>

@@ -19,17 +19,14 @@ import java.util.List;
 public class GetImportLengthAndDuplicateInfoTask extends Thread {
 
     //private Context context;
-    private final List<ZipFileUtil.ZipFileInfo> zipFileInfos;
     private final List<ImportItem> importItems;
     private final GetImportLengthAndDuplicateInfoCallback callback;
     private volatile boolean isInterrupted = false;
 
     public GetImportLengthAndDuplicateInfoTask(@NonNull List<ImportItem> importItems
-            , @NonNull List<ZipFileUtil.ZipFileInfo> zipFileInfos
             , @Nullable GetImportLengthAndDuplicateInfoCallback callback) {
         super();
         //this.context=context;
-        this.zipFileInfos = zipFileInfos;
         this.importItems = importItems;
         this.callback = callback;
     }
@@ -44,8 +41,11 @@ public class GetImportLengthAndDuplicateInfoTask extends Thread {
             if (isInterrupted) return;
             try {
                 ImportItem importItem = importItems.get(i);
-                ZipFileUtil.ZipFileInfo zipFileInfo = zipFileInfos.get(i);
-                List<String> entryPaths = zipFileInfo.getEntryPaths();
+                ZipFileUtil.ZipFileInfo zipFileInfo = importItem.getZipFileInfo();
+                if (zipFileInfo == null) {
+                    zipFileInfo = ZipFileUtil.getZipFileInfoOfImportItem(importItem);
+                }
+//                List<String> entryPaths = zipFileInfo.getEntryPaths();
                 if (importItem.importData) {
                     total += zipFileInfo.getDataSize();
                     //stringBuilder.append(zipFileInfos.get(i).getAlreadyExistingFilesInfoInMainStorage(context));
@@ -58,41 +58,38 @@ public class GetImportLengthAndDuplicateInfoTask extends Thread {
                     total += zipFileInfo.getApkSize();
                     //stringBuilder.append(zipFileInfos.get(i).getAlreadyExistingFilesInfoInMainStorage(context));
                 }
+
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+
+        final long total_length = total;
+        if (callback != null && !isInterrupted) Global.handler.post(new Runnable() {
+            @Override
+            public void run() {
+                callback.onTotalLengthChecked(total_length);
+            }
+        });
+
+        for (int i = 0; i < importItems.size(); i++) {
+            if (isInterrupted) return;
+            try {
+                ImportItem importItem = importItems.get(i);
+                ZipFileUtil.ZipFileInfo zipFileInfo = importItem.getZipFileInfo();
+                if (zipFileInfo == null) {
+                    zipFileInfo = ZipFileUtil.getZipFileInfoOfImportItem(importItem);
+                }
+                List<String> entryPaths = zipFileInfo.getEntryPaths();
                 for (String s : entryPaths) {
                     if (!s.contains("/") && s.endsWith(".apk")) continue;
                     if (!importItem.importObb && s.toLowerCase().startsWith("android/obb"))
                         continue;
                     if (!importItem.importData && s.toLowerCase().startsWith("android/data"))
                         continue;
-                    /*if(!s.contains("/")&&s.endsWith(".apk")){
-                        if(SPUtil.getIsSaved2ExternalStorage(context)){
-                            DocumentFile documentFile= OutputUtil.getExportPathDocumentFile(context);
-                            DocumentFile writeDocumentFile=documentFile.findFile(s);
-                            if(writeDocumentFile!=null){
-                                stringBuilder.append(SPUtil.getDisplayingExportPath(context));
-                                stringBuilder.append("/");
-                                stringBuilder.append(s);
-                                stringBuilder.append("\n\n");
-                            }
-                        }else{
-                            File target=new File(SPUtil.getInternalSavePath(context)+"/"+s);
-                            if(target.exists()){
-                                stringBuilder.append(target.getAbsolutePath());
-                                stringBuilder.append("\n\n");
-                            }
-                        }
-                    }else{
-                        File exportWritingTarget=new File(StorageUtil.getMainExternalStoragePath()+"/"+s);
-                        if(exportWritingTarget.exists()){
-                            stringBuilder.append(exportWritingTarget.getAbsolutePath());
-                            stringBuilder.append("\n\n");
-                        }
-                    }*/
                     if (Build.VERSION.SDK_INT < 30) {
                         File exportWritingTarget = new File(StorageUtil.getMainExternalStoragePath() + "/" + s);
                         if (exportWritingTarget.exists()) {
-                            //stringBuilder.append(exportWritingTarget.getAbsolutePath());
-                            //stringBuilder.append("\n\n");
                             duplication_infos.add(exportWritingTarget.getAbsolutePath());
                         }
                     } else {
@@ -120,11 +117,10 @@ public class GetImportLengthAndDuplicateInfoTask extends Thread {
                 e.printStackTrace();
             }
         }
-        final long total_length = total;
         if (callback != null && !isInterrupted) Global.handler.post(new Runnable() {
             @Override
             public void run() {
-                if (callback != null) callback.onCheckingFinished(duplication_infos, total_length);
+                callback.onCheckingFinished(duplication_infos);
             }
         });
     }
@@ -134,6 +130,8 @@ public class GetImportLengthAndDuplicateInfoTask extends Thread {
     }
 
     public interface GetImportLengthAndDuplicateInfoCallback {
-        void onCheckingFinished(@NonNull List<String> results, long total);
+        void onTotalLengthChecked(long total);
+
+        void onCheckingFinished(@NonNull List<String> results);
     }
 }

@@ -32,7 +32,7 @@ public class ImportingDataObbDialog extends AlertDialog implements View.OnClickL
     private final CheckBox cb_apk;
     private final ImportDialogDataObbConfirmedCallback callback;
 
-    private final ArrayList<ZipFileUtil.ZipFileInfo> zipFileInfos = new ArrayList<>();
+//    private final ArrayList<ZipFileUtil.ZipFileInfo> zipFileInfos = new ArrayList<>();
 
     /**
      * 传入的importItems为原始数据
@@ -76,9 +76,10 @@ public class ImportingDataObbDialog extends AlertDialog implements View.OnClickL
                 long import_apk = 0;
                 for (ImportItem importItem : list) {
                     try {
-                        ZipFileUtil.ZipFileInfo zipFileInfo = ZipFileUtil.getZipFileInfoOfImportItem(importItem);
-                        zipFileInfos.add(zipFileInfo);
-                        if (zipFileInfo == null) continue;
+                        ZipFileUtil.ZipFileInfo zipFileInfo = importItem.getZipFileInfo();
+                        if (zipFileInfo == null) {
+                            zipFileInfo = ZipFileUtil.getZipFileInfoOfImportItem(importItem);
+                        }
                         long data = zipFileInfo.getDataSize();
                         long obb = zipFileInfo.getObbSize();
                         long apk = zipFileInfo.getApkSize();
@@ -138,12 +139,12 @@ public class ImportingDataObbDialog extends AlertDialog implements View.OnClickL
                 for (ImportItem item : list_obb_controllable) item.importObb = true;
             if (cb_apk.isChecked())
                 for (ImportItem item : list_apk_controllable) item.importApk = true;
-            if (callback != null) callback.onImportingDataObbConfirmed(list, zipFileInfos);
+            if (callback != null) callback.onImportingDataObbConfirmed(list);
             cancel();
         }
     }
 
     public interface ImportDialogDataObbConfirmedCallback {
-        void onImportingDataObbConfirmed(@NonNull List<ImportItem> importItems, @NonNull List<ZipFileUtil.ZipFileInfo> zipFileInfos);
+        void onImportingDataObbConfirmed(@NonNull List<ImportItem> importItems);
     }
 }

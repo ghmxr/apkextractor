@@ -53,7 +53,7 @@ public class PackageDetailActivity extends BaseActivity implements View.OnClickL
     private ImportItem importItem;
     public static final String EXTRA_IMPORT_ITEM_PATH = "import_item_path";
     private CheckBox cb_data, cb_obb, cb_apk;
-    private ZipFileUtil.ZipFileInfo zipFileInfo;
+//    private ZipFileUtil.ZipFileInfo zipFileInfo;
 
     @Override
     protected void onCreate(Bundle bundle) {
@@ -231,7 +231,8 @@ public class PackageDetailActivity extends BaseActivity implements View.OnClickL
                         long data = 0;
                         long obb = 0;
                         long apk = 0;
-                        final ZipFileUtil.ZipFileInfo zipFileInfo = ZipFileUtil.getZipFileInfoOfImportItem(importItem);
+                        final ZipFileUtil.ZipFileInfo zipFileInfo = importItem.getZipFileInfo() == null ?
+                                ZipFileUtil.getZipFileInfoOfImportItem(importItem) : importItem.getZipFileInfo();
                         if (zipFileInfo != null) {
                             data = zipFileInfo.getDataSize();
                             obb = zipFileInfo.getObbSize();
@@ -243,7 +244,6 @@ public class PackageDetailActivity extends BaseActivity implements View.OnClickL
                         Global.handler.post(new Runnable() {
                             @Override
                             public void run() {
-                                PackageDetailActivity.this.zipFileInfo = zipFileInfo;
                                 findViewById(R.id.package_detail_data_obb_pg).setVisibility(View.GONE);
                                 findViewById(R.id.package_detail_checkboxes).setVisibility(View.VISIBLE);
                                 cb_data.setEnabled(data_final > 0);
@@ -313,9 +313,7 @@ public class PackageDetailActivity extends BaseActivity implements View.OnClickL
                     ImportItem importItem1 = new ImportItem(importItem, cb_data.isChecked(), cb_obb.isChecked(), cb_apk.isChecked());
                     final ArrayList<ImportItem> singleArray = new ArrayList<>();
                     singleArray.add(importItem1);
-                    final ArrayList<ZipFileUtil.ZipFileInfo> zipFileInfos = new ArrayList<>();
-                    zipFileInfos.add(zipFileInfo);
-                    Global.showCheckingDuplicationDialogAndStartImporting(this, singleArray, zipFileInfos, new Global.ImportTaskFinishedCallback() {
+                    Global.showCheckingDuplicationDialogAndStartImporting(this, singleArray, new Global.ImportTaskFinishedCallback() {
                         @Override
                         public void onImportFinished(String error_message) {
                             if (!TextUtils.isEmpty(error_message)) {

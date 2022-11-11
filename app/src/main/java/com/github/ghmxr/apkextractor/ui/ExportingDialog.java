@@ -1,5 +1,6 @@
 package com.github.ghmxr.apkextractor.ui;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.text.format.Formatter;
 
@@ -24,9 +25,16 @@ public class ExportingDialog extends ProgressDialog {
         att.setText(getContext().getResources().getString(R.string.dialog_export_msg_apk) + write_path);
     }
 
+    @SuppressLint("SetTextI18n")
     public void setProgressOfWriteBytes(long current, long total) {
         if (current < 0) return;
-        if (current > total) return;
+        if (current > total) {
+            if (!progressBar.isIndeterminate()) {
+                progressBar.setIndeterminate(true);
+            }
+            att_right.setText(Formatter.formatFileSize(getContext(), current));
+            return;
+        }
         if (progressBar.isIndeterminate()) {
             progressBar.setIndeterminate(false);
         }

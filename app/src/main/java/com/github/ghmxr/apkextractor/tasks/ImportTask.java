@@ -102,6 +102,7 @@ public class ImportTask extends Thread {
                                 currentWritePath = SPUtil.getDisplayingExportPath(context) + "/" + writeFileName;
                                 currentWrtingFileItem = FileItem.createFileItemInstance(writeDocumentFile);
                                 apkUri = writeDocumentFile.getUri();
+                                postProgressToCallback();
                             } else {
                                 String writePath = SPUtil.getInternalSavePath(context) + "/" + getApkFileNameWithNum(fileName);
                                 File writeFile = new File(writePath);
@@ -111,6 +112,7 @@ public class ImportTask extends Thread {
                                 }
                                 currentWritePath = writeFile.getAbsolutePath();
                                 currentWrtingFileItem = FileItem.createFileItemInstance(writeFile);
+                                postProgressToCallback();
                                 File export_path = new File(SPUtil.getInternalSavePath(context));
                                 if (!export_path.exists()) {
                                     export_path.mkdirs();
@@ -211,6 +213,7 @@ public class ImportTask extends Thread {
         String writePath = StorageUtil.getMainExternalStoragePath() + "/" + entryPath;
         currentWritePath = writePath;
         OutputStream outputStream;
+        postProgressToCallback();
         if (Build.VERSION.SDK_INT < 30) {
             File writeFile = new File(writePath);
             currentWrtingFileItem = FileItem.createFileItemInstance(writeFile);
@@ -284,13 +287,17 @@ public class ImportTask extends Thread {
     private void checkProgressAndPostToCallback() {
         if (progress - progress_check_length > 100 * 1024) {
             progress_check_length = progress;
-            if (callback != null) Global.handler.post(new Runnable() {
-                @Override
-                public void run() {
-                    callback.onImportTaskProgress(currentWritePath, progress);
-                }
-            });
+            postProgressToCallback();
         }
+    }
+
+    private void postProgressToCallback() {
+        if (callback != null) Global.handler.post(new Runnable() {
+            @Override
+            public void run() {
+                callback.onImportTaskProgress(currentWritePath, progress);
+            }
+        });
     }
 
     private void checkSpeedAndPostToCallback(long speed_plus_value) {

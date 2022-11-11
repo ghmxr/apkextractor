@@ -6,6 +6,7 @@
     <string name="action_view">切换视图</string>
     <string name="action_confirm">确定</string>
     <string name="action_cancel">取消</string>
+    <string name="action_continue">继续</string>
     <string name="action_new_folder">新建文件夹</string>
     <string name="action_name_ascend">名称升序(A→Z)</string>
     <string name="action_name_descend">名称降序(Z→A)</string>
@@ -21,6 +22,8 @@
 
     <string name="permission_write">需要授权读取/写入存储权限</string>
     <string name="permission_grant">立即授权</string>
+
+    <string name="toast_import_check_duplication_continue">再点击一次确定继续，将覆写已存在的文件</string>
 
     <string name="main_card_show_system_app">显示系统应用</string>
     <string name="main_card_remaining_storage">剩余存储空间</string>

@@ -54,6 +54,7 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
 
 public class AppDetailActivity extends BaseActivity implements View.OnClickListener {
     private AppItem appItem;
@@ -257,7 +258,7 @@ public class AppDetailActivity extends BaseActivity implements View.OnClickListe
     private void getDataObbSizeAndFillView() {
         new GetDataObbTask(appItem, new GetDataObbTask.DataObbSizeGetCallback() {
             @Override
-            public void onDataObbSizeGet(List<AppItem> containsData, List<AppItem> containsObb, GetDataObbTask.DataObbSizeInfo dataObbSizeInfo) {
+            public void onDataObbSizeGet(List<AppItem> containsData, List<AppItem> containsObb, Map<AppItem, GetDataObbTask.DataObbSizeInfo> map, GetDataObbTask.DataObbSizeInfo dataObbSizeInfo) {
                 findViewById(R.id.app_detail_export_progress_bar).setVisibility(View.GONE);
                 cb_data.setText("Data:" + Formatter.formatFileSize(AppDetailActivity.this, dataObbSizeInfo.data));
                 cb_obb.setText("Obb:" + Formatter.formatFileSize(AppDetailActivity.this, dataObbSizeInfo.obb));

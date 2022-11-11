@@ -31,6 +31,8 @@ import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Map;
+import java.util.concurrent.CountDownLatch;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
 
@@ -54,6 +56,8 @@ public class ExportTask extends Thread {
 
     private final ArrayList<FileItem> write_paths = new ArrayList<>();
     private final StringBuilder error_message = new StringBuilder();
+
+    Map<AppItem, GetDataObbTask.DataObbSizeInfo> dataObbSizeMap;
 
     /**
      * 导出任务构造方法
@@ -89,7 +93,20 @@ public class ExportTask extends Thread {
                 listener.onExportTaskFinished(new ArrayList<FileItem>(), e.toString());
             return;
         }
-
+        final CountDownLatch countDownLatch = new CountDownLatch(1);
+        new GetDataObbTask(list, new GetDataObbTask.DataObbSizeGetCallback() {
+            @Override
+            public void onDataObbSizeGet(List<AppItem> containsData, List<AppItem> containsObb, Map<AppItem, GetDataObbTask.DataObbSizeInfo> map, GetDataObbTask.DataObbSizeInfo dataObbSizeInfo) {
+                dataObbSizeMap = map;
+                countDownLatch.countDown();
+            }
+        }).start();
+        try {
+            countDownLatch.await();
+        } catch (Exception e) {
+            e.printStackTrace();
+            if (isInterrupted) return;
+        }
         total = getTotalLength();
         long progress_check_apk = 0;
         long bytesPerSecond = 0;
@@ -260,6 +277,10 @@ public class ExportTask extends Thread {
             }
         }
 
+        if (progress > total) {//data,obb大小发生变化
+            GetDataObbTask.clearDataObbSizeCache();
+        }
+
         //更新导出文件到媒体库
         EnvironmentUtil.requestUpdatingMediaDatabase(context);
 
@@ -292,32 +313,14 @@ public class ExportTask extends Thread {
      */
     private long getTotalLength() {
         long total = 0;
-        for (AppItem item : list) {
+        for (final AppItem item : list) {
             total += item.getSize();
-            if (Build.VERSION.SDK_INT < 30) {
-                if (item.exportData) {
-                    total += FileUtil.getFileOrFolderSize(new File(StorageUtil.getMainExternalStoragePath() + "/android/data/" + item.getPackageName()));
-                }
-                if (item.exportObb) {
-                    total += FileUtil.getFileOrFolderSize(new File(StorageUtil.getMainExternalStoragePath() + "/android/obb/" + item.getPackageName()));
-                }
-            } else {
-                if (item.exportData) {
-                    try {
-                        total += FileUtil.getFileItemSize(FileItem.createFileItemInstance(DocumentFileUtil.getDocumentFileBySegments(DocumentFileUtil.getDataDocumentFile(), item.getPackageName(), false)));
-                    } catch (Exception e) {
-                        e.printStackTrace();
-                    }
-                }
-                if (item.exportObb) {
-                    try {
-                        total += FileUtil.getFileItemSize(FileItem.createFileItemInstance(DocumentFileUtil.getDocumentFileBySegments(DocumentFileUtil.getObbDocumentFile(), item.getPackageName(), false)));
-                    } catch (Exception e) {
-                        e.printStackTrace();
-                    }
-                }
+            if (dataObbSizeMap == null) continue;
+            GetDataObbTask.DataObbSizeInfo dataObbSizeInfo = dataObbSizeMap.get(item);
+            if (dataObbSizeInfo != null) {
+                if (item.exportData) total += dataObbSizeInfo.data;
+                if (item.exportObb) total += dataObbSizeInfo.obb;
             }
-
         }
         return total;
     }
@@ -327,6 +330,7 @@ public class ExportTask extends Thread {
      */
     public void setInterrupted() {
         this.isInterrupted = true;
+        interrupt();
     }
 
     private void writeZip(final FileItem fileItem, String parent, ZipOutputStream zos, final int zip_level) {
@@ -379,7 +383,7 @@ public class ExportTask extends Thread {
                     @Override
                     public void run() {
                         if (listener != null) {
-                            listener.onExportZipProgressUpdated(display_path);
+                            listener.onExportProgressUpdated(progress, total, display_path);
                         }
 
                     }
@@ -434,8 +438,6 @@ public class ExportTask extends Thread {
         void onExportAppItemStarted(int order, AppItem item, int total, String write_path);
 
         void onExportProgressUpdated(long current, long total, String write_path);
-
-        void onExportZipProgressUpdated(String write_path);
 
         void onExportSpeedUpdated(long speed);
 
