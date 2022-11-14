@@ -385,7 +385,7 @@
     <string name="language_chinese" translatable="false">简体中文</string>
     <string name="language_english" translatable="false">English</string>
 
-    <string name="dialog_about_message">\n<b>提示：因权限问题，使用Android 11或HarmonyOS 3.0及以上版本的系统暂无法使用data和obb功能</b>\n\n
+    <string name="dialog_about_message">\n
         这是一个Android平台快速查询、导出(提取)或者分享本地已安装APP的小工具，支持将对应APP外置存储中的Data，Obb数据一并打包成zip格式压缩文件
         (主要针对部分含有Data，Obb数据的游戏应用)。同时支持将包含Data，Obb数据的zip格式压缩包导入到设备。本应用支持导出和导入的包含data,obb数据的压缩包内容为：\n\n
 
