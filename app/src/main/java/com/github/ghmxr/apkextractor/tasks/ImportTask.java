@@ -24,12 +24,15 @@ import com.github.ghmxr.apkextractor.utils.StorageUtil;
 import java.io.BufferedOutputStream;
 import java.io.File;
 import java.io.FileOutputStream;
+import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Enumeration;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.zip.ZipEntry;
+import java.util.zip.ZipFile;
 import java.util.zip.ZipInputStream;
 
 public class ImportTask extends Thread {
@@ -68,98 +71,38 @@ public class ImportTask extends Thread {
         super.run();
         for (ImportItem importItem : importItemArrayList) {
             if (isInterrupted) break;
+            if (importItem.getImportType() != ImportItem.ImportType.ZIP) continue;
             boolean clearedCache = false;
             try {
-                ZipInputStream zipInputStream = new ZipInputStream(importItem.getZipInputStream());
-                ZipEntry zipEntry = zipInputStream.getNextEntry();
-                while (zipEntry != null && !isInterrupted) {
-                    try {
-                        String entryPath = zipEntry.getName().replace("\\", "/");
-                        if ((entryPath.toLowerCase().startsWith("android/data")) && !zipEntry.isDirectory() && importItem.importData) {
-                            unZipToFile(zipInputStream, entryPath);
-                            if (!clearedCache) {
-                                clearedCache = clearDataObbCacheForEntryPath(entryPath);
-                            }
-                        } else if ((entryPath.toLowerCase().startsWith("android/obb")) && !zipEntry.isDirectory() && importItem.importObb) {
-                            unZipToFile(zipInputStream, entryPath);
-                            if (!clearedCache) {
-                                clearedCache = clearDataObbCacheForEntryPath(entryPath);
-                            }
-                        } else if ((entryPath.toLowerCase().endsWith(".apk")) && !zipEntry.isDirectory() && !entryPath.contains("/") && importItem.importApk) {
-                            OutputStream outputStream;
-                            final String fileName = entryPath.substring(entryPath.lastIndexOf("/") + 1);
-                            if (isExternal) {
-                                String writeFileName = getApkFileNameWithNum(fileName);
-                                DocumentFile checkFile = OutputUtil.getExportPathDocumentFile(context).findFile(writeFileName);
-                                while (checkFile != null && checkFile.exists()) {
-                                    apk_num++;
-                                    writeFileName = getApkFileNameWithNum(fileName);
-                                    checkFile = OutputUtil.getExportPathDocumentFile(context).findFile(writeFileName);
-                                }
-                                DocumentFile writeDocumentFile = OutputUtil.getExportPathDocumentFile(context)
-                                        .createFile("application/vnd.android.package-archive", writeFileName);
-                                outputStream = OutputUtil.getOutputStreamForDocumentFile(context
-                                        , writeDocumentFile);
-                                currentWritePath = SPUtil.getDisplayingExportPath(context) + "/" + writeFileName;
-                                currentWrtingFileItem = FileItem.createFileItemInstance(writeDocumentFile);
-                                apkUri = writeDocumentFile.getUri();
-                                postProgressToCallback();
-                            } else {
-                                String writePath = SPUtil.getInternalSavePath(context) + "/" + getApkFileNameWithNum(fileName);
-                                File writeFile = new File(writePath);
-                                while (writeFile.exists()) {
-                                    apk_num++;
-                                    writeFile = new File(SPUtil.getInternalSavePath(context) + "/" + getApkFileNameWithNum(fileName));
-                                }
-                                currentWritePath = writeFile.getAbsolutePath();
-                                currentWrtingFileItem = FileItem.createFileItemInstance(writeFile);
-                                postProgressToCallback();
-                                File export_path = new File(SPUtil.getInternalSavePath(context));
-                                if (!export_path.exists()) {
-                                    export_path.mkdirs();
-                                }
-                                outputStream = new FileOutputStream(writeFile);
-                                if (Build.VERSION.SDK_INT <= 23) apkUri = Uri.fromFile(writeFile);
-                                else
-                                    apkUri = EnvironmentUtil.getUriForFileByFileProvider(context, writeFile);
-                            }
-                            BufferedOutputStream bufferedOutputStream = new BufferedOutputStream(outputStream);
-                            byte[] buffer = new byte[1024];
-                            int len;
-                            while ((len = zipInputStream.read(buffer)) != -1 && !isInterrupted) {
-                                bufferedOutputStream.write(buffer, 0, len);
-                                progress += len;
-                                checkSpeedAndPostToCallback(len);
-                                checkProgressAndPostToCallback();
-                            }
-                            bufferedOutputStream.flush();
-                            bufferedOutputStream.close();
-                            currentWritingApk = new ImportItem(currentWrtingFileItem);
-                            apkItems.add(currentWritingApk);
-                            if (!isInterrupted) {
-                                currentWrtingFileItem = null;
-                                currentWritingApk = null;
-                            }
-                        }
-
-                    } catch (Exception e) {
-                        e.printStackTrace();
-
-                        error_info_list.add(currentWritePath + ":" + e);
-
-                        try {
-                            currentWrtingFileItem.delete();
-                            if (currentWritingApk != null) {
-                                apkItems.remove(currentWritingApk);
-                            }
-                        } catch (Exception ee) {
+                final boolean canAccessByZipFile = importItem.getFileItem().isFileInstance();
+                if (canAccessByZipFile) {
+                    ZipFile zipFile = new ZipFile(importItem.getFileItem().getFile());
+                    Enumeration<? extends ZipEntry> entries = zipFile.entries();
+                    ZipEntry zipEntry;
+                    while (entries.hasMoreElements() && !isInterrupted) {
+                        zipEntry = entries.nextElement();
+                        InputStream zipInputStream = zipFile.getInputStream(zipEntry);
+                        if (!clearedCache) {
+                            dealWithZipEntry(importItem, zipEntry, zipInputStream, true);
+                            clearedCache = true;
+                        } else {
+                            dealWithZipEntry(importItem, zipEntry, zipInputStream, false);
                         }
                     }
-
-                    if (!isInterrupted) zipEntry = zipInputStream.getNextEntry();
-                    else break;
+                } else {
+                    ZipInputStream zipInputStream = new ZipInputStream(importItem.getFileItem().getInputStream());
+                    ZipEntry zipEntry = zipInputStream.getNextEntry();
+                    while (zipEntry != null && !isInterrupted) {
+                        if (!clearedCache) {
+                            dealWithZipEntry(importItem, zipEntry, zipInputStream, true);
+                            clearedCache = true;
+                        } else {
+                            dealWithZipEntry(importItem, zipEntry, zipInputStream, false);
+                        }
+                        if (!isInterrupted) zipEntry = zipInputStream.getNextEntry();
+                        else break;
+                    }
                 }
-                zipInputStream.close();
             } catch (Exception e) {
                 e.printStackTrace();
 
@@ -207,7 +150,94 @@ public class ImportTask extends Thread {
         }
     }
 
-    private void unZipToFile(ZipInputStream zipInputStream, String entryPath) throws Exception {
+    private void dealWithZipEntry(ImportItem importItem, ZipEntry zipEntry, InputStream zipInputStream, boolean clearCache) {
+        try {
+            String entryPath = zipEntry.getName().replace("\\", "/");
+            if ((entryPath.toLowerCase().startsWith("android/data")) && !zipEntry.isDirectory() && importItem.importData) {
+                unZipToFile(zipInputStream, entryPath);
+                if (clearCache) {
+                    clearDataObbCacheForEntryPath(entryPath);
+                }
+            } else if ((entryPath.toLowerCase().startsWith("android/obb")) && !zipEntry.isDirectory() && importItem.importObb) {
+                unZipToFile(zipInputStream, entryPath);
+                if (clearCache) {
+                    clearDataObbCacheForEntryPath(entryPath);
+                }
+            } else if ((entryPath.toLowerCase().endsWith(".apk")) && !zipEntry.isDirectory() && !entryPath.contains("/") && importItem.importApk) {
+                OutputStream outputStream;
+                final String fileName = entryPath.substring(entryPath.lastIndexOf("/") + 1);
+                if (isExternal) {
+                    String writeFileName = getApkFileNameWithNum(fileName);
+                    DocumentFile checkFile = OutputUtil.getExportPathDocumentFile(context).findFile(writeFileName);
+                    while (checkFile != null && checkFile.exists()) {
+                        apk_num++;
+                        writeFileName = getApkFileNameWithNum(fileName);
+                        checkFile = OutputUtil.getExportPathDocumentFile(context).findFile(writeFileName);
+                    }
+                    DocumentFile writeDocumentFile = OutputUtil.getExportPathDocumentFile(context)
+                            .createFile("application/vnd.android.package-archive", writeFileName);
+                    outputStream = OutputUtil.getOutputStreamForDocumentFile(context
+                            , writeDocumentFile);
+                    currentWritePath = SPUtil.getDisplayingExportPath(context) + "/" + writeFileName;
+                    currentWrtingFileItem = FileItem.createFileItemInstance(writeDocumentFile);
+                    apkUri = writeDocumentFile.getUri();
+                    postProgressToCallback();
+                } else {
+                    String writePath = SPUtil.getInternalSavePath(context) + "/" + getApkFileNameWithNum(fileName);
+                    File writeFile = new File(writePath);
+                    while (writeFile.exists()) {
+                        apk_num++;
+                        writeFile = new File(SPUtil.getInternalSavePath(context) + "/" + getApkFileNameWithNum(fileName));
+                    }
+                    currentWritePath = writeFile.getAbsolutePath();
+                    currentWrtingFileItem = FileItem.createFileItemInstance(writeFile);
+                    postProgressToCallback();
+                    File export_path = new File(SPUtil.getInternalSavePath(context));
+                    if (!export_path.exists()) {
+                        export_path.mkdirs();
+                    }
+                    outputStream = new FileOutputStream(writeFile);
+                    if (Build.VERSION.SDK_INT <= 23) apkUri = Uri.fromFile(writeFile);
+                    else
+                        apkUri = EnvironmentUtil.getUriForFileByFileProvider(context, writeFile);
+                }
+                BufferedOutputStream bufferedOutputStream = new BufferedOutputStream(outputStream);
+                byte[] buffer = new byte[1024];
+                int len;
+                while ((len = zipInputStream.read(buffer)) != -1 && !isInterrupted) {
+                    bufferedOutputStream.write(buffer, 0, len);
+                    progress += len;
+                    checkSpeedAndPostToCallback(len);
+                    checkProgressAndPostToCallback();
+                }
+                bufferedOutputStream.flush();
+                bufferedOutputStream.close();
+                currentWritingApk = new ImportItem(currentWrtingFileItem);
+                apkItems.add(currentWritingApk);
+                if (!isInterrupted) {
+                    currentWrtingFileItem = null;
+                    currentWritingApk = null;
+                }
+            }
+
+        } catch (Exception e) {
+            e.printStackTrace();
+
+            error_info_list.add(currentWritePath + ":" + e);
+
+            try {
+                currentWrtingFileItem.delete();
+                if (currentWritingApk != null) {
+                    apkItems.remove(currentWritingApk);
+                }
+            } catch (Exception ee) {
+            }
+        }
+
+
+    }
+
+    private void unZipToFile(InputStream zipInputStream, String entryPath) throws Exception {
         String writePath = StorageUtil.getMainExternalStoragePath() + "/" + entryPath;
         currentWritePath = writePath;
         OutputStream outputStream;
