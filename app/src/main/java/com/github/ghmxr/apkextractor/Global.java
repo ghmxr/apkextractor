@@ -30,6 +30,7 @@ import com.github.ghmxr.apkextractor.ui.ImportingDialog;
 import com.github.ghmxr.apkextractor.ui.ShareSelectionDialog;
 import com.github.ghmxr.apkextractor.ui.ToastManager;
 import com.github.ghmxr.apkextractor.utils.DocumentFileUtil;
+import com.github.ghmxr.apkextractor.utils.EnvironmentUtil;
 import com.github.ghmxr.apkextractor.utils.OutputUtil;
 import com.github.ghmxr.apkextractor.utils.SPUtil;
 import com.google.android.material.snackbar.Snackbar;
@@ -362,6 +363,7 @@ public class Global {
     }
 
     public static void showImportingDataObbDialog(@NonNull final Activity activity, @NonNull List<ImportItem> importItems, @Nullable final ImportTaskFinishedCallback callback) {
+        EnvironmentUtil.checkAndShowGrantDialog(activity);
         new ImportingDataObbDialog(activity, importItems, new ImportingDataObbDialog.ImportDialogDataObbConfirmedCallback() {
             @Override
             public void onImportingDataObbConfirmed(@NonNull final List<ImportItem> importItems2) {
@@ -419,9 +421,25 @@ public class Global {
                     }
 
                     @Override
-                    public void onImportTaskFinished(@NonNull String errorMessage) {
+                    public void onImportTaskFinished(@NonNull List<String> errorMessages) {
                         importingDialog.cancel();
-                        if (callback != null) callback.onImportFinished(errorMessage);
+                        if (callback != null) {
+                            StringBuilder stringBuilder = new StringBuilder();
+                            int i = 0;
+                            int unListed = Math.max(0, errorMessages.size() - 200);
+                            for (String s : errorMessages) {
+                                stringBuilder.append(s);
+                                stringBuilder.append("\n\n");
+                                i++;
+                                if (i >= 200 && unListed > 0) {
+                                    stringBuilder.append("+");
+                                    stringBuilder.append(unListed);
+                                    stringBuilder.append(activity.getResources().getString(R.string.dialog_import_duplicate_more));
+                                    break;
+                                }
+                            }
+                            callback.onImportFinished(stringBuilder.toString());
+                        }
                     }
                 };
                 final ImportTask importTask = new ImportTask(activity, importItems, importTaskCallback);

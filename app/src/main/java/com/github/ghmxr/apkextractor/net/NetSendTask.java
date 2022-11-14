@@ -19,8 +19,8 @@ import java.net.ServerSocket;
 import java.net.Socket;
 import java.net.UnknownHostException;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
+import java.util.concurrent.ConcurrentHashMap;
 
 public class NetSendTask implements UdpThread.UdpThreadCallback {
 
@@ -28,7 +28,7 @@ public class NetSendTask implements UdpThread.UdpThreadCallback {
     private final Context context;
     private final UdpThread udpThread;
     //private final String deviceName;
-    private final HashMap<String, DeviceItem> onlineDevices = new HashMap<>();
+    private final ConcurrentHashMap<String, DeviceItem> onlineDevices = new ConcurrentHashMap<>();
     //private final ArrayList<FileItem>sendFiles=new ArrayList<>();
     private NetTcpFileSendTask sendTask;
 

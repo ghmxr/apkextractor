@@ -87,7 +87,7 @@ public class DocumentFileUtil {
         return "";
     }
 
-    public static String getDisplayExportingPathForDataObbDocumentFile(DocumentFile documentFile) {
+    public static String getDisplayPathForDataObbDocumentFile(DocumentFile documentFile) {
         final String uriPath = documentFile.getUri().getPath();
         return StorageUtil.getMainExternalStoragePath() + "/" + uriPath.substring(uriPath.lastIndexOf(":") + 1);
     }

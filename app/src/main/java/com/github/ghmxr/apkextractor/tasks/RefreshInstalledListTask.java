@@ -38,19 +38,6 @@ public class RefreshInstalledListTask extends Thread {
     public void run() {
         PackageManager manager = context.getApplicationContext().getPackageManager();
         SharedPreferences settings = SPUtil.getGlobalSharedPreferences(context);
-        /*int flag = 0;
-        if (settings.getBoolean(Constants.PREFERENCE_LOAD_PERMISSIONS, Constants.PREFERENCE_LOAD_PERMISSIONS_DEFAULT))
-            flag |= PackageManager.GET_PERMISSIONS;
-        if (settings.getBoolean(Constants.PREFERENCE_LOAD_ACTIVITIES, Constants.PREFERENCE_LOAD_ACTIVITIES_DEFAULT))
-            flag |= PackageManager.GET_ACTIVITIES;
-        if (settings.getBoolean(Constants.PREFERENCE_LOAD_RECEIVERS, Constants.PREFERENCE_LOAD_RECEIVERS_DEFAULT))
-            flag |= PackageManager.GET_RECEIVERS;
-        if (settings.getBoolean(Constants.PREFERENCE_LOAD_APK_SIGNATURE, Constants.PREFERENCE_LOAD_APK_SIGNATURE_DEFAULT))
-            flag |= PackageManager.GET_SIGNATURES;
-        if (settings.getBoolean(Constants.PREFERENCE_LOAD_SERVICES, Constants.PREFERENCE_LOAD_SERVICES_DEFAULT))
-            flag |= PackageManager.GET_SERVICES;
-        if (settings.getBoolean(Constants.PREFERENCE_LOAD_PROVIDERS, Constants.PREFERENCE_LOAD_PROVIDERS_DEFAULT))
-            flag |= PackageManager.GET_PROVIDERS;*/
         final List<PackageInfo> list;
         synchronized (RefreshInstalledListTask.class) {//加锁是在多线程请求已安装列表时PackageManager可能会抛异常 ParceledListSlice: Failure retrieving array;
             list = new ArrayList<>(manager.getInstalledPackages(0));

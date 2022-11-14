@@ -48,7 +48,8 @@ public class ImportTask extends Thread {
     private ImportItem currentWritingApk;
     private final LinkedList<ImportItem> apkItems = new LinkedList<>();
 
-    private final StringBuilder error_info = new StringBuilder();
+    //    @Deprecated private final StringBuilder error_info = new StringBuilder();
+    private final ArrayList<String> error_info_list = new ArrayList<>();
 
     private final ImportTaskCallback callback;
     private Uri apkUri;
@@ -143,10 +144,9 @@ public class ImportTask extends Thread {
 
                     } catch (Exception e) {
                         e.printStackTrace();
-                        error_info.append(currentWritePath);
-                        error_info.append(":");
-                        error_info.append(e.toString());
-                        error_info.append("\n\n");
+
+                        error_info_list.add(currentWritePath + ":" + e);
+
                         try {
                             currentWrtingFileItem.delete();
                             if (currentWritingApk != null) {
@@ -162,10 +162,8 @@ public class ImportTask extends Thread {
                 zipInputStream.close();
             } catch (Exception e) {
                 e.printStackTrace();
-                error_info.append(String.valueOf(importItem.getFileItem().getPath()));
-                error_info.append(":");
-                error_info.append(e.toString());
-                error_info.append("\n\n");
+
+                error_info_list.add(importItem.getFileItem().getPath() + ":" + e);
             }
 
         }
@@ -188,12 +186,12 @@ public class ImportTask extends Thread {
             if (callback != null) Global.handler.post(new Runnable() {
                 @Override
                 public void run() {
-                    callback.onImportTaskFinished(error_info.toString());
+                    callback.onImportTaskFinished(error_info_list);
 //                context.sendBroadcast(new Intent(Constants.ACTION_REFRESH_IMPORT_ITEMS_LIST));
                     context.sendBroadcast(new Intent(Constants.ACTION_REFRESH_AVAILIBLE_STORAGE));
                     context.sendBroadcast(new Intent(Constants.ACTION_REFILL_IMPORT_LIST));
                     try {
-                        if (importItemArrayList.size() == 1 && apkUri != null && error_info.toString().trim().length() == 0) {
+                        if (importItemArrayList.size() == 1 && apkUri != null && error_info_list.size() == 0) {
                             Intent intent = new Intent(Intent.ACTION_VIEW);
                             intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                             intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
@@ -246,9 +244,9 @@ public class ImportTask extends Thread {
                     .createFile("", fileName);
 
             if (writingDocumentFile == null) {
-                throw new RuntimeException("Can not obtain DocumentFile instance for " + DocumentFileUtil.getDisplayExportingPathForDataObbDocumentFile(writingParentDocumentFile) + "/" + segments);
+                throw new RuntimeException("Can not obtain DocumentFile instance for " + DocumentFileUtil.getDisplayPathForDataObbDocumentFile(writingParentDocumentFile) + "/" + segments);
             }
-//            currentWritePath = DocumentFileUtil.getDisplayExportingPathForDataObbDocumentFile(writingDocumentFile);
+            currentWritePath = DocumentFileUtil.getDisplayPathForDataObbDocumentFile(writingDocumentFile);
             currentWrtingFileItem = FileItem.createFileItemInstance(writingDocumentFile);
             outputStream = OutputUtil.getOutputStreamForDocumentFile(context, writingDocumentFile);
         }
@@ -331,6 +329,6 @@ public class ImportTask extends Thread {
 
         void onImportTaskProgress(@NonNull String writePath, long progress);
 
-        void onImportTaskFinished(@NonNull String errorMessage);
+        void onImportTaskFinished(@NonNull List<String> errorMessages);
     }
 }

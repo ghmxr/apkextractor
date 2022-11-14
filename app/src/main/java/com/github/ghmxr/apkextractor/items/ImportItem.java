@@ -32,8 +32,6 @@ public class ImportItem implements DisplayItem<ImportItem>, Comparable<ImportIte
 
     public static int sort_config = 0;
 
-//    private Context context;
-
     private final FileItem fileItem;
     private final long length;
     private ImportType importType = ImportType.ZIP;
@@ -54,7 +52,6 @@ public class ImportItem implements DisplayItem<ImportItem>, Comparable<ImportIte
 
     public ImportItem(@NonNull FileItem fileItem) {
         this.fileItem = fileItem;
-//        this.context = context;
         final Context context = MyApplication.getApplication();
         version_name = context.getResources().getString(R.string.word_unknown);
         version_code = context.getResources().getString(R.string.word_unknown);
@@ -75,20 +72,6 @@ public class ImportItem implements DisplayItem<ImportItem>, Comparable<ImportIte
             PackageManager packageManager = context.getApplicationContext().getPackageManager();
             if (fileItem.isFileInstance()) {
                 try {
-                    /*int flag = 0;
-                    final SharedPreferences settings = SPUtil.getGlobalSharedPreferences(context);
-                    if (settings.getBoolean(Constants.PREFERENCE_LOAD_PERMISSIONS, Constants.PREFERENCE_LOAD_PERMISSIONS_DEFAULT))
-                        flag |= PackageManager.GET_PERMISSIONS;
-                    if (settings.getBoolean(Constants.PREFERENCE_LOAD_ACTIVITIES, Constants.PREFERENCE_LOAD_ACTIVITIES_DEFAULT))
-                        flag |= PackageManager.GET_ACTIVITIES;
-                    if (settings.getBoolean(Constants.PREFERENCE_LOAD_RECEIVERS, Constants.PREFERENCE_LOAD_RECEIVERS_DEFAULT))
-                        flag |= PackageManager.GET_RECEIVERS;
-                    if (settings.getBoolean(Constants.PREFERENCE_LOAD_APK_SIGNATURE, Constants.PREFERENCE_LOAD_APK_SIGNATURE_DEFAULT))
-                        flag |= PackageManager.GET_SIGNATURES;
-                    if (settings.getBoolean(Constants.PREFERENCE_LOAD_SERVICES, Constants.PREFERENCE_LOAD_SERVICES_DEFAULT))
-                        flag |= PackageManager.GET_SERVICES;
-                    if (settings.getBoolean(Constants.PREFERENCE_LOAD_PROVIDERS, Constants.PREFERENCE_LOAD_PROVIDERS_DEFAULT))
-                        flag |= PackageManager.GET_PROVIDERS;*/
                     packageInfo = packageManager.getPackageArchiveInfo(fileItem.getPath(), 0);
                 } catch (Exception e) {
                     e.printStackTrace();
@@ -124,7 +107,6 @@ public class ImportItem implements DisplayItem<ImportItem>, Comparable<ImportIte
         this.drawable = wrapper.drawable;
         this.version_name = wrapper.version_name;
         this.fileItem = wrapper.fileItem;
-//        this.context = wrapper.context;
         this.importType = wrapper.importType;
         this.length = wrapper.length;
         this.lastModified = wrapper.lastModified;
