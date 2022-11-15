@@ -39,7 +39,6 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Vector;
 
@@ -64,9 +63,7 @@ public class Global {
 
         @Override
         public synchronized boolean add(ImportItem importItem) {
-            if (contains(importItem)) {
-                return false;
-            }
+            remove(importItem);
             return super.add(importItem);
         }
 
@@ -74,16 +71,10 @@ public class Global {
          * 重写此集合实现类addAll方法来去除重复添加的同path的元素
          */
         @Override
-        public synchronized boolean addAll(Collection<? extends ImportItem> c) {
-            HashSet<ImportItem> hashSet = new HashSet<>(c);
-            Iterator<ImportItem> iterator = hashSet.iterator();
-            ImportItem importItem;
-            while (iterator.hasNext()) {
-                importItem = iterator.next();
-                if (contains(importItem)) {
-                    iterator.remove();
-                }
-
+        public synchronized boolean addAll(@NonNull Collection<? extends ImportItem> c) {
+            HashSet<? extends ImportItem> hashSet = new HashSet<>(c);
+            for (ImportItem importItem : hashSet) {
+                remove(importItem);
             }
             return super.addAll(hashSet);
         }

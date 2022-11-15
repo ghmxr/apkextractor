@@ -1,7 +1,5 @@
 package com.github.ghmxr.apkextractor.tasks;
 
-import android.text.TextUtils;
-
 import androidx.annotation.Nullable;
 
 import com.github.ghmxr.apkextractor.Global;
@@ -183,9 +181,9 @@ public class GetApkLibraryTask extends Thread {
     }
 
     private void dealWithEntryName(ZipEntry zipEntry, LibraryInfo libraryInfo) {
-        final String entryName = zipEntry.getName().toLowerCase().replace("\\", "/");
+        final String entryName = zipEntry.getName().replace("\\", "/");
         for (LibraryType type : LibraryType.values()) {
-            if (entryName.startsWith("lib/" + type.getName())) {
+            if (entryName.toLowerCase().startsWith("lib/" + type.getName().toLowerCase())) {
                 Collection<LibraryItemInfo> libraryItemInfos = libraryInfo.libraries.get(type);
                 if (libraryItemInfos == null) {
                     libraryItemInfos = new HashSet<>();
@@ -210,7 +208,11 @@ public class GetApkLibraryTask extends Thread {
         @Override
         public boolean equals(@Nullable Object obj) {
             if (obj instanceof LibraryItemInfo) {
-                return TextUtils.equals(fileName, ((LibraryItemInfo) obj).fileName) && libraryType == ((LibraryItemInfo) obj).libraryType;
+                try {
+                    return fileName.equalsIgnoreCase(((LibraryItemInfo) obj).fileName) && libraryType == ((LibraryItemInfo) obj).libraryType;
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
             }
             return super.equals(obj);
         }
