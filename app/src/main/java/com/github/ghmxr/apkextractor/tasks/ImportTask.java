@@ -89,11 +89,13 @@ public class ImportTask extends Thread {
                             } else {
                                 dealWithZipEntry(importItem, zipEntry, zipInputStream, false);
                             }
+                            zipInputStream.close();
                         } catch (Exception e) {
                             e.printStackTrace();
                             putErrorLogsAndClear(e);
                         }
                     }
+                    zipFile.close();
                 } else {
                     ZipInputStream zipInputStream = new ZipInputStream(importItem.getFileItem().getInputStream());
                     ZipEntry zipEntry = zipInputStream.getNextEntry();
@@ -112,6 +114,7 @@ public class ImportTask extends Thread {
                         if (!isInterrupted) zipEntry = zipInputStream.getNextEntry();
                         else break;
                     }
+                    zipInputStream.close();
                 }
             } catch (Exception e) {
                 e.printStackTrace();

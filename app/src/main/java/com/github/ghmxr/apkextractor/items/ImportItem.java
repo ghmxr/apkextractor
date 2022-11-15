@@ -305,19 +305,12 @@ public class ImportItem implements DisplayItem<ImportItem>, Comparable<ImportIte
         return 0;
     }
 
-    @NonNull
-    @Override
-    public String toString() {
-        if (fileItem != null) {
-            return fileItem.toString();
-        }
-        return super.toString();
-    }
-
     @Override
     public boolean equals(@Nullable Object obj) {
         if (obj instanceof ImportItem) {
-            return toString().equalsIgnoreCase(((ImportItem) obj).toString());
+            if (fileItem != null && ((ImportItem) obj).fileItem != null) {
+                return fileItem.toString().equalsIgnoreCase(((ImportItem) obj).fileItem.toString());
+            }
         }
         return super.equals(obj);
     }

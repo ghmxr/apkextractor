@@ -5,6 +5,7 @@ import android.app.Activity;
 import android.content.ClipData;
 import android.content.ClipboardManager;
 import android.content.Context;
+import android.text.format.Formatter;
 import android.util.AttributeSet;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -24,8 +25,6 @@ import com.github.ghmxr.apkextractor.items.ImportItem;
 import com.github.ghmxr.apkextractor.tasks.GetApkLibraryTask;
 import com.github.ghmxr.apkextractor.utils.EnvironmentUtil;
 import com.google.android.material.snackbar.Snackbar;
-
-import java.util.Collection;
 
 public class LibraryView extends RelativeLayout {
 
@@ -111,12 +110,12 @@ public class LibraryView extends RelativeLayout {
                         }
                     }
                 });
-                GetApkLibraryTask.LibraryInfo.LibraryType showingLibraryType = EnvironmentUtil.getShowingLibraryType(libraryInfo);
+                GetApkLibraryTask.LibraryType showingLibraryType = EnvironmentUtil.getShowingLibraryType(libraryInfo);
                 if (showingLibraryType != null) {
 //                    soCard.setVisibility(VISIBLE);
                     soCardText.setVisibility(VISIBLE);
                     soCardText.setText(showingLibraryType.toString());
-                    soCardText.setBackgroundResource(GetApkLibraryTask.LibraryInfo.is64BitAbi(showingLibraryType) ? R.drawable.shape_card_64bit_abi
+                    soCardText.setBackgroundResource(GetApkLibraryTask.is64BitAbi(showingLibraryType) ? R.drawable.shape_card_64bit_abi
                             : R.drawable.shape_card_32bit_abi);
                 }
 
@@ -148,7 +147,7 @@ public class LibraryView extends RelativeLayout {
         public void onBindViewHolder(@NonNull ViewHolder viewHolder, int i) {
             final String libraryName = libraryNames[i];
             viewHolder.tv1.setText(libraryName);
-            viewHolder.tv2.setText(getDisplayLibraryTypes(libraryInfo.getLibraryTypes(libraryName)));
+            viewHolder.tv2.setText(getDisplayLibraryInfo(libraryName));
             if (i == getItemCount() - 1) {
                 viewHolder.dividingLine.setVisibility(INVISIBLE);
             }
@@ -174,13 +173,16 @@ public class LibraryView extends RelativeLayout {
             return libraryNames.length;
         }
 
-        private String getDisplayLibraryTypes(Collection<GetApkLibraryTask.LibraryInfo.LibraryType> types) {
+        private String getDisplayLibraryInfo(String libraryName) {
             StringBuilder stringBuilder = new StringBuilder();
-            for (GetApkLibraryTask.LibraryInfo.LibraryType type : types) {
+            for (GetApkLibraryTask.LibraryType type : libraryInfo.getLibraryTypes(libraryName)) {
                 if (stringBuilder.length() > 0) {
                     stringBuilder.append(",");
                 }
                 stringBuilder.append(type.toString());
+                stringBuilder.append("(");
+                stringBuilder.append(Formatter.formatFileSize(getContext(), libraryInfo.getLibraryItemSize(type, libraryName)));
+                stringBuilder.append(")");
             }
             return stringBuilder.toString();
         }

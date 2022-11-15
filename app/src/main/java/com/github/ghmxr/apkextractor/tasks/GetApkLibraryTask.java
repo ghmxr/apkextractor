@@ -1,5 +1,9 @@
 package com.github.ghmxr.apkextractor.tasks;
 
+import android.text.TextUtils;
+
+import androidx.annotation.Nullable;
+
 import com.github.ghmxr.apkextractor.Global;
 import com.github.ghmxr.apkextractor.items.AppItem;
 import com.github.ghmxr.apkextractor.items.FileItem;
@@ -18,34 +22,47 @@ public class GetApkLibraryTask extends Thread {
     private static final ConcurrentHashMap<String, LibraryInfo> caches_installed = new ConcurrentHashMap<>();
     private static final ConcurrentHashMap<String, LibraryInfo> caches_outside_package = new ConcurrentHashMap<>();
 
-    public static class LibraryInfo {
-        public enum LibraryType {
-            ARM("armeabi"),
-            ARM_V7A("armeabi-v7a"),
-            ARM64_V8A("arm64-v8a"),
-            X86("x86"),
-            X86_64("x86_64"),
-            MIPS("mips"),
-            MIPS_64("mips64");
-            String name;
+    public static boolean is64BitAbi(LibraryType type) {
+        return type == LibraryType.ARM64_V8A || type == LibraryType.X86_64 || type == LibraryType.MIPS_64;
+    }
 
-            LibraryType(String s) {
-                name = s;
-            }
+    public enum LibraryType {
+        ARM("armeabi"),
+        ARM_V7A("armeabi-v7a"),
+        ARM64_V8A("arm64-v8a"),
+        X86("x86"),
+        X86_64("x86_64"),
+        MIPS("mips"),
+        MIPS_64("mips64");
+        String name;
 
-            public String getName() {
-                return name;
-            }
+        LibraryType(String s) {
+            name = s;
         }
 
-        public final HashMap<LibraryType, Collection<String>> libraries = new HashMap<>();
+        public String getName() {
+            return name;
+        }
+    }
+
+    public static class LibraryInfo {
+
+        public final HashMap<LibraryType, Collection<LibraryItemInfo>> libraries = new HashMap<>();
 
         public Collection<LibraryType> getLibraryTypes(String libraryName) {
             final HashSet<LibraryType> libraryTypes = new HashSet<>();
             for (LibraryType type : LibraryType.values()) {
-                final Collection<String> collection = libraries.get(type);
-                if (collection != null && collection.contains(libraryName)) {
-                    libraryTypes.add(type);
+                final Collection<LibraryItemInfo> collection = libraries.get(type);
+                if (collection != null) {
+                    for (LibraryItemInfo libraryItemInfo : collection) {
+                        try {
+                            if (libraryItemInfo.fileName.equalsIgnoreCase(libraryName)) {
+                                libraryTypes.add(type);
+                            }
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                        }
+                    }
                 }
             }
 
@@ -54,14 +71,28 @@ public class GetApkLibraryTask extends Thread {
 
         public Collection<String> getAllLibraryNames() {
             HashSet<String> hashSet = new HashSet<>();
-            for (Collection<String> c : libraries.values()) {
-                hashSet.addAll(c);
+            for (Collection<LibraryItemInfo> libraryItemInfos : libraries.values()) {
+                for (LibraryItemInfo libraryItemInfo : libraryItemInfos) {
+                    hashSet.add(libraryItemInfo.fileName);
+                }
             }
             return hashSet;
         }
 
-        public static boolean is64BitAbi(LibraryType type) {
-            return type == LibraryType.ARM64_V8A || type == LibraryType.X86_64 || type == LibraryType.MIPS_64;
+        public long getLibraryItemSize(LibraryType type, String fileName) {
+            Collection<LibraryItemInfo> collection = libraries.get(type);
+            if (collection != null) {
+                for (LibraryItemInfo info : collection) {
+                    try {
+                        if (fileName.equalsIgnoreCase(info.fileName)) {
+                            return info.length;
+                        }
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+                }
+            }
+            return 0L;
         }
 
     }
@@ -153,19 +184,35 @@ public class GetApkLibraryTask extends Thread {
 
     private void dealWithEntryName(ZipEntry zipEntry, LibraryInfo libraryInfo) {
         final String entryName = zipEntry.getName().toLowerCase().replace("\\", "/");
-        for (LibraryInfo.LibraryType type : LibraryInfo.LibraryType.values()) {
+        for (LibraryType type : LibraryType.values()) {
             if (entryName.startsWith("lib/" + type.getName())) {
-                putEntry(entryName, libraryInfo, type);
+                Collection<LibraryItemInfo> libraryItemInfos = libraryInfo.libraries.get(type);
+                if (libraryItemInfos == null) {
+                    libraryItemInfos = new HashSet<>();
+                    libraryInfo.libraries.put(type, libraryItemInfos);
+                }
+                libraryItemInfos.add(new LibraryItemInfo(type, entryName.substring(entryName.lastIndexOf("/") + 1), zipEntry.getSize()));
             }
         }
     }
 
-    private void putEntry(String entryName, LibraryInfo libraryInfo, LibraryInfo.LibraryType libraryType) {
-        Collection<String> libNames = libraryInfo.libraries.get(libraryType);
-        if (libNames == null) {
-            libNames = new HashSet<>();
-            libraryInfo.libraries.put(libraryType, libNames);
+    public static class LibraryItemInfo {
+        public final LibraryType libraryType;
+        public final String fileName;
+        public final long length;
+
+        public LibraryItemInfo(LibraryType libraryType, String fileName, long length) {
+            this.libraryType = libraryType;
+            this.fileName = fileName;
+            this.length = length;
         }
-        libNames.add(entryName.substring(entryName.lastIndexOf("/") + 1));
+
+        @Override
+        public boolean equals(@Nullable Object obj) {
+            if (obj instanceof LibraryItemInfo) {
+                return TextUtils.equals(fileName, ((LibraryItemInfo) obj).fileName) && libraryType == ((LibraryItemInfo) obj).libraryType;
+            }
+            return super.equals(obj);
+        }
     }
 }

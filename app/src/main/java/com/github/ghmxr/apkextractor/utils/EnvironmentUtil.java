@@ -685,12 +685,12 @@ public class EnvironmentUtil {
     }
 
     @Nullable
-    public static GetApkLibraryTask.LibraryInfo.LibraryType getShowingLibraryType(@NonNull GetApkLibraryTask.LibraryInfo libraryInfo) {
+    public static GetApkLibraryTask.LibraryType getShowingLibraryType(@NonNull GetApkLibraryTask.LibraryInfo libraryInfo) {
         if (Build.VERSION.SDK_INT >= 21) {
             final String[] supported64BitAbis = Build.SUPPORTED_64_BIT_ABIS;
             if (supported64BitAbis != null) {
                 for (String s : supported64BitAbis) {
-                    for (GetApkLibraryTask.LibraryInfo.LibraryType type : libraryInfo.libraries.keySet()) {
+                    for (GetApkLibraryTask.LibraryType type : libraryInfo.libraries.keySet()) {
                         try {
                             if (type.getName().equalsIgnoreCase(s)) return type;
                         } catch (Exception e) {
@@ -703,7 +703,7 @@ public class EnvironmentUtil {
             final String[] supportedAbis = Build.SUPPORTED_ABIS;
             if (supportedAbis != null) {
                 for (String s : supportedAbis) {
-                    for (GetApkLibraryTask.LibraryInfo.LibraryType type : libraryInfo.libraries.keySet()) {
+                    for (GetApkLibraryTask.LibraryType type : libraryInfo.libraries.keySet()) {
                         try {
                             if (type.getName().equalsIgnoreCase(s)) return type;
                         } catch (Exception e) {
@@ -715,7 +715,7 @@ public class EnvironmentUtil {
         } else {
             final String[] supportedAbis = new String[]{Build.CPU_ABI, Build.CPU_ABI2};
             for (String s : supportedAbis) {
-                for (GetApkLibraryTask.LibraryInfo.LibraryType type : libraryInfo.libraries.keySet()) {
+                for (GetApkLibraryTask.LibraryType type : libraryInfo.libraries.keySet()) {
                     try {
                         if (type.getName().equalsIgnoreCase(s)) return type;
                     } catch (Exception e) {
