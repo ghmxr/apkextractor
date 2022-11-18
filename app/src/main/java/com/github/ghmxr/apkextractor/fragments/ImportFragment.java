@@ -1,6 +1,5 @@
 package com.github.ghmxr.apkextractor.fragments;
 
-import android.Manifest;
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.BroadcastReceiver;
@@ -9,7 +8,6 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.graphics.drawable.ColorDrawable;
-import android.os.Build;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.text.format.Formatter;
@@ -29,7 +27,6 @@ import androidx.appcompat.app.AlertDialog;
 import androidx.cardview.widget.CardView;
 import androidx.core.app.ActivityCompat;
 import androidx.core.app.ActivityOptionsCompat;
-import androidx.core.content.PermissionChecker;
 import androidx.core.util.Pair;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.RecyclerView;
@@ -191,11 +188,11 @@ public class ImportFragment extends Fragment implements RefreshImportListTask.Re
             }
             break;
             case R.id.import_action: {
-                if (Build.VERSION.SDK_INT >= 23 && PermissionChecker.checkSelfPermission(getActivity(), Manifest.permission.WRITE_EXTERNAL_STORAGE) != PermissionChecker.PERMISSION_GRANTED) {
+                /*if (Build.VERSION.SDK_INT >= 23 && PermissionChecker.checkSelfPermission(getActivity(), Manifest.permission.WRITE_EXTERNAL_STORAGE) != PermissionChecker.PERMISSION_GRANTED) {
                     Global.showRequestingWritePermissionSnackBar(getActivity());
                     requestPermissions(new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, 0);
                     return;
-                }
+                }*/
                 if (adapter == null) return;
                 ArrayList<ImportItem> arrayList = new ArrayList<>(adapter.getSelectedItems());
                 for (ImportItem importItem : arrayList) {
@@ -242,11 +239,11 @@ public class ImportFragment extends Fragment implements RefreshImportListTask.Re
                             @Override
                             public void onClick(DialogInterface dialog, int which) {
                                 if (getActivity() == null) return;
-                                if (Build.VERSION.SDK_INT >= 23 && PermissionChecker.checkSelfPermission(getActivity(), Manifest.permission.WRITE_EXTERNAL_STORAGE) != PermissionChecker.PERMISSION_GRANTED) {
+                                /*if (Build.VERSION.SDK_INT >= 23 && PermissionChecker.checkSelfPermission(getActivity(), Manifest.permission.WRITE_EXTERNAL_STORAGE) != PermissionChecker.PERMISSION_GRANTED) {
                                     Global.showRequestingWritePermissionSnackBar(getActivity());
                                     requestPermissions(new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, 0);
                                     return;
-                                }
+                                }*/
                                 try {
                                     List<ImportItem> importItems = adapter.getSelectedItems();
                                     HashSet<ImportItem> deleted = new HashSet<>();
@@ -291,11 +288,11 @@ public class ImportFragment extends Fragment implements RefreshImportListTask.Re
             }
             break;
             case R.id.popup_share: {
-                if (Build.VERSION.SDK_INT >= 23 && PermissionChecker.checkSelfPermission(getActivity(), Manifest.permission.WRITE_EXTERNAL_STORAGE) != PermissionChecker.PERMISSION_GRANTED) {
+                /*if (Build.VERSION.SDK_INT >= 23 && PermissionChecker.checkSelfPermission(getActivity(), Manifest.permission.WRITE_EXTERNAL_STORAGE) != PermissionChecker.PERMISSION_GRANTED) {
                     Global.showRequestingWritePermissionSnackBar(getActivity());
                     requestPermissions(new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, 0);
                     return;
-                }
+                }*/
                 if (adapter == null) return;
                 if (adapter.getSelectedItems().size() == 0) return;
                 Global.shareImportItems(getActivity(), new ArrayList<>(adapter.getSelectedItems()));

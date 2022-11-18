@@ -1,6 +1,5 @@
 package com.github.ghmxr.apkextractor.activities;
 
-import android.Manifest;
 import android.content.BroadcastReceiver;
 import android.content.ClipData;
 import android.content.ClipboardManager;
@@ -29,7 +28,6 @@ import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.widget.Toolbar;
 import androidx.core.app.ActivityCompat;
-import androidx.core.content.PermissionChecker;
 import androidx.core.widget.NestedScrollView;
 
 import com.github.ghmxr.apkextractor.Constants;
@@ -256,6 +254,8 @@ public class AppDetailActivity extends BaseActivity implements View.OnClickListe
     }
 
     private void getDataObbSizeAndFillView() {
+        findViewById(R.id.app_detail_export_progress_bar).setVisibility(View.VISIBLE);
+        findViewById(R.id.app_detail_export_checkboxes).setVisibility(View.GONE);
         new GetDataObbTask(appItem, new GetDataObbTask.DataObbSizeGetCallback() {
             @Override
             public void onDataObbSizeGet(List<AppItem> containsData, List<AppItem> containsObb, Map<AppItem, GetDataObbTask.DataObbSizeInfo> map, GetDataObbTask.DataObbSizeInfo dataObbSizeInfo) {
@@ -283,11 +283,11 @@ public class AppDetailActivity extends BaseActivity implements View.OnClickListe
             }
             break;
             case R.id.app_detail_export_area: {
-                if (Build.VERSION.SDK_INT >= 23 && PermissionChecker.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE) != PermissionChecker.PERMISSION_GRANTED) {
+                /*if (Build.VERSION.SDK_INT >= 23 && PermissionChecker.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE) != PermissionChecker.PERMISSION_GRANTED) {
                     requestPermissions(new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, 0);
                     Global.showRequestingWritePermissionSnackBar(this);
                     return;
-                }
+                }*/
                 final List<AppItem> single_list = getSingleItemArrayList(true);
                 final AppItem item = single_list.get(0);
                 Global.checkAndExportCertainAppItemsToSetPathWithoutShare(this, single_list, false, new Global.ExportTaskFinishedListener() {
@@ -314,11 +314,11 @@ public class AppDetailActivity extends BaseActivity implements View.OnClickListe
             }
             break;
             case R.id.app_detail_share_area: {
-                if (Build.VERSION.SDK_INT >= 23 && PermissionChecker.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE) != PermissionChecker.PERMISSION_GRANTED) {
+                /*if (Build.VERSION.SDK_INT >= 23 && PermissionChecker.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE) != PermissionChecker.PERMISSION_GRANTED) {
                     requestPermissions(new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, 0);
                     Global.showRequestingWritePermissionSnackBar(this);
                     return;
-                }
+                }*/
                 Global.shareCertainAppsByItems(this, getSingleItemArrayList(false));
             }
             break;

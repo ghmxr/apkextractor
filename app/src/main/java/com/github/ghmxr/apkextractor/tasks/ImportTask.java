@@ -1,5 +1,6 @@
 package com.github.ghmxr.apkextractor.tasks;
 
+import android.Manifest;
 import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
@@ -8,6 +9,7 @@ import android.text.TextUtils;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
+import androidx.core.content.PermissionChecker;
 import androidx.documentfile.provider.DocumentFile;
 
 import com.github.ghmxr.apkextractor.Constants;
@@ -253,7 +255,7 @@ public class ImportTask extends Thread {
         currentWritePath = writePath;
         OutputStream outputStream;
         postProgressToCallback();
-        if (Build.VERSION.SDK_INT < 30) {
+        if (Build.VERSION.SDK_INT < Global.USE_DOCUMENT_FILE_SDK_VERSION && PermissionChecker.checkSelfPermission(context, Manifest.permission.WRITE_EXTERNAL_STORAGE) == PermissionChecker.PERMISSION_GRANTED) {
             File writeFile = new File(writePath);
             currentWrtingFileItem = FileItem.createFileItemInstance(writeFile);
             File folder = new File(StorageUtil.getMainExternalStoragePath() + "/" + entryPath.substring(0, entryPath.lastIndexOf("/")));
@@ -290,6 +292,10 @@ public class ImportTask extends Thread {
             currentWritePath = DocumentFileUtil.getDisplayPathForDataObbDocumentFile(writingDocumentFile);
             currentWrtingFileItem = FileItem.createFileItemInstance(writingDocumentFile);
             outputStream = OutputUtil.getOutputStreamForDocumentFile(context, writingDocumentFile);
+        }
+
+        if (outputStream == null) {
+            throw new RuntimeException("Can not obtain output stream instance, please check writing permission");
         }
 
         byte[] buffer = new byte[1024];

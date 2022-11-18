@@ -70,6 +70,12 @@ public class RefreshImportListTask extends Thread {
         if (!isInterrupted) {
             ImportItem.sort_config = SPUtil.getGlobalSharedPreferences(context).getInt(Constants.PREFERENCE_SORT_CONFIG_IMPORT_ITEMS, 0);
         }
+
+        try {
+            getAllImportItemsFromPath(FileItem.createFileItemInstance(SPUtil.getInternalSavePath(context)));
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
         try {
             getAllImportItemsFromPath(fileItem);
         } catch (Exception e) {

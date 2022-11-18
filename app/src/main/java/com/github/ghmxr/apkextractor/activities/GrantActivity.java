@@ -40,7 +40,7 @@ public class GrantActivity extends BaseActivity {
         findViewById(R.id.grant_data).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (Build.VERSION.SDK_INT < 30) {
+                if (Build.VERSION.SDK_INT < Global.USE_DOCUMENT_FILE_SDK_VERSION) {
                     showAttentionDialog(R.string.dialog_grant_attention_title, R.string.dialog_grant_no_need, new Runnable() {
                         @Override
                         public void run() {
@@ -63,7 +63,7 @@ public class GrantActivity extends BaseActivity {
         findViewById(R.id.grant_obb).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (Build.VERSION.SDK_INT < 30) {
+                if (Build.VERSION.SDK_INT < Global.USE_DOCUMENT_FILE_SDK_VERSION) {
                     showAttentionDialog(R.string.dialog_grant_attention_title, R.string.dialog_grant_no_need, new Runnable() {
                         @Override
                         public void run() {

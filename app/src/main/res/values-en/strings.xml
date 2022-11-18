@@ -333,7 +333,7 @@
     <string name="language_follow_system">follow system</string>
 
     <string name="dialog_about_message">\n(Translated by machine)
-        \n<b>Due to permission problem, the functions of data and obb are unavailable on Android 11 or HarmonyOS 3.0 or upper versions</b>\n\n
+        \n\n
         This is a small tool for Android platform to quickly query, export (extract) or share locally installed apps.
         It supports to package the data and OBB data in the external storage of the corresponding app into a ZIP format compressed file
         (mainly for some game applications containing data and OBB data). At the same time, it supports the import of ZIP format compression package containing

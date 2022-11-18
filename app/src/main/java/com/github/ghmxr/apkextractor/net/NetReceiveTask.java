@@ -16,6 +16,7 @@ import com.github.ghmxr.apkextractor.utils.EnvironmentUtil;
 import com.github.ghmxr.apkextractor.utils.OutputUtil;
 import com.github.ghmxr.apkextractor.utils.SPUtil;
 
+import java.io.BufferedOutputStream;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.InputStream;
@@ -348,7 +349,7 @@ public class NetReceiveTask implements UdpThread.UdpThreadCallback {
                             fileName = EnvironmentUtil.getFileMainName(initialFileName) + "(" + (count++) + ")" + "." + EnvironmentUtil.getFileExtensionName(initialFileName);
                             destinationFile = new File(SPUtil.getInternalSavePath(context) + "/" + fileName);
                         }
-                        outputStream = new FileOutputStream(destinationFile);
+                        outputStream = new BufferedOutputStream(new FileOutputStream(destinationFile));
                         writingFileItemThisLoop = FileItem.createFileItemInstance(destinationFile);
                     }
                     currentWritingFileItem = writingFileItemThisLoop;

@@ -1,5 +1,6 @@
 package com.github.ghmxr.apkextractor.tasks;
 
+import android.Manifest;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Build;
@@ -7,6 +8,7 @@ import android.util.Log;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.core.content.PermissionChecker;
 import androidx.documentfile.provider.DocumentFile;
 
 import com.github.ghmxr.apkextractor.Constants;
@@ -219,7 +221,7 @@ public class ExportTask extends Thread {
 
                     writeZip(item.getFileItem(), "", zos, zip_level);
 
-                    if (Build.VERSION.SDK_INT < 30) {
+                    if (Build.VERSION.SDK_INT < Global.USE_DOCUMENT_FILE_SDK_VERSION && PermissionChecker.checkSelfPermission(context, Manifest.permission.WRITE_EXTERNAL_STORAGE) == PermissionChecker.PERMISSION_GRANTED) {
                         if (item.exportData) {
                             writeZip(FileItem.createFileItemInstance(new File(StorageUtil.getMainExternalStoragePath() + "/android/data/" + item.getPackageName())), "Android/data/", zos, zip_level);
                         }

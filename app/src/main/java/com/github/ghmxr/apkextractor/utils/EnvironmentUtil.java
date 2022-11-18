@@ -6,6 +6,7 @@ import android.content.ComponentName;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.content.pm.ResolveInfo;
@@ -38,6 +39,7 @@ import androidx.core.content.FileProvider;
 
 import com.github.ghmxr.apkextractor.Constants;
 import com.github.ghmxr.apkextractor.Global;
+import com.github.ghmxr.apkextractor.MyApplication;
 import com.github.ghmxr.apkextractor.R;
 import com.github.ghmxr.apkextractor.activities.GrantActivity;
 import com.github.ghmxr.apkextractor.tasks.GetApkLibraryTask;
@@ -728,36 +730,50 @@ public class EnvironmentUtil {
         return null;
     }
 
+    public static int getTargetSdkVersion() {
+        final Context context = MyApplication.getApplication();
+        final ApplicationInfo applicationInfo = context.getApplicationInfo();
+        return applicationInfo != null ? applicationInfo.targetSdkVersion : 23;//此项目发布时targetSdkVersion是23
+    }
+
     public static void checkAndShowGrantDialog(@NonNull final Activity activity) {
-        if (Build.VERSION.SDK_INT < 30) return;
-        if (DocumentFileUtil.canReadDataPathByDocumentFile() && DocumentFileUtil.canReadObbPathByDocumentFile()
-                && DocumentFileUtil.canWriteDataPathByDocumentFile() && DocumentFileUtil.canWriteObbPathByDocumentFile()) {
+        if (Build.VERSION.SDK_INT < Global.USE_DOCUMENT_FILE_SDK_VERSION) return;
+        if (hasDataObbPermission()) {
             return;
         }
         if (!SPUtil.getGlobalSharedPreferences(activity).getBoolean(Constants.PREFERENCE_SHOW_GRANT_DIALOG, true)) {
             return;
         }
-        Global.handler.postDelayed(new Runnable() {
+        Global.runOnUiThread(new Runnable() {
             @Override
             public void run() {
-                new AlertDialog.Builder(activity).setTitle(activity.getResources().getString(R.string.dialog_grant_attention_title))
-                        .setMessage(activity.getResources().getString(R.string.dialog_grant_first_use))
-                        .setPositiveButton(activity.getResources().getString(R.string.action_confirm), new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialog, int which) {
-                                SPUtil.getGlobalSharedPreferences(activity).edit().putBoolean(Constants.PREFERENCE_SHOW_GRANT_DIALOG, false).apply();
-                                activity.startActivity(new Intent(activity, GrantActivity.class));
-                            }
-                        })
-                        .setNegativeButton(activity.getResources().getString(R.string.action_cancel), new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialog, int which) {
-                                SPUtil.getGlobalSharedPreferences(activity).edit().putBoolean(Constants.PREFERENCE_SHOW_GRANT_DIALOG, false).apply();
-                            }
-                        })
-                        .show();
+                showGrantDataObbPermissionDialog(activity);
             }
-        }, 1500L);
+        });
+    }
+
+    public static boolean hasDataObbPermission() {
+        return DocumentFileUtil.canReadDataPathByDocumentFile() && DocumentFileUtil.canReadObbPathByDocumentFile()
+                && DocumentFileUtil.canWriteDataPathByDocumentFile() && DocumentFileUtil.canWriteObbPathByDocumentFile();
+    }
+
+    public static void showGrantDataObbPermissionDialog(final Activity activity) {
+        new AlertDialog.Builder(activity).setTitle(activity.getResources().getString(R.string.dialog_grant_attention_title))
+                .setMessage(activity.getResources().getString(R.string.dialog_grant_first_use))
+                .setPositiveButton(activity.getResources().getString(R.string.action_confirm), new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        SPUtil.getGlobalSharedPreferences(activity).edit().putBoolean(Constants.PREFERENCE_SHOW_GRANT_DIALOG, false).apply();
+                        activity.startActivity(new Intent(activity, GrantActivity.class));
+                    }
+                })
+                .setNegativeButton(activity.getResources().getString(R.string.action_cancel), new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        SPUtil.getGlobalSharedPreferences(activity).edit().putBoolean(Constants.PREFERENCE_SHOW_GRANT_DIALOG, false).apply();
+                    }
+                })
+                .show();
     }
 
     /*public static String getBroadCastIpAddress(@NonNull Context context){

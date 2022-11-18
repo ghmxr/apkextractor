@@ -22,7 +22,7 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatDelegate;
 import androidx.appcompat.widget.Toolbar;
-import androidx.core.content.PermissionChecker;
+import androidx.core.app.ActivityCompat;
 
 import com.github.ghmxr.apkextractor.Constants;
 import com.github.ghmxr.apkextractor.Global;
@@ -226,11 +226,11 @@ public class SettingActivity extends BaseActivity implements View.OnClickListene
             }
             break;
             case R.id.settings_path_area: {
-                if (Build.VERSION.SDK_INT >= 23 && PermissionChecker.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE) != PermissionChecker.PERMISSION_GRANTED) {
+                /*if (Build.VERSION.SDK_INT >= 23 && PermissionChecker.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE) != PermissionChecker.PERMISSION_GRANTED) {
                     requestPermissions(new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, 0);
                     Global.showRequestingWritePermissionSnackBar(this);
                     return;
-                }
+                }*/
                 startActivityForResult(new Intent(this, FolderSelectorActivity.class), REQUEST_CODE_SET_PATH);
             }
             break;
@@ -405,6 +405,8 @@ public class SettingActivity extends BaseActivity implements View.OnClickListene
                         dialog.cancel();
                         refreshSettingValues();
                         sendBroadcast(new Intent(Constants.ACTION_REFRESH_IMPORT_ITEMS_LIST));
+                        ActivityCompat.requestPermissions(SettingActivity.this, new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, 0);
+                        Global.showRequestingWritePermissionSnackBar(SettingActivity.this);
                     }
                 });
                 dialogView.findViewById(R.id.package_scope_exporting_path).setOnClickListener(new View.OnClickListener() {

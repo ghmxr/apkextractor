@@ -1,12 +1,15 @@
 package com.github.ghmxr.apkextractor.tasks;
 
+import android.Manifest;
 import android.os.Build;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.core.content.PermissionChecker;
 import androidx.documentfile.provider.DocumentFile;
 
 import com.github.ghmxr.apkextractor.Global;
+import com.github.ghmxr.apkextractor.MyApplication;
 import com.github.ghmxr.apkextractor.items.ImportItem;
 import com.github.ghmxr.apkextractor.utils.DocumentFileUtil;
 import com.github.ghmxr.apkextractor.utils.StorageUtil;
@@ -87,7 +90,9 @@ public class GetImportLengthAndDuplicateInfoTask extends Thread {
                         continue;
                     if (!importItem.importData && s.toLowerCase().startsWith("android/data"))
                         continue;
-                    if (Build.VERSION.SDK_INT < 30) {
+                    if (Build.VERSION.SDK_INT < Global.USE_DOCUMENT_FILE_SDK_VERSION
+                            && PermissionChecker.checkSelfPermission(MyApplication.getApplication(), Manifest.permission.WRITE_EXTERNAL_STORAGE)
+                            == PermissionChecker.PERMISSION_GRANTED) {
                         File exportWritingTarget = new File(StorageUtil.getMainExternalStoragePath() + "/" + s);
                         if (exportWritingTarget.exists()) {
                             duplication_infos.add(exportWritingTarget.getAbsolutePath());

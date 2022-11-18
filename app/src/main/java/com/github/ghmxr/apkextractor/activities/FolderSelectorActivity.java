@@ -1,5 +1,6 @@
 package com.github.ghmxr.apkextractor.activities;
 
+import android.Manifest;
 import android.annotation.TargetApi;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -26,6 +27,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.widget.Toolbar;
+import androidx.core.content.PermissionChecker;
 import androidx.documentfile.provider.DocumentFile;
 
 import com.github.ghmxr.apkextractor.Constants;
@@ -144,8 +146,7 @@ public class FolderSelectorActivity extends BaseActivity {
             } catch (Exception e) {
                 e.printStackTrace();
                 ToastManager.showToast(this, "Initializing external storage error", Toast.LENGTH_SHORT);
-                fileItem = FileItem.createFileItemInstance(StorageUtil.getMainExternalStoragePath());
-                current_storage_path = StorageUtil.getMainExternalStoragePath();
+                restore2DefaultStoragePath();
             }
         } else {
             fileItem = FileItem.createFileItemInstance(settings.getString(Constants.PREFERENCE_SAVE_PATH, Constants.PREFERENCE_SAVE_PATH_DEFAULT));
@@ -165,9 +166,28 @@ public class FolderSelectorActivity extends BaseActivity {
             }
         }
 
+//        refreshList(fileItem);
+        if (Build.VERSION.SDK_INT >= 23 && PermissionChecker.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE) != PermissionChecker.PERMISSION_GRANTED) {
+            requestPermissions(new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, 0);
+            Global.showRequestingWritePermissionSnackBar(this);
+        }
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
         refreshList(fileItem);
     }
 
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        if (requestCode == 0) {
+            if (permissions.length > 0 && Manifest.permission.WRITE_EXTERNAL_STORAGE.equalsIgnoreCase(permissions[0]) && grantResults.length > 0 && grantResults[0] == PermissionChecker.PERMISSION_GRANTED) {
+                refreshList(fileItem);
+            }
+        }
+    }
 
     private void refreshList(@Nullable final FileItem fileItem) {
         //recyclerView.setAdapter(null);
@@ -247,8 +267,8 @@ public class FolderSelectorActivity extends BaseActivity {
     }
 
     private void restore2DefaultStoragePath() {
-        fileItem = FileItem.createFileItemInstance(StorageUtil.getMainExternalStoragePath());
-        current_storage_path = StorageUtil.getMainExternalStoragePath();
+        fileItem = FileItem.createFileItemInstance(Constants.PREFERENCE_SAVE_PATH_DEFAULT);
+        current_storage_path = Constants.PREFERENCE_SAVE_PATH_DEFAULT;
         refreshList(fileItem);
     }
 

@@ -6,6 +6,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.ApplicationInfo;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Handler;
 import android.os.Looper;
 import android.view.LayoutInflater;
@@ -82,6 +83,16 @@ public class Global {
 
     public static final String URI_DATA = "content://com.android.externalstorage.documents/tree/primary%3AAndroid%2Fdata";
     public static final String URI_OBB = "content://com.android.externalstorage.documents/tree/primary%3AAndroid%2Fobb";
+
+    /**
+     * 从API30开始，外置data和obb路径不能直接使用File访问，使用documentFile访问data和obb的版本
+     */
+    public static final int USE_DOCUMENT_FILE_SDK_VERSION = Build.VERSION_CODES.R;
+
+    /**
+     * 从API29开始，所有targetAPI>=29的app无法获取写入外置存储权限
+     */
+    public static final int NO_MORE_GRANT_EXTERNAL_WRITE_PERMISSION_SDK_VERSION = Build.VERSION_CODES.Q;
 
     public static void showRequestingWritePermissionSnackBar(@NonNull final Activity activity) {
         Snackbar snackbar = Snackbar.make(activity.findViewById(android.R.id.content), activity.getResources().getString(R.string.permission_write), Snackbar.LENGTH_SHORT);
@@ -354,13 +365,13 @@ public class Global {
     }
 
     public static void showImportingDataObbDialog(@NonNull final Activity activity, @NonNull List<ImportItem> importItems, @Nullable final ImportTaskFinishedCallback callback) {
-        EnvironmentUtil.checkAndShowGrantDialog(activity);
         new ImportingDataObbDialog(activity, importItems, new ImportingDataObbDialog.ImportDialogDataObbConfirmedCallback() {
             @Override
             public void onImportingDataObbConfirmed(@NonNull final List<ImportItem> importItems2) {
                 showCheckingDuplicationDialogAndStartImporting(activity, importItems2, callback);
             }
         }).show();
+        EnvironmentUtil.checkAndShowGrantDialog(activity);
     }
 
     private static long checkDuplicateTimeStamp = 0L;

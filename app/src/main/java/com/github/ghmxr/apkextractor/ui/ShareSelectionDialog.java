@@ -1,5 +1,6 @@
 package com.github.ghmxr.apkextractor.ui;
 
+import android.app.Activity;
 import android.app.Dialog;
 import android.content.Context;
 import android.content.Intent;
@@ -25,9 +26,11 @@ import java.util.List;
 public class ShareSelectionDialog extends Dialog implements View.OnClickListener {
 
     private final List<FileItem> fileItems;
+    private final Context context;
 
     public ShareSelectionDialog(@NonNull Context context, @NonNull List<FileItem> fileItems) {
         super(context);
+        this.context = context;
         this.fileItems = fileItems;
     }
 
@@ -57,17 +60,21 @@ public class ShareSelectionDialog extends Dialog implements View.OnClickListener
                 break;
             case R.id.dialog_share_direct: {
                 try {
-                    IpMessage testIpMessage = IpMessage.getSendingFileRequestIpMessgae(getContext(), this.fileItems);
+                    IpMessage testIpMessage = IpMessage.getSendingFileRequestIpMessgae(context, this.fileItems);
                     if (testIpMessage.toProtocolString().length() > 65530) {
-                        ToastManager.showToast(getContext(), getContext().getResources().getString(R.string.info_udp_too_long), Toast.LENGTH_SHORT);
+                        ToastManager.showToast(context, context.getResources().getString(R.string.info_udp_too_long), Toast.LENGTH_SHORT);
                         return;
                     }
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
-                Intent intent = new Intent(getContext(), FileSendActivity.class);
-                FileSendActivity.setSendingFiles(this.fileItems);
-                getContext().startActivity(intent);
+
+                Intent intent = new Intent(context, FileSendActivity.class);
+                if (!(context instanceof Activity)) {
+                    intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                }
+                FileSendActivity.setSendingFiles(this.fileItems);//FileSendActivity不能写跨进程否则静态方法传值无效
+                context.startActivity(intent);
             }
             break;
             case R.id.dialog_share_system: {
@@ -78,11 +85,11 @@ public class ShareSelectionDialog extends Dialog implements View.OnClickListener
                     } else if (fileItem.isDocumentFile()) {
                         uris.add(fileItem.getDocumentFile().getUri());
                     } else if (fileItem.isShareUriInstance()) {
-                        ToastManager.showToast(getContext(), getContext().getResources().getString(R.string.info_share_uri_invalid), Toast.LENGTH_SHORT);
+                        ToastManager.showToast(context, context.getResources().getString(R.string.info_share_uri_invalid), Toast.LENGTH_SHORT);
                         return;
                     }
                 }
-                Global.shareCertainFiles(getContext(), uris, getContext().getResources().getString(R.string.share_title));
+                Global.shareCertainFiles(context, uris, context.getResources().getString(R.string.share_title));
             }
             break;
             case R.id.dialog_share_cancel: {

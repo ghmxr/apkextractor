@@ -6,6 +6,9 @@ import android.os.Environment;
 import android.os.StatFs;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.RequiresApi;
+
+import com.github.ghmxr.apkextractor.MyApplication;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -40,6 +43,15 @@ public class StorageUtil {
             return Environment.getExternalStorageDirectory().getAbsolutePath();
         } catch (Exception e) {
             e.printStackTrace();
+        }
+        return "";
+    }
+
+    @RequiresApi(api = Build.VERSION_CODES.KITKAT)
+    public static String getAppExternalStoragePath() {
+        File[] externalFilesDirs = MyApplication.getApplication().getExternalFilesDirs(null);
+        if (externalFilesDirs != null && externalFilesDirs.length > 0) {
+            return externalFilesDirs[0].getAbsolutePath();
         }
         return "";
     }

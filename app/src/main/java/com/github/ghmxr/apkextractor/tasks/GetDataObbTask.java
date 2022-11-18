@@ -1,10 +1,13 @@
 package com.github.ghmxr.apkextractor.tasks;
 
+import android.Manifest;
 import android.os.Build;
 
 import androidx.annotation.NonNull;
+import androidx.core.content.PermissionChecker;
 
 import com.github.ghmxr.apkextractor.Global;
+import com.github.ghmxr.apkextractor.MyApplication;
 import com.github.ghmxr.apkextractor.items.AppItem;
 import com.github.ghmxr.apkextractor.items.FileItem;
 import com.github.ghmxr.apkextractor.utils.DocumentFileUtil;
@@ -107,7 +110,9 @@ public class GetDataObbTask extends Thread {
 
     private DataObbSizeInfo getDataObbSizeInfo(AppItem item) {
         long data = 0, obb = 0;
-        if (Build.VERSION.SDK_INT < 30) {
+        if (Build.VERSION.SDK_INT < Global.USE_DOCUMENT_FILE_SDK_VERSION
+                && PermissionChecker.checkSelfPermission(MyApplication.getApplication(), Manifest.permission.WRITE_EXTERNAL_STORAGE)
+                == PermissionChecker.PERMISSION_GRANTED) {
             data = FileUtil.getFileOrFolderSize(new File(StorageUtil.getMainExternalStoragePath() + "/android/data/" + item.getPackageName()));
             obb = FileUtil.getFileOrFolderSize(new File(StorageUtil.getMainExternalStoragePath() + "/android/obb/" + item.getPackageName()));
         } else {

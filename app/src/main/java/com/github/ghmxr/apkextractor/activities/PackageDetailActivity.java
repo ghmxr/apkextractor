@@ -1,6 +1,5 @@
 package com.github.ghmxr.apkextractor.activities;
 
-import android.Manifest;
 import android.content.ClipData;
 import android.content.ClipboardManager;
 import android.content.Context;
@@ -23,7 +22,6 @@ import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.widget.Toolbar;
 import androidx.core.app.ActivityCompat;
-import androidx.core.content.PermissionChecker;
 import androidx.core.widget.NestedScrollView;
 
 import com.github.ghmxr.apkextractor.Constants;
@@ -305,11 +303,11 @@ public class PackageDetailActivity extends BaseActivity implements View.OnClickL
                         Snackbar.make(findViewById(android.R.id.content), getResources().getString(R.string.activity_detail_nothing_checked), Snackbar.LENGTH_SHORT).show();
                         return;
                     }
-                    if (Build.VERSION.SDK_INT >= 23 && PermissionChecker.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE) != PermissionChecker.PERMISSION_GRANTED) {
+                    /*if (Build.VERSION.SDK_INT >= 23 && PermissionChecker.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE) != PermissionChecker.PERMISSION_GRANTED) {
                         requestPermissions(new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, 0);
                         ToastManager.showToast(this, getResources().getString(R.string.permission_write), Toast.LENGTH_SHORT);
                         return;
-                    }
+                    }*/
                     ImportItem importItem1 = new ImportItem(importItem, cb_data.isChecked(), cb_obb.isChecked(), cb_apk.isChecked());
                     final ArrayList<ImportItem> singleArray = new ArrayList<>();
                     singleArray.add(importItem1);

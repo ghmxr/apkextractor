@@ -9,7 +9,6 @@ import android.os.Build;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
-import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -23,6 +22,7 @@ import androidx.appcompat.app.ActionBarDrawerToggle;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.widget.Toolbar;
 import androidx.core.content.PermissionChecker;
+import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.fragment.app.Fragment;
 import androidx.viewpager.widget.ViewPager;
@@ -129,7 +129,9 @@ public class MainActivity extends BaseActivity implements View.OnClickListener, 
         tabLayout.setupWithViewPager(viewPager, true);
         viewPager.addOnPageChangeListener(this);
 
-        if (Build.VERSION.SDK_INT >= 23 && PermissionChecker.checkSelfPermission(MainActivity.this, Manifest.permission.WRITE_EXTERNAL_STORAGE) != PermissionChecker.PERMISSION_GRANTED) {
+        if (Build.VERSION.SDK_INT >= 23
+                && Build.VERSION.SDK_INT < Global.USE_DOCUMENT_FILE_SDK_VERSION
+                && PermissionChecker.checkSelfPermission(MainActivity.this, Manifest.permission.WRITE_EXTERNAL_STORAGE) != PermissionChecker.PERMISSION_GRANTED) {
             requestPermissions(new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, 0);
         }
     }
@@ -249,11 +251,11 @@ public class MainActivity extends BaseActivity implements View.OnClickListener, 
             default:
                 break;
             case R.id.nav_receive: {
-                if (Build.VERSION.SDK_INT >= 23 && PermissionChecker.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE) != PermissionChecker.PERMISSION_GRANTED) {
+                /*if (Build.VERSION.SDK_INT >= 23 && PermissionChecker.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE) != PermissionChecker.PERMISSION_GRANTED) {
                     Global.showRequestingWritePermissionSnackBar(this);
                     requestPermissions(new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, 0);
                     return false;
-                }
+                }*/
                 startActivityForResult(new Intent(this, FileReceiveActivity.class), REQUEST_CODE_RECEIVING_FILES);
             }
             break;
@@ -360,7 +362,7 @@ public class MainActivity extends BaseActivity implements View.OnClickListener, 
     }
 
     private void checkAndExit() {
-        if (drawerLayout.isDrawerOpen(Gravity.START)) {
+        if (drawerLayout.isDrawerOpen(GravityCompat.START)) {
             drawerLayout.closeDrawers();
             return;
         }

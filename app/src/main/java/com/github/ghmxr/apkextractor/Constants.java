@@ -1,7 +1,14 @@
 package com.github.ghmxr.apkextractor;
 
-import androidx.appcompat.app.AppCompatDelegate;
+import android.Manifest;
+import android.content.Context;
+import android.content.SharedPreferences;
+import android.os.Build;
 
+import androidx.appcompat.app.AppCompatDelegate;
+import androidx.core.content.PermissionChecker;
+
+import com.github.ghmxr.apkextractor.utils.SPUtil;
 import com.github.ghmxr.apkextractor.utils.StorageUtil;
 
 public class Constants {
@@ -14,7 +21,26 @@ public class Constants {
      * this preference stands for a string value;
      */
     public static final String PREFERENCE_SAVE_PATH = "savepath";
-    public static final String PREFERENCE_SAVE_PATH_DEFAULT = StorageUtil.getMainExternalStoragePath() + "/Backup";
+
+    /**
+     * api19及以上使用App所属外置存储作为默认导出路径(/storage/emulated/0/android/data/com.github.ghmxr.apkextractor/files)，对于旧版本已授权过并升级到此的，sp取值不变
+     */
+    public static final String PREFERENCE_SAVE_PATH_DEFAULT;
+
+    static {
+        final Context context = MyApplication.getApplication();
+        //takePersistUriPermission方法是从api19开始的
+        if (Build.VERSION.SDK_INT < 19 || PermissionChecker.checkSelfPermission(context, Manifest.permission.WRITE_EXTERNAL_STORAGE) == PermissionChecker.PERMISSION_GRANTED) {
+            PREFERENCE_SAVE_PATH_DEFAULT = StorageUtil.getMainExternalStoragePath() + "/Backup";
+        } else {
+            PREFERENCE_SAVE_PATH_DEFAULT = StorageUtil.getAppExternalStoragePath();
+        }
+        SharedPreferences sp = SPUtil.getGlobalSharedPreferences(context);
+        if (!sp.contains(PREFERENCE_SAVE_PATH)) {
+            sp.edit().putString(PREFERENCE_SAVE_PATH, PREFERENCE_SAVE_PATH_DEFAULT).apply();
+        }
+    }
+
     /**
      * this preference stands for a boolean value;
      */

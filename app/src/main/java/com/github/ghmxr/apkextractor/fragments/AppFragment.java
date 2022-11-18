@@ -1,6 +1,5 @@
 package com.github.ghmxr.apkextractor.fragments;
 
-import android.Manifest;
 import android.content.BroadcastReceiver;
 import android.content.ClipData;
 import android.content.ClipboardManager;
@@ -30,7 +29,6 @@ import androidx.appcompat.app.AlertDialog;
 import androidx.cardview.widget.CardView;
 import androidx.core.app.ActivityCompat;
 import androidx.core.app.ActivityOptionsCompat;
-import androidx.core.content.PermissionChecker;
 import androidx.core.util.Pair;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.RecyclerView;
@@ -259,11 +257,11 @@ public class AppFragment extends Fragment implements View.OnClickListener, Refre
             }
             break;
             case R.id.main_export: {
-                if (Build.VERSION.SDK_INT >= 23 && PermissionChecker.checkSelfPermission(getActivity(), Manifest.permission.WRITE_EXTERNAL_STORAGE) != PermissionChecker.PERMISSION_GRANTED) {
+                /*if (Build.VERSION.SDK_INT >= 23 && PermissionChecker.checkSelfPermission(getActivity(), Manifest.permission.WRITE_EXTERNAL_STORAGE) != PermissionChecker.PERMISSION_GRANTED) {
                     Global.showRequestingWritePermissionSnackBar(getActivity());
                     requestPermissions(new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, 0);
                     return;
-                }
+                }*/
                 if (adapter == null) return;
                 final ArrayList<AppItem> arrayList = new ArrayList<>(adapter.getSelectedItems());
                 Global.checkAndExportCertainAppItemsToSetPathWithoutShare(getActivity(), arrayList, true, new Global.ExportTaskFinishedListener() {
@@ -291,11 +289,11 @@ public class AppFragment extends Fragment implements View.OnClickListener, Refre
             }
             break;
             case R.id.main_share: {
-                if (Build.VERSION.SDK_INT >= 23 && PermissionChecker.checkSelfPermission(getActivity(), Manifest.permission.WRITE_EXTERNAL_STORAGE) != PermissionChecker.PERMISSION_GRANTED) {
+                /*if (Build.VERSION.SDK_INT >= 23 && PermissionChecker.checkSelfPermission(getActivity(), Manifest.permission.WRITE_EXTERNAL_STORAGE) != PermissionChecker.PERMISSION_GRANTED) {
                     Global.showRequestingWritePermissionSnackBar(getActivity());
                     requestPermissions(new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, 0);
                     return;
-                }
+                }*/
                 if (adapter == null) return;
                 final ArrayList<AppItem> arrayList = new ArrayList<>(adapter.getSelectedItems());
                 //closeMultiSelectMode();
