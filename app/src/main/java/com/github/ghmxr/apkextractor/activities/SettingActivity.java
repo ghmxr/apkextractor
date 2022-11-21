@@ -75,9 +75,9 @@ public class SettingActivity extends BaseActivity implements View.OnClickListene
         if (Build.VERSION.SDK_INT >= 26) {
             grantArea.setVisibility(View.VISIBLE);
         }
-        if (EnvironmentUtil.getTargetSdkVersion() > 23 && Build.VERSION.SDK_INT > 23) {
+        /*if (EnvironmentUtil.getTargetSdkVersion() > 23 && Build.VERSION.SDK_INT > 23) {
             findViewById(R.id.settings_share_mode_area).setVisibility(View.GONE);
-        }
+        }*/
         grantArea.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -99,9 +99,9 @@ public class SettingActivity extends BaseActivity implements View.OnClickListene
             default:
                 break;
             case R.id.settings_share_mode_area: {
-                if (EnvironmentUtil.getTargetSdkVersion() > 23 && Build.VERSION.SDK_INT > 23) {
+                /*if (EnvironmentUtil.getTargetSdkVersion() > 23 && Build.VERSION.SDK_INT > 23) {
                     return;
-                }
+                }*/
                 View dialogView = LayoutInflater.from(this).inflate(R.layout.dialog_share_mode, null);
                 int mode = settings.getInt(Constants.PREFERENCE_SHAREMODE, Constants.PREFERENCE_SHAREMODE_DEFAULT);
                 ((RadioButton) dialogView.findViewById(R.id.share_mode_direct_ra)).setChecked(mode == Constants.SHARE_MODE_DIRECT);

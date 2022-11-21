@@ -5,7 +5,6 @@ import android.app.Dialog;
 import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
-import android.os.Build;
 import android.os.Bundle;
 import android.view.Gravity;
 import android.view.View;
@@ -83,7 +82,7 @@ public class ShareSelectionDialog extends Dialog implements View.OnClickListener
                 ArrayList<Uri> uris = new ArrayList<>();
                 for (FileItem fileItem : fileItems) {
                     if (fileItem.isFileInstance()) {
-                        if (EnvironmentUtil.getTargetSdkVersion() > 23 && Build.VERSION.SDK_INT > 23) {
+                        if (/*EnvironmentUtil.getTargetSdkVersion() > 23 && Build.VERSION.SDK_INT > 23*/false) {
                             uris.add(EnvironmentUtil.getUriForFileByFileProvider(context, fileItem.getFile()));
                         } else {
                             uris.add(Uri.fromFile(fileItem.getFile()));

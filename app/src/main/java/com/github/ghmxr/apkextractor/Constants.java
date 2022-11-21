@@ -8,7 +8,6 @@ import android.os.Build;
 import androidx.appcompat.app.AppCompatDelegate;
 import androidx.core.content.PermissionChecker;
 
-import com.github.ghmxr.apkextractor.utils.EnvironmentUtil;
 import com.github.ghmxr.apkextractor.utils.SPUtil;
 import com.github.ghmxr.apkextractor.utils.StorageUtil;
 
@@ -161,12 +160,12 @@ public class Constants {
     public static final int SHARE_MODE_AFTER_EXTRACT = 0;
     public static final int PREFERENCE_SHAREMODE_DEFAULT = SHARE_MODE_AFTER_EXTRACT;
 
-    static {
+    /*static {
         final Context context = MyApplication.getApplication();
         if (Build.VERSION.SDK_INT > 23 && EnvironmentUtil.getTargetSdkVersion() > 23) {
             SPUtil.getGlobalSharedPreferences(context).edit().putInt(PREFERENCE_SHAREMODE, SHARE_MODE_AFTER_EXTRACT).apply();
         }
-    }
+    }*/
 
     public static final String FONT_AUTO_SEQUENCE_NUMBER = "?A";
     public static final String FONT_APP_NAME = "?N";
@@ -215,7 +214,7 @@ public class Constants {
     public static final String PREFERENCE_PACKAGE_SCOPE = "package_scope";
     public static final int PACKAGE_SCOPE_ALL = 0;
     public static final int PACKAGE_SCOPE_EXPORTING_PATH = 1;
-    public static final int PREFERENCE_PACKAGE_SCOPE_DEFAULT = PACKAGE_SCOPE_EXPORTING_PATH;
+    public static final int PREFERENCE_PACKAGE_SCOPE_DEFAULT = PACKAGE_SCOPE_ALL;
     /**
      * 批量复制包名的分隔内容
      */

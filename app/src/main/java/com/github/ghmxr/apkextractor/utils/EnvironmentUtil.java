@@ -543,7 +543,7 @@ public class EnvironmentUtil {
      * 传入的file须为主存储下的文件，且对file有完整的读写权限
      */
     public static Uri getUriForFileByFileProvider(@NonNull Context context, @NonNull File file) {
-        return FileProvider.getUriForFile(context, "com.github.ghmxr.apkextractor.FileProvider", file);
+        return FileProvider.getUriForFile(context, context.getPackageName() + ".FileProvider", file);
     }
 
     /**
