@@ -28,7 +28,6 @@ import androidx.fragment.app.Fragment;
 import androidx.viewpager.widget.ViewPager;
 
 import com.github.ghmxr.apkextractor.Constants;
-import com.github.ghmxr.apkextractor.Global;
 import com.github.ghmxr.apkextractor.R;
 import com.github.ghmxr.apkextractor.adapters.MyPagerAdapter;
 import com.github.ghmxr.apkextractor.fragments.AppFragment;
@@ -130,7 +129,6 @@ public class MainActivity extends BaseActivity implements View.OnClickListener, 
         viewPager.addOnPageChangeListener(this);
 
         if (Build.VERSION.SDK_INT >= 23
-                && Build.VERSION.SDK_INT < Global.USE_DOCUMENT_FILE_SDK_VERSION
                 && PermissionChecker.checkSelfPermission(MainActivity.this, Manifest.permission.WRITE_EXTERNAL_STORAGE) != PermissionChecker.PERMISSION_GRANTED) {
             requestPermissions(new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, 0);
         }

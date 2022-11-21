@@ -185,6 +185,7 @@ public class FolderSelectorActivity extends BaseActivity {
         if (requestCode == 0) {
             if (permissions.length > 0 && Manifest.permission.WRITE_EXTERNAL_STORAGE.equalsIgnoreCase(permissions[0]) && grantResults.length > 0 && grantResults[0] == PermissionChecker.PERMISSION_GRANTED) {
                 refreshList(fileItem);
+                sendBroadcast(new Intent(Constants.ACTION_REFRESH_IMPORT_ITEMS_LIST));
             }
         }
     }

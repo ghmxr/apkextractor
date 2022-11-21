@@ -23,6 +23,7 @@ import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatDelegate;
 import androidx.appcompat.widget.Toolbar;
 import androidx.core.app.ActivityCompat;
+import androidx.core.content.PermissionChecker;
 
 import com.github.ghmxr.apkextractor.Constants;
 import com.github.ghmxr.apkextractor.Global;
@@ -74,6 +75,9 @@ public class SettingActivity extends BaseActivity implements View.OnClickListene
         if (Build.VERSION.SDK_INT >= 26) {
             grantArea.setVisibility(View.VISIBLE);
         }
+        if (EnvironmentUtil.getTargetSdkVersion() > 23 && Build.VERSION.SDK_INT > 23) {
+            findViewById(R.id.settings_share_mode_area).setVisibility(View.GONE);
+        }
         grantArea.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -95,6 +99,9 @@ public class SettingActivity extends BaseActivity implements View.OnClickListene
             default:
                 break;
             case R.id.settings_share_mode_area: {
+                if (EnvironmentUtil.getTargetSdkVersion() > 23 && Build.VERSION.SDK_INT > 23) {
+                    return;
+                }
                 View dialogView = LayoutInflater.from(this).inflate(R.layout.dialog_share_mode, null);
                 int mode = settings.getInt(Constants.PREFERENCE_SHAREMODE, Constants.PREFERENCE_SHAREMODE_DEFAULT);
                 ((RadioButton) dialogView.findViewById(R.id.share_mode_direct_ra)).setChecked(mode == Constants.SHARE_MODE_DIRECT);
@@ -405,8 +412,10 @@ public class SettingActivity extends BaseActivity implements View.OnClickListene
                         dialog.cancel();
                         refreshSettingValues();
                         sendBroadcast(new Intent(Constants.ACTION_REFRESH_IMPORT_ITEMS_LIST));
-                        ActivityCompat.requestPermissions(SettingActivity.this, new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, 0);
-                        Global.showRequestingWritePermissionSnackBar(SettingActivity.this);
+                        if (PermissionChecker.checkSelfPermission(SettingActivity.this, Manifest.permission.WRITE_EXTERNAL_STORAGE) != PermissionChecker.PERMISSION_GRANTED) {
+                            ActivityCompat.requestPermissions(SettingActivity.this, new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, 0);
+                            Global.showRequestingWritePermissionSnackBar(SettingActivity.this);
+                        }
                     }
                 });
                 dialogView.findViewById(R.id.package_scope_exporting_path).setOnClickListener(new View.OnClickListener() {
@@ -451,6 +460,17 @@ public class SettingActivity extends BaseActivity implements View.OnClickListene
                 sendBroadcast(new Intent(Constants.ACTION_REFRESH_IMPORT_ITEMS_LIST));
             }
             break;
+        }
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        if (requestCode == 0 && permissions.length > 0
+                && grantResults.length > 0
+                && Manifest.permission.WRITE_EXTERNAL_STORAGE.equalsIgnoreCase(permissions[0])
+                && grantResults[0] == PermissionChecker.PERMISSION_GRANTED) {
+            sendBroadcast(new Intent(Constants.ACTION_REFRESH_IMPORT_ITEMS_LIST));
         }
     }
 

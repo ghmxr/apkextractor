@@ -5,6 +5,7 @@ import android.app.Dialog;
 import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.view.Gravity;
 import android.view.View;
@@ -19,6 +20,7 @@ import com.github.ghmxr.apkextractor.R;
 import com.github.ghmxr.apkextractor.activities.FileSendActivity;
 import com.github.ghmxr.apkextractor.items.FileItem;
 import com.github.ghmxr.apkextractor.items.IpMessage;
+import com.github.ghmxr.apkextractor.utils.EnvironmentUtil;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -81,7 +83,11 @@ public class ShareSelectionDialog extends Dialog implements View.OnClickListener
                 ArrayList<Uri> uris = new ArrayList<>();
                 for (FileItem fileItem : fileItems) {
                     if (fileItem.isFileInstance()) {
-                        uris.add(Uri.fromFile(fileItem.getFile()));
+                        if (EnvironmentUtil.getTargetSdkVersion() > 23 && Build.VERSION.SDK_INT > 23) {
+                            uris.add(EnvironmentUtil.getUriForFileByFileProvider(context, fileItem.getFile()));
+                        } else {
+                            uris.add(Uri.fromFile(fileItem.getFile()));
+                        }
                     } else if (fileItem.isDocumentFile()) {
                         uris.add(fileItem.getDocumentFile().getUri());
                     } else if (fileItem.isShareUriInstance()) {
