@@ -72,7 +72,9 @@ public class RefreshImportListTask extends Thread {
         }
 
         try {
-            getAllImportItemsFromPath(FileItem.createFileItemInstance(SPUtil.getInternalSavePath(context)));
+            if (package_scope_value == Constants.PACKAGE_SCOPE_ALL) {//默认导出路径在data的情况下，未授权直接全盘遍历会导致找不到data下的文件，在这里先做一次遍历添加
+                getAllImportItemsFromPath(FileItem.createFileItemInstance(SPUtil.getInternalSavePath(context)));
+            }
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -80,7 +82,7 @@ public class RefreshImportListTask extends Thread {
             getAllImportItemsFromPath(fileItem);
         } catch (Exception e) {
             e.printStackTrace();
-            return;
+//            return;
         }
 
         try {
@@ -107,7 +109,7 @@ public class RefreshImportListTask extends Thread {
         synchronized (RefreshImportListTask.class) {
             refreshImportListTask = null;
         }
-        if (callback != null) {
+        if (callback != null && !isInterrupted) {
             Global.handler.post(new Runnable() {
                 @Override
                 public void run() {
