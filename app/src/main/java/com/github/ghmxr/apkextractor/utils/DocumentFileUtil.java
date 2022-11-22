@@ -128,11 +128,29 @@ public class DocumentFileUtil {
         return false;
     }
 
+    private static volatile DocumentFile dataDocumentFile;
+
     public static DocumentFile getDataDocumentFile() {
-        return DocumentFile.fromTreeUri(MyApplication.getApplication(), Uri.parse(Global.URI_DATA));
+        if (dataDocumentFile == null) {
+            synchronized (DocumentFileUtil.class) {
+                if (dataDocumentFile == null) {
+                    dataDocumentFile = DocumentFile.fromTreeUri(MyApplication.getApplication(), Uri.parse(Global.URI_DATA));
+                }
+            }
+        }
+        return dataDocumentFile;
     }
 
+    private static volatile DocumentFile obbDocumentFile;
+
     public static DocumentFile getObbDocumentFile() {
-        return DocumentFile.fromTreeUri(MyApplication.getApplication(), Uri.parse(Global.URI_OBB));
+        if (obbDocumentFile == null) {
+            synchronized (DocumentFileUtil.class) {
+                if (obbDocumentFile == null) {
+                    obbDocumentFile = DocumentFile.fromTreeUri(MyApplication.getApplication(), Uri.parse(Global.URI_OBB));
+                }
+            }
+        }
+        return obbDocumentFile;
     }
 }
