@@ -7,8 +7,8 @@ android {
         minSdkVersion 14
         //noinspection ExpiredTargetSdkVersion
         targetSdkVersion 29
-        versionCode 14
-        versionName "Build 15(Preview)"
+        versionCode 15
+        versionName "Build 15"
 //        testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
     }
     buildTypes {
