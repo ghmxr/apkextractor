@@ -277,14 +277,13 @@ public class ImportTask extends Thread {
 
             final String fileName = entryPath.substring(entryPath.lastIndexOf("/") + 1);
 
-            DocumentFile check_documentFile = DocumentFileUtil.getDocumentFileBySegments(writingParentDocumentFile, segments)
-                    .findFile(fileName);
+            DocumentFile documentFileBySegments = DocumentFileUtil.getDocumentFileBySegments(writingParentDocumentFile, segments);
+            DocumentFile check_documentFile = documentFileBySegments.findFile(fileName);
             if (check_documentFile != null) {
                 check_documentFile.delete();
             }
 
-            DocumentFile writingDocumentFile = DocumentFileUtil.getDocumentFileBySegments(writingParentDocumentFile, segments)
-                    .createFile("", fileName);
+            DocumentFile writingDocumentFile = documentFileBySegments.createFile("", fileName);
 
             if (writingDocumentFile == null) {
                 throw new RuntimeException("Can not obtain DocumentFile instance for " + DocumentFileUtil.getDisplayPathForDataObbDocumentFile(writingParentDocumentFile) + "/" + segments);
