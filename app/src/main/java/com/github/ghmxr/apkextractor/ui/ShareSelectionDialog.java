@@ -21,6 +21,7 @@ import com.github.ghmxr.apkextractor.items.FileItem;
 import com.github.ghmxr.apkextractor.items.IpMessage;
 import com.github.ghmxr.apkextractor.utils.EnvironmentUtil;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -82,11 +83,19 @@ public class ShareSelectionDialog extends Dialog implements View.OnClickListener
                 ArrayList<Uri> uris = new ArrayList<>();
                 for (FileItem fileItem : fileItems) {
                     if (fileItem.isFileInstance()) {
-                        if (/*EnvironmentUtil.getTargetSdkVersion() > 23 && Build.VERSION.SDK_INT > 23*/false) {
-                            uris.add(EnvironmentUtil.getUriForFileByFileProvider(context, fileItem.getFile()));
+                        File file = fileItem.getFile();
+                        Uri uri;
+                        if (file.getAbsolutePath().toLowerCase().startsWith("/data/app")) {
+                            uri = Uri.fromFile(file);
                         } else {
-                            uris.add(Uri.fromFile(fileItem.getFile()));
+                            try {
+                                uri = EnvironmentUtil.getUriForFileByFileProvider(context, file);
+                            } catch (Exception e) {
+                                uri = Uri.fromFile(file);
+                                e.printStackTrace();
+                            }
                         }
+                        uris.add(uri);
                     } else if (fileItem.isDocumentFile()) {
                         uris.add(fileItem.getDocumentFile().getUri());
                     } else if (fileItem.isShareUriInstance()) {
