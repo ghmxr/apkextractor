@@ -203,7 +203,7 @@ public class ExportTask extends Thread {
                         String writePath = OutputUtil.getAbsoluteWritePath(context, item, SPUtil.getCompressingExtensionName(context), i + 1);
                         this.currentWritingFile = FileItem.createFileItemInstance(writePath);
                         this.currentWritingPath = writePath;
-                        outputStream = new FileOutputStream(new File(OutputUtil.getAbsoluteWritePath(context, item, SPUtil.getCompressingExtensionName(context), i + 1)));
+                        outputStream = new FileOutputStream(writePath);
                     }
                     Global.runOnUiThread(new Runnable() {
                         @Override
@@ -247,7 +247,9 @@ public class ExportTask extends Thread {
                             } catch (Exception e) {
                                 Log.i(getClass().getSimpleName(), String.valueOf(e));
                             }
-                            writeZip(obbFileItem, "Android/obb/", zos, zip_level);
+                            if (obbFileItem != null) {
+                                writeZip(obbFileItem, "Android/obb/", zos, zip_level);
+                            }
                         }
                     }
 
