@@ -314,4 +314,12 @@ public class ImportItem implements DisplayItem<ImportItem>, Comparable<ImportIte
         }
         return super.equals(obj);
     }
+
+    @Override
+    public int hashCode() {
+        if (fileItem != null) {
+            return fileItem.toString().toLowerCase().hashCode();
+        }
+        return super.hashCode();
+    }
 }
