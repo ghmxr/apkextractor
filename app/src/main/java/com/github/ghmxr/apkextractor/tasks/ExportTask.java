@@ -132,7 +132,7 @@ public class ExportTask extends Thread {
                         String writePath = OutputUtil.getAbsoluteWritePath(context, item, "apk", i + 1);
                         this.currentWritingPath = writePath;
                         this.currentWritingFile = FileItem.createFileItemInstance(writePath);
-                        outputStream = new FileOutputStream(new File(OutputUtil.getAbsoluteWritePath(context, item, "apk", i + 1)));
+                        outputStream = new FileOutputStream(writePath);
                     }
 
                     Global.runOnUiThread(new Runnable() {

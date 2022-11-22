@@ -291,7 +291,7 @@
     <string name="dialog_receive_error_message">文件在接收时发生错误，错误信息如下:\n\n</string>
 
     <string name="dialog_no_network_title">无网络</string>
-    <string name="dialog_no_network_message">当前没有网络连接，请检查。</string>
+    <string name="dialog_no_network_message">当前没有局域网络连接，请检查。</string>
 
     <string name="dialog_compress_extension_att">*此选项旨在更改导出压缩包的扩展名，文件内容仍为zip格式不会改变</string>
     <string name="dialog_compress_extension_empty">请输入有效的扩展名</string>

@@ -361,7 +361,7 @@ Through the sharing function of this app, you can share the app or installation 
     <string name="activity_settings_port_number_attention">At most circumstances, it is no need to edit the port number manually unless the port number of 6565 is in use by other apps.\n\n
         The port number must be same as the other side while sharing files through local network or it can not detect the devices.</string>
     <string name="activity_settings_port_number_hint">type in the port number(default 6565)</string>
-    <string name="dialog_no_network_message">No network connection, please check</string>
+    <string name="dialog_no_network_message">No local network connection, please check</string>
     <string name="dialog_no_network_title">No network</string>
     <string name="dialog_receive_error_message">There are some errors occurred while receiving files.Error infos are listed bellow.\n\n</string>
     <string name="dialog_receive_error_title">Error</string>

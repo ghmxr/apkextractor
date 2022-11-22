@@ -74,16 +74,16 @@ public class SettingActivity extends BaseActivity implements View.OnClickListene
         View grantArea = findViewById(R.id.settings_grant_area);
         if (Build.VERSION.SDK_INT >= 26) {
             grantArea.setVisibility(View.VISIBLE);
+            grantArea.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    startActivity(new Intent(SettingActivity.this, GrantActivity.class));
+                }
+            });
         }
         /*if (EnvironmentUtil.getTargetSdkVersion() > 23 && Build.VERSION.SDK_INT > 23) {
             findViewById(R.id.settings_share_mode_area).setVisibility(View.GONE);
         }*/
-        grantArea.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                startActivity(new Intent(SettingActivity.this, GrantActivity.class));
-            }
-        });
         refreshSettingValues();
 
         if (bundle != null) {
