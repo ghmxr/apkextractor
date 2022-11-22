@@ -6,8 +6,8 @@
     "apkData": {
       "type": "MAIN",
       "splits": [],
-      "versionCode": 14,
-      "versionName": "Build 14",
+      "versionCode": 15,
+      "versionName": "Build 15",
       "enabled": true,
       "outputFile": "app-release.apk",
       "fullName": "release",
