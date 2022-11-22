@@ -441,7 +441,14 @@ public class AppFragment extends Fragment implements View.OnClickListener, Refre
         }
 //        if (card_multi_select != null) card_multi_select.setVisibility(View.GONE);
         if (swipeRefreshLayout != null) {
-            swipeRefreshLayout.setEnabled(!b);
+            if (!b) {
+                if (adapter != null && !adapter.getIsMultiSelectMode()) {
+                    swipeRefreshLayout.setEnabled(true);
+                }
+            } else {
+                swipeRefreshLayout.setEnabled(false);
+            }
+
         }
         if (adapter == null) return;
 //        adapter.setMultiSelectMode(false);

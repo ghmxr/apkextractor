@@ -17,6 +17,10 @@
 
 + 应用签名信息，文件哈希值信息；
 
+<br>
+    <b><font color="#f63422">注意：如果对data和obb功能有硬性需求，不推荐更新Android系统到API33及以上版本，因为此版本开始对DocumentFile访问data和obb也做了限制</font></b>
+</br>
+
 *********************
 The English contents are translated by machine:
 
@@ -39,6 +43,10 @@ Other features:
 + Custom export file name rules;
 
 + Application signature information, file hash value information;
+
+<br>
+    <b><font color="#f63422">Note: If there are hard requirements for data and obb functions, it is not recommended to update the Android system to API33 or above, because this version also restricts the access of data and obb by using DocumentFile</font></b>
+</br>
 
 *********************
 酷安市场：<a href="https://www.coolapk.com/apk/com.github.ghmxr.apkextractor">https://www.coolapk.com/apk/com.github.ghmxr.apkextractor</a>
