@@ -169,14 +169,14 @@ public class ImportTask extends Thread {
         String entryPath = zipEntry.getName().replace("\\", "/");
         if ((entryPath.toLowerCase().startsWith("android/data")) && !zipEntry.isDirectory() && importItem.importData) {
             unZipToFile(zipInputStream, entryPath);
-            if (clearCache) {
-                clearDataObbCacheForEntryPath(entryPath);
-            }
+//            if (clearCache) {
+            clearDataObbCacheForEntryPath(entryPath);
+//            }
         } else if ((entryPath.toLowerCase().startsWith("android/obb")) && !zipEntry.isDirectory() && importItem.importObb) {
             unZipToFile(zipInputStream, entryPath);
-            if (clearCache) {
-                clearDataObbCacheForEntryPath(entryPath);
-            }
+//            if (clearCache) {
+            clearDataObbCacheForEntryPath(entryPath);
+//            }
         } else if ((entryPath.toLowerCase().endsWith(".apk")) && !zipEntry.isDirectory() && !entryPath.contains("/") && importItem.importApk) {
             OutputStream outputStream;
             final String fileName = entryPath.substring(entryPath.lastIndexOf("/") + 1);
