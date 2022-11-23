@@ -85,11 +85,11 @@ public class ImportTask extends Thread {
                         zipEntry = entries.nextElement();
                         try {
                             InputStream zipInputStream = zipFile.getInputStream(zipEntry);
+                            dealWithZipEntry(importItem, zipEntry, zipInputStream);
                             if (!clearedCache) {
-                                dealWithZipEntry(importItem, zipEntry, zipInputStream, true);
-                                clearedCache = true;
-                            } else {
-                                dealWithZipEntry(importItem, zipEntry, zipInputStream, false);
+                                if (clearDataObbCacheForZipEntry(zipEntry)) {
+                                    clearedCache = true;
+                                }
                             }
                             zipInputStream.close();
                         } catch (Exception e) {
@@ -103,11 +103,11 @@ public class ImportTask extends Thread {
                     ZipEntry zipEntry = zipInputStream.getNextEntry();
                     while (zipEntry != null && !isInterrupted) {
                         try {
+                            dealWithZipEntry(importItem, zipEntry, zipInputStream);
                             if (!clearedCache) {
-                                dealWithZipEntry(importItem, zipEntry, zipInputStream, true);
-                                clearedCache = true;
-                            } else {
-                                dealWithZipEntry(importItem, zipEntry, zipInputStream, false);
+                                if (clearDataObbCacheForZipEntry(zipEntry)) {
+                                    clearedCache = true;
+                                }
                             }
                         } catch (Exception e) {
                             e.printStackTrace();
@@ -165,18 +165,12 @@ public class ImportTask extends Thread {
         }
     }
 
-    private void dealWithZipEntry(ImportItem importItem, ZipEntry zipEntry, InputStream zipInputStream, boolean clearCache) throws Exception {
+    private void dealWithZipEntry(ImportItem importItem, ZipEntry zipEntry, InputStream zipInputStream) throws Exception {
         String entryPath = zipEntry.getName().replace("\\", "/");
         if ((entryPath.toLowerCase().startsWith("android/data")) && !zipEntry.isDirectory() && importItem.importData) {
             unZipToFile(zipInputStream, entryPath);
-//            if (clearCache) {
-            clearDataObbCacheForEntryPath(entryPath);
-//            }
         } else if ((entryPath.toLowerCase().startsWith("android/obb")) && !zipEntry.isDirectory() && importItem.importObb) {
             unZipToFile(zipInputStream, entryPath);
-//            if (clearCache) {
-            clearDataObbCacheForEntryPath(entryPath);
-//            }
         } else if ((entryPath.toLowerCase().endsWith(".apk")) && !zipEntry.isDirectory() && !entryPath.contains("/") && importItem.importApk) {
             OutputStream outputStream;
             final String fileName = entryPath.substring(entryPath.lastIndexOf("/") + 1);
@@ -310,8 +304,9 @@ public class ImportTask extends Thread {
         if (!isInterrupted) currentWrtingFileItem = null;
     }
 
-    private boolean clearDataObbCacheForEntryPath(String entryPath) {
+    private boolean clearDataObbCacheForZipEntry(ZipEntry zipEntry) {
         try {
+            String entryPath = zipEntry.getName().replace("\\", "/");
             String replaced_entry_path = null;
             if (entryPath.toLowerCase().startsWith("android/data/")) {
                 replaced_entry_path = entryPath.substring("android/data/".length());
@@ -320,8 +315,7 @@ public class ImportTask extends Thread {
             }
             if (replaced_entry_path == null || !replaced_entry_path.contains("/")) return false;
             final String packageName = replaced_entry_path.substring(0, replaced_entry_path.indexOf("/"));
-            GetDataObbTask.removeDataObbSizeCache(packageName);
-            return true;
+            return GetDataObbTask.removeDataObbSizeCache(packageName);
         } catch (Exception e) {
             e.printStackTrace();
         }

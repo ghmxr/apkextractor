@@ -100,8 +100,8 @@ public class GetDataObbTask extends Thread {
         cache_data_obb_size.clear();
     }
 
-    public static void removeDataObbSizeCache(String packageName) {
-        CommonUtil.removeKeyFromMapIgnoreCase(cache_data_obb_size, packageName);
+    public static boolean removeDataObbSizeCache(String packageName) {
+        return CommonUtil.removeKeyFromMapIgnoreCase(cache_data_obb_size, packageName);
     }
 
     private DataObbSizeInfo getDataObbSizeInfo(AppItem item) {
