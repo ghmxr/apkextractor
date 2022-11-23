@@ -26,6 +26,7 @@ import com.github.ghmxr.apkextractor.Global;
 import com.github.ghmxr.apkextractor.R;
 import com.github.ghmxr.apkextractor.ui.AssemblyView;
 import com.github.ghmxr.apkextractor.ui.ToastManager;
+import com.github.ghmxr.apkextractor.utils.CommonUtil;
 import com.github.ghmxr.apkextractor.utils.EnvironmentUtil;
 import com.github.ghmxr.apkextractor.utils.SPUtil;
 import com.google.android.material.snackbar.Snackbar;
@@ -403,6 +404,16 @@ public class GetPackageInfoViewTask extends Thread {
                 callback.onViewsCreated();
             }
         });
+    }
+
+    public static void clearPackageInfoCache() {
+        cache_wrapped_package_info.clear();
+        cache_static_receivers.clear();
+    }
+
+    public static void clearPackageInfoCacheOfPath(String path) {
+        CommonUtil.removeKeyFromMapIgnoreCase(cache_wrapped_package_info, path);
+        CommonUtil.removeKeyFromMapIgnoreCase(cache_static_receivers, path);
     }
 
     private View getSingleItemView(ViewGroup group, String text, View.OnClickListener clickListener, View.OnLongClickListener longClickListener) {

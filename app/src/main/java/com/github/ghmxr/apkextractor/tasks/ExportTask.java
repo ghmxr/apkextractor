@@ -293,6 +293,16 @@ public class ExportTask extends Thread {
         for (FileItem fileItem : write_paths) {
             exported.add(new ImportItem(fileItem));
         }
+
+        //清除对应导出item的缓存(如果存在)
+        for (ImportItem importItem : exported) {
+            Global.clearZipInfoCacheOfImportItemByPath(importItem.getFileItem().getPath());
+            GetPackageInfoViewTask.clearPackageInfoCacheOfPath(importItem.getFileItem().getPath());
+            HashTask.clearResultCacheOfPath(importItem.getFileItem().getPath());
+            GetApkLibraryTask.clearOutsidePackageCacheOfPath(importItem.getFileItem().getPath());
+            GetSignatureInfoTask.clearCacheOfPath(importItem.getFileItem().getPath());
+        }
+
         Global.item_list.addAll(exported);
         Collections.sort(Global.item_list);
 

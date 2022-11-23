@@ -10,6 +10,7 @@ import com.github.ghmxr.apkextractor.Global;
 import com.github.ghmxr.apkextractor.MyApplication;
 import com.github.ghmxr.apkextractor.items.AppItem;
 import com.github.ghmxr.apkextractor.items.FileItem;
+import com.github.ghmxr.apkextractor.utils.CommonUtil;
 import com.github.ghmxr.apkextractor.utils.DocumentFileUtil;
 import com.github.ghmxr.apkextractor.utils.FileUtil;
 import com.github.ghmxr.apkextractor.utils.StorageUtil;
@@ -99,13 +100,8 @@ public class GetDataObbTask extends Thread {
         cache_data_obb_size.clear();
     }
 
-    public static DataObbSizeInfo removeDataObbSizeCache(String packageName) {
-        for (String key : cache_data_obb_size.keySet()) {
-            if (key != null && key.equalsIgnoreCase(packageName)) {
-                return cache_data_obb_size.remove(key);
-            }
-        }
-        return null;
+    public static void removeDataObbSizeCache(String packageName) {
+        CommonUtil.removeKeyFromMapIgnoreCase(cache_data_obb_size, packageName);
     }
 
     private DataObbSizeInfo getDataObbSizeInfo(AppItem item) {

@@ -33,7 +33,7 @@ public class ImportItem implements DisplayItem<ImportItem>, Comparable<ImportIte
     public static int sort_config = 0;
 
     private final FileItem fileItem;
-    private final long length;
+//    private final long length;
     private ImportType importType = ImportType.ZIP;
 
     private PackageInfo packageInfo;
@@ -43,7 +43,7 @@ public class ImportItem implements DisplayItem<ImportItem>, Comparable<ImportIte
     private String minSdkVersion = "";
     private String targetSdkVersion = "";
     private String apkLabel = "";
-    private final long lastModified;
+    //    private final long lastModified;
     private ZipFileUtil.ZipFileInfo zipFileInfo;
 
     public transient boolean importData = false;
@@ -99,8 +99,8 @@ public class ImportItem implements DisplayItem<ImportItem>, Comparable<ImportIte
             }
 
         }
-        length = fileItem.length();
-        lastModified = fileItem.lastModified();
+//        length = fileItem.length();
+//        lastModified = fileItem.lastModified();
     }
 
     public ImportItem(@NonNull ImportItem wrapper, boolean importData, boolean importObb, boolean importApk) {
@@ -108,8 +108,8 @@ public class ImportItem implements DisplayItem<ImportItem>, Comparable<ImportIte
         this.version_name = wrapper.version_name;
         this.fileItem = wrapper.fileItem;
         this.importType = wrapper.importType;
-        this.length = wrapper.length;
-        this.lastModified = wrapper.lastModified;
+//        this.length = wrapper.length;
+//        this.lastModified = wrapper.lastModified;
         this.zipFileInfo = wrapper.getZipFileInfo();
         this.importData = importData;
         this.importObb = importObb;
@@ -130,13 +130,13 @@ public class ImportItem implements DisplayItem<ImportItem>, Comparable<ImportIte
     public String getDescription() {
         DateFormat dateFormat = SimpleDateFormat.getDateTimeInstance();
         if (importType == ImportType.APK)
-            return dateFormat.format(new Date(lastModified)) + "(" + version_name + ")";
-        return dateFormat.format(new Date(lastModified));
+            return dateFormat.format(new Date(fileItem.lastModified())) + "(" + version_name + ")";
+        return dateFormat.format(new Date(fileItem.lastModified()));
     }
 
     @Override
     public long getSize() {
-        return length;
+        return fileItem.length();
     }
 
     @Override
@@ -149,7 +149,7 @@ public class ImportItem implements DisplayItem<ImportItem>, Comparable<ImportIte
     }
 
     public long getLastModified() {
-        return lastModified;
+        return fileItem.lastModified();
     }
 
     public ImportType getImportType() {

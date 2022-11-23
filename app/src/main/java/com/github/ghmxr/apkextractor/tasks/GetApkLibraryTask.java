@@ -5,6 +5,7 @@ import androidx.annotation.Nullable;
 import com.github.ghmxr.apkextractor.Global;
 import com.github.ghmxr.apkextractor.items.AppItem;
 import com.github.ghmxr.apkextractor.items.FileItem;
+import com.github.ghmxr.apkextractor.utils.CommonUtil;
 
 import java.util.Collection;
 import java.util.Enumeration;
@@ -156,6 +157,11 @@ public class GetApkLibraryTask extends Thread {
     public static void clearOutsidePackageCache() {
         caches_installed.clear();
         caches_outside_package.clear();
+    }
+
+    public static void clearOutsidePackageCacheOfPath(String path) {
+        CommonUtil.removeKeyFromMapIgnoreCase(caches_installed, path);
+        CommonUtil.removeKeyFromMapIgnoreCase(caches_outside_package, path);
     }
 
     private LibraryInfo getLibraryInfo(FileItem file) throws Exception {

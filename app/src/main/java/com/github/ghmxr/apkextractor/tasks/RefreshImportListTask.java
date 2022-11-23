@@ -106,6 +106,7 @@ public class RefreshImportListTask extends Thread {
         HashTask.clearResultCache();
         GetSignatureInfoTask.clearCache();
         GetApkLibraryTask.clearOutsidePackageCache();
+        GetPackageInfoViewTask.clearPackageInfoCache();
         synchronized (RefreshImportListTask.class) {
             refreshImportListTask = null;
         }

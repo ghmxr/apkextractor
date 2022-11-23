@@ -70,6 +70,8 @@ public class RefreshInstalledListTask extends Thread {
         GetSignatureInfoTask.clearCache();
         GetApkLibraryTask.clearOutsidePackageCache();
         GetDataObbTask.clearDataObbSizeCache();
+        GetPackageInfoViewTask.clearPackageInfoCache();
+        HashTask.clearResultCache();
         Global.handler.post(new Runnable() {
             @Override
             public void run() {

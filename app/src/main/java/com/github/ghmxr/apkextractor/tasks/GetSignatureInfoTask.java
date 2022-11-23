@@ -13,6 +13,7 @@ import androidx.annotation.NonNull;
 import com.github.ghmxr.apkextractor.Global;
 import com.github.ghmxr.apkextractor.R;
 import com.github.ghmxr.apkextractor.ui.SignatureView;
+import com.github.ghmxr.apkextractor.utils.CommonUtil;
 import com.github.ghmxr.apkextractor.utils.EnvironmentUtil;
 import com.google.android.material.snackbar.Snackbar;
 
@@ -147,11 +148,18 @@ public class GetSignatureInfoTask extends Thread {
         }
     }
 
-    static synchronized void clearCache() {
+    public static void clearCache() {
         sign_infos_cache.clear();
         md5_cache.clear();
         sha1_cache.clear();
         sha256_cache.clear();
+    }
+
+    public static void clearCacheOfPath(String path) {
+        CommonUtil.removeKeyFromMapIgnoreCase(sign_infos_cache, path);
+        CommonUtil.removeKeyFromMapIgnoreCase(md5_cache, path);
+        CommonUtil.removeKeyFromMapIgnoreCase(sha1_cache, path);
+        CommonUtil.removeKeyFromMapIgnoreCase(sha256_cache, path);
     }
 
     public interface CompletedCallback {

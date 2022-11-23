@@ -277,6 +277,18 @@ public class Global {
         return null;
     }
 
+    /**
+     * 清除导出列表对应的zipinfo缓存
+     *
+     * @param path 导出列表对应item的path
+     */
+    public static void clearZipInfoCacheOfImportItemByPath(String path) {
+        ImportItem importItem = getImportItemByFileItemPath(Global.item_list, path);
+        if (importItem != null) {
+            importItem.setZipFileInfo(null);
+        }
+    }
+
     private static String getDuplicatedFileInfo(@NonNull Context context, @NonNull List<AppItem> items) {
         if (items.size() == 0) return "";
         StringBuilder builder = new StringBuilder();
