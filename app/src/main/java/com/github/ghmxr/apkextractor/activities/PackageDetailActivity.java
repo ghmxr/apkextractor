@@ -69,6 +69,7 @@ public class PackageDetailActivity extends BaseActivity implements View.OnClickL
                 finish();
                 return;
             }
+            HashTask.clearResultCacheOfPath(importItem.getFileItem().getPath());
         } else {
             try {
                 //importItem= Global.item_list.get(getIntent().getIntExtra(EXTRA_IMPORT_ITEM_POSITION,-1));
