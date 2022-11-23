@@ -303,6 +303,7 @@ public class ImportFragment extends Fragment implements RefreshImportListTask.Re
                 if (adapter == null || adapter.getSelectedItems().size() == 0) return;
                 popupWindow.dismiss();
                 new FileRenamingDialog(getActivity(), adapter.getSelectedItems(), new FileRenamingDialog.CompletedCallback() {
+                    @SuppressLint("NotifyDataSetChanged")
                     @Override
                     public void onCompleted(@NonNull String errorInfo) {
                         if (errorInfo.length() > 0) {
@@ -318,7 +319,11 @@ public class ImportFragment extends Fragment implements RefreshImportListTask.Re
                                     .show();
 //                            new RefreshImportListTask(ImportFragment.this).start();
                         }
-                        sortGlobalListAndRefresh(ImportItem.sort_config);
+                        if (isRefreshing && adapter != null) {
+                            adapter.notifyDataSetChanged();
+                        } else {
+                            sortGlobalListAndRefresh(ImportItem.sort_config);
+                        }
                     }
                 }).show();
             }
