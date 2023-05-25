@@ -1,5 +1,6 @@
 package com.github.ghmxr.apkextractor.activities;
 
+import android.annotation.SuppressLint;
 import android.content.ClipData;
 import android.content.ClipboardManager;
 import android.content.Context;
@@ -34,8 +35,10 @@ import com.github.ghmxr.apkextractor.tasks.GetSignatureInfoTask;
 import com.github.ghmxr.apkextractor.tasks.HashTask;
 import com.github.ghmxr.apkextractor.ui.AssemblyView;
 import com.github.ghmxr.apkextractor.ui.LibraryView;
+import com.github.ghmxr.apkextractor.ui.PackageImportingPermissionDialog;
 import com.github.ghmxr.apkextractor.ui.SignatureView;
 import com.github.ghmxr.apkextractor.ui.ToastManager;
+import com.github.ghmxr.apkextractor.utils.DocumentFileUtil;
 import com.github.ghmxr.apkextractor.utils.EnvironmentUtil;
 import com.github.ghmxr.apkextractor.utils.SPUtil;
 import com.github.ghmxr.apkextractor.utils.ZipFileUtil;
@@ -51,6 +54,7 @@ public class PackageDetailActivity extends BaseActivity implements View.OnClickL
     private ImportItem importItem;
     public static final String EXTRA_IMPORT_ITEM_PATH = "import_item_path";
     private CheckBox cb_data, cb_obb, cb_apk;
+    private PackageImportingPermissionDialog dialog;
 //    private ZipFileUtil.ZipFileInfo zipFileInfo;
 
     @Override
@@ -267,9 +271,20 @@ public class PackageDetailActivity extends BaseActivity implements View.OnClickL
                     }
                 }
             }).start();
-            EnvironmentUtil.checkAndShowGrantDialog(this);
+            EnvironmentUtil.checkAndShowGrantDialog(this, null);
         }
 
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        if (Build.VERSION.SDK_INT >= Global.USE_STANDALONE_DOCUMENT_FILE_PERMISSION) {
+            refreshDataObbIndicator();
+            if (dialog != null && dialog.isShowing()) {
+                dialog.updatePermissionDisplays();
+            }
+        }
     }
 
     @Override
@@ -433,6 +448,14 @@ public class PackageDetailActivity extends BaseActivity implements View.OnClickL
                 clip2ClipboardAndShowSnackbar(((TextView) findViewById(R.id.package_detail_app_name)).getText().toString());
             }
             break;
+            case R.id.package_detail_permission_area: {
+                if (dialog != null && dialog.isShowing()) {
+                    dialog.cancel();
+                }
+                dialog = new PackageImportingPermissionDialog(this, importItem.getZipFileInfo());
+                dialog.show();
+            }
+            break;
         }
     }
 
@@ -468,6 +491,44 @@ public class PackageDetailActivity extends BaseActivity implements View.OnClickL
             Snackbar.make(findViewById(android.R.id.content), getResources().getString(R.string.snack_bar_clipboard), Snackbar.LENGTH_SHORT).show();
         } catch (Exception e) {
             e.printStackTrace();
+        }
+    }
+
+    @SuppressLint("SetTextI18n")
+    private void refreshDataObbIndicator() {
+        ZipFileUtil.ZipFileInfo zipFileInfo = importItem.getZipFileInfo();
+        if (zipFileInfo == null) return;
+        boolean data = true, obb = true;
+        for (String packageName : zipFileInfo.getResolvedPackageNames()) {
+            if (!DocumentFileUtil.canRWDataDocumentFileOf(packageName)) {
+                data = false;
+            }
+            if (!DocumentFileUtil.canRWObbDocumentFileOf(packageName)) {
+                obb = false;
+            }
+        }
+
+        findViewById(R.id.package_detail_permission_area).setVisibility(View.VISIBLE);
+
+        ImageView iconData = findViewById(R.id.pDataDot);
+        ImageView iconObb = findViewById(R.id.pObbDot);
+        TextView tvData = findViewById(R.id.pDataTv);
+        TextView tvObb = findViewById(R.id.pObbTv);
+
+        if (data) {
+            iconData.setImageResource(R.drawable.shape_green_dot);
+            tvData.setText("Data(" + getResources().getString(R.string.permission_granted) + ")");
+        } else {
+            iconData.setImageResource(R.drawable.shape_red_dot);
+            tvData.setText("Data(" + getResources().getString(R.string.permission_denied) + ")");
+        }
+
+        if (obb) {
+            iconObb.setImageResource(R.drawable.shape_green_dot);
+            tvObb.setText("Obb(" + getResources().getString(R.string.permission_granted) + ")");
+        } else {
+            iconObb.setImageResource(R.drawable.shape_red_dot);
+            tvObb.setText("Obb(" + getResources().getString(R.string.permission_denied) + ")");
         }
     }
 }

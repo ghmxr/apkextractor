@@ -98,6 +98,11 @@ public class Global {
     public static final int USE_DOCUMENT_FILE_SDK_VERSION = Build.VERSION_CODES.R;
 
     /**
+     * 从API33开始，对data和obb使用单独的文件夹进行访问
+     */
+    public static final int USE_STANDALONE_DOCUMENT_FILE_PERMISSION = 33;
+
+    /**
      * 从API29开始，所有targetAPI>=29的app无法获取写入外置存储权限
      */
     public static final int NO_MORE_GRANT_EXTERNAL_WRITE_PERMISSION_SDK_VERSION = Build.VERSION_CODES.Q;
@@ -391,7 +396,7 @@ public class Global {
                 showCheckingDuplicationDialogAndStartImporting(activity, importItems2, callback);
             }
         }).show();
-        EnvironmentUtil.checkAndShowGrantDialog(activity);
+        EnvironmentUtil.checkAndShowGrantDialog(activity, null);
     }
 
     private static long checkDuplicateTimeStamp = 0L;

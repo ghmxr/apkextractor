@@ -42,6 +42,7 @@
     <string name="activity_detail_run">Run</string>
     <string name="activity_detail_export">Export</string>
     <string name="activity_detail_share">Share</string>
+    <string name="activity_detail_permission">Permission</string>
     <string name="activity_detail_system_detail">Details</string>
     <string name="activity_detail_market">View on market</string>
     <string name="activity_detail_uninstall">Uninstall</string>

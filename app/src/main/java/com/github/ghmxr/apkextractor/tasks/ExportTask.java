@@ -228,7 +228,7 @@ public class ExportTask extends Thread {
                         if (item.exportObb) {
                             writeZip(FileItem.createFileItemInstance(new File(StorageUtil.getMainExternalStoragePath() + "/android/obb/" + item.getPackageName())), "Android/obb/", zos, zip_level);
                         }
-                    } else {
+                    } else if (Build.VERSION.SDK_INT < Global.USE_STANDALONE_DOCUMENT_FILE_PERMISSION) {
                         if (item.exportData) {
                             FileItem dataFileItem = null;
                             try {
@@ -244,6 +244,29 @@ public class ExportTask extends Thread {
                             FileItem obbFileItem = null;
                             try {
                                 obbFileItem = FileItem.createFileItemInstance(DocumentFileUtil.getDocumentFileBySegments(DocumentFileUtil.getObbDocumentFile(), item.getPackageName(), false));
+                            } catch (Exception e) {
+                                Log.i(getClass().getSimpleName(), String.valueOf(e));
+                            }
+                            if (obbFileItem != null) {
+                                writeZip(obbFileItem, "Android/obb/", zos, zip_level);
+                            }
+                        }
+                    } else {
+                        if (item.exportData) {
+                            FileItem dataFileItem = null;
+                            try {
+                                dataFileItem = FileItem.createFileItemInstance(DocumentFileUtil.getDataDocumentFileOf(item.getPackageName()));
+                            } catch (Exception e) {
+                                Log.i(getClass().getSimpleName(), String.valueOf(e));
+                            }
+                            if (dataFileItem != null) {
+                                writeZip(dataFileItem, "Android/data/", zos, zip_level);
+                            }
+                        }
+                        if (item.exportObb) {
+                            FileItem obbFileItem = null;
+                            try {
+                                obbFileItem = FileItem.createFileItemInstance(DocumentFileUtil.getObbDocumentFileOf(item.getPackageName()));
                             } catch (Exception e) {
                                 Log.i(getClass().getSimpleName(), String.valueOf(e));
                             }

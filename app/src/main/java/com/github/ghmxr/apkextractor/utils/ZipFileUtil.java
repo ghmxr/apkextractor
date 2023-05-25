@@ -8,6 +8,7 @@ import com.github.ghmxr.apkextractor.items.ImportItem;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Enumeration;
+import java.util.HashSet;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
 import java.util.zip.ZipInputStream;
@@ -151,6 +152,18 @@ public class ZipFileUtil {
         public @NonNull
         ArrayList<String> getEntryPaths() {
             return entryPaths;
+        }
+
+        public @NonNull
+        ArrayList<String> getResolvedPackageNames() {
+            HashSet<String> hashSet = new HashSet<>();
+            for (String entryPath : entryPaths) {
+                String packageName = EnvironmentUtil.getResolvedPackageNameOfEntryPath(entryPath);
+                if (packageName != null) {
+                    hashSet.add(packageName);
+                }
+            }
+            return new ArrayList<>(hashSet);
         }
 
         /*public @NonNull String getAlreadyExistingFilesInfoInMainStorage(@NonNull Context context){

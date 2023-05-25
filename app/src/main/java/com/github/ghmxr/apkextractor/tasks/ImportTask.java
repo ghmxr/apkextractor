@@ -255,7 +255,7 @@ public class ImportTask extends Thread {
             File folder = new File(StorageUtil.getMainExternalStoragePath() + "/" + entryPath.substring(0, entryPath.lastIndexOf("/")));
             if (!folder.exists()) folder.mkdirs();
             outputStream = new BufferedOutputStream(new FileOutputStream(writeFile));
-        } else {
+        } else if (Build.VERSION.SDK_INT < Global.USE_STANDALONE_DOCUMENT_FILE_PERMISSION) {
             final String formattedEntryPath = entryPath.toLowerCase();
             DocumentFile writingParentDocumentFile = null;
             String segments = null;
@@ -268,6 +268,45 @@ public class ImportTask extends Thread {
                 writingParentDocumentFile = DocumentFileUtil.getObbDocumentFile();
             }
             if (writingParentDocumentFile == null || TextUtils.isEmpty(segments)) return;
+
+            final String fileName = entryPath.substring(entryPath.lastIndexOf("/") + 1);
+
+            DocumentFile documentFileBySegments = DocumentFileUtil.getDocumentFileBySegments(writingParentDocumentFile, segments);
+            DocumentFile check_documentFile = documentFileBySegments.findFile(fileName);
+            if (check_documentFile != null) {
+                check_documentFile.delete();
+            }
+
+            DocumentFile writingDocumentFile = documentFileBySegments.createFile("", fileName);
+
+            if (writingDocumentFile == null) {
+                throw new RuntimeException("Can not obtain DocumentFile instance for " + DocumentFileUtil.getDisplayPathForDataObbDocumentFile(writingParentDocumentFile) + "/" + segments);
+            }
+            currentWritePath = DocumentFileUtil.getDisplayPathForDataObbDocumentFile(writingDocumentFile);
+            currentWrtingFileItem = FileItem.createFileItemInstance(writingDocumentFile);
+            outputStream = OutputUtil.getOutputStreamForDocumentFile(context, writingDocumentFile);
+        } else {
+
+            final String formattedEntryPath = entryPath.toLowerCase();
+            final String packageName = EnvironmentUtil.getResolvedPackageNameOfEntryPath(formattedEntryPath);
+            DocumentFile writingParentDocumentFile = null;
+            String segments = null;
+            if (formattedEntryPath.startsWith("android/data/")) {
+                try {
+                    segments = entryPath.substring(("android/data/" + packageName + "/").length(), entryPath.lastIndexOf("/"));
+                } catch (Exception e) {
+                    //
+                }
+                writingParentDocumentFile = DocumentFileUtil.getDataDocumentFileOf(packageName);
+            }
+            if (formattedEntryPath.startsWith("android/obb/")) {
+                try {
+                    segments = entryPath.substring(("android/obb/" + packageName + "/").length(), entryPath.lastIndexOf("/"));
+                } catch (Exception e) {
+                    //
+                }
+                writingParentDocumentFile = DocumentFileUtil.getObbDocumentFileOf(packageName);
+            }
 
             final String fileName = entryPath.substring(entryPath.lastIndexOf("/") + 1);
 

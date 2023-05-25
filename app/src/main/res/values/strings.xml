@@ -45,6 +45,7 @@
     <string name="activity_detail_run">运行</string>
     <string name="activity_detail_export">导出</string>
     <string name="activity_detail_share">分享</string>
+    <string name="activity_detail_permission">权限</string>
     <string name="activity_detail_system_detail">详情</string>
     <string name="activity_detail_market">在应用商店查看</string>
     <string name="activity_detail_uninstall">卸载</string>

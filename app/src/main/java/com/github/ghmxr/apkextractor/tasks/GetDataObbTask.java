@@ -112,20 +112,34 @@ public class GetDataObbTask extends Thread {
             data = FileUtil.getFileOrFolderSize(new File(StorageUtil.getMainExternalStoragePath() + "/android/data/" + item.getPackageName()));
             obb = FileUtil.getFileOrFolderSize(new File(StorageUtil.getMainExternalStoragePath() + "/android/obb/" + item.getPackageName()));
         } else {
-            if (DocumentFileUtil.canReadDataPathByDocumentFile()) {
+            if (Build.VERSION.SDK_INT < Global.USE_STANDALONE_DOCUMENT_FILE_PERMISSION) {
+                if (DocumentFileUtil.canReadDataPathByDocumentFile()) {
+                    try {
+                        data = FileUtil.getFileItemSize(FileItem.createFileItemInstance(DocumentFileUtil.getDocumentFileBySegments(DocumentFileUtil.getDataDocumentFile(), "" + item.getPackageName(), false)));
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+                }
+                if (DocumentFileUtil.canReadObbPathByDocumentFile()) {
+                    try {
+                        obb = FileUtil.getFileItemSize(FileItem.createFileItemInstance(DocumentFileUtil.getDocumentFileBySegments(DocumentFileUtil.getObbDocumentFile(), "" + item.getPackageName(), false)));
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+                }
+            } else {
                 try {
-                    data = FileUtil.getFileItemSize(FileItem.createFileItemInstance(DocumentFileUtil.getDocumentFileBySegments(DocumentFileUtil.getDataDocumentFile(), "" + item.getPackageName(), false)));
+                    data = FileUtil.getFileItemSize(FileItem.createFileItemInstance(DocumentFileUtil.getDataDocumentFileOf(item.getPackageName())));
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+                try {
+                    obb = FileUtil.getFileItemSize(FileItem.createFileItemInstance(DocumentFileUtil.getObbDocumentFileOf(item.getPackageName())));
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
             }
-            if (DocumentFileUtil.canReadObbPathByDocumentFile()) {
-                try {
-                    obb = FileUtil.getFileItemSize(FileItem.createFileItemInstance(DocumentFileUtil.getDocumentFileBySegments(DocumentFileUtil.getObbDocumentFile(), "" + item.getPackageName(), false)));
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
-            }
+
         }
         return new DataObbSizeInfo(data, obb);
     }

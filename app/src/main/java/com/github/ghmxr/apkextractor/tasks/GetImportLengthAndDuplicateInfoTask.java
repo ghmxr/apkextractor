@@ -12,6 +12,7 @@ import com.github.ghmxr.apkextractor.Global;
 import com.github.ghmxr.apkextractor.MyApplication;
 import com.github.ghmxr.apkextractor.items.ImportItem;
 import com.github.ghmxr.apkextractor.utils.DocumentFileUtil;
+import com.github.ghmxr.apkextractor.utils.EnvironmentUtil;
 import com.github.ghmxr.apkextractor.utils.StorageUtil;
 import com.github.ghmxr.apkextractor.utils.ZipFileUtil;
 
@@ -84,7 +85,8 @@ public class GetImportLengthAndDuplicateInfoTask extends Thread {
                     zipFileInfo = ZipFileUtil.getZipFileInfoOfImportItem(importItem);
                 }
                 List<String> entryPaths = zipFileInfo.getEntryPaths();
-                for (String s : entryPaths) {
+                for (String entryPath : entryPaths) {
+                    final String s = entryPath.toLowerCase();
                     if (!s.contains("/") && s.endsWith(".apk")) continue;
                     if (!importItem.importObb && s.toLowerCase().startsWith("android/obb"))
                         continue;
@@ -97,7 +99,7 @@ public class GetImportLengthAndDuplicateInfoTask extends Thread {
                         if (exportWritingTarget.exists()) {
                             duplication_infos.add(exportWritingTarget.getAbsolutePath());
                         }
-                    } else {
+                    } else if (Build.VERSION.SDK_INT < Global.USE_STANDALONE_DOCUMENT_FILE_PERMISSION) {
                         DocumentFile targetFile = null;
                         try {
                             String fileName = s.substring(s.lastIndexOf("/") + 1);
@@ -108,6 +110,37 @@ public class GetImportLengthAndDuplicateInfoTask extends Thread {
                             if (s.toLowerCase().startsWith("android/obb/")) {
                                 targetFile = DocumentFileUtil.getDocumentFileBySegments(DocumentFileUtil.getObbDocumentFile()
                                         , s.substring("android/obb/".length(), s.lastIndexOf("/")), false).findFile(fileName);
+                            }
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                        }
+                        if (targetFile != null) {
+                            duplication_infos.add(targetFile.getUri().getPath());
+                        }
+                    } else {
+                        DocumentFile targetFile = null;
+                        try {
+                            final String fileName = s.substring(s.lastIndexOf("/") + 1);
+                            final String packageName = EnvironmentUtil.getResolvedPackageNameOfEntryPath(entryPath);
+                            if (s.toLowerCase().startsWith("android/data/")) {
+                                String relativePath = null;
+                                try {
+                                    relativePath = s.substring(("android/data/" + packageName + "/").length(), s.lastIndexOf("/"));
+                                } catch (Exception e) {
+                                    //
+                                }
+                                targetFile = DocumentFileUtil.getDocumentFileBySegments(DocumentFileUtil.getDataDocumentFileOf(packageName)
+                                        , relativePath, false).findFile(fileName);
+                            }
+                            if (s.toLowerCase().startsWith("android/obb/")) {
+                                String relativePath = null;
+                                try {
+                                    relativePath = s.substring(("android/obb/" + packageName + "/").length(), s.lastIndexOf("/"));
+                                } catch (Exception e) {
+                                    //
+                                }
+                                targetFile = DocumentFileUtil.getDocumentFileBySegments(DocumentFileUtil.getObbDocumentFileOf(packageName)
+                                        , relativePath, false).findFile(fileName);
                             }
                         } catch (Exception e) {
                             e.printStackTrace();

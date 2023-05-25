@@ -103,26 +103,62 @@
                         android:layout_alignParentRight="true"
                         android:layout_toLeftOf="@+id/app_detail_export_att"
                         android:layout_marginLeft="10dp"
-                        android:visibility="gone">
+                        android:visibility="gone"
+                        tools:visibility="visible">
 
-                        <CheckBox
-                            android:id="@+id/app_detail_export_data"
+                        <RelativeLayout
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:layout_marginRight="10dp"
-                            android:textSize="12sp"
-                            android:singleLine="true"
-                            android:textColor="@color/color_text_normal"
-                            android:text="Data" />
+                            android:layout_marginRight="10dp">
 
-                        <CheckBox
-                            android:id="@+id/app_detail_export_obb"
+                            <CheckBox
+                                android:id="@+id/app_detail_export_data"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:textSize="12sp"
+                                android:singleLine="true"
+                                android:textColor="@color/color_text_normal"
+                                android:text="Data"
+                                tools:visibility="gone" />
+
+                            <TextView
+                                android:id="@+id/app_detail_export_data_grant"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:textSize="13sp"
+                                android:textColor="@color/colorAccent"
+                                android:text="授权Data"
+                                android:background="@drawable/ll_tv_underline"
+                                android:visibility="gone"
+                                tools:visibility="visible" />
+                        </RelativeLayout>
+
+                        <RelativeLayout
                             android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:textSize="12sp"
-                            android:singleLine="true"
-                            android:textColor="@color/color_text_normal"
-                            android:text="Obb" />
+                            android:layout_height="wrap_content">
+
+                            <CheckBox
+                                android:id="@+id/app_detail_export_obb"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:textSize="12sp"
+                                android:singleLine="true"
+                                android:textColor="@color/color_text_normal"
+                                android:text="Obb"
+                                tools:visibility="gone" />
+
+                            <TextView
+                                android:id="@+id/app_detail_export_obb_grant"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:textSize="13sp"
+                                android:textColor="@color/colorAccent"
+                                android:text="授权Obb"
+                                android:background="@drawable/ll_tv_underline"
+                                android:visibility="gone"
+                                tools:visibility="visible" />
+                        </RelativeLayout>
+
                     </LinearLayout>
 
                     <ProgressBar
@@ -133,7 +169,8 @@
                         android:layout_centerVertical="true"
                         android:layout_marginRight="40dp"
                         style="?android:attr/progressBarStyleSmall"
-                        android:visibility="visible" />
+                        android:visibility="visible"
+                        tools:visibility="gone" />
                 </RelativeLayout>
 
                 <RelativeLayout

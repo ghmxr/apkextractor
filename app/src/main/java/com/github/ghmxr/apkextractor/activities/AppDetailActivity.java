@@ -42,6 +42,7 @@ import com.github.ghmxr.apkextractor.ui.AssemblyView;
 import com.github.ghmxr.apkextractor.ui.LibraryView;
 import com.github.ghmxr.apkextractor.ui.SignatureView;
 import com.github.ghmxr.apkextractor.ui.ToastManager;
+import com.github.ghmxr.apkextractor.utils.DocumentFileUtil;
 import com.github.ghmxr.apkextractor.utils.EnvironmentUtil;
 import com.github.ghmxr.apkextractor.utils.OutputUtil;
 import com.github.ghmxr.apkextractor.utils.SPUtil;
@@ -232,7 +233,7 @@ public class AppDetailActivity extends BaseActivity implements View.OnClickListe
             e.printStackTrace();
         }
 
-        EnvironmentUtil.checkAndShowGrantDialog(AppDetailActivity.this);
+        EnvironmentUtil.checkAndShowGrantDialog(AppDetailActivity.this, appItem.getPackageName());
     }
 
     @Override
@@ -265,6 +266,30 @@ public class AppDetailActivity extends BaseActivity implements View.OnClickListe
                 cb_data.setEnabled(dataObbSizeInfo.data > 0);
                 cb_obb.setEnabled(dataObbSizeInfo.obb > 0);
                 findViewById(R.id.app_detail_export_checkboxes).setVisibility(View.VISIBLE);
+                if (Build.VERSION.SDK_INT >= Global.USE_STANDALONE_DOCUMENT_FILE_PERMISSION) {
+                    if (!DocumentFileUtil.canRWDataDocumentFileOf(appItem.getPackageName())) {
+                        wrapGrantView(findViewById(R.id.app_detail_export_data_grant), cb_data, "提示", "即将开始授权此应用的data目录，请在系统文件管理器界面中确认目录并点击“使用此文件夹”", new Runnable() {
+                            @Override
+                            public void run() {
+                                EnvironmentUtil.jump2DataPathOfPackageName(AppDetailActivity.this, 0, appItem.getPackageName());
+                            }
+                        });
+                    } else {
+                        cb_data.setVisibility(View.VISIBLE);
+                        findViewById(R.id.app_detail_export_data_grant).setVisibility(View.GONE);
+                    }
+                    if (!DocumentFileUtil.canRWObbDocumentFileOf(appItem.getPackageName())) {
+                        wrapGrantView(findViewById(R.id.app_detail_export_obb_grant), cb_obb, "提示", "即将开始授权此应用的obb目录，请在系统文件管理器界面中确认目录并点击“使用此文件夹”", new Runnable() {
+                            @Override
+                            public void run() {
+                                EnvironmentUtil.jump2ObbPathOfPackageName(AppDetailActivity.this, 0, appItem.getPackageName());
+                            }
+                        });
+                    } else {
+                        cb_obb.setVisibility(View.VISIBLE);
+                        findViewById(R.id.app_detail_export_obb_grant).setVisibility(View.GONE);
+                    }
+                }
             }
         }).start();
     }
@@ -425,6 +450,27 @@ public class AppDetailActivity extends BaseActivity implements View.OnClickListe
         }
     }
 
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, @Nullable final Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == 0 && resultCode == RESULT_OK) {
+            if (data != null && data.getData() != null) {
+                if (data.getData().getPath().toLowerCase().endsWith(appItem.getPackageName())) {
+                    takePersistPermission(data.getData());
+                    getDataObbSizeAndFillView();
+                } else {
+                    showAttentionDialog(R.string.dialog_grant_attention_title, R.string.dialog_grant_warn, new Runnable() {
+                        @Override
+                        public void run() {
+                            takePersistPermission(data.getData());
+                            getDataObbSizeAndFillView();
+                        }
+                    });
+                }
+            }
+        }
+    }
+
     private void clip2ClipboardAndShowSnackbar(String s) {
         try {
             ClipboardManager manager = (ClipboardManager) getSystemService(Context.CLIPBOARD_SERVICE);
@@ -433,6 +479,71 @@ public class AppDetailActivity extends BaseActivity implements View.OnClickListe
         } catch (Exception e) {
             e.printStackTrace();
         }
+    }
+
+    private void takePersistPermission(Uri uri) {
+        if (Build.VERSION.SDK_INT >= 19) {
+            getContentResolver().takePersistableUriPermission(uri, Intent.FLAG_GRANT_WRITE_URI_PERMISSION | Intent.FLAG_GRANT_READ_URI_PERMISSION);
+            GetDataObbTask.removeDataObbSizeCache(appItem.getPackageName());
+        }
+    }
+
+    private void wrapGrantView(View v1, View v2, final String title, final String message, final Runnable confirmAction) {
+        v1.setVisibility(View.VISIBLE);
+        v1.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                showGrantDialog(title, message, confirmAction);
+            }
+        });
+        v2.setVisibility(View.GONE);
+    }
+
+    private void showGrantDialog(String title, String message, final Runnable confirmAction) {
+        AlertDialog dialog = new AlertDialog.Builder(AppDetailActivity.this).setTitle(title)
+                .setMessage(message)
+                .setPositiveButton(getResources().getString(R.string.action_confirm), new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        confirmAction.run();
+                    }
+                })
+                .setNegativeButton(getResources().getString(R.string.action_cancel), new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+
+                    }
+                })
+                .setNeutralButton(getResources().getString(R.string.more_copy_package_names), null)
+                .create();
+        dialog.show();
+        dialog.getButton(AlertDialog.BUTTON_NEUTRAL).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                clip2ClipboardAndShowSnackbar(appItem.getPackageName());
+                ToastManager.showToast(AppDetailActivity.this, getResources().getString(R.string.snack_bar_clipboard), Toast.LENGTH_SHORT);
+            }
+        });
+    }
+
+    private void showAttentionDialog(int titleResId, int contentMessageId, final Runnable action_confirm) {
+        new AlertDialog.Builder(AppDetailActivity.this).setTitle(getResources().getString(titleResId))
+                .setMessage(getResources().getString(contentMessageId))
+                .setPositiveButton(getResources().getString(R.string.action_confirm), new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        if (action_confirm != null) {
+                            action_confirm.run();
+                        }
+                    }
+                })
+                .setNegativeButton(getResources().getString(R.string.action_cancel), new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+
+                    }
+                })
+                .show();
     }
 
     /**

@@ -5,7 +5,6 @@ import android.content.Intent;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
-import android.provider.DocumentsContract;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.TextView;
@@ -13,13 +12,13 @@ import android.widget.Toast;
 
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
-import androidx.documentfile.provider.DocumentFile;
 
 import com.github.ghmxr.apkextractor.Global;
 import com.github.ghmxr.apkextractor.R;
 import com.github.ghmxr.apkextractor.tasks.GetDataObbTask;
 import com.github.ghmxr.apkextractor.ui.ToastManager;
 import com.github.ghmxr.apkextractor.utils.DocumentFileUtil;
+import com.github.ghmxr.apkextractor.utils.EnvironmentUtil;
 
 public class GrantActivity extends BaseActivity {
     @Override
@@ -82,6 +81,17 @@ public class GrantActivity extends BaseActivity {
                 });
             }
         });
+
+        if (Build.VERSION.SDK_INT >= Global.USE_STANDALONE_DOCUMENT_FILE_PERMISSION) {
+            new AlertDialog.Builder(this).setTitle("提示")
+                    .setMessage("Android 13 及以上版本需要单独对应用进行data和obb授权，此页面设置可能无效。")
+                    .setPositiveButton(getResources().getString(R.string.action_confirm), new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+
+                        }
+                    }).show();
+        }
     }
 
     @Override
@@ -116,15 +126,7 @@ public class GrantActivity extends BaseActivity {
     }
 
     private void jumpToGrantPage(int requestCode, String uri) {
-        if (Build.VERSION.SDK_INT < 26) return;
-        Intent intent = new Intent(Intent.ACTION_OPEN_DOCUMENT_TREE);
-        intent.setFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION | Intent.FLAG_GRANT_WRITE_URI_PERMISSION
-                | Intent.FLAG_GRANT_PERSISTABLE_URI_PERMISSION
-                | Intent.FLAG_GRANT_PREFIX_URI_PERMISSION);
-        intent.putExtra(DocumentsContract.EXTRA_INITIAL_URI,
-                DocumentFile.fromTreeUri(GrantActivity.this,
-                        Uri.parse(uri)).getUri());
-        startActivityForResult(intent, requestCode);
+        EnvironmentUtil.jump2Path(this, requestCode, uri);
     }
 
 

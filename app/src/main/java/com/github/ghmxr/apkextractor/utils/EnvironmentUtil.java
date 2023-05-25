@@ -2,6 +2,8 @@ package com.github.ghmxr.apkextractor.utils;
 
 import android.annotation.SuppressLint;
 import android.app.Activity;
+import android.content.ClipData;
+import android.content.ClipboardManager;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -21,6 +23,7 @@ import android.net.wifi.WifiInfo;
 import android.net.wifi.WifiManager;
 import android.os.Build;
 import android.os.Bundle;
+import android.provider.DocumentsContract;
 import android.provider.MediaStore;
 import android.text.Spannable;
 import android.text.SpannableStringBuilder;
@@ -36,6 +39,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
 import androidx.core.content.FileProvider;
+import androidx.documentfile.provider.DocumentFile;
 
 import com.github.ghmxr.apkextractor.Constants;
 import com.github.ghmxr.apkextractor.Global;
@@ -736,20 +740,26 @@ public class EnvironmentUtil {
         return applicationInfo != null ? applicationInfo.targetSdkVersion : 23;//此项目发布时targetSdkVersion是23
     }
 
-    public static void checkAndShowGrantDialog(@NonNull final Activity activity) {
+    public static void checkAndShowGrantDialog(@NonNull final Activity activity, String packageName) {
         if (Build.VERSION.SDK_INT < Global.USE_DOCUMENT_FILE_SDK_VERSION) return;
-        if (hasDataObbPermission()) {
-            return;
-        }
-        if (!SPUtil.getGlobalSharedPreferences(activity).getBoolean(Constants.PREFERENCE_SHOW_GRANT_DIALOG, true)) {
-            return;
-        }
-        Global.runOnUiThread(new Runnable() {
-            @Override
-            public void run() {
-                showGrantDataObbPermissionDialog(activity);
+        if (Build.VERSION.SDK_INT < Global.USE_STANDALONE_DOCUMENT_FILE_PERMISSION) {
+            if (hasDataObbPermission()) {
+                return;
             }
-        });
+            if (!SPUtil.getGlobalSharedPreferences(activity).getBoolean(Constants.PREFERENCE_SHOW_GRANT_DIALOG, true)) {
+                return;
+            }
+            Global.runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    showGrantDataObbPermissionDialog(activity);
+                }
+            });
+        } else {
+            if (packageName != null) {
+//                checkAndShowGrantDialogOfPackageName(activity, packageName);
+            }
+        }
     }
 
     public static boolean hasDataObbPermission() {
@@ -774,6 +784,78 @@ public class EnvironmentUtil {
                     }
                 })
                 .show();
+    }
+
+    public static void checkAndShowGrantDialogOfPackageName(@NonNull final Activity activity, String packageName) {
+        if (DocumentFileUtil.canRWDataDocumentFileOf(packageName) && DocumentFileUtil.canRWObbDocumentFileOf(packageName)) {
+            return;
+        }
+//        showGrantDataPermissionDialog(activity,packageName);
+    }
+
+    public static void showGrantDataPermissionDialog(final Activity activity, String packageName) {
+        new AlertDialog.Builder(activity).setTitle(activity.getResources().getString(R.string.dialog_grant_attention_title))
+                .setMessage(activity.getResources().getString(R.string.dialog_grant_first_use))
+                .setPositiveButton(activity.getResources().getString(R.string.action_confirm), new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+
+                    }
+                })
+                .setNegativeButton(activity.getResources().getString(R.string.action_cancel), new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        SPUtil.getGlobalSharedPreferences(activity).edit().putBoolean(Constants.PREFERENCE_SHOW_GRANT_DIALOG, false).apply();
+                    }
+                })
+                .show();
+    }
+
+    public static void jump2DataPathOfPackageName(Activity activity, int requestCode, String packageName) {
+        jump2Path(activity, requestCode, Global.URI_DATA + "%2F" + packageName);
+    }
+
+    public static void jump2ObbPathOfPackageName(Activity activity, int requestCode, String packageName) {
+        jump2Path(activity, requestCode, Global.URI_OBB + "%2F" + packageName);
+    }
+
+    public static void jump2Path(Activity activity, int requestCode, String uri) {
+        if (Build.VERSION.SDK_INT < 26) return;
+        Intent intent = new Intent(Intent.ACTION_OPEN_DOCUMENT_TREE);
+        intent.setFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION | Intent.FLAG_GRANT_WRITE_URI_PERMISSION
+                | Intent.FLAG_GRANT_PERSISTABLE_URI_PERMISSION
+                | Intent.FLAG_GRANT_PREFIX_URI_PERMISSION);
+        intent.putExtra(DocumentsContract.EXTRA_INITIAL_URI,
+                DocumentFile.fromTreeUri(activity,
+                        Uri.parse(uri)).getUri());
+        activity.startActivityForResult(intent, requestCode);
+    }
+
+    public static @Nullable
+    String getResolvedPackageNameOfEntryPath(String entryPath) {
+        try {
+            String s = entryPath.toLowerCase();
+            if (s.startsWith("android/data/")) {
+                String relativePath = entryPath.toLowerCase().substring("android/data/".length());
+                return relativePath.substring(0, relativePath.indexOf("/"));
+            }
+            if (s.startsWith("android/obb/")) {
+                String relativePath = entryPath.toLowerCase().substring("android/obb/".length());
+                return relativePath.substring(0, relativePath.indexOf("/"));
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
+    public static void clip2Clipboard(String content) {
+        try {
+            ClipboardManager manager = (ClipboardManager) MyApplication.getApplication().getSystemService(Context.CLIPBOARD_SERVICE);
+            manager.setPrimaryClip(ClipData.newPlainText("message", content));
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     /*public static String getBroadCastIpAddress(@NonNull Context context){

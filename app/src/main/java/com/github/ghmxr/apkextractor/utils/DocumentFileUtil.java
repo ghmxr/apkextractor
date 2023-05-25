@@ -153,4 +153,32 @@ public class DocumentFileUtil {
         }
         return obbDocumentFile;
     }
+
+    public static boolean canRWDataDocumentFileOf(String packageName) {
+        try {
+            DocumentFile documentFile = getDataDocumentFileOf(packageName);
+            return documentFile.canRead() && documentFile.canWrite();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return false;
+    }
+
+    public static boolean canRWObbDocumentFileOf(String packageName) {
+        try {
+            DocumentFile documentFile = getObbDocumentFileOf(packageName);
+            return documentFile.canRead() && documentFile.canWrite();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return false;
+    }
+
+    public static DocumentFile getDataDocumentFileOf(String packageName) throws Exception {
+        return DocumentFile.fromTreeUri(MyApplication.getApplication(), Uri.parse(Global.URI_DATA + "%2F" + packageName));
+    }
+
+    public static DocumentFile getObbDocumentFileOf(String packageName) throws Exception {
+        return DocumentFile.fromTreeUri(MyApplication.getApplication(), Uri.parse(Global.URI_OBB + "%2F" + packageName));
+    }
 }
