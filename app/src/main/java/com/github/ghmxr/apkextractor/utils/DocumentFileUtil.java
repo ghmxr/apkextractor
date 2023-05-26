@@ -33,7 +33,7 @@ public class DocumentFileUtil {
         String[] segments = segment.split("/");
         DocumentFile documentFile = parent;
         for (int i = 0; i < segments.length; i++) {
-            DocumentFile lookup = documentFile.findFile(segments[i]);
+            DocumentFile lookup = findDocumentFile(documentFile, segments[i]);
             if (lookup == null) {
                 if (create) lookup = documentFile.createDirectory(segments[i]);
                 else throw new Exception("can not find path " + segment);
@@ -44,6 +44,23 @@ public class DocumentFileUtil {
             documentFile = lookup;
         }
         return documentFile;
+    }
+
+    public static @Nullable
+    DocumentFile findDocumentFile(@NonNull DocumentFile parent, @NonNull String fileName) {
+        try {
+            DocumentFile result = parent.findFile(fileName);
+            if (result != null) return result;
+            DocumentFile[] list = parent.listFiles();
+            for (DocumentFile d : list) {
+                if (fileName.equalsIgnoreCase(d.getName())) {
+                    return d;
+                }
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return null;
     }
 
     /**

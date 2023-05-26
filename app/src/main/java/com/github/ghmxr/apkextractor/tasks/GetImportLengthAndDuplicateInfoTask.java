@@ -104,12 +104,12 @@ public class GetImportLengthAndDuplicateInfoTask extends Thread {
                         try {
                             String fileName = s.substring(s.lastIndexOf("/") + 1);
                             if (s.toLowerCase().startsWith("android/data/")) {
-                                targetFile = DocumentFileUtil.getDocumentFileBySegments(DocumentFileUtil.getDataDocumentFile()
-                                        , s.substring("android/data/".length(), s.lastIndexOf("/")), false).findFile(fileName);
+                                targetFile = DocumentFileUtil.findDocumentFile(DocumentFileUtil.getDocumentFileBySegments(DocumentFileUtil.getDataDocumentFile()
+                                        , s.substring("android/data/".length(), s.lastIndexOf("/")), false), fileName);
                             }
                             if (s.toLowerCase().startsWith("android/obb/")) {
-                                targetFile = DocumentFileUtil.getDocumentFileBySegments(DocumentFileUtil.getObbDocumentFile()
-                                        , s.substring("android/obb/".length(), s.lastIndexOf("/")), false).findFile(fileName);
+                                targetFile = DocumentFileUtil.findDocumentFile(DocumentFileUtil.getDocumentFileBySegments(DocumentFileUtil.getObbDocumentFile()
+                                        , s.substring("android/obb/".length(), s.lastIndexOf("/")), false), fileName);
                             }
                         } catch (Exception e) {
                             e.printStackTrace();
@@ -129,8 +129,8 @@ public class GetImportLengthAndDuplicateInfoTask extends Thread {
                                 } catch (Exception e) {
                                     //
                                 }
-                                targetFile = DocumentFileUtil.getDocumentFileBySegments(DocumentFileUtil.getDataDocumentFileOf(packageName)
-                                        , relativePath, false).findFile(fileName);
+                                targetFile = DocumentFileUtil.findDocumentFile(DocumentFileUtil.getDocumentFileBySegments(DocumentFileUtil.getDataDocumentFileOf(packageName)
+                                        , relativePath, false), fileName);
                             }
                             if (s.toLowerCase().startsWith("android/obb/")) {
                                 String relativePath = null;
@@ -139,8 +139,8 @@ public class GetImportLengthAndDuplicateInfoTask extends Thread {
                                 } catch (Exception e) {
                                     //
                                 }
-                                targetFile = DocumentFileUtil.getDocumentFileBySegments(DocumentFileUtil.getObbDocumentFileOf(packageName)
-                                        , relativePath, false).findFile(fileName);
+                                targetFile = DocumentFileUtil.findDocumentFile(DocumentFileUtil.getDocumentFileBySegments(DocumentFileUtil.getObbDocumentFileOf(packageName)
+                                        , relativePath, false), fileName);
                             }
                         } catch (Exception e) {
                             e.printStackTrace();

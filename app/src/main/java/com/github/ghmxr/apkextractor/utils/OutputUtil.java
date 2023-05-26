@@ -32,7 +32,7 @@ public class OutputUtil {
     DocumentFile getWritingDocumentFileForAppItem(@NonNull Context context, @NonNull AppItem appItem, @NonNull String extension, int sequence_number) throws Exception {
         String writingFileName = getWriteFileNameForAppItem(context, appItem, extension, sequence_number);
         DocumentFile parent = getExportPathDocumentFile(context);
-        DocumentFile documentFile = parent.findFile(writingFileName);
+        DocumentFile documentFile = DocumentFileUtil.findDocumentFile(parent, writingFileName);
         if (documentFile != null && documentFile.exists()) documentFile.delete();
         return parent.createFile("apk".equalsIgnoreCase(extension) ? "application/vnd.android.package-archive" : "application/x-zip-compressed", writingFileName);
     }

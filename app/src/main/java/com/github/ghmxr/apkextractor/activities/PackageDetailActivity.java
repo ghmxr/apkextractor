@@ -19,6 +19,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.widget.Toolbar;
@@ -279,12 +280,7 @@ public class PackageDetailActivity extends BaseActivity implements View.OnClickL
     @Override
     protected void onResume() {
         super.onResume();
-        if (Build.VERSION.SDK_INT >= Global.USE_STANDALONE_DOCUMENT_FILE_PERMISSION) {
-            refreshDataObbIndicator();
-            if (dialog != null && dialog.isShowing()) {
-                dialog.updatePermissionDisplays();
-            }
-        }
+        refreshDataObbIndicatorAndDialog();
     }
 
     @Override
@@ -460,6 +456,34 @@ public class PackageDetailActivity extends BaseActivity implements View.OnClickL
     }
 
     @Override
+    protected void onActivityResult(int requestCode, int resultCode, @Nullable final Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == 0 && resultCode == RESULT_OK && data != null && data.getData() != null) {
+            boolean matched = false;
+            final String uriString = data.getData().getPath().toLowerCase();
+            final ZipFileUtil.ZipFileInfo zipFileInfo = importItem.getZipFileInfo();
+            if (zipFileInfo != null) for (String s : zipFileInfo.getResolvedPackageNames()) {
+                if (uriString.endsWith(s.toLowerCase())) {
+                    matched = true;
+                    break;
+                }
+            }
+            if (matched) {
+                takePersistPermission(data.getData());
+                refreshDataObbIndicatorAndDialog();
+            } else {
+                showAttentionDialog(R.string.dialog_grant_attention_title, R.string.dialog_grant_warn, new Runnable() {
+                    @Override
+                    public void run() {
+                        takePersistPermission(data.getData());
+                        refreshDataObbIndicatorAndDialog();
+                    }
+                });
+            }
+        }
+    }
+
+    @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             default:
@@ -470,6 +494,41 @@ public class PackageDetailActivity extends BaseActivity implements View.OnClickL
             break;
         }
         return super.onOptionsItemSelected(item);
+    }
+
+    private void takePersistPermission(Uri uri) {
+        if (Build.VERSION.SDK_INT >= 19) {
+            getContentResolver().takePersistableUriPermission(uri, Intent.FLAG_GRANT_WRITE_URI_PERMISSION | Intent.FLAG_GRANT_READ_URI_PERMISSION);
+        }
+    }
+
+    private void refreshDataObbIndicatorAndDialog() {
+        if (Build.VERSION.SDK_INT >= Global.USE_STANDALONE_DOCUMENT_FILE_PERMISSION) {
+            refreshDataObbIndicator();
+            if (dialog != null && dialog.isShowing()) {
+                dialog.updatePermissionDisplays();
+            }
+        }
+    }
+
+    private void showAttentionDialog(int titleResId, int contentMessageId, final Runnable action_confirm) {
+        new AlertDialog.Builder(PackageDetailActivity.this).setTitle(getResources().getString(titleResId))
+                .setMessage(getResources().getString(contentMessageId))
+                .setPositiveButton(getResources().getString(R.string.action_confirm), new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        if (action_confirm != null) {
+                            action_confirm.run();
+                        }
+                    }
+                })
+                .setNegativeButton(getResources().getString(R.string.action_cancel), new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+
+                    }
+                })
+                .show();
     }
 
     private void checkHeightAndFinish() {
@@ -498,6 +557,10 @@ public class PackageDetailActivity extends BaseActivity implements View.OnClickL
     private void refreshDataObbIndicator() {
         ZipFileUtil.ZipFileInfo zipFileInfo = importItem.getZipFileInfo();
         if (zipFileInfo == null) return;
+        if (zipFileInfo.getResolvedPackageNames().isEmpty()) {
+            findViewById(R.id.package_detail_permission_area).setVisibility(View.GONE);
+            return;
+        }
         boolean data = true, obb = true;
         for (String packageName : zipFileInfo.getResolvedPackageNames()) {
             if (!DocumentFileUtil.canRWDataDocumentFileOf(packageName)) {

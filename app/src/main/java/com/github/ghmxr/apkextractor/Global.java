@@ -302,7 +302,7 @@ public class Global {
             for (int i = 0; i < items.size(); i++) {
                 final AppItem item = items.get(i);
                 try {
-                    DocumentFile searchFile = OutputUtil.getExportPathDocumentFile(context).findFile(OutputUtil.getWriteFileNameForAppItem(context, item, (item.exportData || item.exportObb) ?
+                    DocumentFile searchFile = DocumentFileUtil.findDocumentFile(OutputUtil.getExportPathDocumentFile(context), OutputUtil.getWriteFileNameForAppItem(context, item, (item.exportData || item.exportObb) ?
                             SPUtil.getCompressingExtensionName(context) : "apk", i));
                     if (searchFile != null) {
                         builder.append(DocumentFileUtil.getDisplayPathForDocumentFile(context, searchFile));

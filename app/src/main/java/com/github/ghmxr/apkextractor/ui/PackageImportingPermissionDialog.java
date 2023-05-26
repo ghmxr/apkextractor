@@ -1,11 +1,13 @@
 package com.github.ghmxr.apkextractor.ui;
 
 import android.annotation.SuppressLint;
+import android.content.DialogInterface;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
@@ -21,7 +23,7 @@ import java.util.List;
 
 public class PackageImportingPermissionDialog extends AlertDialog {
 
-    private RecyclerView recyclerView;
+    private final RecyclerView recyclerView;
     private final AppCompatActivity activity;
     private final ZipFileUtil.ZipFileInfo zipFileInfo;
     private ListAdapter listAdapter;
@@ -34,6 +36,12 @@ public class PackageImportingPermissionDialog extends AlertDialog {
         View dialogView = LayoutInflater.from(activity).inflate(R.layout.dialog_package_permission, null);
         setView(dialogView);
         recyclerView = dialogView.findViewById(R.id.pnrv);
+        setButton(AlertDialog.BUTTON_POSITIVE, activity.getResources().getString(R.string.action_confirm), new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                cancel();
+            }
+        });
     }
 
     /*@Override
@@ -90,6 +98,7 @@ public class PackageImportingPermissionDialog extends AlertDialog {
                 @Override
                 public void onClick(View v) {
                     EnvironmentUtil.clip2Clipboard(packageName);
+                    ToastManager.showToast(activity, activity.getResources().getString(R.string.snack_bar_clipboard), Toast.LENGTH_SHORT);
                 }
             });
             viewHolder.tv_data_grant.setOnClickListener(new View.OnClickListener() {

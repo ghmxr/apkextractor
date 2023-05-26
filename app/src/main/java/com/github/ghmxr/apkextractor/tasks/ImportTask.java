@@ -176,11 +176,11 @@ public class ImportTask extends Thread {
             final String fileName = entryPath.substring(entryPath.lastIndexOf("/") + 1);
             if (isExternal) {
                 String writeFileName = getApkFileNameWithNum(fileName);
-                DocumentFile checkFile = OutputUtil.getExportPathDocumentFile(context).findFile(writeFileName);
+                DocumentFile checkFile = DocumentFileUtil.findDocumentFile(OutputUtil.getExportPathDocumentFile(context), writeFileName);
                 while (checkFile != null && checkFile.exists()) {
                     apk_num++;
                     writeFileName = getApkFileNameWithNum(fileName);
-                    checkFile = OutputUtil.getExportPathDocumentFile(context).findFile(writeFileName);
+                    checkFile = DocumentFileUtil.findDocumentFile(OutputUtil.getExportPathDocumentFile(context), writeFileName);
                 }
                 DocumentFile writeDocumentFile = OutputUtil.getExportPathDocumentFile(context)
                         .createFile("application/vnd.android.package-archive", writeFileName);
@@ -272,7 +272,7 @@ public class ImportTask extends Thread {
             final String fileName = entryPath.substring(entryPath.lastIndexOf("/") + 1);
 
             DocumentFile documentFileBySegments = DocumentFileUtil.getDocumentFileBySegments(writingParentDocumentFile, segments);
-            DocumentFile check_documentFile = documentFileBySegments.findFile(fileName);
+            DocumentFile check_documentFile = DocumentFileUtil.findDocumentFile(documentFileBySegments, fileName);
             if (check_documentFile != null) {
                 check_documentFile.delete();
             }
@@ -311,7 +311,7 @@ public class ImportTask extends Thread {
             final String fileName = entryPath.substring(entryPath.lastIndexOf("/") + 1);
 
             DocumentFile documentFileBySegments = DocumentFileUtil.getDocumentFileBySegments(writingParentDocumentFile, segments);
-            DocumentFile check_documentFile = documentFileBySegments.findFile(fileName);
+            DocumentFile check_documentFile = DocumentFileUtil.findDocumentFile(documentFileBySegments, fileName);
             if (check_documentFile != null) {
                 check_documentFile.delete();
             }
@@ -319,7 +319,8 @@ public class ImportTask extends Thread {
             DocumentFile writingDocumentFile = documentFileBySegments.createFile("", fileName);
 
             if (writingDocumentFile == null) {
-                throw new RuntimeException("Can not obtain DocumentFile instance for " + DocumentFileUtil.getDisplayPathForDataObbDocumentFile(writingParentDocumentFile) + "/" + segments);
+                throw new RuntimeException("Can not obtain DocumentFile instance for " + DocumentFileUtil.getDisplayPathForDataObbDocumentFile(writingParentDocumentFile)
+                        + (segments == null ? "" : "/" + segments) + "/" + fileName);
             }
             currentWritePath = DocumentFileUtil.getDisplayPathForDataObbDocumentFile(writingDocumentFile);
             currentWrtingFileItem = FileItem.createFileItemInstance(writingDocumentFile);
