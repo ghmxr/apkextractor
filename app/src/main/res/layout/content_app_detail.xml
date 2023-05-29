@@ -127,7 +127,7 @@
                                 android:layout_height="wrap_content"
                                 android:textSize="13sp"
                                 android:textColor="@color/colorAccent"
-                                android:text="授权Data"
+                                android:text="@string/activity_detail_grant_data"
                                 android:background="@drawable/ll_tv_underline"
                                 android:visibility="gone"
                                 tools:visibility="visible" />
@@ -153,7 +153,7 @@
                                 android:layout_height="wrap_content"
                                 android:textSize="13sp"
                                 android:textColor="@color/colorAccent"
-                                android:text="授权Obb"
+                                android:text="@string/activity_detail_grant_obb"
                                 android:background="@drawable/ll_tv_underline"
                                 android:visibility="gone"
                                 tools:visibility="visible" />

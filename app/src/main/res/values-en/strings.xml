@@ -66,6 +66,10 @@
     <string name="activity_detail_last_modified">Last modified</string>
     <string name="activity_detail_nothing_checked">Please check the options to install</string>
     <string name="activity_detail_wait_loading">Please wait while the package is being reading, and it may take some time</string>
+    <string name="activity_detail_grant_data">Grant Data</string>
+    <string name="activity_detail_grant_obb">Grant Obb</string>
+    <string name="activity_detail_grant_data_introduction">Starting to authorize the data directory for this application, please confirm the directory Android/data/%s in the system file manager and click Use this folder </string>
+    <string name="activity_detail_grant_obb_introduction">Starting to authorize the obb directory for this application, please confirm the directory Android/obb/%s in the system file manager and click Use this folder </string>
 
     <string name="activity_detail_native_library">Native Libraries</string>
 
@@ -107,6 +111,9 @@
     <string name="dialog_grant_toast_obb">Check the current obb path and click "use this folder"</string>
     <string name="dialog_grant_no_need">It is no need to do this operation for the current version of Android, if you can normally see the size of data and obb of an app and importing data and obb, continue?</string>
     <string name="dialog_grant_first_use">It has no permission to use data or obb path, jump to grant page?</string>
+    <string name="dialog_grant_higher_api">Android 13 or newer versions require separate data and obb authorization for the application, and settings of this page may not be valid.</string>
+    <string name="dialog_pack_permission_title">Path permissions</string>
+    <string name="package_detail_install_permission_att">Contains unauthorized contents, please check the permissions</string>
 
     <string name="permission_granted">granted</string>
     <string name="permission_denied">denied</string>
@@ -179,7 +186,10 @@
 
     <string name="dialog_import_data_obb_title">Importing compressed  file</string>
     <string name="dialog_import_data_obb_att">The listed bellow are found in this(those) compressed file(s), check data or obb and then will decompress them
-    to the main storage with the path of /android/data or /android/obb, check apk will decompress it to the export path</string>
+    to the main storage with the path of /android/data or /android/obb, check apk will decompress it to the exporting path</string>
+
+    <string name="dialog_import_data_obb_att2">The listed bellow are found in this(those) compressed file(s), check data or obb and then will decompress them
+    to the main storage with the path of /android/data or /android/obb. Unauthorized data or obb paths may encounter exceptions. Check apk will decompress it to the exporting path</string>
 
     <string name="dialog_button_confirm">Confirm</string>
     <string name="dialog_button_cancel">Cancel</string>
@@ -320,6 +330,7 @@
     <string name="word_unknown">unknown</string>
     <string name="word_preview">preview</string>
     <string name="word_blank">blank</string>
+    <string name="word_attention">Attention</string>
     <string name="word_yes">yes</string>
     <string name="word_no">no</string>
     <string name="word_none">none</string>

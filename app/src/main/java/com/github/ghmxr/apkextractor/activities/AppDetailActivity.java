@@ -268,7 +268,7 @@ public class AppDetailActivity extends BaseActivity implements View.OnClickListe
                 findViewById(R.id.app_detail_export_checkboxes).setVisibility(View.VISIBLE);
                 if (Build.VERSION.SDK_INT >= Global.USE_STANDALONE_DOCUMENT_FILE_PERMISSION) {
                     if (!DocumentFileUtil.canRWDataDocumentFileOf(appItem.getPackageName())) {
-                        wrapGrantView(findViewById(R.id.app_detail_export_data_grant), cb_data, "提示", "即将开始授权此应用的data目录，请在系统文件管理器界面中确认目录并点击“使用此文件夹”", new Runnable() {
+                        wrapGrantView(findViewById(R.id.app_detail_export_data_grant), cb_data, getResources().getString(R.string.word_attention), String.format(getResources().getString(R.string.activity_detail_grant_data_introduction), appItem.getPackageName()), new Runnable() {
                             @Override
                             public void run() {
                                 EnvironmentUtil.jump2DataPathOfPackageName(AppDetailActivity.this, 0, appItem.getPackageName());
@@ -279,7 +279,7 @@ public class AppDetailActivity extends BaseActivity implements View.OnClickListe
                         findViewById(R.id.app_detail_export_data_grant).setVisibility(View.GONE);
                     }
                     if (!DocumentFileUtil.canRWObbDocumentFileOf(appItem.getPackageName())) {
-                        wrapGrantView(findViewById(R.id.app_detail_export_obb_grant), cb_obb, "提示", "即将开始授权此应用的obb目录，请在系统文件管理器界面中确认目录并点击“使用此文件夹”", new Runnable() {
+                        wrapGrantView(findViewById(R.id.app_detail_export_obb_grant), cb_obb, getResources().getString(R.string.word_attention), String.format(getResources().getString(R.string.activity_detail_grant_obb_introduction), appItem.getPackageName()), new Runnable() {
                             @Override
                             public void run() {
                                 EnvironmentUtil.jump2ObbPathOfPackageName(AppDetailActivity.this, 0, appItem.getPackageName());
@@ -520,7 +520,7 @@ public class AppDetailActivity extends BaseActivity implements View.OnClickListe
         dialog.getButton(AlertDialog.BUTTON_NEUTRAL).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                clip2ClipboardAndShowSnackbar(appItem.getPackageName());
+                EnvironmentUtil.clip2Clipboard(String.valueOf(appItem.getPackageName()));
                 ToastManager.showToast(AppDetailActivity.this, getResources().getString(R.string.snack_bar_clipboard), Toast.LENGTH_SHORT);
             }
         });

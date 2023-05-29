@@ -83,8 +83,8 @@ public class GrantActivity extends BaseActivity {
         });
 
         if (Build.VERSION.SDK_INT >= Global.USE_STANDALONE_DOCUMENT_FILE_PERMISSION) {
-            new AlertDialog.Builder(this).setTitle("提示")
-                    .setMessage("Android 13 及以上版本需要单独对应用进行data和obb授权，此页面设置可能无效。")
+            new AlertDialog.Builder(this).setTitle(getResources().getString(R.string.dialog_grant_attention_title))
+                    .setMessage(getResources().getString(R.string.dialog_grant_higher_api))
                     .setPositiveButton(getResources().getString(R.string.action_confirm), new DialogInterface.OnClickListener() {
                         @Override
                         public void onClick(DialogInterface dialog, int which) {

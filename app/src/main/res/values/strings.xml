@@ -70,6 +70,10 @@
     <string name="activity_detail_last_modified">最后修改</string>
     <string name="activity_detail_nothing_checked">请勾选要安装的数据</string>
     <string name="activity_detail_wait_loading">请等待，压缩包读取中，可能会花费些时间</string>
+    <string name="activity_detail_grant_data">授权Data</string>
+    <string name="activity_detail_grant_obb">授权Obb</string>
+    <string name="activity_detail_grant_data_introduction">即将开始授权此应用的data目录，请在系统文件管理器界面中确认目录“Android/data/%s”并点击“使用此文件夹”</string>
+    <string name="activity_detail_grant_obb_introduction">即将开始授权此应用的obb目录，请在系统文件管理器界面中确认目录“Android/obb/%s”并点击“使用此文件夹”</string>
 
     <string name="activity_detail_signature_head">签名信息</string>
     <string name="activity_detail_signature_issuer">证书发行者</string>
@@ -127,9 +131,12 @@
     <string name="dialog_grant_warn">可能没有选择到正确的data/obb目录下，是否继续？</string>
     <string name="dialog_grant_toast_data">检查当前data路径并点击“使用此文件夹”</string>
     <string name="dialog_grant_toast_obb">检查当前obb路径并点击“使用此文件夹”</string>
+    <string name="dialog_grant_higher_api">Android 13 及以上版本需要单独对应用进行data和obb授权，此页面设置可能无效。</string>
     <string name="permission_granted">已授权</string>
     <string name="permission_denied">未授权</string>
     <string name="dialog_grant_first_use">当前未获取到访问data或obb数据的权限，是否跳转至授权页？</string>
+    <string name="dialog_pack_permission_title">路径授权</string>
+    <string name="package_detail_install_permission_att">包含未授权的内容，请检查权限</string>
 
     <string name="activity_folder_selector_title">选择路径</string>
     <string name="activity_folder_selector_select_storage">选择存储</string>
@@ -196,6 +203,7 @@
 
     <string name="dialog_import_data_obb_title">导入压缩包</string>
     <string name="dialog_import_data_obb_att">发现压缩包中存在下列数据，勾选Data或Obb将会解压至主存储/Android/data或者/Android/obb，APK将会解压至导出路径</string>
+    <string name="dialog_import_data_obb_att2">发现压缩包中存在下列数据，勾选Data或Obb会将数据解压至主存储/Android/data或者/Android/obb，未授权的data或obb路径可能会出现异常，APK将会解压至导出路径</string>
 
     <string name="dialog_button_confirm">确定</string>
     <string name="dialog_button_cancel">取消</string>
@@ -372,6 +380,7 @@
     <string name="word_ap_mode">热点模式</string>
     <string name="word_keep_screen_on">保持常亮</string>
     <string name="word_error">错误</string>
+    <string name="word_attention">提示</string>
     <string name="word_custom">自定义</string>
     <string name="att_loading">正在载入&#8230;</string>
     <string name="att_scanning">正在扫描</string>
@@ -394,18 +403,12 @@
         Android/obb/\n
         *.apk\n\n
 
+        * Android13 (API33) 及以上版本通过多选进行导出或导入操作时，需要提前通过各个应用或包单独的页面进行授权操作，否则可能会无法导出data和obb、导入时出现异常。\n\n
         通过本应用的分享功能，可以将APP或者安装包分享给对方。本应用的局域网分享功能同时支持分享本地外置存储中的任何一个文件，通过文件管理器或其他应用分享时选择本应用即可直接发送给对方，接收端接收到的文件将会保存至导出路径。\n\n
 
-   <b>Build 15 更新日志：</b> \n
-    <b>新增：Android 11及以上版本通过DocumentFile进行读写data，obb数据的适配；</b>\n
-    <b>优化：导入data和obb的加载速度（针对非外置存储设备）；</b>\n
-    <b>变动：导出/导入data，obb数据时缓存文件长度信息来缩短加载时间；</b>\n
-    <b>变动：导入data，obb在获取重复文件状态时可强行跳过；</b>\n
-    <b>变动：提升targetApi至29；</b>\n
-    <b>变动：通过打开方式打开包时可再次执行分享操作；</b>\n
-    <b>修复：安装包扫描过程时批量重命名后文件名没有立刻刷新的问题；</b>\n
-    <b>修复：文件哈希值，组件信息，签名信息，文件大小等展示的值可能为旧值无法更新的问题；</b>\n
-    <b>修复：导入zip包内apk时未初始化导出路径导致的异常；</b>\n\n
+   <b>Build 16 更新日志：</b> \n
+    <b>新增：Android 13及以上版本通过DocumentFile单独进行读写data，obb数据的适配；</b>\n
+    <b>修复：导出时通过DocumentFile方式可能无法覆写文件的情况；</b>\n\n
 
         开源地址:\n
          https://github.com/ghmxr/apkextractor \n\n

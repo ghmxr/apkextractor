@@ -13,7 +13,9 @@ import android.text.TextUtils;
 import android.text.format.Formatter;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.CheckBox;
+import android.widget.CompoundButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -56,6 +58,8 @@ public class PackageDetailActivity extends BaseActivity implements View.OnClickL
     public static final String EXTRA_IMPORT_ITEM_PATH = "import_item_path";
     private CheckBox cb_data, cb_obb, cb_apk;
     private PackageImportingPermissionDialog dialog;
+    private boolean grant_data = false, grant_obb = false;
+    private ViewGroup installAttArea;
 //    private ZipFileUtil.ZipFileInfo zipFileInfo;
 
     @Override
@@ -137,6 +141,7 @@ public class PackageDetailActivity extends BaseActivity implements View.OnClickL
         ((TextView) findViewById(R.id.package_detail_target_api)).setText(importItem.getTargetSdkVersion());
         ((TextView) findViewById(R.id.package_detail_last_modified)).setText(SimpleDateFormat.getDateTimeInstance().format(new Date(importItem.getLastModified())));
         ((TextView) findViewById(R.id.package_detail_path)).setText(importItem.getFileItem().getPath());
+        installAttArea = findViewById(R.id.pack_permission_att_area);
         if (importItem.getFileItem().isShareUriInstance()) {
             findViewById(R.id.package_detail_last_modified_area).setVisibility(View.GONE);
             //findViewById(R.id.package_detail_size_dividing).setVisibility(View.GONE);
@@ -272,6 +277,20 @@ public class PackageDetailActivity extends BaseActivity implements View.OnClickL
                     }
                 }
             }).start();
+            if (Build.VERSION.SDK_INT >= Global.USE_STANDALONE_DOCUMENT_FILE_PERMISSION) {
+                cb_data.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+                    @Override
+                    public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                        refreshDataObbAttention();
+                    }
+                });
+                cb_obb.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+                    @Override
+                    public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                        refreshDataObbAttention();
+                    }
+                });
+            }
             EnvironmentUtil.checkAndShowGrantDialog(this, null);
         }
 
@@ -280,7 +299,7 @@ public class PackageDetailActivity extends BaseActivity implements View.OnClickL
     @Override
     protected void onResume() {
         super.onResume();
-        refreshDataObbIndicatorAndDialog();
+        refreshDataObbPermissionElements();
     }
 
     @Override
@@ -470,13 +489,13 @@ public class PackageDetailActivity extends BaseActivity implements View.OnClickL
             }
             if (matched) {
                 takePersistPermission(data.getData());
-                refreshDataObbIndicatorAndDialog();
+                refreshDataObbPermissionElements();
             } else {
                 showAttentionDialog(R.string.dialog_grant_attention_title, R.string.dialog_grant_warn, new Runnable() {
                     @Override
                     public void run() {
                         takePersistPermission(data.getData());
-                        refreshDataObbIndicatorAndDialog();
+                        refreshDataObbPermissionElements();
                     }
                 });
             }
@@ -502,9 +521,10 @@ public class PackageDetailActivity extends BaseActivity implements View.OnClickL
         }
     }
 
-    private void refreshDataObbIndicatorAndDialog() {
+    private void refreshDataObbPermissionElements() {
         if (Build.VERSION.SDK_INT >= Global.USE_STANDALONE_DOCUMENT_FILE_PERMISSION) {
             refreshDataObbIndicator();
+            refreshDataObbAttention();
             if (dialog != null && dialog.isShowing()) {
                 dialog.updatePermissionDisplays();
             }
@@ -593,5 +613,11 @@ public class PackageDetailActivity extends BaseActivity implements View.OnClickL
             iconObb.setImageResource(R.drawable.shape_red_dot);
             tvObb.setText("Obb(" + getResources().getString(R.string.permission_denied) + ")");
         }
+        grant_data = data;
+        grant_obb = obb;
+    }
+
+    private void refreshDataObbAttention() {
+        installAttArea.setVisibility(((cb_data.isChecked() && !grant_data) || (cb_obb.isChecked() && !grant_obb)) ? View.VISIBLE : View.GONE);
     }
 }

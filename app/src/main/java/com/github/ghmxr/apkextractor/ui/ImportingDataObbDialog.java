@@ -2,6 +2,7 @@ package com.github.ghmxr.apkextractor.ui;
 
 import android.content.Context;
 import android.content.DialogInterface;
+import android.os.Build;
 import android.text.format.Formatter;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -52,6 +53,9 @@ public class ImportingDataObbDialog extends AlertDialog implements View.OnClickL
         setView(view);
         setTitle(context.getResources().getString(R.string.dialog_import_data_obb_title));
         tv_att.setText(context.getResources().getString(R.string.dialog_import_data_obb_att));
+        if (Build.VERSION.SDK_INT >= Global.USE_STANDALONE_DOCUMENT_FILE_PERMISSION) {
+            tv_att.setText(context.getResources().getString(R.string.dialog_import_data_obb_att2));
+        }
         setButton(AlertDialog.BUTTON_POSITIVE, context.getResources().getString(R.string.dialog_button_confirm), new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {

@@ -786,31 +786,6 @@ public class EnvironmentUtil {
                 .show();
     }
 
-    public static void checkAndShowGrantDialogOfPackageName(@NonNull final Activity activity, String packageName) {
-        if (DocumentFileUtil.canRWDataDocumentFileOf(packageName) && DocumentFileUtil.canRWObbDocumentFileOf(packageName)) {
-            return;
-        }
-//        showGrantDataPermissionDialog(activity,packageName);
-    }
-
-    public static void showGrantDataPermissionDialog(final Activity activity, String packageName) {
-        new AlertDialog.Builder(activity).setTitle(activity.getResources().getString(R.string.dialog_grant_attention_title))
-                .setMessage(activity.getResources().getString(R.string.dialog_grant_first_use))
-                .setPositiveButton(activity.getResources().getString(R.string.action_confirm), new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-
-                    }
-                })
-                .setNegativeButton(activity.getResources().getString(R.string.action_cancel), new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        SPUtil.getGlobalSharedPreferences(activity).edit().putBoolean(Constants.PREFERENCE_SHOW_GRANT_DIALOG, false).apply();
-                    }
-                })
-                .show();
-    }
-
     public static void jump2DataPathOfPackageName(Activity activity, int requestCode, String packageName) {
         jump2Path(activity, requestCode, Global.URI_DATA + "%2F" + packageName);
     }

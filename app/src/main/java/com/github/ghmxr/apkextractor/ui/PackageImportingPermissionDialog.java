@@ -32,7 +32,7 @@ public class PackageImportingPermissionDialog extends AlertDialog {
         super(activity);
         this.activity = activity;
         this.zipFileInfo = zipFileInfo;
-        setTitle("包路径授权");
+        setTitle(activity.getResources().getString(R.string.dialog_pack_permission_title));
         View dialogView = LayoutInflater.from(activity).inflate(R.layout.dialog_package_permission, null);
         setView(dialogView);
         recyclerView = dialogView.findViewById(R.id.pnrv);
