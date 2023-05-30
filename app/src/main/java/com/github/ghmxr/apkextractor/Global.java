@@ -527,6 +527,7 @@ public class Global {
         dialog_duplication_wait.getButton(AlertDialog.BUTTON_POSITIVE).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                infoTask.setInterrupted();
                 final long current = System.currentTimeMillis();
                 if (current - checkDuplicateTimeStamp > 3000L) {
                     checkDuplicateTimeStamp = current;

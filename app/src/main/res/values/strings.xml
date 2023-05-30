@@ -74,6 +74,8 @@
     <string name="activity_detail_grant_obb">授权Obb</string>
     <string name="activity_detail_grant_data_introduction">即将开始授权此应用的data目录，请在系统文件管理器界面中确认目录“Android/data/%s”并点击“使用此文件夹”</string>
     <string name="activity_detail_grant_obb_introduction">即将开始授权此应用的obb目录，请在系统文件管理器界面中确认目录“Android/obb/%s”并点击“使用此文件夹”</string>
+    <string name="activity_detail_install_attention">请使用系统默认软件包安装程序进行安装</string>
+    <string name="activity_detail_permission_create_folder_attention">授权时对于不存在的data或obb路径需要手动创建</string>
 
     <string name="activity_detail_signature_head">签名信息</string>
     <string name="activity_detail_signature_issuer">证书发行者</string>
@@ -187,6 +189,7 @@
 
     <string name="toast_export_complete">应用已导出至</string>
     <string name="toast_import_complete">导入完成,如有APK包可尝试手动安装</string>
+    <string name="toast_import_create_folder_attention">请确认路径“Android/%s/%s”，如果不存在可创建选中后点击“使用此文件夹”</string>
 
     <string name="dialog_import_finished_error_title">提示</string>
     <string name="dialog_import_finished_error_message">下列文件导入错误，错误信息如下：\n\n</string>
@@ -403,11 +406,11 @@
         Android/obb/\n
         *.apk\n\n
 
-        * Android13 (API33) 及以上版本通过多选进行导出或导入操作时，需要提前通过各个应用或包单独的页面进行授权操作，否则可能会无法导出data和obb、导入时出现异常。\n\n
+        <b>* Android13 (API33) 及以上版本通过多选进行导出或导入操作时，需要提前通过各个应用或包单独的页面进行授权操作，否则可能会无法导出data和obb、导入时出现异常。</b>\n\n
         通过本应用的分享功能，可以将APP或者安装包分享给对方。本应用的局域网分享功能同时支持分享本地外置存储中的任何一个文件，通过文件管理器或其他应用分享时选择本应用即可直接发送给对方，接收端接收到的文件将会保存至导出路径。\n\n
 
    <b>Build 16 更新日志：</b> \n
-    <b>新增：Android 13及以上版本通过DocumentFile单独进行读写data，obb数据的适配；</b>\n
+    <b>新增：Android 13 (API33) 版本通过DocumentFile单独进行读写data，obb数据的适配；</b>\n
     <b>修复：导出时通过DocumentFile方式可能无法覆写文件的情况；</b>\n\n
 
         开源地址:\n

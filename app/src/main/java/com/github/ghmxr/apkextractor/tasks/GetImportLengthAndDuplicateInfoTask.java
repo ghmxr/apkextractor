@@ -86,6 +86,9 @@ public class GetImportLengthAndDuplicateInfoTask extends Thread {
                 }
                 List<String> entryPaths = zipFileInfo.getEntryPaths();
                 for (String entryPath : entryPaths) {
+                    if (isInterrupted) {
+                        break;
+                    }
                     final String s = entryPath.toLowerCase();
                     if (!s.contains("/") && s.endsWith(".apk")) continue;
                     if (!importItem.importObb && s.toLowerCase().startsWith("android/obb"))

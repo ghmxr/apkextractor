@@ -74,9 +74,9 @@ public class PackageDetailActivity extends BaseActivity implements View.OnClickL
             }
             importItem = new ImportItem(FileItem.createFileItemInstance(uri));
             if ("apk".equalsIgnoreCase(EnvironmentUtil.getFileExtensionName(importItem.getFileItem().getName()))) {
-                ToastManager.showToast(this, getResources().getString(R.string.activity_package_detail_apk_attention), Toast.LENGTH_SHORT);
+                /*ToastManager.showToast(this, getResources().getString(R.string.activity_package_detail_apk_attention), Toast.LENGTH_SHORT);
                 finish();
-                return;
+                return;*/
             }
             HashTask.clearResultCacheOfPath(importItem.getFileItem().getPath());
         } else {
@@ -321,6 +321,7 @@ public class PackageDetailActivity extends BaseActivity implements View.OnClickL
                         }
                         intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
                         startActivity(intent);
+                        ToastManager.showToast(PackageDetailActivity.this, getResources().getString(R.string.activity_detail_install_attention), Toast.LENGTH_SHORT);
                     } catch (Exception e) {
                         e.printStackTrace();
                         ToastManager.showToast(this, e.toString(), Toast.LENGTH_SHORT);

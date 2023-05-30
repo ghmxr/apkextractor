@@ -786,6 +786,14 @@ public class EnvironmentUtil {
                 .show();
     }
 
+    public static void jump2DataPath(Activity activity, int requestCode) {
+        jump2Path(activity, requestCode, Global.URI_DATA);
+    }
+
+    public static void jump2ObbPath(Activity activity, int requestCode) {
+        jump2Path(activity, requestCode, Global.URI_OBB);
+    }
+
     public static void jump2DataPathOfPackageName(Activity activity, int requestCode, String packageName) {
         jump2Path(activity, requestCode, Global.URI_DATA + "%2F" + packageName);
     }

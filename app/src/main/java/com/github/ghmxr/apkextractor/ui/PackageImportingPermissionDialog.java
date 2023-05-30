@@ -104,13 +104,15 @@ public class PackageImportingPermissionDialog extends AlertDialog {
             viewHolder.tv_data_grant.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    EnvironmentUtil.jump2DataPathOfPackageName(activity, 0, packageName);
+                    EnvironmentUtil.jump2DataPath(activity, 0);
+                    ToastManager.showToast(activity, String.format(activity.getResources().getString(R.string.toast_import_create_folder_attention), "data", packageName), Toast.LENGTH_LONG);
                 }
             });
             viewHolder.tv_obb_grant.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    EnvironmentUtil.jump2ObbPathOfPackageName(activity, 0, packageName);
+                    EnvironmentUtil.jump2ObbPath(activity, 0);
+                    ToastManager.showToast(activity, String.format(activity.getResources().getString(R.string.toast_import_create_folder_attention), "obb", packageName), Toast.LENGTH_LONG);
                 }
             });
         }

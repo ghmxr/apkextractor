@@ -70,6 +70,8 @@
     <string name="activity_detail_grant_obb">Grant Obb</string>
     <string name="activity_detail_grant_data_introduction">Starting to authorize the data directory for this application, please confirm the directory Android/data/%s in the system file manager and click Use this folder </string>
     <string name="activity_detail_grant_obb_introduction">Starting to authorize the obb directory for this application, please confirm the directory Android/obb/%s in the system file manager and click Use this folder </string>
+    <string name="activity_detail_install_attention">Select system default package installer to install</string>
+    <string name="activity_detail_permission_create_folder_attention">Need to create the data or obb path manually if it not exists</string>
 
     <string name="activity_detail_native_library">Native Libraries</string>
 
@@ -168,6 +170,7 @@
 
     <string name="toast_export_complete">The app(s) are exported to </string>
     <string name="toast_import_complete">Importing completed, if there is any apk packages, try to install them manually</string>
+    <string name="toast_import_create_folder_attention">Please confirm the path \'Android/%s/%s\'，try to create this folder if not exists, then click \'use this folder\' </string>
 
     <string name="dialog_import_finished_error_title">Attention</string>
     <string name="dialog_import_finished_error_message">The following file(s) occur errors while importing, the infos are listed bellow\n\n</string>
@@ -355,6 +358,7 @@
 		Android/obb/\n
 		*.apk\n\n
 
+        <b>*On Android 13 or above, when operating multiple exporting / importing, need to grant data and obb permissions in its respective page in advance.</b> \n\n
 Through the sharing function of this app, you can share the app or installation package to the other party. The LAN sharing function of this application
         supports the sharing of any file in the local external storage at the same time. When sharing through the file manager or other applications,
         select this application to send it directly to the other party, and the files received by the receiving end will be saved to the export path.\n\n
