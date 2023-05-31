@@ -134,21 +134,31 @@ public class GetImportLengthAndDuplicateInfoTask extends Thread {
                             final String fileName = s.substring(s.lastIndexOf("/") + 1);
                             final String packageName = EnvironmentUtil.getResolvedPackageNameOfEntryPath(entryPath);
                             if (s.toLowerCase().startsWith("android/data/")) {
+                                String relativePath = null;
                                 try {
-                                    String relativePath = s.substring(("android/data/" + packageName + "/").length(), s.lastIndexOf("/"));
+                                    relativePath = s.substring(("android/data/" + packageName + "/").length(), s.lastIndexOf("/"));
+                                } catch (Exception e) {
+                                    // e.printStackTrace();
+                                }
+                                try {
                                     targetFile = DocumentFileUtil.findDocumentFile(DocumentFileUtil.getDocumentFileBySegments(DocumentFileUtil.getDataDocumentFileOf(packageName)
                                             , relativePath, false), fileName);
                                 } catch (Exception e) {
-                                    //
+                                    // e.printStackTrace();
                                 }
                             }
                             if (s.toLowerCase().startsWith("android/obb/")) {
+                                String relativePath = null;
                                 try {
-                                    String relativePath = s.substring(("android/obb/" + packageName + "/").length(), s.lastIndexOf("/"));
+                                    relativePath = s.substring(("android/obb/" + packageName + "/").length(), s.lastIndexOf("/"));
+                                } catch (Exception e) {
+                                    // e.printStackTrace();
+                                }
+                                try {
                                     targetFile = DocumentFileUtil.findDocumentFile(DocumentFileUtil.getDocumentFileBySegments(DocumentFileUtil.getObbDocumentFileOf(packageName)
                                             , relativePath, false), fileName);
                                 } catch (Exception e) {
-                                    //
+                                    // e.printStackTrace();
                                 }
                             }
                         } catch (Exception e) {
