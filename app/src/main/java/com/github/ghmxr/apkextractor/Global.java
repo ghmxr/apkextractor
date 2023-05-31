@@ -199,8 +199,6 @@ public class Global {
                 dialog.cancel();
             }
         });
-        dialog.setCancelable(false);
-        dialog.setCanceledOnTouchOutside(false);
         dialog.show();
         task.setExportProgressListener(new ExportTask.ExportProgressListener() {
             @Override
@@ -210,7 +208,7 @@ public class Global {
 
             @Override
             public void onExportProgressUpdated(long current, long total, String write_path) {
-                dialog.setProgressOfWriteBytes(current, total);
+                dialog.setProgress(current, total);
                 dialog.setProgressOfCurrentZipFile(write_path);
             }
 

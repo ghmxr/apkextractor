@@ -1,6 +1,8 @@
 package com.github.ghmxr.apkextractor.ui;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
+import android.text.format.Formatter;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.WindowManager;
@@ -16,10 +18,10 @@ import com.github.ghmxr.apkextractor.R;
 
 public abstract class ProgressDialog extends AlertDialog {
 
-    final ProgressBar progressBar;
-    final TextView att;
-    final TextView att_left;
-    final TextView att_right;
+    private final ProgressBar progressBar;
+    private final TextView att;
+    private final TextView att_left;
+    private final TextView att_right;
 
     public ProgressDialog(@NonNull Context context, @NonNull String title) {
         super(context);
@@ -44,6 +46,7 @@ public abstract class ProgressDialog extends AlertDialog {
             }
         });
         setTitle(title);
+        progressBar.setIndeterminate(true);
     }
 
     @Override
@@ -54,5 +57,36 @@ public abstract class ProgressDialog extends AlertDialog {
         } catch (Exception e) {
             e.printStackTrace();
         }
+    }
+
+    public void setProgressText(String s) {
+        att.setText(s);
+    }
+
+    @SuppressLint("SetTextI18n")
+    public void setProgress(long current, long total) {
+        if (current < 0) return;
+        if (current > total) {
+            if (!progressBar.isIndeterminate()) {
+                progressBar.setIndeterminate(true);
+            }
+            att_right.setText(Formatter.formatFileSize(getContext(), current));
+            return;
+        }
+        if (progressBar.isIndeterminate()) {
+            progressBar.setIndeterminate(false);
+        }
+        int max = (int) (total / 1024);
+        if (progressBar.getMax() != max) {
+            progressBar.setMax(max);
+        }
+        progressBar.setProgress((int) (current / 1024));
+        int percent = (int) (((double) current / total) * 100);
+        att_right.setText(Formatter.formatFileSize(getContext(), current) + "/" + Formatter.formatFileSize(getContext(), total) + "(" + percent + "%)");
+    }
+
+    @SuppressLint("SetTextI18n")
+    public void setSpeed(long speedOfBytes) {
+        att_left.setText(Formatter.formatFileSize(getContext(), speedOfBytes) + "/s");
     }
 }
