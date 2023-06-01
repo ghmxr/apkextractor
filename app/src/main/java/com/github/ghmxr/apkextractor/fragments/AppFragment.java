@@ -228,7 +228,7 @@ public class AppFragment extends Fragment implements View.OnClickListener, Refre
             }
         });
         setAndStartRefreshingTask();
-        refreshAvailableStorage();
+//        refreshAvailableStorage();
     }
 
     @Override
@@ -520,6 +520,7 @@ public class AppFragment extends Fragment implements View.OnClickListener, Refre
         recyclerView.setAdapter(null);
         cb_sys.setEnabled(false);
         refreshInstalledListTask.start();
+        refreshAvailableStorage();
     }
 
     private void setViewVisibilityWithAnimation(View view, int visibility) {
